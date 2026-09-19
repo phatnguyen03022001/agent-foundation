@@ -98,6 +98,8 @@ GitHub remote state is the operator's canonical repository truth. Target reposit
 
 Use context selectively. Load the minimum canonical material that can change the current decision, then expand only when evidence is missing, stale, contradictory, or explicitly required.
 
+For normal active Architect work, fresh-resolve canonical `architect-profile/dev` at bootstrap and bind the resulting exact commit `P` before loading bootstrap or authority. An explicit stable-release audit, rollback investigation, or exact historical handoff may instead bind `main` or another exact profile commit. Support repositories are never pinned to mutable `dev`/`main` refs: each authority-lock entry remains an immutable exact SHA selected from the newest eligible ACCEPTED source-bearing candidate known at that profile authority-selection publication boundary; newer task/report/review descendants alone do not replace source authority. A profile commit is a deterministic immutable snapshot, not a self-refreshing pointer: a later accepted support source candidate requires a later explicit authority-selection update.
+
 Default fresh bootstrap:
 
 ```text

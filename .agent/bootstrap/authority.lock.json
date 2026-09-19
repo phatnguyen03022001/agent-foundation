@@ -3,7 +3,7 @@
   "repositories": {
     "agent-skills": {
       "repository": "phatnguyen03022001/agent-skills",
-      "revision": "1826d33bd1e467896c133109b37db8b0656b3276"
+      "revision": "87a37a72a4952b1da273d9af308642f4295fda6b"
     },
     "agent-standards": {
       "repository": "phatnguyen03022001/agent-standards",
@@ -15,7 +15,7 @@
     },
     "agent-runtime": {
       "repository": "phatnguyen03022001/agent-runtime",
-      "revision": "ebd62a2090ecf20759773061abcbc885677c0fb6"
+      "revision": "9c12dcae6f1a5e23fc152ff94c65917cbff96df5"
     }
   }
 }
