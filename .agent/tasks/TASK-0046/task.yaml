@@ -53,13 +53,13 @@ authority_sources:
   - source: "phatnguyen03022001/agent-skills@4f4ef2b45e1a025bc499702919431c0d0d61419c:.agent/tasks/TASK-0054/review.yaml"
     role: "ACCEPTED review binds latest eligible source-bearing agent-skills candidate 87a37a72a4952b1da273d9af308642f4295fda6b and current platform-compliant capability/publication semantics."
     precedence: 2
-  - source: "phatnguyen03022001/agent-runtime@99d9e943e8b7bb39e8dc4bf5ee2f95168aa8d350:.agent/tasks/TASK-0086/review.yaml"
+  - source: "phatnguyen03022001/agent-runtime@99d9e94346ca54916686911c998b5721d60014b6:.agent/tasks/TASK-0086/review.yaml"
     role: "ACCEPTED review binds latest eligible source-bearing Agent Runtime candidate 9c12dcae6f1a5e23fc152ff94c65917cbff96df5 with repo_observer as accepted source-level public tool 8."
     precedence: 3
-  - source: "phatnguyen03022001/agent-standards@dev:.agent/tasks/TASK-0013/review.yaml"
+  - source: "phatnguyen03022001/agent-standards@1141b9dbfce0110d6623f5a877c2d04843caa6eb:.agent/tasks/TASK-0013/review.yaml"
     role: "ACCEPTED revision-2 review explicitly binds latest eligible source-bearing agent-standards candidate 0da0d5864fe5e458af564f3c6ba9959cefd99639."
     precedence: 4
-  - source: "phatnguyen03022001/agent-documents@dev:.agent/tasks/TASK-0008/review.yaml"
+  - source: "phatnguyen03022001/agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82:.agent/tasks/TASK-0008/review.yaml"
     role: "ACCEPTED revision-2 review explicitly binds latest eligible source-bearing agent-documents candidate c34d34d1842975fa895fc0e3d5273e5826b32205."
     precedence: 5
   - source: "phatnguyen03022001/architect-profile@97215b78e69b0aebcd87574b7e0cc8c78f2e5c73:.agent/bootstrap/authority.lock.json and .agent/program.generated.json"
