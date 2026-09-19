@@ -1,0 +1,192 @@
+[Reading 188 lines from start (total: 188 lines, 0 remaining)]
+
+protocol_version: 3
+
+task_id: TASK-0047
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: architect_followup
+  task_id: TASK-0046
+  gap_id: ARCHITECT_RUNTIME_AUTHORITY_FRESHNESS
+
+architect_binding:
+  target_repository: phatnguyen03022001/architect-profile
+
+target:
+  repository: phatnguyen03022001/architect-profile
+  branch:
+    name: dev
+    role: integration
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "87a37a72a4952b1da273d9af308642f4295fda6b"
+
+architect_analysis_skills:
+  - architect
+  - verification
+  - simplicity
+  - github-workflow
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+    - github-workflow
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "phatnguyen03022001/agent-runtime@66d72e2b11606583e14e7f89ea62aee8fa3823a5:.agent/tasks/TASK-0096/review.yaml"
+    role: "ACCEPTED review explicitly binds source-bearing implementation candidate ac33afadccf2b222ddf48d6c6b45de82951046a2 for public source/package-level screen_capture tool 11."
+    precedence: 1
+  - source: "phatnguyen03022001/architect-profile@4cbac8f89a26206f342e8cacf7401a466eb5df05:.agent/bootstrap/authority.lock.json"
+    role: "Current dev authority snapshot still selects agent-runtime source 9c12dcae6f1a5e23fc152ff94c65917cbff96df5 and is stale relative to accepted TASK-0096."
+    precedence: 2
+  - source: "phatnguyen03022001/architect-profile@4cbac8f89a26206f342e8cacf7401a466eb5df05:.agent/tasks/TASK-0046/review.yaml"
+    role: "Accepted authority-selection semantics: support locks select immutable accepted source-bearing candidates, not task/report/review descendants."
+    precedence: 3
+
+structure_authority:
+  status: RESOLVED
+  source: "Existing authority lock, exact-lock bootstrap regression, generated PROGRAM invalidation policy, and accepted TASK-0046 authority-selection pattern."
+  rationale: "Refresh the one stale support identity in existing owners only. No new registry, watcher, auto-refresh layer, runtime lifecycle mechanism, or bootstrap schema is needed."
+
+objective: "Refresh architect-profile/dev so its immutable support authority snapshot selects the latest accepted source-bearing Agent Runtime candidate ac33afadccf2b222ddf48d6c6b45de82951046a2, update exact-lock regression expectations, regenerate material-input-sensitive PROGRAM navigation, and leave runtime activation plus stable main promotion as separate explicit consequences."
+
+scope:
+  required_changes:
+    - "Fresh-bind TASK-0047 revision 1 at its exact planning base. Fresh-resolve architect-profile dev/main and agent-runtime dev before mutation."
+    - "Reconstruct TASK-0096 accepted lineage and require agent-runtime dev contains ACCEPTED TASK-0096 revision 6 review at 66d72e2b11606583e14e7f89ea62aee8fa3823a5 explicitly binding implementation candidate ac33afadccf2b222ddf48d6c6b45de82951046a2."
+    - "Require the selected four-support authority set to be exactly: agent-skills=87a37a72a4952b1da273d9af308642f4295fda6b; agent-standards=0da0d5864fe5e458af564f3c6ba9959cefd99639; agent-documents=c34d34d1842975fa895fc0e3d5273e5826b32205; agent-runtime=ac33afadccf2b222ddf48d6c6b45de82951046a2."
+    - "Change .agent/bootstrap/authority.lock.json only for agent-runtime: 9c12dcae6f1a5e23fc152ff94c65917cbff96df5 -> ac33afadccf2b222ddf48d6c6b45de82951046a2. Keep all other support entries byte-identical."
+    - "Update only the matching exact-lock expectation in .agent/bootstrap/test_bootstrap.py. Preserve all existing bootstrap, Case Router, execution-surface, target-binding, immutable-revision and fail-closed test semantics."
+    - "Fully regenerate .agent/program.generated.json because the support authority set is a material synthesis input. Keep artifact_type GENERATED_PROGRAM, authority NONE, FULL_REGENERATION_ON_MATERIAL_INPUT_CHANGE, navigation-only semantics, no mutable lifecycle/status fields, and the existing item/dependency model unless exact current evidence proves a specific traceability reference stale."
+    - "Do not modify ARCHITECT_PROFILE.md: TASK-0046 already owns and correctly states the fresh-profile/exact-support authority-selection rule."
+    - "Do not modify .agent/bootstrap/bootstrap.json or .agent/bootstrap/validate.py; this task changes only selected immutable authority identity and generated navigation inputs."
+    - "Run default and --remote bootstrap validation, complete bootstrap unittest suite, Python compilation for bootstrap code, exact Case Router/capability-route resolution, exact four support-object resolution, generated-PROGRAM structural checks, exact authority-lock equality and git diff --check."
+    - "Prove exact candidate diff is restricted to .agent/bootstrap/authority.lock.json, .agent/bootstrap/test_bootstrap.py, and .agent/program.generated.json. No support repository, local Runtime, tunnel, container, TCC, port-8080, package, service or workstation state may be mutated."
+    - "Publish the implementation candidate non-force to dev using an authorized consequence surface. Create only .agent/tasks/TASK-0047/report.yaml as the report-only direct child, validate it with agent-skills@87a37a72a4952b1da273d9af308642f4295fda6b, publish it non-force, fresh-resolve dev/main and lineage, then stop at NEEDS_REVIEW."
+
+  allowed_existing_files_or_components:
+    - ".agent/bootstrap/authority.lock.json"
+    - ".agent/bootstrap/test_bootstrap.py"
+    - ".agent/program.generated.json"
+    - ".agent/tasks/TASK-0047/report.yaml"
+  expected_files_are_restrictive: true
+
+invariants:
+  - "agent-runtime selected source becomes exactly ac33afadccf2b222ddf48d6c6b45de82951046a2."
+  - "agent-skills remains exactly 87a37a72a4952b1da273d9af308642f4295fda6b."
+  - "agent-standards remains exactly 0da0d5864fe5e458af564f3c6ba9959cefd99639."
+  - "agent-documents remains exactly c34d34d1842975fa895fc0e3d5273e5826b32205."
+  - "Support authority entries remain immutable exact 40-hex SHAs; mutable dev/main support refs are forbidden."
+  - "TASK-0096 review/report/task descendants are evidence only; accepted source authority is implementation candidate ac33afadccf2b222ddf48d6c6b45de82951046a2."
+  - "architect-profile/main remains unchanged; this task is dev authority selection, not stable activation."
+  - "PROGRAM remains generated navigation with authority NONE."
+  - "No live Agent Runtime install/activation/restart/reload/service/tunnel/port-8080/TCC consequence is authorized."
+  - "No Stage-B image compatibility probe occurs in this task."
+
+forbidden_changes:
+  - "Do not modify ARCHITECT_PROFILE.md, ARCHITECT_CALIBRATION.md, README.md, .agent/bootstrap/bootstrap.json, .agent/bootstrap/validate.py, workflows, dependencies, branch topology, rulesets, tags, releases, or existing task/report/review artifacts."
+  - "Do not mutate agent-skills, agent-standards, agent-documents, agent-runtime, product repositories, local Runtime/tunnel, containers, TCC, port 8080, or workstation configuration."
+  - "Do not pin agent-runtime to review commit 66d72e2b11606583e14e7f89ea62aee8fa3823a5 or report commit 27885999c4c7a482d8688fa594336a2c507c85c5; select source-bearing candidate ac33afadccf2b222ddf48d6c6b45de82951046a2."
+  - "Do not perform Stage-B model-vision proof, screen_capture live activation, click/type/scroll work, or any other Vision roadmap consequence."
+  - "Do not force-push, reset, rebase, merge, cherry-pick, create a branch, move main, or claim stable activation/system freeze."
+
+gap_policy:
+  local_auto_fix: false
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: forbidden
+  public_contract_change: forbidden
+  blocking_gap_behavior: BLOCKED
+
+structure_policy:
+  expected_new_files:
+    - ".agent/tasks/TASK-0047/report.yaml"
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "No unlisted files are authorized."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The architect-profile dev authority lock selects exact accepted Agent Runtime source candidate ac33afadccf2b222ddf48d6c6b45de82951046a2."
+    evidence_required: "Fresh TASK-0096 accepted-review/source lineage proof plus exact lock readback."
+  - id: AC-2
+    requirement: "Only the Agent Runtime authority identity advances; the other three support identities and unrelated bootstrap semantics remain unchanged."
+    evidence_required: "Exact authority.lock/test diff and forbidden-surface byte/path proof."
+  - id: AC-3
+    requirement: "The generated PROGRAM reflects the refreshed material authority input and remains navigation-only."
+    evidence_required: "Regenerated exact external authority set/traceability where materially affected, authority NONE, preserved no-mutable-status semantics, and structural validation."
+  - id: AC-4
+    requirement: "Bootstrap remains reconstructible and fail-closed with the refreshed runtime source."
+    evidence_required: "Default/remote validators, complete bootstrap tests, Python compile, exact Case Router/capability-route resolution and exact four support-object resolution all PASS."
+  - id: AC-5
+    requirement: "Implementation remains bounded to three existing files and introduces no activation or freshness machinery."
+    evidence_required: "Exact changed-path proof, git diff --check PASS, no unlisted files except report, and no support/machine/runtime mutation."
+  - id: AC-6
+    requirement: "Publication and review handoff are protocol-correct without main or live Runtime activation."
+    evidence_required: "Valid report bound to exact candidate, candidate/report-only direct-child lineage, non-force dev publication, fresh dev/main proof, NEEDS_REVIEW terminal, main unchanged."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Fresh-resolve TASK-0047 exact task/base, architect-profile dev/main, agent-runtime dev and exact TASK-0096 accepted source-candidate lineage."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Apply only the exact runtime authority-lock/test advance and full PROGRAM regeneration required by material-input invalidation."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run bootstrap default/remote/tests/compile, route/object resolution, generated-PROGRAM checks, exact changed-path/diff checks and git diff --check."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Publish implementation candidate then report-only direct child non-force to dev, fresh-resolve remote closure, and stop NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: "Independent Architect review of exact refreshed authority set, regenerated PROGRAM and publication lineage."
+    expected_signal: "Agent Runtime accepted TASK-0096 source is selected reproducibly without mutable support refs or hidden activation."
+
+capability_requirements:
+  EXECUTION:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - non_force_git_push
+    - remote_ref_read
+  REVIEW:
+    - repository_content_read
+    - repository_content_write
+    - git_history_read
+    - remote_ref_read
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
+
+[executed on device: tphat-mb (572201b6-2c60-4135-a37e-17fe6f70bd17)]
