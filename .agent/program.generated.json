@@ -6,7 +6,7 @@
   "synthesis": {
     "target": {
       "repository": "phatnguyen03022001/architect-profile",
-      "source_revision": "94ef7f0202495559f22ae1cb39f710691d830f16"
+      "source_revision": "cb043a410f26d2d282e477d4e1b83057b0cb6834"
     },
     "external_authorities": [
       {
@@ -15,7 +15,7 @@
       },
       {
         "source": "phatnguyen03022001/agent-runtime",
-        "revision": "9c12dcae6f1a5e23fc152ff94c65917cbff96df5"
+        "revision": "ac33afadccf2b222ddf48d6c6b45de82951046a2"
       },
       {
         "source": "phatnguyen03022001/agent-standards",
@@ -27,8 +27,8 @@
       }
     ],
     "synthesis_policy": {
-      "id": "TASK-0046-architect-dev-authority-freshness",
-      "revision": "94ef7f0202495559f22ae1cb39f710691d830f16"
+      "id": "TASK-0047-runtime-authority-refresh",
+      "revision": "cb043a410f26d2d282e477d4e1b83057b0cb6834"
     }
   },
   "coverage": {
@@ -53,7 +53,10 @@
       "agent-skills@4f4ef2b45e1a025bc499702919431c0d0d61419c:.agent/tasks/TASK-0054/review.yaml",
       "agent-runtime@99d9e94346ca54916686911c998b5721d60014b6:.agent/tasks/TASK-0086/review.yaml",
       "architect-profile@593062e63c7bab4d353fcd2843dfddd9e61a21f2:.agent/tasks/TASK-0035/review.yaml",
-      "architect-profile@94ef7f0202495559f22ae1cb39f710691d830f16:.agent/tasks/TASK-0046/task.yaml"
+      "architect-profile@94ef7f0202495559f22ae1cb39f710691d830f16:.agent/tasks/TASK-0046/task.yaml",
+      "agent-runtime@66d72e2b11606583e14e7f89ea62aee8fa3823a5:.agent/tasks/TASK-0096/review.yaml",
+      "architect-profile@4cbac8f89a26206f342e8cacf7401a466eb5df05:.agent/tasks/TASK-0046/review.yaml",
+      "architect-profile@cb043a410f26d2d282e477d4e1b83057b0cb6834:.agent/tasks/TASK-0047/task.yaml"
     ],
     "exclusions": []
   },
@@ -77,7 +80,9 @@
         "agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82:.agent/tasks/TASK-0008/review.yaml",
         "architect-profile@abbddf8d9c0341628e966e95b649b5380dbbf90f:.agent/tasks/TASK-0034/review.yaml",
         "agent-skills@4f4ef2b45e1a025bc499702919431c0d0d61419c:.agent/tasks/TASK-0054/review.yaml",
-        "agent-runtime@99d9e94346ca54916686911c998b5721d60014b6:.agent/tasks/TASK-0086/review.yaml"
+        "agent-runtime@99d9e94346ca54916686911c998b5721d60014b6:.agent/tasks/TASK-0086/review.yaml",
+        "agent-runtime@66d72e2b11606583e14e7f89ea62aee8fa3823a5:.agent/tasks/TASK-0096/review.yaml",
+        "architect-profile@4cbac8f89a26206f342e8cacf7401a466eb5df05:.agent/tasks/TASK-0046/review.yaml"
       ],
       "depends_on": [],
       "obligations": [],
@@ -122,7 +127,7 @@
       ],
       "obligations": [],
       "acceptance_refs": [
-        "A separately scoped repo-local command aligns an operator env file to example order and keys while retaining opaque values, inserting quoted <thiếu key> for missing keys, grouping extras, and exposing no values."
+        "A separately scoped repo-local command aligns an operator env file to example order and keys while retaining opaque values, inserting quoted <thi\u1ebfu key> for missing keys, grouping extras, and exposing no values."
       ],
       "required_evidence": [
         "Exact task authority and a no-value-exposure proof."
@@ -215,7 +220,9 @@
         "architect-profile@abbddf8d9c0341628e966e95b649b5380dbbf90f:.agent/tasks/TASK-0034/review.yaml",
         "architect-profile@46d02a4677db0dd6b5d51ad2ecf9e797e91f6958:.agent/tasks/TASK-0035/task.yaml",
         "architect-profile@593062e63c7bab4d353fcd2843dfddd9e61a21f2:.agent/tasks/TASK-0035/review.yaml",
-        "architect-profile@94ef7f0202495559f22ae1cb39f710691d830f16:.agent/tasks/TASK-0046/task.yaml"
+        "architect-profile@94ef7f0202495559f22ae1cb39f710691d830f16:.agent/tasks/TASK-0046/task.yaml",
+        "architect-profile@4cbac8f89a26206f342e8cacf7401a466eb5df05:.agent/tasks/TASK-0046/review.yaml",
+        "architect-profile@cb043a410f26d2d282e477d4e1b83057b0cb6834:.agent/tasks/TASK-0047/task.yaml"
       ],
       "depends_on": [
         "FINAL-FIVE-REPOSITORY-SWEEP"
