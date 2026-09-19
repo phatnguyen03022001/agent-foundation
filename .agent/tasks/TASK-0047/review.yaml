@@ -1,0 +1,49 @@
+[Reading 45 lines from start (total: 45 lines, 0 remaining)]
+
+protocol_version: 3
+
+task_id: TASK-0047
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/architect-profile
+  path: .agent/tasks/TASK-0047/report.yaml
+  commit: "59c8830b4efb30b9021f4afe00ecb89e6a81b5bd"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: NOT_REQUIRED
+
+acceptance_basis:
+  - "Fresh canonical GitHub proof resolves TASK-0047 revision 1 at exact planning base cb043a410f26d2d282e477d4e1b83057b0cb6834, implementation candidate ff3a72308bf427dc2e41f22ef45725e079bf2990 as its sole direct child, and reviewed report 59c8830b4efb30b9021f4afe00ecb89e6a81b5bd as the candidate's sole report-only direct child."
+  - "Candidate ff3a72308bf427dc2e41f22ef45725e079bf2990 changes exactly three authorized existing files: .agent/bootstrap/authority.lock.json, .agent/bootstrap/test_bootstrap.py, and .agent/program.generated.json. No unlisted implementation path changed."
+  - "The accepted authority lock now selects exactly agent-skills@87a37a72a4952b1da273d9af308642f4295fda6b, agent-standards@0da0d5864fe5e458af564f3c6ba9959cefd99639, agent-documents@c34d34d1842975fa895fc0e3d5273e5826b32205, and agent-runtime@ac33afadccf2b222ddf48d6c6b45de82951046a2. Only the Agent Runtime source identity advanced."
+  - "Fresh Agent Runtime authority proof resolves TASK-0096 revision-6 ACCEPTED review at 66d72e2b11606583e14e7f89ea62aee8fa3823a5 and confirms that review explicitly binds source-bearing implementation candidate ac33afadccf2b222ddf48d6c6b45de82951046a2 rather than its task/report/review descendants."
+  - "The generated PROGRAM remains protocol v3 GENERATED_PROGRAM with authority NONE and FULL_REGENERATION_ON_MATERIAL_INPUT_CHANGE; its synthesis target is TASK-0047 planning identity, its external authorities exactly match the refreshed four-source set, and no mutable lifecycle/status semantics were introduced."
+  - "Independent review reran default bootstrap validation and remote bootstrap validation on exact report state; both returned OPM_BOOTSTRAP = TRUE. Independent unittest discovery ran 27 tests and returned OK. The pinned agent-skills report validator independently accepted TASK-0047/report.yaml and candidate git diff --check passed."
+  - "Fresh remote proof establishes architect-profile/dev at reviewed report commit 59c8830b4efb30b9021f4afe00ecb89e6a81b5bd before review publication and architect-profile/main unchanged at 508c64f02640911f1fdca81c8cde08748921eae7."
+  - "No Agent Runtime install, activation, restart, reload, service, tunnel, port-8080, TCC, Stage-B model-vision, main, tag, release, support-repository or workstation consequence is accepted or implied by this review."
+
+gap_disposition: []
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: "TASK-0047 accepts only the architect-profile/dev immutable authority refresh. Stable main activation and all Agent Runtime live/Stage-B consequences remain separately gated."
+
+[executed on device: tphat-mb (572201b6-2c60-4135-a37e-17fe6f70bd17)]
