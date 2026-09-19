@@ -22,7 +22,7 @@ Canonical new reviews serialize exact reviewed-report identity, material complia
 
 The canonical v3 serialized judgment remains `ACCEPTED`, `REVISION_REQUIRED`, or `BLOCKED`. Before a final canonical judgment governed by the durable-review rule is relied on across sessions or for continuation, promotion, release, or successor reconstruction, Architect publishes the existing `review.yaml` bound to the exact reviewed report commit and report revision. Reasoning may occur before persistence, but it is not durable repository-reconstructible lifecycle evidence until publication.
 
-When repository write capability is materially required to persist that final review, preflight it for the REVIEW phase. If unavailable, fail closed with `CURRENT_PHASE_CAPABILITY_UNAVAILABLE` rather than claiming a durable final review state. This requirement does not retroactively block earlier Executor phases whose required capabilities were available.
+When repository write capability is materially required to persist that final review, preflight it for the REVIEW phase. Among authorized semantically equivalent write surfaces, prefer a sufficiently narrow typed repository-write action while preserving exact reviewed-report identity, independent judgment, and fresh `REMOTE_MUTABLE` proof. If no sufficient REVIEW write capability is available, fail closed with `CURRENT_PHASE_CAPABILITY_UNAVAILABLE` rather than claiming a durable final review state. Review publication is externally proven from fresh remote evidence after publication; it is not a same-commit self-attestation. This requirement does not retroactively block earlier Executor phases whose required capabilities were available.
 
 ## Optional review operational timing
 

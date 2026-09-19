@@ -2827,6 +2827,116 @@ class Task0053ExecutorRepositoryConstructionTests(unittest.TestCase):
             self.assertIn(marker, executor)
 
 
+class Task0054PlatformCompliantExecutionPublicationTests(unittest.TestCase):
+    def doctrine(self, *paths: str) -> str:
+        return "\n".join((ROOT / path).read_text(encoding="utf-8").lower() for path in paths)
+
+    def test_scenario_a_semantic_capability_routing_outranks_nonmaterial_provider_handoff(self) -> None:
+        combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
+        for marker in (
+            "required semantic capability",
+            "current authority",
+            "authorized available surface",
+            "provider-specific handoff wording",
+            "materially requires that surface identity",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_scenario_b_narrow_typed_consequence_is_preferred_only_when_equivalent(self) -> None:
+        combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
+        for marker in (
+            "narrowest explicit bounded action",
+            "machine-checkable",
+            "typed does not mean automatically safe",
+            "equivalent evidence",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_scenario_c_generic_terminal_remains_legal_authorized_fallback(self) -> None:
+        combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
+        for marker in (
+            "generic terminal remains a valid fallback",
+            "no sufficient narrower surface",
+            "platform-permitted",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_scenario_d_platform_safety_block_fails_closed_without_evasion(self) -> None:
+        combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
+        for marker in (
+            "platform/tool safety block",
+            "obfuscation",
+            "encoding intent",
+            "command splitting",
+            "permission widening",
+            "unchanged retry",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_scenario_e_surface_change_never_lowers_proof_quality(self) -> None:
+        combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
+        for marker in (
+            "platform compliance changes how",
+            "never what must be proven",
+            "acceptance criteria",
+            "verifier requirements",
+            "exact commit/content identity",
+            "remote freshness",
+            "evidence quality",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_scenario_f_immutable_publication_handoff_transfers_publication_not_editing(self) -> None:
+        combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
+        for marker in (
+            "immutable publication handoff",
+            "prior writer is terminal",
+            "publication authority transfer",
+            "publish only",
+            "may not edit",
+            "recreate",
+            "amend",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_scenario_g_exact_commit_and_content_identity_publication_are_distinct(self) -> None:
+        protocol = self.doctrine("protocols/TASK_PROTOCOL.md")
+        for marker in (
+            "exact-commit publication",
+            "content-identity publication",
+            "different commit identity",
+            "explicitly permits",
+        ):
+            self.assertIn(marker, protocol)
+
+    def test_scenario_h_operator_fallback_is_explicit_last_resort_consequence(self) -> None:
+        combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
+        for marker in (
+            "operator fallback",
+            "last-resort consequence",
+            "automation is materially unavailable",
+            "user-only/approval-bound",
+            "preconditions",
+            "post-publication remote proof",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_scenario_i_report_and_review_publication_are_externally_proven(self) -> None:
+        combined = self.doctrine(
+            "protocols/TASK_PROTOCOL.md",
+            "contracts/IMPLEMENTATION_REPORT.md",
+            "contracts/ARCHITECT_REVIEW.md",
+            "architect/SKILL.md",
+        )
+        for marker in (
+            "same-commit post-publication",
+            "externally proven",
+            "typed repository-write action",
+            "current_phase_capability_unavailable",
+        ):
+            self.assertIn(marker, combined)
+
+
 class ActualArtifactCliTests(unittest.TestCase):
     def run_artifact_validator(self, kind: str, path: Path) -> subprocess.CompletedProcess[str]:
         return subprocess.run(

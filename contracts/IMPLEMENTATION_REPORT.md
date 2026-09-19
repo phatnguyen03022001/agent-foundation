@@ -32,7 +32,7 @@ This timing is non-authoritative operational telemetry only. It cannot prove or 
 
 The existing report shape also represents truthful terminal failure. A report may record authoritative verifier FAIL, blockers, and an existing terminal/blocking `result` while remaining Executor-owned evidence; successful verification is not required for report validity or publication when the exact task grants report commit/push authority. Persisting such a report never converts FAIL to PASS and never creates Architect review, continuation, promotion, or release authority.
 
-If report commit/push authority or required publication capability is unavailable, the Executor returns the exact non-durable terminal result and must not claim that canonical report evidence exists.
+If report commit/push authority or required publication capability is unavailable, the Executor returns the exact non-durable terminal result and must not claim that canonical report evidence exists. When an exact report commit/checkpoint already exists and only publication capability is unavailable, preserve that immutable checkpoint when safely possible rather than amending, recreating, or editing it to suit another surface. A later explicitly authorized publication-only handoff may publish that exact checkpoint after the prior writer is terminal, without transferring content-edit authority. Publication remains externally proven by fresh remote evidence after the consequence; the report commit never self-attests its own same-commit publication.
 
 A report may remain `state: REPORTED` and `result: NEEDS_REVIEW` after later Architect acceptance because report evidence and review judgment are separate artifacts under the Task Protocol.
 
