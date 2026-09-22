@@ -91,6 +91,12 @@ migration_state:
   temporary_remote_branches_created: []
   temporary_refs_remaining: []
   temporary_migration_files_remaining: []
+  temporary_local_git_exclude:
+    path: .git/info/exclude
+    pattern: .DS_Store
+    purpose: suppress host-generated Finder metadata during report commit
+    restored_to_original_before_handoff: true
+  finder_artifacts_committed_in_final_canonical_tree: false
   historical_source_commits_rewritten: false
 mutations:
   source_repositories_mutated: false
