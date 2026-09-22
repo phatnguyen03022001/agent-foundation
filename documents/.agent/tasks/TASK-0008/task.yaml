@@ -1,0 +1,181 @@
+protocol_version: 3
+
+task_id: TASK-0008
+task_revision: 2
+state: APPROVED
+
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: V1_NORMATIVE_RELEASE_STATE_CONTRADICTION
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-documents
+
+target:
+  repository: phatnguyen03022001/agent-documents
+  branch:
+    name: dev
+    role: integration
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+  recommended: []
+
+authority_sources:
+  - source: "Current operator instruction for the five-repository closure program."
+    role: "Close the reproduced agent-documents release-state contradiction with wording only and no documentation-model redesign."
+    precedence: 1
+  - source: ".agent/tasks/TASK-0008/review.yaml@1121f0b284be66b775af75d763b9b18b1552e4f1"
+    role: "Revision-1 REVISION_REQUIRED judgment proving the opening-paragraph-only task contract was internally unsatisfiable because DOCUMENT_MODEL.md contains a second stale release-state assertion in section 18."
+    precedence: 2
+  - source: ".agent/tasks/TASK-0008/report.yaml@40377e840f7ad3d2b1a15cf91ec8f1be66c87c21"
+    role: "Revision-1 bounded failure evidence; no implementation candidate was created and target product bytes remained unchanged."
+    precedence: 3
+  - source: "agent-documents v1.0.0 tag -> 6918f46282f4a92bbc61071444a5ff5dab30ddc9 and public GitHub release v1.0.0 published 2026-09-01."
+    role: "Immutable release evidence proving V1 has already been publicly released and the release tag matches current main."
+    precedence: 4
+  - source: "README.md and DOCUMENT_MODEL.md at revision-1 task base eca9af8e9075df440aaee86b38a8cd2e226fa557."
+    role: "Exact defect evidence: README identifies v1.0.0 as the first stable V1 release while DOCUMENT_MODEL.md has two current unreleased-candidate assertions, in the opening paragraph and the final section-18 sentence."
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "Existing DOCUMENT_MODEL.md release-state wording plus revision-1 review."
+  rationale: "The defect is exactly two stale release-state assertions in one normative document. The smallest correction changes only those two sentences; no schema, taxonomy, validator, template, authority domain, documentation layout, release machinery, or other model semantics change is justified."
+
+objective: "Align every current release-state assertion in DOCUMENT_MODEL.md with the already-published stable v1.0.0 release while preserving all V1 documentation-governance semantics and repository boundaries."
+
+scope:
+  required_changes:
+    - "Change only the opening release-state paragraph in DOCUMENT_MODEL.md so it states that the document is the normative Agent Documents V1 specification and that the first stable V1 release is v1.0.0; remove the stale claim that V1 remains an unreleased candidate pending independent audit."
+    - "Change only the final release-status sentence in section 18 of DOCUMENT_MODEL.md so it no longer says the repository remains an unreleased candidate pending independent review. Preserve the valid boundary that satisfying the documentation model by itself does not authorize future promotion or release actions."
+    - "Preserve every byte of DOCUMENT_MODEL.md between and outside those two bounded release-state sentences except unavoidable line-ending normalization already present in the exact base; no other semantic or structural edit is authorized."
+    - "Prove the two corrected assertions are consistent with README.md, refs/tags/v1.0.0, current main, and the published v1.0.0 GitHub release without rewriting historical tag/release bytes."
+    - "Run the repository-native unittest suite, py_compile checks, exact two-hunk diff/scope proof, and git diff --check on the exact implementation candidate; publish candidate non-force to dev, then update only the canonical TASK-0008 report to revision 2 as a report-only child and stop for Governing Architect review."
+  allowed_existing_files_or_components:
+    - DOCUMENT_MODEL.md
+    - .agent/tasks/TASK-0008/report.yaml
+  expected_files_are_restrictive: true
+
+invariants:
+  - "The eight canonical authority domains remain exactly PRODUCT, BEHAVIOR, ARCHITECTURE, DATA, INTERFACES, QUALITY, DELIVERY and DECISIONS."
+  - "The finite V1 coverage taxonomy remains exactly 45 concerns and no ninth authority domain is introduced."
+  - "Depth semantics, identity classes, catalog semantics, graph/closure rules, DOCS_READY semantics, validator behavior and target-repository truth ownership remain unchanged."
+  - "agent-documents continues to define documentation describability/closure only; it does not claim documentation structure proves engineering quality, maturity, factual correctness, security quality, implementation correctness or absolute completeness."
+  - "HTTP/API contract content remains target-owned under INTERFACES when applicable; this task introduces no HTTP-specific machinery."
+  - "The historical revision-1 blocked report and REVISION_REQUIRED review remain truthful historical evidence until the canonical report/review files are superseded by revision-2 artifacts through the normal lifecycle."
+  - "Historical tag v1.0.0, public release metadata and main remain unchanged; topology remains exactly dev/main."
+
+forbidden_changes:
+  - "Do not modify README.md, model/, templates/, tools/, tests/, .gitignore, dependencies, workflows, repository settings, tags, releases or main."
+  - "Do not modify prior task directories or any TASK-0008 artifact other than task.yaml through this Architect revision and report.yaml through the later Executor report step; Executor must not author or modify review.yaml."
+  - "Do not change the 8-domain model, 45-concern taxonomy, depth levels, identity classes, catalog schema, graph/closure rules, DOCS_READY semantics or validator behavior."
+  - "Do not add an AI prose grader, ninth domain, maturity/quality scoring, HTTP framework, release automation, migration framework, registry, scheduler, queue, daemon, planner service or documentation platform."
+  - "Do not claim the documentation model guarantees product engineering quality, security correctness, factual correctness or absolute completeness."
+  - "Do not create/delete/rename branches, force-push, promote, tag, release or mutate main."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: forbidden
+  public_contract_change: forbidden
+  blocking_gap_behavior: BLOCKED
+
+structure_policy:
+  expected_new_files: []
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: ""
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+capability_requirements:
+  EXECUTION:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "DOCUMENT_MODEL.md contains no current assertion that V1 or this repository remains unreleased or pending the pre-release independent audit/review."
+    evidence_required: "Exact candidate proof shows both revision-1 stale assertions are replaced: the opening paragraph truthfully identifies the normative V1 specification and first stable release v1.0.0, and the section-18 final sentence no longer describes the repository as an unreleased candidate pending independent review."
+  - id: AC-2
+    requirement: "The correction is exactly two release-state wording edits and leaves documentation-governance semantics unchanged."
+    evidence_required: "Revision-1 task base to candidate diff changes only DOCUMENT_MODEL.md and exactly the two authorized release-state locations; all intervening and other document content plus every other repository path are unchanged."
+  - id: AC-3
+    requirement: "The corrected status is grounded in immutable/public release evidence without weakening release authority boundaries."
+    evidence_required: "Fresh proof that refs/tags/v1.0.0 and main remain 6918f46282f4a92bbc61071444a5ff5dab30ddc9, the public v1.0.0 release remains published/non-draft/non-prerelease, README.md identifies v1.0.0 as the first stable V1 release, and the section-18 replacement still states that satisfying the model alone does not authorize future promotion/release actions."
+  - id: AC-4
+    requirement: "Repository-native verification remains green on the exact candidate."
+    evidence_required: "Fresh python3 -B -m unittest discover -s tests -p 'test_*.py' PASS, python3 -B -m py_compile tools/validate.py tests/test_validate.py PASS, exact scope/two-hunk proof PASS, and git diff --check PASS on the exact committed candidate."
+  - id: AC-5
+    requirement: "Revision-2 candidate/report publication remains bounded to dev with exact lineage and main/tag/release/topology unchanged."
+    evidence_required: "Implementation candidate has exact revision-2 task base as sole parent and changes only DOCUMENT_MODEL.md; report revision 2 is a report-only direct child updating only .agent/tasks/TASK-0008/report.yaml; fresh remote/local proof confirms dev closure, main and v1.0.0 unchanged, release metadata unchanged, topology exactly dev/main and clean working tree."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Fresh-bind TASK-0008 revision 2 at the exact handoff base; require dev, local HEAD = origin/dev = handoff base, clean tree, unchanged main/tag/release/topology, revision-1 BLOCKED report plus REVISION_REQUIRED review present as predecessor evidence, and every required EXECUTION capability freshly available before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Fresh-reproduce both stale release-state assertions from the immutable revision-1 task base and confirm the revision-1 review requires exactly this two-location correction."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Modify only the opening release-state paragraph and the final section-18 release-status sentence in DOCUMENT_MODEL.md; prove the exact candidate has only those two authorized hunks and no other repository-content change."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run the full repository-native unittest suite, py_compile checks, exact two-hunk/scope proof and git diff --check on the committed candidate."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Publish candidate non-force to dev, update only .agent/tasks/TASK-0008/report.yaml to task_revision 2 and report_revision 2 as the report-only child, validate/publish it, fresh-prove final remote/local/main/tag/release/topology closure and stop for Governing Architect review."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true

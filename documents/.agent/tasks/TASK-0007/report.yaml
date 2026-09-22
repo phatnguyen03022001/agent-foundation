@@ -1,0 +1,145 @@
+protocol_version: 3
+
+task_id: TASK-0007
+task_revision: 2
+report_revision: 2
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0007/task.yaml
+  commit: "52da304da251eaa24718b87b1de944e60eb26d2c"
+
+execution:
+  repository: phatnguyen03022001/agent-documents
+  branch:
+    name: dev
+    role: integration
+  authorized_base_head: "52da304da251eaa24718b87b1de944e60eb26d2c"
+  final_execution_head: "6e38f8b63f5ee4da6cb157812ca76448be7fc398"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  available:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  missing: []
+  passed: true
+  evidence: "Agent Runtime terminal_exec provided bounded native execution; local Git/Python commands and fresh remote reads succeeded before mutation, and the authorized candidate push completed successfully."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0007 revision 2 designates no separate authoritative verifier."
+
+pushed: true
+
+verification_evidence:
+  exact_candidate_sha: "6e38f8b63f5ee4da6cb157812ca76448be7fc398"
+  gitignore_content:
+    result: PASS
+    evidence: "Base-to-candidate diff contains only repository-root .gitignore, exactly 14 authorized lines with a final newline."
+  ignore_guards:
+    result: PASS
+    evidence: "git ls-files -ci --exclude-standard returned no tracked ignored paths; 14 positive synthetic cases and 9 negative/example/canonical-path cases passed on the exact candidate."
+  full_unittest:
+    command: "python3 -B -m unittest discover -s tests -p 'test_*.py'"
+    result: PASS
+    evidence: "94 tests passed on the exact committed candidate; the suite was rerun fresh immediately before report authorship."
+  py_compile:
+    command: "python3 -B -m py_compile tools/validate.py tests/test_validate.py"
+    result: PASS
+  diff_check:
+    command: "git diff --check 52da304da251eaa24718b87b1de944e60eb26d2c..6e38f8b63f5ee4da6cb157812ca76448be7fc398"
+    result: PASS
+  validator_self_target:
+    result: NOT_RUN_BY_CONTRACT
+    evidence: "tools/validate.py was not invoked against agent-documents itself, per TASK-0007 revision 2."
+  candidate_publication:
+    result: PASS
+    evidence: "Before report authorship, fresh remote refs resolved dev to 6e38f8b63f5ee4da6cb157812ca76448be7fc398, main to 6918f46282f4a92bbc61071444a5ff5dab30ddc9, with topology exactly {dev, main}."
+
+execution_shape:
+  post_binding_terminal_exec_count_through_report_carrier: 5
+  bundles:
+    - invocation: 1
+      bundle: implementation-verification-candidate-publication
+      result: FAIL
+      controller_return_reason: failed_postcondition
+      evidence: "Authorized .gitignore creation, ignore guards, 94 unittests, py_compile, and diff check passed; the bundle then stopped before stage/commit/push because its own scope predicate incorrectly expected git diff to list an untracked file."
+    - invocation: 2
+      bundle: scope-failure-diagnostic
+      result: PASS
+      controller_return_reason: new_material_information_after_failed_postcondition
+      evidence: "Read-only diagnosis proved status was exactly '?? .gitignore', git diff against the base was empty for the untracked candidate, and git ls-files --others --exclude-standard reported only .gitignore."
+    - invocation: 3
+      bundle: recovery-stage-candidate-publication
+      result: PASS
+      controller_return_reason: report_authorship_boundary
+      evidence: "The unchanged candidate was staged with exact scope proof, committed as 6e38f8b63f5ee4da6cb157812ca76448be7fc398, pushed to dev, and freshly resolved. Direct UTC boundaries were 2026-09-04T21:31:17Z to 2026-09-04T21:31:25Z."
+    - invocation: 4
+      bundle: report-contract-resolution
+      result: PASS
+      controller_return_reason: report_authorship_material_information
+      evidence: "The pinned implementation-report contract, report template, and prior repository-native TASK-0007 report layout were resolved before authoring revision-2 evidence."
+    - invocation: 5
+      bundle: final-verification-report-publication
+      result: CARRIER_INVOKED
+      controller_return_reason: terminal_report_publication_boundary
+      evidence: "This report is authored inside the fifth post-binding terminal_exec carrier after fresh candidate-bound verification; it does not self-attest its own remote publication result."
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PROVEN
+    evidence: "Exact base 52da304da251eaa24718b87b1de944e60eb26d2c to candidate 6e38f8b63f5ee4da6cb157812ca76448be7fc398 changes only .gitignore, whose exact content is the authorized 14-line policy."
+  - criterion_id: AC-2
+    status: PROVEN
+    evidence: "No tracked path is ignored; required positive ignore cases and negative example/canonical-path cases pass on the committed candidate."
+  - criterion_id: AC-3
+    status: PROVEN
+    evidence: "Fresh candidate-bound evidence passes the 94-test unittest suite, py_compile, git diff --check, exact scope/content checks, and repository hygiene without invalid validator self-targeting."
+  - criterion_id: AC-4
+    status: PROVEN
+    evidence: "Five post-binding logical bundles through the report carrier each map to exactly one Agent Runtime terminal_exec. Controller returns occurred only for a failed postcondition, new diagnostic information, the report-authorship boundary/material, and the terminal report-publication boundary."
+  - criterion_id: AC-5
+    status: PROVEN
+    evidence: "Directly observed invocation-3 UTC boundaries are recorded without reconstructing canonical operational_timing. TASK-0036 remains an observation at 592s E2E / 62 terminal_exec / about 37.6s Mac child-process sum / about 0.64s Agent Runtime overhead / about 21s runtime-to-tunnel; TASK-0013 remains an observation at 581s E2E / 22 terminal_exec / 194s canonical post-binding-to-decision. This run's execution-script failure makes it unsuitable for causal model/controller/transport attribution."
+  - criterion_id: AC-6
+    status: NOT_PROVEN_AT_AUTHORSHIP
+    evidence: "The exact candidate is already published on dev and main/topology are unchanged. This report-only child is being authored now; its own commit/push and fresh final remote/local proof necessarily occur after report authorship and are not self-predicted."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Exact task/base, active architect-profile/main d47114404c97fcfd74b0f37f646586ec46de6987, agent-skills/main ed8d9fb35bb8b052530ca879e68a227d77e4a8a6, target refs/topology, root .gitignore absence, local clean state, required capabilities, and immutable identities were resolved before mutation. Host labels were not used for authority or routing."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "The authorized 14-line .gitignore is the only implementation change. Candidate-bound ignore guards, 94 unittests, py_compile, diff/scope/hygiene checks pass; candidate 6e38f8b63f5ee4da6cb157812ca76448be7fc398 is published on dev."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Execution-shape evidence records all five post-binding carriers through report publication, genuine controller-return reasons, directly observed timing where available, and prior baselines without causal overclaim."
+  - check_id: CHECK-4
+    result: NOT_PROVEN_AT_AUTHORSHIP
+    evidence: "Only this report file is authorized after the candidate. Its own report-only commit/push plus fresh final dev/main/topology/local-hygiene proof occur after this content is authored and are intentionally not self-attested here."
+
+deviations_from_task:
+  - "Post-binding invocation 1 contained an executor-authored scope predicate that incorrectly expected git diff --name-only <base> to include an untracked .gitignore. The bundle failed before staging, commit, or push; invocation 2 diagnosed the Git behavior read-only, and the unchanged candidate was subsequently proven via staged/base diff and fresh final candidate verification. This adds controller/runtime boundaries and is treated as pilot noise rather than product/task failure."
+
+result: NEEDS_REVIEW

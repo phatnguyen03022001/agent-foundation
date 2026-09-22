@@ -1,0 +1,53 @@
+protocol_version: 3
+
+task_id: TASK-0008
+task_revision: 2
+review_revision: 2
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-documents
+  path: .agent/tasks/TASK-0008/report.yaml
+  commit: "c668692e2560b5d31ef1b026b84f0f974b8fd3fc"
+  report_revision: 2
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: NOT_REQUIRED
+
+accepted_candidate:
+  commit: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+  role: "exact TASK-0008 revision-2 two-location V1 release-state wording correction"
+
+acceptance_basis:
+  - "Fresh canonical review proves TASK-0008 is revision 2 and APPROVED at exact execution base c3b78c3ef34bf20a0482e13d6fcb003d4b89922d; reviewed report c668692e2560b5d31ef1b026b84f0f974b8fd3fc is report_revision 2 and binds that exact task/base."
+  - "Candidate c34d34d1842975fa895fc0e3d5273e5826b32205 is the sole direct child of exact revision-2 base c3b78c3ef34bf20a0482e13d6fcb003d4b89922d and changes only DOCUMENT_MODEL.md with exactly two one-line hunks, 2 insertions and 2 deletions."
+  - "The opening replacement truthfully identifies DOCUMENT_MODEL.md as the normative Agent Documents V1 specification and v1.0.0 as the first stable V1 release. The section-18 replacement removes the stale unreleased/pending-review claim while preserving that satisfying the model alone does not authorize future release or promotion actions."
+  - "DOCUMENT_MODEL.md has the same pre-correction blob 4bf589507119a83dba9aae4d251858fe5b1722c5 at both the immutable revision-1 task base eca9af8e9075df440aaee86b38a8cd2e226fa557 and the revision-2 execution base. Therefore the intervening canonical task/report/review lifecycle commits introduced no product-document drift; the accepted implementation correction from the revision-1 product state is exactly the two authorized release-state sentence changes."
+  - "Report c668692e2560b5d31ef1b026b84f0f974b8fd3fc is the sole direct child of the implementation candidate and modifies only .agent/tasks/TASK-0008/report.yaml. It records 94/94 repository-native unittests PASS, py_compile PASS, exact byte/two-hunk scope proof PASS, stale-release-assertion proof PASS, and git diff --check PASS on the exact candidate. No separate authoritative verifier is required by the task."
+  - "Fresh remote review proof before this review publication resolves dev=c668692e2560b5d31ef1b026b84f0f974b8fd3fc, main=6918f46282f4a92bbc61071444a5ff5dab30ddc9, topology exactly {dev, main}, refs/tags/v1.0.0=6918f46282f4a92bbc61071444a5ff5dab30ddc9, and release v1.0.0 remains published, non-draft and non-prerelease. README.md still identifies v1.0.0 as the first stable V1 release."
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: >-
+    TASK-0008 revision 2 closes the reproduced release-state contradiction on dev.
+    It grants no main promotion, tag mutation, release mutation, or stable-activation authority.
+
+follow_up_tasks:
+  - "Continue the five-repository closure program with a fresh read-only agent-standards audit; create no task unless a material repository-local defect is freshly reproduced."
+
+notes:
+  - "TASK-0008 revision 1 remains truthful historical BLOCKED/REVISION_REQUIRED evidence for the Architect-authored scope/acceptance contradiction."
+  - "Revision 2 supersedes revision-1 execution authority and is terminally accepted."

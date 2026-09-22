@@ -1,0 +1,36 @@
+name: Validate skill library
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - "README.md"
+      - "**/SKILL.md"
+      - "contracts/**"
+      - "templates/**"
+      - "protocols/**"
+      - ".agent/case-router.yaml"
+      - "scripts/**"
+      - ".github/workflows/validate-skill-library.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-skill-library-dev
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Validate
+        run: python3 scripts/validate_skill_library.py
+      - name: Unit tests
+        run: python3 -m unittest scripts/test_validate_skill_library.py
+      - name: Reconciler unit tests
+        run: python3 -m unittest scripts.test_reconcile_env

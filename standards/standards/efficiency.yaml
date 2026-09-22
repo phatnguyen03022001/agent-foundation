@@ -1,0 +1,135 @@
+dimension: EFF
+applicability:
+  mode: always
+requirements:
+- id: EFF-1.1
+  level: 1
+  statement: Expected operations must not exhibit gratuitous unbounded consumption or leakage of material compute, memory,
+    storage, network, energy, or monetary resources.
+  intent: Establish a baseline against uncontrolled resource waste.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: Expected operation remains within explicit material resource bounds.
+      classes:
+      - reproducible_test
+      - runtime_observation
+    independence: none
+- id: EFF-2.2
+  level: 2
+  statement: Material resource consumption must be measurable or otherwise directly attributable to the operation and scope
+    that causes it.
+  intent: Separate resource observability from the bound itself.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: Representative material resource consumption is directly measured or attributable to its causing operation
+        and scope.
+      classes:
+      - runtime_observation
+      - reproducible_test
+    independence: none
+- id: EFF-2.3
+  level: 2
+  statement: Material resource consumption must remain within explicit bounds for representative expected workloads.
+  intent: Make routine resource and cost limits independently diagnosable from measurability.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: Representative expected workloads remain within stated material resource bounds.
+      classes:
+      - reproducible_test
+      - runtime_observation
+      - formal_verification
+    independence: none
+- id: EFF-3.2
+  level: 3
+  statement: Material resource consumption must scale within explicit bounds as workload changes across the stated operating
+    envelope.
+  intent: Make workload-to-resource scaling independently verifiable.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: Representative workload scaling remains within the stated resource envelope.
+      classes:
+      - reproducible_test
+      - runtime_observation
+      - formal_verification
+    independence: none
+- id: EFF-3.3
+  level: 3
+  statement: Retry, caching, batching, idle activity, or input-driven amplification must not create uncontrolled material
+    resource or cost consumption.
+  intent: Separate amplification mechanisms from general workload scaling.
+  applicability:
+    mode: conditional
+    any_of:
+    - The target uses retries, caching, batching, persistent idle activity, or accepts inputs capable of materially amplifying
+      resource consumption.
+  evidence:
+    required:
+    - demonstrates: The identified amplification paths and resource bounds are explicit.
+      classes:
+      - artifact_inspection
+      - analysis
+    - demonstrates: Representative amplification scenarios remain within those resource or cost bounds.
+      classes:
+      - reproducible_test
+      - runtime_observation
+      - formal_verification
+    independence: none
+- id: EFF-4.2
+  level: 4
+  statement: Extreme demand and failure conditions must remain within explicit highest-consequence resource and cost escalation
+    bounds.
+  intent: Make consequential resource escalation containment independently diagnosable.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: The highest-consequence resource or cost escalation scenarios and bounds are explicitly selected.
+      classes:
+      - artifact_inspection
+      - analysis
+    - demonstrates: Extreme demand or failure remains within the stated resource or cost bounds.
+      classes:
+      - reproducible_test
+      - runtime_observation
+      - operational_exercise
+      - formal_verification
+    independence: independent_review
+- id: EFF-5.2
+  level: 5
+  statement: Worst-case resource and cost assumptions for the highest-consequence efficiency envelope must be explicit and
+    bounded.
+  intent: Make high-assurance efficiency assumptions independently diagnosable from envelope conformance.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: The highest-consequence efficiency envelope and worst-case resource or cost assumptions are explicit and
+        bounded.
+      classes:
+      - artifact_inspection
+      - analysis
+    independence: independent_review
+- id: EFF-5.3
+  level: 5
+  statement: The highest-consequence efficiency envelope must remain within its explicit resource and cost bounds throughout
+    the stated worst-case assumptions.
+  intent: Establish exceptional confidence in critical efficiency bounds.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: Independent reproduction or formal derivation confirms the selected efficiency envelope throughout the
+        stated assumptions.
+      classes:
+      - reproducible_test
+      - runtime_observation
+      - formal_verification
+    independence: independent_reproduction

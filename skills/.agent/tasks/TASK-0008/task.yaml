@@ -1,0 +1,172 @@
+protocol_version: 3
+
+task_id: TASK-0008
+task_revision: 2
+state: APPROVED
+
+origin:
+  type: follow_up
+  task_id: TASK-0008
+  gap_id: "REV1_REPORT_POST_PUBLISH_ATTRIBUTION"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-skills
+
+target:
+  repository: phatnguyen03022001/agent-skills
+  branch:
+    name: dev
+    role: integration
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "022bd084087e10ec6fb6ab46753868acc957ec55"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+  - verification
+  - github-workflow
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - github-workflow
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "Governing Architect review of TASK-0008 revision-1 report commit 04d7d7e678c82da959e0fda8cdc1893a5832185d."
+    role: "The implementation candidate 0c6cca57dfb49f6919ecb3df8fe4d9f61d89d334 and remote publication state are independently verified as correct, but report revision 1 falsely attributes the post-publication parent/diff/ref/topology verification to the Executor even though tool-time ended before that Executor re-read."
+    precedence: 1
+  - source: "TASK-0008 revision-1 implementation 0c6cca57dfb49f6919ecb3df8fe4d9f61d89d334 and report 04d7d7e678c82da959e0fda8cdc1893a5832185d."
+    role: "Immutable implementation/report evidence to preserve; no implementation redo is authorized."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-skills@022bd084087e10ec6fb6ab46753868acc957ec55"
+    role: "Pinned self-hosting governance for TASK-0008 execution."
+    precedence: 3
+
+structure_authority:
+  status: RESOLVED
+  source: "Existing TASK-0008 task/report artifacts only."
+  rationale: "Revision 2 is report-provenance correction and evidence closure only. No production, protocol, role-skill, contract, schema, template, validator, workflow, taxonomy, or topology mutation is justified."
+
+objective: "Correct TASK-0008 report provenance so canonical Executor evidence accurately states that revision 1 completed implementation verification and publication but did not perform the final remote post-push re-read before tool-time ended; preserve the Governing Architect's independent confirmation of the resulting remote state as Architect review evidence rather than misattributing it to Executor execution."
+
+scope:
+  required_changes:
+    - "Preserve implementation candidate 0c6cca57dfb49f6919ecb3df8fe4d9f61d89d334 exactly. Do not redo implementation, validator tests, unit tests, git diff --check, or ownership/subtraction analysis merely for freshness."
+    - "Before mutation refresh canonical GitHub truth and require live dev equals the exact revision-2 handoff base, main remains 0a57fbfd39b96494f22fea1f7847aab1d5c8bbf1, and branches are exactly {dev, main}."
+    - "Resolve immutable revision-1 evidence: implementation 0c6cca57, report 04d7d7e, exact implementation scope, exact-SHA CI verification, and the Governing Architect's independent post-publication confirmation that 04d7d7e is the sole report-only child of 0c6cca57 and final refs/topology are correct."
+    - "Update only .agent/tasks/TASK-0008/report.yaml to task_revision 2/report_revision 2. Explicitly state that revision 1 did NOT perform the final remote post-push re-read before tool-time ended; do not claim CHECK-7 was executed by the revision-1 Executor."
+    - "Distinguish Executor-owned evidence from Governing Architect review evidence. Architect independent verification may be referenced as review-side confirmation but must not be rewritten as an Executor-performed check."
+    - "Commit/push only the report.yaml revision-2 correction as the sole Executor mutation after this planning base, then actually perform the required remote post-push re-read and verify report parent/diff, dev identity, unchanged main, exact {dev, main} topology, and unchanged implementation. Stop at Governing Architect review."
+  allowed_existing_files_or_components:
+    - .agent/tasks/TASK-0008/task.yaml
+    - .agent/tasks/TASK-0008/report.yaml
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Implementation candidate remains exactly 0c6cca57dfb49f6919ecb3df8fe4d9f61d89d334."
+  - "All accepted TASK-0008 F-07/F-08/F-12 implementation content remains unchanged."
+  - "Revision-1 validator PASS, 65/65 unit PASS, and git diff --check PASS evidence remains attributable to exact implementation 0c6cca57 and is not rerun merely for freshness."
+  - "Report evidence must describe who actually performed each check; later Architect verification must not be presented as prior Executor verification."
+  - "No production/protocol/role-skill/contract/template/script/workflow/taxonomy mutation is authorized."
+  - "No branch creation, main mutation, promotion, tag, release, force-push, rebase, history rewrite, permission expansion, or repository metadata mutation is authorized."
+  - "Branches remain exactly {dev, main}; main remains read-only."
+
+forbidden_changes:
+  - "Do not modify README.md, protocols/TASK_PROTOCOL.md, architect/SKILL.md, executor/SKILL.md, contracts/*, templates/*, scripts/*, .github/workflows/*, or any unrelated file."
+  - "Do not modify or recreate implementation commits."
+  - "Do not rerun deterministic verification solely for freshness."
+  - "Do not claim revision-1 CHECK-7 was completed by Executor when it was not."
+  - "Do not create branches, mutate main, force-push, rebase, rewrite history, promote, tag, release, create review.yaml, or mutate repository metadata."
+
+gap_policy:
+  local_auto_fix: false
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+structure_policy:
+  expected_new_files: []
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: ""
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  REVIEW:
+    - exact_commit_report_resolution
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Canonical report provenance is truthful and separates revision-1 Executor evidence from later Governing Architect verification."
+    evidence_required: "report_revision 2 explicitly records the missing revision-1 post-push re-read and does not claim the revision-1 Executor performed it."
+  - id: AC-2
+    requirement: "No implementation or governance content changes occur in revision 2."
+    evidence_required: "Exact revision-2 planning-base-to-final compare changes only .agent/tasks/TASK-0008/report.yaml."
+  - id: AC-3
+    requirement: "Revision-2 publication closure is actually verified after publication."
+    evidence_required: "Fresh post-push GitHub reads prove report commit sole parent is revision-2 planning base, diff is report-only, dev equals report commit, main remains 0a57fbfd39b96494f22fea1f7847aab1d5c8bbf1, branches exactly {dev, main}, and implementation 0c6cca57 remains unchanged in lineage."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Resolve TASK-0008 revision 2 and pinned agent-skills@022bd084087e10ec6fb6ab46753868acc957ec55; refresh refs and require live dev equals exact revision-2 handoff base, main unchanged, branches exactly {dev, main}; preflight required capabilities before report mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve immutable revision-1 implementation/report evidence and confirm the only correction required is evidence provenance: implementation is preserved and report revision 1 overstates completion of the final post-push re-read."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Update only .agent/tasks/TASK-0008/report.yaml to report_revision 2 with truthful attribution, commit/push non-force to dev, then perform fresh remote post-push verification of exact parent/diff/dev/main/topology before returning NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true

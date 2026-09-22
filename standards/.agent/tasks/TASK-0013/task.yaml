@@ -1,0 +1,176 @@
+protocol_version: 3
+
+task_id: TASK-0013
+task_revision: 2
+state: APPROVED
+
+origin:
+  type: accepted_review
+  source: ".agent/tasks/TASK-0013/review.yaml@9dcb0ff9716ddf859f29485a207fc172742ec427"
+  gap_id: "FUNCTIONAL_HYGIENE_CLOSURE_AFTER_FAILED_LATENCY_PILOT"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-standards
+
+target:
+  repository: phatnguyen03022001/agent-standards
+  branch:
+    name: dev
+    role: integration
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - github-workflow
+
+authority_sources:
+  - source: "architect-profile/main@d47114404c97fcfd74b0f37f646586ec46de6987"
+    role: "current ecosystem-active authority set"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0013/review.yaml@9dcb0ff9716ddf859f29485a207fc172742ec427"
+    role: "revision-1 REVISION_REQUIRED judgment that accepts the .gitignore subject as functionally correct while preserving the failed latency/bundling predicate"
+    precedence: 2
+  - source: ".agent/tasks/TASK-0013/report.yaml@095695f110fc19e0892dd31e3079e34b9eac148a"
+    role: "revision-1 exact functional and failed-pilot evidence"
+    precedence: 3
+  - source: "agent-standards@0da0d5864fe5e458af564f3c6ba9959cefd99639"
+    role: "exact immutable functional .gitignore subject"
+    precedence: 4
+  - source: "agent-skills/main@ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+    role: "current protocol-v3 evidence-reuse and execution semantics"
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "existing repository-root .gitignore plus canonical TASK-0013 report/review lineage"
+  rationale: >-
+    Revision 2 is closure-only. It does not implement or modify the functional subject. Executor work is limited to
+    fresh identity/applicability proof and publication of the existing TASK-0013 report artifact at report revision 2.
+
+objective: >-
+  Close only the functional hygiene lineage of TASK-0013 around the already-published exact .gitignore subject
+  0da0d5864fe5e458af564f3c6ba9959cefd99639. Freshly re-resolve revision-1 lineage and current repository truth,
+  reuse still-applicable immutable functional evidence, refresh only current mutable predicates needed for closure,
+  and publish revision-2 evidence without reimplementing .gitignore or retroactively converting the revision-1
+  latency/deterministic-bundling failure into PASS.
+
+scope:
+  required_changes:
+    - >-
+      Freshly re-resolve exact revision-1 candidate 0da0d5864fe5e458af564f3c6ba9959cefd99639, report
+      095695f110fc19e0892dd31e3079e34b9eac148a, review 9dcb0ff9716ddf859f29485a207fc172742ec427,
+      current dev/main refs/topology, active architect-profile/main, and active agent-skills/main.
+    - >-
+      Prove current dev still contains the exact revision-1 .gitignore subject unchanged and that intervening commits
+      since the candidate changed only canonical TASK-0013 evidence/authority artifacts, not standards, validators,
+      tests, dependencies, workflows, runtime, or the .gitignore subject.
+    - >-
+      Reuse revision-1 AC-1/AC-2/AC-3 functional evidence only after exact identity and predicate applicability are
+      re-established. Do not rerun acceptance-equivalent producers solely because this is revision 2. Refresh current
+      mutable hygiene with git ls-files -ci --exclude-standard and the minimal exact diff/status/ref checks required
+      to prove the present branch remains functionally clean.
+    - >-
+      Publish only .agent/tasks/TASK-0013/report.yaml at report revision 2 on dev, then freshly prove final dev/main
+      refs/topology and local managed-mirror closure. No implementation commit is created for .gitignore.
+  allowed_existing_files_or_components:
+    - ".gitignore"
+    - ".agent/tasks/TASK-0013/report.yaml"
+
+invariants:
+  - "The exact functional subject remains agent-standards@0da0d5864fe5e458af564f3c6ba9959cefd99639; .gitignore bytes must not change."
+  - "Revision-1 report/review history remains immutable in Git history and revision-1 AC-4/CHECK-2/CHECK-4 failure is never restated as PASS."
+  - "Revision 2 makes no latency, controller, model, transport, or deterministic-bundling performance claim; the next latency pilot is a separate task under the active authority generation."
+  - "No standard model, validator, test, dependency, workflow, runtime, Case Router, protocol, or sibling repository is modified."
+  - "Topology remains exactly {dev, main}; main remains unchanged."
+
+forbidden_changes:
+  - "Do not modify, regenerate, normalize, or recommit .gitignore."
+  - "Do not rewrite, amend, delete, or replace historical revision-1 commits or claim revision 1 was ACCEPTED."
+  - "Do not rerun the revision-1 latency pilot or reinterpret its 581s / 22-terminal_exec observation as success."
+  - "Do not add telemetry, benchmark machinery, schedulers, queues, daemons, caches, registries, databases, orchestration, or new Agent Runtime APIs."
+  - "Do not modify main, create/delete/rename branches, force-push, tag, release, or mutate repository settings."
+
+capability_requirements:
+  EXECUTION:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: >-
+      Exact revision-1 candidate/report/review lineage and current active authority identities are freshly resolved,
+      including the preserved REVISION_REQUIRED judgment and its functional-vs-performance distinction.
+    evidence_required: "Exact immutable commit/content identities plus fresh current refs."
+  - id: AC-2
+    requirement: >-
+      Current dev contains the exact unchanged revision-1 .gitignore subject; no intervening implementation/dependency
+      change invalidates the accepted functional evidence; current git ls-files -ci --exclude-standard is empty.
+    evidence_required: "Exact subject equality, bounded intervening-diff proof, evidence-applicability proof, and fresh tracked-ignore result."
+  - id: AC-3
+    requirement: >-
+      Revision-1 functional AC-1/AC-2/AC-3 evidence is reused only for predicates it actually covers, with no
+      acceptance-equivalent rerun for ceremony and no .gitignore implementation mutation.
+    evidence_required: "Explicit reuse/applicability record and exact execution diff showing no functional-subject mutation."
+  - id: AC-4
+    requirement: >-
+      Revision-1 latency/deterministic-bundling failure remains historical failed evidence and is explicitly outside
+      revision-2 functional closure; revision 2 makes no performance-success claim.
+    evidence_required: "Report preserves the exact failed historical disposition without retroactive PASS language."
+  - id: AC-5
+    requirement: >-
+      Report revision 2 is the only Executor repository mutation, is published on dev, main is unchanged, topology
+      remains exactly {dev, main}, and final local tracked/index state is clean.
+    evidence_required: "Exact report commit/diff, fresh remote refs/topology, and local closure evidence."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: >-
+        Fresh-resolve exact task/base, revision-1 candidate/report/review, active architect-profile/main and agent-skills/main,
+        target refs/topology, and required EXECUTION capabilities.
+      required: true
+    - id: CHECK-2
+      command_or_check: >-
+        Prove .gitignore at current base is byte-identical to the exact revision-1 functional subject; inspect only the
+        bounded candidate-to-base changed-path set needed to prove no relevant implementation/dependency invalidation;
+        run fresh git ls-files -ci --exclude-standard.
+      required: true
+    - id: CHECK-3
+      command_or_check: >-
+        Record exact immutable evidence reused from revision 1, exact predicates freshly checked, and the preserved
+        historical performance failure; do not rerun the old latency pilot or acceptance-equivalent producers without
+        a named invalidation reason.
+      required: true
+    - id: CHECK-4
+      command_or_check: >-
+        Publish only report revision 2 on dev, then freshly prove exact report diff, final dev/main refs/topology,
+        main unchanged, and local tracked/index hygiene.
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true

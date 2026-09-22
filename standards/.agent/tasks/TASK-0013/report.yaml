@@ -1,0 +1,183 @@
+protocol_version: 3
+
+task_id: TASK-0013
+task_revision: 2
+report_revision: 2
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0013/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-standards
+  branch:
+    name: dev
+    role: integration
+  authorized_base_head: "938a0f21adf42481b88909aeb23384b713e81090"
+  final_execution_head: "938a0f21adf42481b88909aeb23384b713e81090"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  available:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  missing: []
+  passed: true
+  evidence: >-
+    Agent Runtime terminal execution resolved local repository identity and exact Git objects, fresh git ls-remote reads
+    succeeded for the target and pinned authority repositories, repository-local content mutation is available, and
+    git push --dry-run against dev completed successfully before the report mutation.
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0013 revision 2 designates no separate authoritative verifier."
+
+pushed: true
+
+lineage_resolution:
+  revision_1_candidate: "0da0d5864fe5e458af564f3c6ba9959cefd99639"
+  revision_1_report: "095695f110fc19e0892dd31e3079e34b9eac148a"
+  revision_1_review: "9dcb0ff9716ddf859f29485a207fc172742ec427"
+  revision_1_review_state: REVISION_REQUIRED
+  current_base: "938a0f21adf42481b88909aeb23384b713e81090"
+  current_pre_report_refs:
+    dev: "938a0f21adf42481b88909aeb23384b713e81090"
+    main: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+    topology: "{dev, main}"
+  active_authorities:
+    architect_profile_main: "d47114404c97fcfd74b0f37f646586ec46de6987"
+    agent_skills_main: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+  evidence: >-
+    All named immutable commits resolved locally. Fresh remote reads resolved target dev/main and the active
+    architect-profile/main and agent-skills/main identities exactly as required by the revision-2 task.
+
+functional_subject_identity:
+  candidate_gitignore_blob: "c1d666faa331a35058bfaf15511109997ef1089d"
+  current_base_gitignore_blob: "c1d666faa331a35058bfaf15511109997ef1089d"
+  byte_identical: true
+  intervening_changed_paths:
+    - .agent/tasks/TASK-0013/report.yaml
+    - .agent/tasks/TASK-0013/review.yaml
+    - .agent/tasks/TASK-0013/task.yaml
+  relevant_implementation_or_dependency_invalidation: false
+  current_tracked_ignored_result: EMPTY
+  evidence: >-
+    git rev-parse proved the exact candidate and revision-2-base .gitignore blobs are identical. The complete bounded
+    candidate-to-base diff changes only canonical TASK-0013 evidence/authority artifacts; no standard, validator, test,
+    dependency, workflow, runtime, or .gitignore subject changed. Fresh git ls-files -ci --exclude-standard returned empty.
+
+evidence_reuse:
+  reused_from_revision_1:
+    - criterion: AC-1
+      source: ".agent/tasks/TASK-0013/report.yaml@095695f110fc19e0892dd31e3079e34b9eac148a"
+      predicate: "Exact authorized .gitignore line-set/scope for candidate 0da0d5864fe5e458af564f3c6ba9959cefd99639."
+    - criterion: AC-2
+      source: ".agent/tasks/TASK-0013/report.yaml@095695f110fc19e0892dd31e3079e34b9eac148a"
+      predicate: "Required positive/negative ignore behavior for the exact immutable .gitignore subject."
+    - criterion: AC-3
+      source: ".agent/tasks/TASK-0013/report.yaml@095695f110fc19e0892dd31e3079e34b9eac148a"
+      predicate: "Repository validator, 57-test suite, diff/scope verification, and candidate-only .gitignore implementation evidence."
+  applicability_basis: >-
+    Reuse is limited to the exact immutable functional subject and predicates covered by revision-1 evidence. Exact
+    .gitignore blob identity was re-established, and the complete intervening changed-path set proves no relevant
+    implementation, dependency, validator, test, workflow, runtime, or subject change invalidates those predicates.
+  freshly_checked_mutable_predicates:
+    - "Current target dev/main refs and exact {dev, main} topology."
+    - "Current active architect-profile/main and agent-skills/main identities."
+    - "Current local HEAD/branch/clean state before mutation."
+    - "Current git ls-files -ci --exclude-standard result is empty."
+    - "Current candidate-to-base changed-path set contains only TASK-0013 evidence/authority artifacts."
+  acceptance_equivalent_reruns_performed: false
+  evidence: >-
+    No repository validator/test acceptance producer and no historical latency pilot was rerun because no named
+    invalidation reason exists for the immutable functional evidence.
+
+historical_performance_failure:
+  source_report: "095695f110fc19e0892dd31e3079e34b9eac148a"
+  source_review: "9dcb0ff9716ddf859f29485a207fc172742ec427"
+  report_observation:
+    operator_e2e_seconds: 581
+    post_binding_terminal_exec: 22
+  preserved_disposition: FAIL
+  preserved_failed_predicates:
+    - AC-4
+    - CHECK-2
+    - CHECK-4
+  revision_2_performance_claim: NONE
+  evidence: >-
+    Revision-1 review remains REVISION_REQUIRED because deterministic bundling failed despite functional .gitignore
+    correctness. Revision 2 closes only functional hygiene and neither reruns nor reinterprets the latency/bundling pilot.
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: >-
+      Exact candidate 0da0d5864fe5e458af564f3c6ba9959cefd99639, report 095695f110fc19e0892dd31e3079e34b9eac148a,
+      review 9dcb0ff9716ddf859f29485a207fc172742ec427, preserved REVISION_REQUIRED judgment, current target refs, and active
+      architect-profile/main and agent-skills/main identities were freshly resolved.
+  - criterion_id: AC-2
+    status: PASS
+    evidence: >-
+      Candidate and current-base .gitignore both resolve blob c1d666faa331a35058bfaf15511109997ef1089d. Candidate-to-base
+      changed paths are exactly TASK-0013 report/review/task artifacts, and fresh git ls-files -ci --exclude-standard is empty.
+  - criterion_id: AC-3
+    status: PASS
+    evidence: >-
+      Revision-1 functional AC-1/AC-2/AC-3 evidence is reused only after exact subject identity and applicability were
+      re-established. No acceptance-equivalent producer was rerun and revision 2 makes no .gitignore implementation mutation.
+  - criterion_id: AC-4
+    status: PASS
+    evidence: >-
+      The revision-1 deterministic-bundling failure remains historical FAIL evidence under the exact report/review lineage;
+      revision 2 makes no latency, controller, model, transport, deterministic-bundling, or performance-success claim.
+  - criterion_id: AC-5
+    status: NOT_PROVEN
+    evidence: >-
+      Before report authorship, dev is exact base 938a0f21adf42481b88909aeb23384b713e81090, main is unchanged at
+      3f4950f280a3a35fee81471d4b83715fa72cf9ee, topology is exactly {dev, main}, and the only working-tree mutation is
+      this report artifact. The enclosing report commit identity, remote publication, and post-publication local closure
+      are intentionally resolved externally because a report cannot truthfully self-attest its own enclosing commit/push.
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: >-
+      Exact task/base and revision-1 lineage resolved; active authority refs and target refs/topology were freshly read;
+      required EXECUTION capabilities passed preflight.
+  - check_id: CHECK-2
+    result: PASS
+    evidence: >-
+      Exact .gitignore blob equality passed, bounded candidate-to-base changed paths contain only TASK-0013 authority/evidence
+      artifacts, no relevant invalidation exists, and fresh git ls-files -ci --exclude-standard returned empty.
+  - check_id: CHECK-3
+    result: PASS
+    evidence: >-
+      Reused immutable functional predicates, freshly checked mutable predicates, and the preserved revision-1 performance
+      failure are explicitly recorded; no old latency pilot or acceptance-equivalent producer was rerun.
+  - check_id: CHECK-4
+    result: NOT_PROVEN
+    evidence: >-
+      Pre-publication guards prove this report is the only intended revision-2 repository mutation and main/topology are
+      unchanged. Exact report commit/diff, remote dev publication, final main/topology, and local tracked/index hygiene
+      must be freshly resolved after the enclosing report commit is pushed.
+
+result: NEEDS_REVIEW

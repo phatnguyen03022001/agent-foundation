@@ -1,0 +1,96 @@
+protocol_version: 3
+
+task_id: TASK-0001
+task_revision: 1
+state: DRAFT
+
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: ""
+
+architect_binding:
+  target_repository: owner/repo
+
+target:
+  repository: owner/repo
+  branch:
+    name: dev
+    role: integration
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "<exact immutable commit SHA>"
+
+architect_analysis_skills: []
+
+execution_skills:
+  required:
+    - executor
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: ""
+    role: ""
+    precedence: 1
+
+structure_authority:
+  status: UNRESOLVED
+  source: ""
+  rationale: ""
+
+objective: ""
+
+scope:
+  required_changes:
+    - ""
+  allowed_existing_files_or_components:
+    - ""
+
+invariants: []
+
+forbidden_changes:
+  - ""
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: ""
+    evidence_required: ""
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: ""
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: false
+  push: false
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: false

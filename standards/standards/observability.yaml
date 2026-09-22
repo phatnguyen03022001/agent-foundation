@@ -1,0 +1,177 @@
+dimension: OBS
+applicability:
+  mode: always
+requirements:
+- id: OBS-1.1
+  level: 1
+  statement: Material failures must emit attributable signals sufficient to distinguish failure from successful operation.
+  intent: Establish basic knowledge of material failure state.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: Representative material failures produce distinguishable attributable signals.
+      classes:
+      - reproducible_test
+      - runtime_observation
+    independence: none
+- id: OBS-2.2
+  level: 2
+  statement: In-scope operational health, error, latency, capacity, and material state-transition conditions must be detectable
+    from attributable runtime signals.
+  intent: Separate operational-state detection from causal attribution.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: Representative operational states emit signals that permit their detection.
+      classes:
+      - runtime_observation
+      - reproducible_test
+    independence: none
+- id: OBS-2.3
+  level: 2
+  statement: Detected operational conditions must be attributable to the in-scope component, operation, request, state, or
+    equivalent causal scope needed for diagnosis.
+  intent: Make attribution independently diagnosable from signal presence.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: Representative detected conditions can be attributed to the stated diagnostic scope.
+      classes:
+      - runtime_observation
+      - reproducible_test
+    independence: none
+- id: OBS-3.2
+  level: 3
+  statement: Each in-scope distributed, degraded, or cascading failure path must preserve actionable detection conditions
+    throughout that failure path.
+  intent: Make complex-failure detectability independently diagnosable from causality.
+  applicability:
+    mode: conditional
+    any_of:
+    - The in-scope system has distributed execution in which a material failure can span multiple components or execution
+      loci.
+    - The in-scope system has a material degraded or cascading failure path whose progression can cross an in-scope diagnostic
+      boundary.
+  evidence:
+    required:
+    - demonstrates: Representative applicable distributed, degraded, or cascading failure paths preserve actionable detection
+        conditions throughout their progression.
+      classes:
+      - operational_exercise
+      - runtime_observation
+      - reproducible_test
+    independence: none
+- id: OBS-3.3
+  level: 3
+  statement: Each in-scope distributed, degraded, or cascading failure path must preserve enough causal trace to identify
+    its propagation boundary.
+  intent: Make complex-failure causality independently diagnosable from detection.
+  applicability:
+    mode: conditional
+    any_of:
+    - The in-scope system has distributed execution in which a material failure can span multiple components or execution loci.
+    - The in-scope system has a material degraded or cascading failure path whose progression can cross an in-scope diagnostic
+      boundary.
+  evidence:
+    required:
+    - demonstrates: Representative applicable distributed, degraded, or cascading failure paths preserve causal trace to their
+        stated propagation boundaries.
+      classes:
+      - operational_exercise
+      - runtime_observation
+    independence: none
+- id: OBS-4.2
+  level: 4
+  statement: Detection and forensic paths for highest-consequence events must provide trustworthy capture of the evidence
+    they claim to preserve.
+  intent: Make consequential forensic capture independently diagnosable from attribution.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: The highest-consequence event paths and claimed capture guarantees are explicitly selected.
+      classes:
+      - artifact_inspection
+      - analysis
+    - demonstrates: Representative events demonstrate trustworthy capture under those paths.
+      classes:
+      - reproducible_test
+      - operational_exercise
+      - runtime_observation
+    independence: independent_review
+- id: OBS-4.3
+  level: 4
+  statement: Material blind spots in detection or forensic coverage for highest-consequence events must be explicitly identified
+    and directly challenged.
+  intent: Prevent observability from silently excluding the failure paths where it is weakest.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: Material blind spots and their consequence rationale are explicitly identified.
+      classes:
+      - artifact_inspection
+      - analysis
+    - demonstrates: Representative blind-spot challenges establish the stated detection boundary rather than assuming coverage.
+      classes:
+      - reproducible_test
+      - operational_exercise
+    independence: independent_review
+- id: OBS-4.4
+  level: 4
+  statement: Detection and forensic evidence for highest-consequence events must preserve trustworthy attribution to the claimed
+    causal scope.
+  intent: Make consequential attribution independently diagnosable from capture.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: The claimed causal scope for highest-consequence event evidence is explicit.
+      classes:
+      - artifact_inspection
+      - analysis
+    - demonstrates: Representative event evidence preserves attribution to that scope.
+      classes:
+      - reproducible_test
+      - operational_exercise
+      - runtime_observation
+    independence: independent_review
+- id: OBS-5.2
+  level: 5
+  statement: Highest-consequence detection coverage must withstand signal-loss and blind-spot challenge across the stated
+    observability assumptions.
+  intent: Establish exceptional confidence in critical detection coverage independently from attribution.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: The highest-consequence detection-coverage claim, assumptions, and challenge scenarios are explicit.
+      classes:
+      - artifact_inspection
+      - analysis
+    - demonstrates: Independent reproduction confirms detection coverage under signal-loss and blind-spot challenge.
+      classes:
+      - operational_exercise
+      - reproducible_test
+    independence: independent_reproduction
+- id: OBS-5.3
+  level: 5
+  statement: Highest-consequence attribution must withstand ambiguity and causal-confusion challenge across the stated observability
+    assumptions.
+  intent: Establish exceptional confidence in critical attribution independently from coverage.
+  applicability:
+    mode: always
+  evidence:
+    required:
+    - demonstrates: The highest-consequence attribution claim, assumptions, and ambiguity scenarios are explicit.
+      classes:
+      - artifact_inspection
+      - analysis
+    - demonstrates: Independent reproduction confirms attribution under ambiguity and causal-confusion challenge.
+      classes:
+      - operational_exercise
+      - reproducible_test
+    independence: independent_reproduction

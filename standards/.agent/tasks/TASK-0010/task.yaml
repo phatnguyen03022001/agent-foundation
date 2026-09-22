@@ -1,0 +1,222 @@
+protocol_version: 3
+
+task_id: TASK-0010
+task_revision: 2
+state: APPROVED
+
+origin:
+  type: architect_review_revision
+  task_id: "TASK-0010"
+  gap_id: "TD-001"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-standards
+
+target:
+  repository: phatnguyen03022001/agent-standards
+  branch:
+    name: dev
+    role: integration
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "0a57fbfd39b96494f22fea1f7847aab1d5c8bbf1"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+  - verification
+
+execution_skills:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: ".agent/tasks/TASK-0010/report.yaml@811145d9e9dbec8609ef4a687ff051c628c942bf"
+    role: "Revision-1 Executor evidence under Architect review"
+    precedence: 1
+  - source: "tests/test_verify_hygiene.py@6f83e805596ac536c96d3fbcea26be5665f3ff0b"
+    role: "Reproduced verification false-green source"
+    precedence: 2
+  - source: "tools/verify.py@6f83e805596ac536c96d3fbcea26be5665f3ff0b"
+    role: "Accepted implementation candidate whose behavior must be re-proven, not redesigned speculatively"
+    precedence: 3
+  - source: "phatnguyen03022001/agent-skills@0a57fbfd39b96494f22fea1f7847aab1d5c8bbf1"
+    role: "Pinned protocol v3 and execution governance"
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "Existing TASK-0010 implementation plus Architect review finding VF-001"
+  rationale: "The implementation runner appears semantically correct; the reproduced problem is that the exact-clean proof silently returns under the canonical -B root test process. The smallest correction is confined to the existing hygiene regression and report evidence unless a deterministic counterexample proves the runner itself must change."
+
+objective: "Close VF-001 by making TASK-0010's exact-final no-cache/no-cleanup proof actually execute under the same canonical bytecode-disabled root unittest environment used by tools/verify.py, while preserving the accepted runner behavior, frozen Generation 1, and Assessment Kernel Candidate unchanged."
+
+revision_finding:
+  id: VF-001
+  classification: verification_false_green
+  severity: material_for_acceptance
+  reproduced_problem: "test_runner_leaves_exact_tracked_copy_clean_without_cleanup returns immediately when sys.dont_write_bytecode is true, while tools/verify.py invokes the complete root unittest suite with -B; therefore the report's claimed AC-5 exact-final proof is not actually exercised by the canonical verification run."
+  required_closure: "The outer exact-final clean-copy proof must execute when the root suite runs under -B. Any recursion prevention must be explicit and test-owned rather than using dont_write_bytecode as a proxy that suppresses the proof."
+
+scope:
+  required_changes:
+    - "Resolve exact TASK-0010 revision 2 and pinned agent-skills authority, refresh remote truth, and require live dev HEAD to equal the exact handoff base before mutation."
+    - "Causally reproduce VF-001 against the revision-1 test behavior: demonstrate that when the focused hygiene suite runs under -B, test_runner_leaves_exact_tracked_copy_clean_without_cleanup exits before performing its exact-copy verification body. Capture behavior-level evidence; do not rely only on source inspection."
+    - "Modify only tests/test_verify_hygiene.py unless the reproduced behavior proves tools/verify.py itself is incorrect. The expected correction is to remove the dont_write_bytecode-based outer-proof suppression and, if recursion prevention is needed because the copied exact runner recursively discovers the same hygiene test, use an explicit test-owned nested-verification sentinel/context or an equivalently narrow mechanism."
+    - "The outer exact-copy test must execute its full proof even when sys.dont_write_bytecode is true: create a fresh Git repository from the exact tracked implementation snapshot, establish a clean baseline with zero Python cache artifacts, run that copied exact tools/verify.py, then immediately require zero __pycache__/pyc/pyo artifacts and empty git status before any cleanup."
+    - "If a nested-verification sentinel is used, it may suppress only the recursively nested instance of the exact-copy self-test. It must not suppress validator execution, the ordinary root test suite, bytecode-behavior tests, failure-propagation tests, or the outer exact-copy proof."
+    - "Run the focused hygiene regression under the same bytecode-disabled root environment: python -B -m unittest discover -s tests -p 'test_verify_hygiene.py' -v. Require the exact-copy proof to be behaviorally demonstrated as executed, not merely counted as a passing test."
+    - "Run python tools/verify.py on the exact final state and require validator success plus the complete root suite success. Require evidence that the exact-copy no-cleanup proof executed during this canonical run."
+    - "Run the Assessment Kernel Candidate focused suite with explicit -B and require all existing 12 regressions pass without candidate changes."
+    - "Verify README.md and tools/verify.py remain byte-for-byte unchanged from implementation commit 6f83e805596ac536c96d3fbcea26be5665f3ff0b unless a deterministic runner defect is reproduced; if a runner change becomes necessary, stop AUTHORITY_REQUIRED rather than expanding silently."
+    - "Preserve the revision-1 external runtime-profile observation as FOLLOW_UP only. No local profile or agent-runtime mutation is authorized."
+    - "Commit and push the bounded regression correction on dev, update .agent/tasks/TASK-0010/report.yaml to report_revision 2 with VF-001 causal RED/GREEN evidence, commit and push only the report change, and stop NEEDS_REVIEW."
+  allowed_existing_files_or_components:
+    - tests/test_verify_hygiene.py
+    - tools/verify.py
+    - README.md
+    - tools/validate.py
+    - tests/test_validate.py
+    - requirements-validator.txt
+    - candidate/assessment_kernel/*
+    - .agent/tasks/TASK-0010/task.yaml
+    - .agent/tasks/TASK-0010/report.yaml
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Frozen Generation 1 normative semantics and enforcement implementation remain unchanged."
+  - "STANDARD_MODEL.md, standards/manifest.yaml, standards/*.yaml, tools/validate.py, and requirements-validator.txt remain byte-for-byte unchanged."
+  - "Assessment Kernel Candidate files remain byte-for-byte unchanged."
+  - "README.md and tools/verify.py remain byte-for-byte unchanged unless a deterministic runner defect is reproduced and Architect authority is revised."
+  - "Canonical repository verification remains python tools/verify.py."
+  - "The exact-final clean/no-cache proof must execute under canonical root -B execution; a passing count caused by an early return is not evidence."
+  - "No cleanup-after-success may be used as TD-001 closure proof."
+  - "No .gitignore masking, git clean -fdx, agent-runtime code/config/schema change, local profile mutation, dependency, CI, branch, release, or Generation 2 work is introduced."
+
+forbidden_changes:
+  - "Any mutation outside tests/test_verify_hygiene.py and .agent/tasks/TASK-0010/report.yaml unless a deterministic tools/verify.py defect is reproduced and Architect authority is revised first."
+  - "Any modification to README.md, tools/verify.py, tools/validate.py, STANDARD_MODEL.md, standards/manifest.yaml, standards/*.yaml, requirements-validator.txt, LICENSE, candidate/assessment_kernel/*, or TASK-0010/task.yaml by Executor."
+  - "Any use of sys.dont_write_bytecode as the condition that suppresses the outer exact-final clean-copy proof."
+  - "Any cleanup-after-success used to manufacture no-cache/clean evidence."
+  - "Any .gitignore change, git clean -fdx, agent-runtime repository/config/schema/profile mutation, dependency change, CI/Actions change, branch creation, main mutation, promotion, tag, release, metadata mutation, Generation 2 or family design work."
+  - "Any new file."
+  - "Any TASK-0011 or later task, review.yaml, continuation artifact, or additional planning artifact created by Executor."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+structure_policy:
+  expected_new_files: []
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: ""
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+    - deterministic_python_test_execution
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "VF-001 is causally reproduced as a false-green verification path."
+    evidence_required: "Behavioral RED evidence proves the revision-1 exact-copy test returns before its proof body when run under the canonical -B root environment."
+  - id: AC-2
+    requirement: "The outer exact-copy proof actually executes under -B without recursive false-green behavior."
+    evidence_required: "Focused GREEN evidence under python -B -m unittest ... demonstrates the outer proof body ran and completed; any nested self-test suppression is explicitly attributable to a narrow sentinel/context."
+  - id: AC-3
+    requirement: "Canonical repository verification proves prevention rather than cleanup."
+    evidence_required: "python tools/verify.py passes on exact final state and evidence demonstrates the exact-copy test executed, observed zero cache artifacts and empty git status immediately after copied verification, before cleanup."
+  - id: AC-4
+    requirement: "Existing runner semantics and project semantics are preserved."
+    evidence_required: "README.md/tools/verify.py/frozen V1/candidate blobs remain unchanged; validator/root suite pass; candidate 12/12 passes under -B."
+  - id: AC-5
+    requirement: "The revision remains bounded and external runtime profile remains follow-up only."
+    evidence_required: "Implementation diff is exactly tests/test_verify_hygiene.py; report commit changes only TASK-0010/report.yaml; main and branch topology remain unchanged; no runtime/profile mutation occurred."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "At start require dev equals exact revision-2 handoff base, main remains 3f4950f280a3a35fee81471d4b83715fa72cf9ee, branches exactly {dev, main}, TASK-0010 revision 2 resolves at base, and pinned agent-skills revision is accessible."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Reproduce VF-001 behaviorally against revision-1 test logic under -B and preserve causal RED evidence."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run python -B -m unittest discover -s tests -p 'test_verify_hygiene.py' -v and prove the outer exact-copy proof body executed and passed."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run python tools/verify.py on exact final state and require validator plus complete root unittest PASS with exact-copy proof execution evidenced."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run python -B -m unittest discover -s candidate/assessment_kernel -p 'test_*.py' -v and require 12/12 PASS."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Before implementation commit require the only changed path is tests/test_verify_hygiene.py; README.md, tools/verify.py, frozen V1, and candidate blobs remain exact."
+      required: true
+    - id: CHECK-7
+      command_or_check: "After implementation push require dev equals implementation commit and base compare changes only tests/test_verify_hygiene.py; then update only TASK-0010/report.yaml to report_revision 2."
+      required: true
+    - id: CHECK-8
+      command_or_check: "After report push require dev equals enclosing report commit, its sole parent is implementation commit, report commit changes only TASK-0010/report.yaml, main remains frozen commit, branches exactly {dev, main}, and no release/profile/runtime mutation occurred."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions:
+  - "If repo/task/branch/skill identity drifts before mutation, stop STALE_STATE."
+  - "If deterministic Python execution is unavailable, stop CURRENT_PHASE_CAPABILITY_UNAVAILABLE before mutation."
+  - "If VF-001 cannot be reproduced behaviorally, stop BLOCKED rather than changing tests speculatively."
+  - "If fixing VF-001 requires changing tools/verify.py or any broader implementation semantics, stop AUTHORITY_REQUIRED for Architect revision."
+  - "No main mutation, release, runtime/profile mutation, or Generation 2 work is authorized."
+
+execution_ready: true

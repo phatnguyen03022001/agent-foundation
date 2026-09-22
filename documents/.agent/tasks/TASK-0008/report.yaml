@@ -1,0 +1,145 @@
+protocol_version: 3
+
+task_id: TASK-0008
+task_revision: 2
+report_revision: 2
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0008/task.yaml
+  commit: "c3b78c3ef34bf20a0482e13d6fcb003d4b89922d"
+
+execution:
+  repository: phatnguyen03022001/agent-documents
+  branch:
+    name: dev
+    role: integration
+  authorized_base_head: "c3b78c3ef34bf20a0482e13d6fcb003d4b89922d"
+  final_execution_head: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  available:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  missing: []
+  passed: true
+  evidence: "Agent Runtime terminal execution, local repository read/write, Git history/commit, fresh remote reads, GitHub release lookup, and a non-mutating git push --dry-run all succeeded before target mutation."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0008 revision 2 designates no separate authoritative verifier."
+
+predecessor_evidence:
+  revision_1_report:
+    commit: "40377e840f7ad3d2b1a15cf91ec8f1be66c87c21"
+    task_revision: 1
+    report_revision: 1
+    result: BLOCKED
+  revision_1_review:
+    commit: "1121f0b284be66b775af75d763b9b18b1552e4f1"
+    task_revision: 1
+    review_revision: 1
+    state: REVISION_REQUIRED
+  evidence: "Revision 1 terminated before implementation because its opening-paragraph-only authority could not satisfy its contradiction-free acceptance criterion while section 18 remained stale. Revision 2 explicitly supersedes that authority and permits exactly the two release-state wording corrections executed here."
+
+implementation:
+  commit: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+  parent: "c3b78c3ef34bf20a0482e13d6fcb003d4b89922d"
+  message: "docs: align V1 release-state wording"
+  published_non_force_to_dev: true
+  verified_before_publication: true
+  changed_files_exactly:
+    - DOCUMENT_MODEL.md
+  diff_shape:
+    files_changed: 1
+    hunks: 2
+    insertions: 2
+    deletions: 2
+
+verification_evidence:
+  exact_candidate_sha: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+  exact_scope_and_byte_proof:
+    result: PASS
+    evidence: "Base-to-candidate comparison changes only DOCUMENT_MODEL.md and exactly two hunks. A byte-for-byte reconstruction from the exact base using only the two authorized sentence replacements matched the committed candidate exactly."
+  stale_release_assertions:
+    result: PASS
+    evidence: "DOCUMENT_MODEL.md contains no current 'unreleased' assertion and no current 'pending independent audit/review' assertion. The opening paragraph identifies the normative Agent Documents V1 specification and v1.0.0 as the first stable V1 release; section 18 records v1.0.0 while preserving that satisfying the model alone does not authorize future release or promotion actions."
+  full_unittest:
+    command: "python3 -B -m unittest discover -s tests -p 'test_*.py'"
+    result: PASS
+    tests_run: 94
+    evidence: "94 tests passed on the exact committed candidate immediately before publication."
+  py_compile:
+    command: "python3 -B -m py_compile tools/validate.py tests/test_validate.py"
+    result: PASS
+  diff_check:
+    command: "git diff --check c3b78c3ef34bf20a0482e13d6fcb003d4b89922d c34d34d1842975fa895fc0e3d5273e5826b32205"
+    result: PASS
+  release_identity:
+    result: PASS
+    evidence: "Fresh remote proof after candidate publication resolved main and refs/tags/v1.0.0 to 6918f46282f4a92bbc61071444a5ff5dab30ddc9. GitHub release v1.0.0 remained published, non-draft and non-prerelease with targetCommitish 6918f46282f4a92bbc61071444a5ff5dab30ddc9; README.md:13 still identifies v1.0.0 as the first stable V1 release."
+  candidate_publication:
+    result: PASS
+    evidence: "Candidate c34d34d1842975fa895fc0e3d5273e5826b32205 was pushed non-force to dev. Fresh local/origin/remote reads then all resolved dev to that exact candidate, topology remained exactly {dev, main}, and the working tree was clean before report authorship."
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PROVEN
+    evidence: "Both revision-1 stale release-state assertions were replaced. DOCUMENT_MODEL.md no longer states that V1 or the repository is unreleased or pending the pre-release independent audit/review."
+  - criterion_id: AC-2
+    status: PROVEN
+    evidence: "Exact base c3b78c3ef34bf20a0482e13d6fcb003d4b89922d to candidate c34d34d1842975fa895fc0e3d5273e5826b32205 changes only DOCUMENT_MODEL.md, exactly two one-line hunks. Byte reconstruction proves every other byte is unchanged."
+  - criterion_id: AC-3
+    status: PROVEN
+    evidence: "Fresh release evidence resolves main and v1.0.0 to 6918f46282f4a92bbc61071444a5ff5dab30ddc9; release v1.0.0 is published/non-draft/non-prerelease; README.md remains unchanged; section 18 still states that satisfying the model alone does not authorize future release or promotion actions."
+  - criterion_id: AC-4
+    status: PROVEN
+    evidence: "The exact committed candidate passed 94 repository-native unittests, py_compile, exact two-hunk/scope/byte proof, stale-assertion proof, and git diff --check before publication."
+  - criterion_id: AC-5
+    status: NOT_PROVEN_AT_AUTHORSHIP
+    evidence: "The implementation candidate already has the exact revision-2 task base as sole parent, changes only DOCUMENT_MODEL.md, and is published on dev while main/tag/release/topology are unchanged. This revision-2 report is authored as the sole post-candidate file change; its direct-child parentage, report-only diff, publication, final refs and final clean local state are verified after this content is committed and pushed, because a report cannot truthfully self-attest its own future commit identity."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh binding proved TASK-0008 revision 2 APPROVED and execution_ready at exact base c3b78c3ef34bf20a0482e13d6fcb003d4b89922d; local dev was clean and safely fast-forwarded from predecessor report state to the exact base; origin/dev matched; revision-1 BLOCKED report and REVISION_REQUIRED review were present; topology was exactly dev/main; main/tag/release were unchanged; all required EXECUTION capabilities were available."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Fresh reproduction at immutable revision-1 base eca9af8e9075df440aaee86b38a8cd2e226fa557 confirmed stale assertions at DOCUMENT_MODEL.md lines 3 and 288, and revision-1 review explicitly required correction of exactly those two locations."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Candidate c34d34d1842975fa895fc0e3d5273e5826b32205 modifies only the opening release-state paragraph and final section-18 release-status sentence in DOCUMENT_MODEL.md. Exact two-hunk and byte-scope proofs pass."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "On the exact committed candidate, 94 unittests passed, py_compile passed, exact two-hunk/scope/byte proof passed, stale-assertion proof passed, and git diff --check passed."
+  - check_id: CHECK-5
+    result: NOT_PROVEN_AT_AUTHORSHIP
+    evidence: "Candidate publication to dev and pre-report final-state proof passed. This report is now the only authorized post-candidate modification; its report-only commit/push and fresh final remote/local/main/tag/release/topology closure are verified immediately after report publication outside this self-referential content."
+
+discovered_gaps: []
+blockers: []
+deviations_from_task: []
+
+pushed: true
+promoted_to_main: false
+result: NEEDS_REVIEW

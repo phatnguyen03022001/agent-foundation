@@ -1,0 +1,222 @@
+protocol_version: 3
+
+task_id: TASK-0003
+task_revision: 2
+state: APPROVED
+
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: ""
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-standards
+
+target:
+  repository: phatnguyen03022001/agent-standards
+  branch:
+    name: dev
+    role: integration
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "0a57fbfd39b96494f22fea1f7847aab1d5c8bbf1"
+
+architect_analysis_skills:
+  - architect
+  - adversarial-audit
+
+execution_skills:
+  required:
+    - executor
+    - adversarial-audit
+  recommended:
+    - verification
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "User-authorized Extreme V1 Semantic Assurance Audit, 2026-08-26"
+    role: "Audit objective, epistemic-state semantics, semantic-rigor ceiling, and evidence-dependent future-work constraint"
+    precedence: 1
+  - source: "TASK-0003 revision 1 transient Executor result and Governing Architect review, 2026-08-26"
+    role: "Non-canonical prior audit evidence to be independently revalidated and materialized; not downstream authority by itself"
+    precedence: 2
+  - source: "STANDARD_MODEL.md@71f2be951c9d44452f5f53122f4062390ef4cb39"
+    role: "Normative interpretation, maturity, applicability, evidence, independence, identity, ownership, and anti-gaming semantics under audit"
+    precedence: 3
+  - source: "standards/manifest.yaml@71f2be951c9d44452f5f53122f4062390ef4cb39"
+    role: "Generation 1 and 14-dimension registry under audit"
+    precedence: 4
+  - source: "standards/*.yaml@71f2be951c9d44452f5f53122f4062390ef4cb39"
+    role: "Canonical V1 dimension applicability, requirements, statements, intents, evidence obligations, and independence settings under audit"
+    precedence: 5
+  - source: "tools/validate.py@71f2be951c9d44452f5f53122f4062390ef4cb39"
+    role: "Current derived enforcement aid whose fidelity to the normative model is under audit"
+    precedence: 6
+  - source: "tests/test_validate.py@71f2be951c9d44452f5f53122f4062390ef4cb39"
+    role: "Current regression coverage whose ability to prevent known semantic regressions is under audit"
+    precedence: 7
+
+structure_authority:
+  status: RESOLVED
+  source: "TASK-0003 revision 2 audit-evidence boundary"
+  rationale: "The standards subject remains strictly read-only. The only Executor-owned repository mutation authorized is creation and commit of .agent/tasks/TASK-0003/report.yaml containing the exact audit evidence. No standards, validator, test, dependency, ref-topology, metadata, release, or future-task mutation is authorized."
+
+objective: "Revalidate the Extreme V1 Semantic Assurance Audit against the exact frozen V1 subject and persist the complete Executor evidence canonically so downstream Architect judgment can rely on an exact report commit rather than transient chat evidence."
+
+scope:
+  required_changes:
+    - "Re-run or independently revalidate the complete semantic-first, adversarial-first TASK-0003 audit against the exact frozen V1 corpus at 71f2be951c9d44452f5f53122f4062390ef4cb39."
+    - "Independently revalidate the two previously reported exploit classes instead of copying the transient conclusion: vague/discretionary conditional applicability can false-green through existing bounded regression evidence, and static-only evidence can false-green a frozen runtime-behavior claim through existing bounded regression evidence."
+    - "Preserve exact epistemic states REPRODUCED, NOT_REPRODUCED, and UNKNOWN. NOT_REPRODUCED is not disproven or clean. UNKNOWN never becomes PASS or N/A."
+    - "Cover all 14 dimensions and the material semantic attack families from revision 1, including applicability, N/A, EXCEPTION, evidence sufficiency, independence, cumulative levels, Level 4/5 scope, external constraints, identity/revision attribution, duplicate/compound controls, cross-dimension ownership, and validator/test fidelity."
+    - "For each REPRODUCED finding state the normative rule, concrete exploit, reproduction evidence, material consequence, correct owning layer, and minimal closure direction only. Do not propose an implementation patch or future task authority."
+    - "For each material UNKNOWN state missing evidence, why it matters, and release-assurance impact."
+    - "Create .agent/tasks/TASK-0003/report.yaml as the canonical Executor-owned evidence artifact for this revision, recording exact audit subject identity, execution/base identity, coverage, findings, epistemic states, read-only subject verification, and terminal result."
+    - "Commit and push only the canonical report artifact after all audit evidence is finalized."
+  allowed_existing_files_or_components:
+    - STANDARD_MODEL.md
+    - README.md
+    - standards/manifest.yaml
+    - standards/*.yaml
+    - tools/validate.py
+    - tests/test_validate.py
+    - requirements-validator.txt
+    - .agent/tasks/TASK-0001/*
+    - .agent/tasks/TASK-0002/*
+    - .agent/tasks/TASK-0003/task.yaml
+    - .agent/tasks/TASK-0004/task.yaml
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Audit subject is exactly the frozen V1 semantic content at 71f2be951c9d44452f5f53122f4062390ef4cb39. Planning/task commits after that SHA are not part of the semantic subject."
+  - "Semantic rigor is maximal; false-confidence tolerance is near zero; complexity budget is minimal."
+  - "An incorrect PASS must be harder to obtain than an honest UNKNOWN."
+  - "Not reproduced is not disproven and is not clean."
+  - "Only concretely REPRODUCED findings are eligible for later Architect remediation consideration; this task creates no downstream remediation authority."
+  - "A material UNKNOWN may block release assurance but does not manufacture implementation work."
+  - "Level 5 requires exceptional assurance evidence; rarity is an expected consequence, never a quota."
+  - "Synthetic archetypes are adversarial fixtures only, never applicability profiles."
+  - "Validator coverage must not pretend to exceed mechanically defensible knowledge."
+  - "Machine-checkable syntax and structure belong in deterministic validation; semantic sufficiency remains review/assurance judgment where mechanical proof is not defensible."
+  - "The frozen V1 standards, generic validator, regression tests, dependencies, README, and repository metadata are read-only during execution."
+  - "The only authorized Executor mutation is .agent/tasks/TASK-0003/report.yaml and its commit/push on dev."
+  - "TASK-0004 revision 1 is stale after this planning revision and must not be executed or treated as current authority."
+
+forbidden_changes:
+  - "Any mutation to STANDARD_MODEL.md, README.md, standards/manifest.yaml, standards/*.yaml, tools/validate.py, tests/test_validate.py, requirements-validator.txt, or any other non-report repository content during execution."
+  - "Any modification to TASK-0003/task.yaml by Executor."
+  - "Any modification to TASK-0004/task.yaml or creation of TASK-0005 or later authority."
+  - "Any proposed patch, fix implementation, review.yaml, continuation artifact, promotion artifact, or release artifact."
+  - "Any branch creation, main mutation, merge, rebase, reset, force update, promotion, tag, release, repository metadata mutation, issue creation, or pull request mutation."
+  - "Any DSL, policy engine, NLP/AI validator, semantic parser, schema layer, registry, framework, service, database, or workflow machinery."
+  - "Any statistical quota for Level 5 or implicit applicability profile from archetype labels."
+  - "Any universal build-versus-buy prescription."
+  - "Any claim that an attack is clean merely because it was NOT_REPRODUCED."
+
+gap_policy:
+  local_auto_fix: false
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0003/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: ""
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+continuation_policy:
+  mode: MANUAL
+  stop_conditions:
+    - BLOCKED
+    - STALE_STATE
+    - AUTHORITY_REQUIRED
+    - CURRENT_PHASE_CAPABILITY_UNAVAILABLE
+    - REVIEW_REQUIRED
+    - REVERIFY_REQUIRED
+    - USER_STOP
+
+capability_requirements:
+  EXECUTION:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The exact frozen V1 semantic subject and all 14 dimensions are revalidated with the complete material attack coverage required by TASK-0003."
+    evidence_required: "Canonical report contains an explicit coverage matrix or equivalent complete evidence with exact frozen subject identity."
+  - id: AC-2
+    requirement: "Every material attack result is classified exactly as REPRODUCED, NOT_REPRODUCED, or UNKNOWN using the canonical epistemic semantics."
+    evidence_required: "Per-attack evidence in report.yaml; no NOT_REPRODUCED result is described as disproven/clean and no UNKNOWN becomes PASS/N/A."
+  - id: AC-3
+    requirement: "The two previously transient findings are independently revalidated rather than copied, and each retained REPRODUCED finding has exact normative rule, exploit, evidence, consequence, owner, and minimal closure direction."
+    evidence_required: "Direct exact-revision model/YAML/validator/test evidence recorded in the report."
+  - id: AC-4
+    requirement: "The standards subject remains byte/content identical to the frozen V1 subject and all non-report repository content remains unchanged by Executor."
+    evidence_required: "Fresh final blob/tree/ref comparison and changed-file inspection."
+  - id: AC-5
+    requirement: "A canonical Executor report is committed and pushed on dev, providing durable exact-commit evidence for Governing Architect review."
+    evidence_required: "Exact report commit SHA containing .agent/tasks/TASK-0003/report.yaml and no unauthorized Executor changes."
+  - id: AC-6
+    requirement: "No downstream fix, TASK-0004 execution, promotion, tag, release, or future authority is exercised."
+    evidence_required: "Fresh final refs/task-directory/release inspection recorded in report."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "At audit start, require dev HEAD to equal the exact handoff base and confirm the frozen semantic subject files still match their 71f2be951c9d44452f5f53122f4062390ef4cb39 blobs/content."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Revalidate complete semantic/adversarial coverage and independently reproduce or reject the two prior transient findings from exact artifacts."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Perform epistemic consistency review: REPRODUCED/NOT_REPRODUCED/UNKNOWN semantics are exact; NOT_REPRODUCED is never described as clean/disproven; UNKNOWN never becomes PASS/N/A."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Before report commit, verify the only intended Executor repository change is .agent/tasks/TASK-0003/report.yaml."
+      required: true
+    - id: CHECK-5
+      command_or_check: "After report commit/push, refresh refs and verify dev is the exact report commit, main remains 71f2be951c9d44452f5f53122f4062390ef4cb39, branch set remains exactly {dev, main}, and the report commit changes only .agent/tasks/TASK-0003/report.yaml relative to the handoff base."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions:
+  - "If the prior transient findings cannot be independently revalidated, record the discrepancy and do not preserve them as REPRODUCED merely for consistency with prior chat."
+  - "If exact frozen-subject identity or read-only non-report boundary cannot be proven, stop BLOCKED."
+  - "TASK-0004 revision 1 is stale and must not execute. Any remediation requires later Architect review of the exact TASK-0003 report commit and fresh revised authority."
+  - "Promotion, tag, and release remain unauthorized."
+
+execution_ready: true

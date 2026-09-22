@@ -1,0 +1,159 @@
+protocol_version: 3
+
+task_id: TASK-0015
+task_revision: 3
+report_revision: 2
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0015/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-skills
+  branch:
+    name: dev
+    role: integration
+  authorized_base_head: "837a9fcc77b34efd29b0d0952989cd4d771f7600"
+  pre_execution_head: "837a9fcc77b34efd29b0d0952989cd4d771f7600"
+  final_execution_head: "a9be7b8e08ae2a83f6d01d38d811f6a0698f0d64"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "1fcf5a2ebeeec7f3e1498d207148a9cd81a95456"
+  observed_revision: "1fcf5a2ebeeec7f3e1498d207148a9cd81a95456"
+
+execution_skills_used:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+  external: []
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0015 revision 3 requires exact immutable diff and static consistency checks; no separate authoritative verifier is required."
+
+local_hygiene:
+  result: PASS
+  run_root: ""
+  cleanup_performed: false
+  retained: []
+  evidence: "Execution used ChatGPT + GitHub only; no local execution surface or temporary repository artifacts were created."
+
+changed_files:
+  - path: executor/SKILL.md
+    summary: "Added deterministic forward timing capture at the post-binding/pre-preflight start boundary and terminal-decision boundary, with whole-block omission when trustworthy timing is unavailable."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: contracts/IMPLEMENTATION_REPORT.md
+    summary: "Separated protocol-v3 schema compatibility from forward collection and clarified boundary, omission, non-authority, no-backfill, and queue-latency semantics."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: templates/report.yaml
+    summary: "Updated timing guidance only; retained exactly the two authorized timing fields and added no schema fields."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "a9be7b8e08ae2a83f6d01d38d811f6a0698f0d64"
+    message: "executor: require forward timing capture"
+
+pushed: true
+promoted_to_main: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PROVEN
+    evidence: >-
+      Exact candidate diff adds Executor procedure that captures started_at_utc only after exact task/repository/base binding
+      is resolved and immediately before capability preflight, and captures terminal_decision_at_utc when the terminal task
+      result is reached before report publication, whenever the current surface provides a trustworthy current UTC clock.
+  - criterion_id: AC-2
+    status: PROVEN
+    evidence: >-
+      Executor, Implementation Report, and report template consistently require new reports to include operational_timing
+      when both boundary timestamps were truthfully captured; if trustworthy timing is unavailable at either boundary the
+      whole block is omitted, and partial, invented, approximate, reconstructed, or Git-commit-derived timing is forbidden.
+  - criterion_id: AC-3
+    status: PROVEN
+    evidence: >-
+      The corrected contract preserves historical/existing protocol-v3 reports without operational_timing and requires no
+      backfill; timing retains exactly started_at_utc and terminal_decision_at_utc as RFC 3339 UTC, stores no derived duration,
+      remains non-authoritative operational telemetry, and keeps approval-to-start/queue latency separate from Executor
+      processing time. This report intentionally omits operational_timing because this ChatGPT + GitHub attempt did not
+      capture a trustworthy current UTC clock at the required start boundary; no timestamp was reconstructed from commit time.
+  - criterion_id: AC-4
+    status: PROVEN
+    evidence: >-
+      Exact compare 837a9fcc77b34efd29b0d0952989cd4d771f7600..a9be7b8e08ae2a83f6d01d38d811f6a0698f0d64
+      is one commit ahead and changes exactly executor/SKILL.md, contracts/IMPLEMENTATION_REPORT.md, and templates/report.yaml.
+      protocols/TASK_PROTOCOL.md remains blob 275330c0bd857b918be4b726b7dd78cfa982915f and architect/SKILL.md remains blob
+      9ae379b673c9868b373bf87f03faaacf8d7cb4e7, preserving revision-1 terminal identity semantics and unrelated governance.
+  - criterion_id: AC-5
+    status: PROVEN
+    evidence: >-
+      The immutable implementation candidate was verified before report construction and published to dev. This report is
+      constructed as the report-only direct child of final_execution_head; branch topology and unchanged main are re-read
+      immediately after report publication before the Executor stops at NEEDS_REVIEW.
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Base-to-candidate compare lists exactly executor/SKILL.md, contracts/IMPLEMENTATION_REPORT.md, and templates/report.yaml."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Exact candidate diff places start capture after exact binding and immediately before capability preflight, and terminal capture at terminal result before report publication, conditional only on trustworthy current UTC availability."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Executor, report contract, and template require forward inclusion when both timestamps are truthfully captured and whole-block omission only for unavailable timing; partial/invented/reconstructed/commit-derived timing is forbidden."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "The template timing block still contains exactly started_at_utc and terminal_decision_at_utc; the contract requires RFC 3339 UTC, derived duration only, and the candidate adds no timing or telemetry field."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "The contract and Executor text keep timing non-authoritative, preserve historical/existing v3 reports without timing and no backfill, and explicitly separate queue/approval latency from Executor processing time."
+  - check_id: CHECK-6
+    result: PASS
+    evidence: "Candidate blob SHAs for protocols/TASK_PROTOCOL.md and architect/SKILL.md exactly equal their revision-3 base blob SHAs; the Executor terminal-identity section is outside the candidate diff."
+  - check_id: CHECK-7
+    result: PASS
+    evidence: "Report publication is constrained to a single-parent direct child of final_execution_head changing only .agent/tasks/TASK-0015/report.yaml; topology is dev/main and main remains pinned at 0a57fbfd39b96494f22fea1f7847aab1d5c8bbf1 pending the required immediate post-publication re-read."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+result: NEEDS_REVIEW

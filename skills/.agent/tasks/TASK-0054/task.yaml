@@ -1,0 +1,204 @@
+protocol_version: 3
+
+task_id: TASK-0054
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: PLATFORM_COMPLIANT_EXECUTION_PUBLICATION
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-skills
+
+target:
+  repository: phatnguyen03022001/agent-skills
+  branch:
+    name: dev
+    role: integration
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  revision: "6930b8da48c9466389653fc55eb16f49eebbb28f"
+
+architect_analysis_skills:
+  - architect
+  - reliability
+  - verification
+  - simplicity
+  - github-workflow
+
+execution_skills:
+  required:
+    - executor
+    - reliability
+    - verification
+    - simplicity
+    - github-workflow
+  recommended:
+    - debugging
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "Current operator instruction: standardize platform-compliant execution/publication without reducing proof quality"
+    role: "Authorizes one bounded reusable-governance correction for capability routing, publication consequence handling, immutable handoff, and platform-block behavior."
+    precedence: 1
+  - source: "phatnguyen03022001/agent-skills@6930b8da48c9466389653fc55eb16f49eebbb28f:protocols/TASK_PROTOCOL.md"
+    role: "Current semantic owner for capability preflight, consequence boundaries, one-writer execution, canonical publication, continuation, and durable review."
+    precedence: 2
+  - source: "phatnguyen03022001/agent-skills@6930b8da48c9466389653fc55eb16f49eebbb28f:executor/SKILL.md"
+    role: "Current Executor hot path for execution surfaces, report publication, terminal blocking, and resource boundaries."
+    precedence: 3
+  - source: "Current official OpenAI documentation for ChatGPT apps/MCP write-action permissions and safety behavior, freshly resolved during execution"
+    role: "External platform evidence only. It informs compatibility wording but does not override repository authority or justify vendor-specific lifecycle states."
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "Existing Task Protocol, Architect/Executor role skills, report/review contracts, and doctrine regression surface"
+  rationale: "The defect is reusable governance semantics, not a new framework. Correct the existing semantic owners and focused regressions only."
+
+objective: "Make execution and canonical publication policy-compliant by construction while preserving proof quality: route by semantic capability rather than provider identity, prefer explicit bounded/typed consequence actions over opaque generic execution when equivalent, fail closed on platform safety blocks without bypass behavior, permit exact immutable publication handoff when a writer loses only publication capability, and preserve verification/evidence rigor across all fallbacks."
+
+scope:
+  required_changes:
+    - "Fresh-bind TASK-0054 at its exact canonical base and fresh-resolve current official OpenAI documentation relevant to ChatGPT app/MCP write actions, permission/confirmation behavior, and risky-action blocking. Treat those docs as mutable external evidence; capture only durable vendor-neutral consequences in repository doctrine."
+    - "Refine protocols/TASK_PROTOCOL.md so execution routing begins from required semantic capability and current authority, not a provider/tool name. A task MAY materially bind a specific surface only when that surface identity itself is required by the proof or consequence; otherwise provider-specific handoff wording must not accidentally narrow valid authorized routing."
+    - "Define consequence-surface preference without claiming typed tools are automatically safe: when multiple authorized surfaces can perform the same consequence with equivalent evidence, prefer the narrowest explicit bounded action whose inputs, target, expected precondition, mutability, force/destructive behavior, and postcondition are machine-checkable over opaque arbitrary command execution. Generic terminal remains a valid fallback/escape hatch when no sufficient typed surface exists and platform policy permits it."
+    - "Define platform/tool safety blocking as capability evidence, not a semantic task failure and not permission to bypass. A blocked/refused request MUST NOT be obfuscated, split, encoded, rephrased solely to evade safety evaluation, retried repeatedly without materially changed capability evidence, or used to justify widening permissions/config. Record the required semantic capability as unavailable for that phase and follow normal CURRENT_PHASE_CAPABILITY_UNAVAILABLE/rebind/operator boundaries."
+    - "Preserve quality invariant: changing execution surface, requiring confirmation, using a typed action, or falling back to an explicit operator action MUST NOT weaken acceptance criteria, verifier identity, exact commit/content identity, remote freshness, scope checks, or evidence quality. Platform compliance changes HOW a consequence is carried out, not WHAT must be proven."
+    - "Refine one-writer semantics around consequence boundaries. Exactly one writer remains authorized for content mutation within an active mutation boundary, but a completed immutable local commit MAY be handed off for publication only after the prior writer is terminal and mutation authority is explicitly transferred. The successor may publish only the exact immutable object/content identity authorized by the handoff and may not edit/recreate/amend it unless a new task/revision grants content mutation authority."
+    - "Define immutable publication handoff preconditions: exact repository/branch, exact local candidate identity, exact parent/base, exact tracked delta or content identity as required, clean/no-staged local state when local proof is relevant, fresh canonical remote expected-head proof immediately before publication, non-force consequence unless separately authorized, and fresh remote proof after publication. Remote drift fails closed."
+    - "Support typed remote publication that may create a different commit identity only when task authority is explicitly content-identity based rather than exact-commit based. Never silently substitute create-file/create-commit/update-ref semantics for an exact local commit handoff when SHA identity is part of the proof contract."
+    - "Clarify operator fallback: human execution is allowed only when current authorized automation cannot safely perform the required consequence or the action is genuinely user-only/approval-bound. The operator becomes an explicit external consequence actor; exact preconditions and post-publication remote proof remain mandatory. Do not default to manual RPC merely because an automated path was blocked once."
+    - "Refine Executor report/publication semantics so a report never self-attests its own same-commit publication. If report publication is unavailable, preserve the exact immutable local report commit/checkpoint when safely possible and return a truthful non-durable terminal result; a later publication-only handoff may publish that exact checkpoint under the immutable-handoff rules."
+    - "Refine Architect review semantics so typed repository writes are preferred for Architect-owned durable review publication when sufficient and authorized, while exact reviewed-report identity and remote freshness remain unchanged. Review publication capability failure remains CURRENT_PHASE_CAPABILITY_UNAVAILABLE rather than license for shell-policy bypass."
+    - "Add focused doctrine regressions in scripts/test_validate_skill_library.py covering at least: provider-specific handoff must not override capability routing absent material binding; typed bounded publication is preferred over generic shell when equivalent; generic terminal remains legal fallback; platform block forbids bypass/obfuscation/retry spam; verification quality cannot be downgraded by fallback; immutable publication handoff preserves exact object and one-writer semantics; exact-commit and content-identity publication contracts are distinct; operator fallback remains last-resort explicit consequence; same-commit report publication is externally proven rather than self-attested."
+    - "Keep the correction protocol-v3 compatible and version-agnostic. Do not encode current OpenAI internal safety-rule names, hidden classifiers, plan-specific product behavior, current UI wording, current connector inventory, or transient command-specific allow/deny observations as reusable doctrine."
+    - "Run repository-native validation and the complete relevant unit-test suites, publish the implementation candidate to dev, publish a report-only direct child, fresh-resolve canonical remote closure, and stop at NEEDS_REVIEW."
+
+  allowed_existing_files_or_components:
+    - "protocols/TASK_PROTOCOL.md"
+    - "executor/SKILL.md"
+    - "architect/SKILL.md"
+    - "contracts/IMPLEMENTATION_REPORT.md"
+    - "contracts/ARCHITECT_REVIEW.md"
+    - "scripts/test_validate_skill_library.py"
+    - ".agent/tasks/TASK-0054/report.yaml"
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Exactly two organizational roles remain Architect and Executor."
+  - "Capability routing is semantic and authority-first; provider/tool identity is not authority by itself."
+  - "No rule or implementation may attempt to evade, bypass, obfuscate around, or weaken platform safety controls."
+  - "Typed/bounded actions are preferred only when consequence and proof are equivalent; they do not manufacture authority or automatically imply safety."
+  - "Generic terminal remains available as a bounded fallback when sufficient, authorized, and permitted."
+  - "Verification and acceptance quality MUST NOT be weakened because a preferred execution surface is unavailable."
+  - "One-writer remains exact for active content mutation; immutable publication handoff is transfer of publication authority over an already-fixed object/content identity, not concurrent editing."
+  - "GitHub remote remains canonical repository truth; remote mutable evidence is refreshed at consequence boundaries."
+  - "No new lifecycle state, role, scheduler, queue, registry, transaction service, publication daemon, provider router service, or cross-repository lock is introduced."
+  - "Historical artifacts remain valid; no bulk backfill or migration is required."
+
+forbidden_changes:
+  - "Do not modify templates or validator parsing/schema unless the existing serialization cannot express the required semantics; if that becomes necessary, stop as BLOCKING rather than expanding scope."
+  - "Do not modify reuse-first, other skills, README taxonomy, case router, dependencies, workflows, branch topology, main, tags, releases, or sibling repositories."
+  - "Do not add vendor-specific OpenAI policy text as repository authority, hidden safety assumptions, command allowlists, provider score/ranking systems, or automatic provider hopping machinery."
+  - "Do not add a repo_publish runtime tool, Agent Runtime implementation, MCP server code, confirmation UI, Secure MCP Tunnel change, or runtime lifecycle change in this task."
+  - "Do not weaken one-writer, exact-base, fresh-remote, verifier, report/review, promotion, or release boundaries."
+  - "Do not use platform safety blocks as justification to widen permissions, disable safety, encode/obfuscate commands, or split consequences to evade review."
+
+gap_policy:
+  local_auto_fix: false
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: forbidden
+  dependency_change: forbidden
+  public_contract_change: forbidden
+  blocking_gap_behavior: BLOCKED
+
+structure_policy:
+  expected_new_files:
+    - ".agent/tasks/TASK-0054/report.yaml"
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "No unlisted files are authorized."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Execution routing is semantic-capability-first and does not accidentally bind to SentinelX, Remote Desktop Commander, Agent Runtime, shell, or another provider unless exact surface identity is materially required."
+    evidence_required: "Protocol/role text plus focused regression proves provider-specific handoff wording cannot override an otherwise provider-neutral canonical task."
+  - id: AC-2
+    requirement: "Equivalent canonical mutation prefers the narrowest explicit bounded/typed consequence action while preserving generic terminal as an authorized fallback."
+    evidence_required: "Protocol/Executor semantics and regression distinguish typed consequence preference from terminal prohibition and preserve authority/proof equivalence."
+  - id: AC-3
+    requirement: "Platform/tool safety refusal is fail-closed capability evidence and never triggers bypass behavior."
+    evidence_required: "Regression rejects obfuscation, command splitting for evasion, permission widening, or repeated unchanged retries and routes to existing capability-unavailable/rebind/operator semantics."
+  - id: AC-4
+    requirement: "Fallback or surface changes never weaken proof quality."
+    evidence_required: "Canonical semantics explicitly preserve ACs, exact identity, verifier requirements, remote freshness and evidence obligations regardless of surface."
+  - id: AC-5
+    requirement: "Immutable publication handoff allows progress without violating one-writer."
+    evidence_required: "Regression proves prior writer terminal + exact immutable checkpoint + explicit publication authority transfer permits successor publication but forbids content edit/amend/recreation without new authority."
+  - id: AC-6
+    requirement: "Exact-commit publication and content-identity publication remain distinct contracts."
+    evidence_required: "Regression proves an exact local SHA cannot silently be replaced by a newly created equivalent-content commit; content-identity publication may use a different SHA only when task authority explicitly permits it."
+  - id: AC-7
+    requirement: "Operator fallback is explicit and bounded, not a default manual RPC path."
+    evidence_required: "Semantics require current automation insufficiency/user-only action plus preserved pre/post consequence evidence before operator execution."
+  - id: AC-8
+    requirement: "Report and review publication remain externally proven consequences rather than self-attested same-commit facts."
+    evidence_required: "Report/review contract wording and regressions preserve post-publication REMOTE_MUTABLE proof and truthful non-durable terminal behavior."
+  - id: AC-9
+    requirement: "The correction remains protocol-v3 compatible and architecture-minimal."
+    evidence_required: "Exact candidate diff stays within authorized semantic owners/tests, adds no role/state/framework/router/service/schema migration and requires no historical backfill."
+  - id: AC-10
+    requirement: "Current official OpenAI write-action safety guidance is freshly researched without freezing mutable product details into generic doctrine."
+    evidence_required: "Report records authoritative official-source URLs/date observed and maps only durable consequences into vendor-neutral repository wording."
+  - id: AC-11
+    requirement: "All relevant repository-native validation passes on the exact candidate."
+    evidence_required: "python3 scripts/validate_skill_library.py; python3 -m unittest scripts/test_validate_skill_library.py; python3 -m unittest scripts.test_reconcile_env; git diff --check; canonical TASK-0054 task/report artifact validation all PASS."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Fresh-resolve canonical TASK-0054 exact base/dev/main, selected agent-skills authority, local divergence/writer state, and required current execution/publication capabilities before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Fresh-research official OpenAI sources relevant to ChatGPT apps/MCP write-action permissions, confirmations, and blocked risky actions. Record sources as external evidence, not repository authority."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Add focused semantic regressions first and prove at least one authorized missing-behavior regression fails against exact pre-change semantics, then implement the smallest semantic correction and rerun focused regressions to PASS."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run full repository-native validator/test checks and git diff --check on the exact implementation candidate."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Prove exact implementation diff stays inside authorized files, publish candidate non-force to dev, create/validate report-only direct child, publish it, fresh-resolve remote dev/main and stop at NEEDS_REVIEW."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: "Independent Architect review of exact report/candidate lineage and current external-platform research evidence."
+    expected_signal: "Reusable governance is platform-compliant by construction without weaker proof, bypass semantics, or new orchestration framework."
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true

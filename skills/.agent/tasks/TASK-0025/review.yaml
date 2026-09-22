@@ -1,0 +1,52 @@
+protocol_version: 3
+
+task_id: TASK-0025
+task_revision: 2
+review_revision: 2
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-skills
+  path: .agent/tasks/TASK-0025/report.yaml
+  commit: "51cecf0b4346ebd291f1de0f650b169f9bcf7b2b"
+  report_revision: 2
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+gap_disposition:
+  - gap_id: GOV-G-P1-EVIDENCE-STRENGTH
+    disposition: RESOLVED
+    reason: >-
+      Revision 2 replaces the material revision-1 proof weakness with executable
+      normalization/authority tests, all eight governance-eval consequence pairs,
+      real temporary-Git state fixtures, and independently reconstructed immutable
+      historical/pilot/ownership evidence without changing reusable governance semantics.
+
+follow_up_tasks: []
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: >-
+    Stable adoption is complete: main already equals the exact verified revision-2
+    candidate 337c0be6618090e704b345b1bf93df488a4985af. The later report and review
+    commits remain dev-only evidence and are not promotion candidates.
+
+notes:
+  - "Revision-2 candidate 337c0be6618090e704b345b1bf93df488a4985af is the direct child of exact base 6f36dbc5ccaa480c1aca28d1d77587999e302744 and changes only TASK-0025 gate evidence plus the existing unittest companion."
+  - "Validate skill library run 33732944132 completed success with head_sha exactly 337c0be6618090e704b345b1bf93df488a4985af."
+  - "GitHub compare proves old stable main 76f2d3877d1698f91eb5a6117e2301ed49480379 is the merge base/ancestor of the accepted candidate; final main equals the candidate and dev carries the report/review evidence lineage."
+  - "GOV-A through GOV-G is accepted. No agent-standards, agent-documents, or agent-runtime mutation is required by this governance program."

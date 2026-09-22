@@ -1,0 +1,52 @@
+protocol_version: 3
+
+task_id: TASK-0007
+task_revision: 2
+review_revision: 2
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-documents
+  path: .agent/tasks/TASK-0007/report.yaml
+  commit: "04291ea61464668602cee1a3308f99d94975f1d8"
+  report_revision: 2
+
+independence:
+  reviewer_role: ARCHITECT
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: NOT_REQUIRED
+
+accepted_candidate:
+  commit: "6e38f8b63f5ee4da6cb157812ca76448be7fc398"
+  role: "exact TASK-0007 revision-2 agent-documents root .gitignore hygiene candidate"
+
+acceptance_basis:
+  - "Fresh canonical review-boundary truth proves dev=04291ea61464668602cee1a3308f99d94975f1d8, main=6918f46282f4a92bbc61071444a5ff5dab30ddc9, topology exactly {dev, main}."
+  - "Candidate 6e38f8b63f5ee4da6cb157812ca76448be7fc398 is the direct child of exact revision-2 planning base 52da304da251eaa24718b87b1de944e60eb26d2c and adds only root .gitignore; report 04291ea61464668602cee1a3308f99d94975f1d8 is its direct report-only child."
+  - "The candidate .gitignore blob is c1d666faa331a35058bfaf15511109997ef1089d and exactly matches the authorized 14-line policy; no tracked path is ignored."
+  - "Exact-candidate evidence records 14 positive and 9 negative ignore cases PASS, 94/94 unittest PASS, py_compile PASS, git diff --check PASS, and exact scope/hygiene PASS without invalid tools/validate.py self-targeting."
+  - "The first post-binding bundle failed only on an Executor-authored Git predicate before stage/commit/push. The following diagnostic returned genuinely new material information; corrected candidate publication and later report phases were separately justified semantic boundaries. Five post-binding terminal_exec calls therefore do not violate the active one-logical-bundle-to-one-terminal_exec rule."
+  - "Timing is noisy because the execution-script failure and diagnosis added boundaries. This run is accepted as a successful execution-shape pilot but not as a clean latency sample and supports no causal attribution to model, controller, platform, transport, network, Agent Runtime, or Git."
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: >-
+    TASK-0007 revision 2 closes agent-documents hygiene and provides post-activation execution-shape evidence on dev.
+    It grants no main promotion or release authority and is not by itself a clean latency-adjudication sample.
+
+follow_up_tasks:
+  - "Run the confirmatory natural CHATGPT_LOCAL pilot on architect-profile under the same active authority generation, aiming for a clean sample without Executor-authored execution-script noise."
+
+notes:
+  - "TASK-0007 revision 1 remains REVISION_REQUIRED historical evidence for the invalid validator self-target contract."
+  - "TASK-0007 revision 2 counts as post-activation pilot #1 for execution-shape semantics; use its latency numbers only with the recorded noise limitation."

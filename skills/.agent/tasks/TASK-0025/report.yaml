@@ -1,0 +1,163 @@
+protocol_version: 3
+
+task_id: TASK-0025
+task_revision: 2
+report_revision: 2
+state: REPORTED
+terminal_status: NEEDS_REVIEW
+
+task_source:
+  path: .agent/tasks/TASK-0025/task.yaml
+  commit: "6f36dbc5ccaa480c1aca28d1d77587999e302744"
+
+execution:
+  repository: phatnguyen03022001/agent-skills
+  branch:
+    name: dev
+    role: integration
+  authorized_base_head: "6f36dbc5ccaa480c1aca28d1d77587999e302744"
+  pre_execution_head: "6f36dbc5ccaa480c1aca28d1d77587999e302744"
+  final_execution_head: "337c0be6618090e704b345b1bf93df488a4985af"
+
+skill_library:
+  repository: phatnguyen03022001/agent-skills
+  authorized_revision: "16217bb78a578160efb68afc84acdeff9c36ed38"
+  observed_revision: "16217bb78a578160efb68afc84acdeff9c36ed38"
+
+execution_skills_used:
+  required:
+    - executor
+    - verification
+    - simplicity
+  recommended: []
+  external:
+    - superpowers:using-superpowers
+    - superpowers:executing-plans
+    - superpowers:test-driven-development
+    - superpowers:systematic-debugging
+    - superpowers:verification-before-completion
+
+pre_execution_checks:
+  protocol_version_supported: true
+  handoff_type_confirmed: true
+  task_at_base_confirmed: true
+  task_identity_confirmed: true
+  architect_binding_confirmed: true
+  repository_confirmed: true
+  branch_confirmed: true
+  base_head_confirmed: true
+  skill_revision_confirmed: true
+  required_execution_skills_available: true
+  structure_authority_confirmed: true
+  working_tree_clean: false
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - github_actions_read
+  available:
+    - exact_remote_ref_read
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - github_actions_read
+  missing: []
+  passed: true
+  evidence: "Fresh GitHub refs, local origin binding, exact base, pinned authority, workflow path, and all required capabilities were resolved before mutation."
+
+authoritative_verification:
+  required: true
+  performed: true
+  result: SUCCESS
+  evidence: "Existing Validate skill library workflow run 33732944132 completed success with head_sha exactly 337c0be6618090e704b345b1bf93df488a4985af; the workflow name and run head_sha were read again immediately before promotion."
+
+local_hygiene:
+  result: RETAINED_FOR_EVIDENCE
+  run_root: ""
+  cleanup_performed: false
+  retained:
+    - identity: ".DS_Store"
+      reason: "Pre-existing operator-owned untracked state was neither staged nor modified."
+    - identity: ".codex/"
+      reason: "Pre-existing operator-owned untracked state was neither staged nor modified."
+  evidence: "Tracked content was clean before base reconciliation and before candidate creation. The only retained local differences are the two pre-existing operator-owned untracked entries."
+
+changed_files:
+  - path: .agent/tasks/TASK-0025/gate.md
+    summary: "Replaces revision-1 phrase/identity assertions with exact executable and immutable-evidence proof records."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: scripts/test_validate_skill_library.py
+    summary: "Exercises all corpus outcomes and real temporary Git-state facts without changing validator or governance semantics."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+
+commits_created:
+  - sha: "337c0be6618090e704b345b1bf93df488a4985af"
+    message: "test(TASK-0025): strengthen revision-2 gate proof"
+
+pushed: true
+promoted_to_main: true
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Candidate is the direct child of exact base 6f36dbc5ccaa480c1aca28d1d77587999e302744. Executable mutation/normalization tests validate expanded v3, sparse defaults, missing-authority rejection, and missing-HOW discretion using the existing validator/model."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "The candidate executes corpus integrity plus all eight hand-checked paired ALLOW_LOCAL/ESCALATE_TO_ARCHITECT expectations for route, persistence, ownership, dependency, generated contract, trust, local HOW, and companion ownership. The corpus remains regression data, not live authority."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "gate.md independently reconstructs TASK-0044 revision 3/4 selector-only task diffs, revision-5 evidence correction, candidate/sentinel/run lineage, and exact revision-1 accepted TASK-0045 and TASK-0008 task/report/review/candidate/diff boundaries."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Temporary real-Git fixtures establish absent/empty, stale, clean/behind fast-forward, dirty/untracked, diverged, identity-mismatch, and temporary-clone facts. The canonical 03f6 -> bf8d -> 6f36 lineage plus fresh local fast-forward proves Architect remote authority may precede later safe local reconciliation without synchronization machinery."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Candidate diff contains only gate evidence and the existing test companion. Read-only architect-profile TASK-0015 exact review owns operator-specific working-copy/presentation rules; read-only agent-runtime is execution capability only. No external repository changed."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Focused revision-2 regressions passed; python3 scripts/validate_skill_library.py passed; python3 -m unittest scripts/test_validate_skill_library.py passed 98 tests; git diff --check passed; workflow run 33732944132 completed success for exact candidate 337c0be6618090e704b345b1bf93df488a4985af."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Immediately before promotion, fresh GitHub refs were dev=337c0be6618090e704b345b1bf93df488a4985af and main=76f2d3877d1698f91eb5a6117e2301ed49480379; git merge-base proved old main is an ancestor of the candidate. A non-force ref update set main exactly to 337c0be6618090e704b345b1bf93df488a4985af, never revision-1 candidate c045d9cf79c5293b7343c7f92c2d2578225e292e."
+  - criterion_id: AC-8
+    status: PASS
+    evidence: "This report is the sole intended report-only direct child of candidate 337c0be6618090e704b345b1bf93df488a4985af on dev. Final GitHub topology and designated-local dev reconciliation are verified after this report is published; retained operator-owned untracked state remains untouched."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Fresh GitHub dev/main resolved to exact base/main before mutation; TASK-0025 revision 2, revision-1 review/report, pinned authority, existing workflow, origin binding, and capabilities were independently resolved."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Only gate.md and the existing unittest companion changed. No validator, corpus, workflow, contract, template, reusable skill, or external repository changed."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Focused regressions, full validator, full unittest suite, and git diff --check were freshly run on exact candidate 337c0be6618090e704b345b1bf93df488a4985af."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Candidate was non-force pushed to dev; existing Validate skill library run 33732944132 completed success with matching head_sha."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Fresh refs immediately before promotion preserved old main, ancestry check passed, and main was non-force fast-forwarded exactly to the verified candidate."
+  - check_id: CHECK-6
+    result: PENDING_FINAL_REFRESH
+    evidence: "This report-only child must be published to dev, then GitHub topology and final designated-local dev equality must be refreshed before terminal stop."
+
+discovered_gaps: []
+structural_observations: []
+deviations_from_task: []
+blockers: []
+
+working_tree_after:
+  clean: false
+  summary: "After final report publication and safe dev reconciliation, no tracked differences may remain; .DS_Store and .codex/ remain preserved untracked operator state."
+
+result: NEEDS_REVIEW
