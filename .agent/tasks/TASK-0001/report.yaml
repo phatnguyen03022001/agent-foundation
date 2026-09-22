@@ -1,0 +1,107 @@
+schema_version: 1
+task_id: TASK-0001
+title: History-Preserving Foundation Bootstrap
+terminal_result: PASS
+binding:
+  scope: published implementation commit before report-artifact publication
+  exact_target_commit: 8f7c72e5ad34394853ee7089a587b8602dd30932
+  exact_target_tree: a436fce725dc939feadbb49d9dcf6918c6b78886
+  independently_resolved_remote_main: 8f7c72e5ad34394853ee7089a587b8602dd30932
+  remote_default_branch: main
+sources:
+  architect-profile:
+    repository: phatnguyen03022001/architect-profile
+    source_dev_tip: 5afd25b567e3817c111d84fe28b4edc0598e5081
+    old_source_main: 508c64f02640911f1fdca81c8cde08748921eae7
+    source_root_tree: 4084f96ead597ec08e90e453ed4909a6cba908ca
+    destination: profile/
+  agent-skills:
+    repository: phatnguyen03022001/agent-skills
+    source_dev_tip: 4f4ef2b45e1a025bc499702919431c0d0d61419c
+    old_source_main: ed8d9fb35bb8b052530ca879e68a227d77e4a8a6
+    source_root_tree: 3322c2bbabec89d77ac956701d680c36c80e0a7e
+    destination: skills/
+  agent-documents:
+    repository: phatnguyen03022001/agent-documents
+    source_dev_tip: ff135cde2dbebbffcd0c33415a7abaf1b2e2c4ec
+    old_source_main: 6918f46282f4a92bbc61071444a5ff5dab30ddc9
+    source_root_tree: c0bf2080ddee6e549a1605c13d4ff9041984c636
+    destination: documents/
+  agent-standards:
+    repository: phatnguyen03022001/agent-standards
+    source_dev_tip: 4eb149686329b3a5ad74d66a6fce050d930ada39
+    old_source_main: 3f4950f280a3a35fee81471d4b83715fa72cf9ee
+    source_root_tree: 1807ad6e7d1a8ddfe8987ebe937886d9fd85e268
+    destination: standards/
+proofs:
+  source_main_to_source_dev_ancestry:
+    architect-profile: true
+    agent-skills: true
+    agent-documents: true
+    agent-standards: true
+  source_tip_to_foundation_main_ancestry:
+    architect-profile: true
+    agent-skills: true
+    agent-documents: true
+    agent-standards: true
+  source_tree_to_destination_subtree:
+    profile:
+      source_tree: 4084f96ead597ec08e90e453ed4909a6cba908ca
+      destination_tree: 4084f96ead597ec08e90e453ed4909a6cba908ca
+      equal: true
+    skills:
+      source_tree: 3322c2bbabec89d77ac956701d680c36c80e0a7e
+      destination_tree: 3322c2bbabec89d77ac956701d680c36c80e0a7e
+      equal: true
+    documents:
+      source_tree: c0bf2080ddee6e549a1605c13d4ff9041984c636
+      destination_tree: c0bf2080ddee6e549a1605c13d4ff9041984c636
+      equal: true
+    standards:
+      source_tree: 1807ad6e7d1a8ddfe8987ebe937886d9fd85e268
+      destination_tree: 1807ad6e7d1a8ddfe8987ebe937886d9fd85e268
+      equal: true
+repository_state:
+  branch: main
+  local_branches:
+    - main
+  remote_branches:
+    - main
+  origin: https://github.com/phatnguyen03022001/agent-foundation.git
+  working_tree_at_binding: clean
+  canonical_root_entries:
+    - .agent/
+    - README.md
+    - documents/
+    - profile/
+    - skills/
+    - standards/
+  intentionally_added_foundation_content:
+    - README.md
+    - .agent/tasks/TASK-0001/task.yaml
+    - .agent/tasks/TASK-0001/report.yaml
+migration_state:
+  temporary_archives_used:
+    - .task-0001-profile.tar
+    - .task-0001-skills.tar
+    - .task-0001-documents.tar
+    - .task-0001-standards.tar
+  temporary_archives_removed: true
+  temporary_local_branches_created: []
+  temporary_remote_branches_created: []
+  temporary_refs_remaining: []
+  temporary_migration_files_remaining: []
+  historical_source_commits_rewritten: false
+mutations:
+  source_repositories_mutated: false
+  agent_runtime_mutated: false
+  host_runtime_service_tcc_keychain_system_settings_mutated: false
+  intentional_state_created_outside_target_repository: false
+remaining_successor_work:
+  - semantic integration and authority cutover
+  - bootstrap and routing cutover
+  - Capability Index materialization
+  - snapshot and Project Sources work
+  - source repository branch-policy or archival changes
+  - cross-repository live-reference repair
+  - Capability Lab work
