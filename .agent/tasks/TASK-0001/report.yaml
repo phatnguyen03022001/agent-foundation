@@ -96,7 +96,9 @@ migration_state:
     pattern: .DS_Store
     purpose: suppress host-generated Finder metadata during report commit
     restored_to_original_before_handoff: true
-  finder_artifacts_committed_in_final_canonical_tree: false
+  task_generated_finder_artifacts_committed: false
+  imported_historical_finder_artifacts_preserved: true
+  imported_historical_finder_artifacts_note: Existing .DS_Store entries inside imported source trees are historical source content and were intentionally preserved because subtree tree IDs must remain exact.
   historical_source_commits_rewritten: false
 mutations:
   source_repositories_mutated: false
