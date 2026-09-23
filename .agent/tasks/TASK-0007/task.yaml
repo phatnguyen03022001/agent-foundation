@@ -1,0 +1,254 @@
+protocol_version: 3
+
+task_id: TASK-0007
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0007"
+  gap_id: "VISION-EXTERNAL-CAPABILITY-PLANE"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "c999401369a09e30b9ea0ff8bcfa3ef207c19bd5"
+
+architect_analysis_skills:
+  - architect
+  - research
+  - reuse-first
+  - simplicity
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - reuse-first
+    - simplicity
+  recommended:
+    - research
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator direction to operationalize the external capability plane through indexing, immutable synchronization, and reuse rather than Foundation reimplementation"
+    role: "material objective and scope authority"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0006/review.yaml@c999401369a09e30b9ea0ff8bcfa3ef207c19bd5"
+    role: "accepted three-layer Foundation architecture and one-revision internal authority identity"
+    precedence: 2
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@c999401369a09e30b9ea0ff8bcfa3ef207c19bd5"
+    role: "L1 capability-control, Sync specialization, and L2 reusable-capability boundaries"
+    precedence: 3
+  - source: "profile/ARCHITECT_PROFILE.md@c999401369a09e30b9ea0ff8bcfa3ef207c19bd5"
+    role: "operator reuse-first, KISS, context, and GitHub-canonical preferences"
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "accepted TASK-0006 three-layer architecture at c999401369a09e30b9ea0ff8bcfa3ef207c19bd5"
+  rationale: "External capability discovery and synchronization are L1 control-plane concerns owned by skills/, while indexed capability metadata is inert L2 knowledge. No new organizational role or architecture layer is required."
+
+objective: "Operationalize the Foundation external capability plane with a deterministic GitHub-backed source registry, source-specific inert metadata snapshots, one aggregate capability/discovery catalog, and a bounded Sync Executor workflow for ECC, Superpowers, Matt Pocock skills, and sindresorhus/awesome, without activating upstream instructions, vendoring full repositories, changing Foundation authority, or retiring current internal skills."
+
+external_source_baseline:
+  ecc:
+    repository: affaan-m/ECC
+    tracking_ref: main
+    snapshot_revision: "bf70150eb2df8070024e5bdf08e4aa08959e2735"
+    kind: capability_source
+  superpowers:
+    repository: obra/superpowers
+    tracking_ref: main
+    snapshot_revision: "5bf4e78011075bcfc0dc295f0724994cd123ee71"
+    kind: capability_source
+  matt_skills:
+    repository: mattpocock/skills
+    tracking_ref: main
+    snapshot_revision: "c55ee46073ed923f86ce59a5eb3b6d895095d1b7"
+    kind: capability_source
+  awesome:
+    repository: sindresorhus/awesome
+    tracking_ref: main
+    snapshot_revision: "bc98e517ddca672f55f9857d714fc3ea3c3540b2"
+    kind: discovery_source
+
+scope:
+  required_changes:
+    - "Create one Foundation-owned external source registry under skills/.agent/external-capabilities/ containing exactly ECC, Superpowers, Matt Pocock skills, and sindresorhus/awesome with repository identity, tracking ref, exact immutable snapshot revision, source kind, license identity, and source-specific indexing policy."
+    - "Create deterministic inert source snapshots as generated JSON metadata, not executable or auto-discovered skill content. Snapshot bytes must carry exact upstream repository/revision provenance and must never be placed in AGENTS.md, CLAUDE.md, GEMINI.md, .agents/skills, .claude/skills, plugin, hook, or other harness auto-discovery locations."
+    - "Create one generated aggregate catalog that distinguishes capability entries from discovery entries and is searchable without loading upstream skill bodies. The minimum entry model must preserve stable id, source, exact revision, source path or discovery URL, kind, description/title, license, and only source-supported invocation/status/compatibility metadata."
+    - "For ECC, index skill metadata from skills/**/SKILL.md only; do not treat agents, commands, hooks, rules, scripts, installers, adapters, or generated/runtime surfaces as capability entries."
+    - "For Superpowers, index ordinary skill metadata from skills/**/SKILL.md and preserve source-level manifest/invocation facts needed to distinguish skill content from session/bootstrap or hook behavior; do not activate or execute any hook, bootstrap, installer, script, or plugin behavior."
+    - "For Matt Pocock skills, use the exact promoted skill inventory declared by .claude-plugin/plugin.json as the default capability set; do not promote misc, in-progress, deprecated, or other non-manifest skills merely because they exist in the repository."
+    - "For sindresorhus/awesome, index it only as a discovery catalog of curated downstream links/categories. Awesome entries are not capabilities and do not become adopted or trusted sources."
+    - "Implement one bounded deterministic Sync Executor script that can refresh the four source snapshot revisions and generated metadata only inside an explicitly authorized Foundation task. Refresh must use GitHub source bytes/API data, stable sorting, deterministic output, and no execution of upstream code."
+    - "The Sync workflow must separate observation/synchronization from adoption: refreshing a source revision or catalog must not modify authority.lock.json, activate bootstrap capability routes, install/symlink plugins or skills, or mark any external capability ADOPTED/AUTHORIZED."
+    - "Expose the aggregate external capability catalog through one repository-relative canonical bootstrap locator resolved at the active Foundation authority_set_identity revision, with fail-closed validator coverage for missing/malformed/wrong-path locator data."
+    - "Update concise Foundation/skills discovery documentation and repository-native validators/tests only as required to document and prove the external capability plane."
+    - "Publish TASK-0007 implementation and report by non-force fast-forward on main only."
+
+  allowed_existing_files_or_components:
+    - "profile/.agent/bootstrap/bootstrap.json"
+    - "profile/.agent/bootstrap/validate.py"
+    - "profile/.agent/bootstrap/test_bootstrap.py"
+    - "skills/contracts/FOUNDATION_ARCHITECTURE.md"
+    - "skills/README.md"
+    - "skills/scripts/validate_skill_library.py"
+    - "skills/scripts/test_validate_skill_library.py"
+    - "README.md only if one concise navigation sentence is materially required"
+    - ".agent/tasks/TASK-0007/**"
+
+  expected_files_are_restrictive: false
+
+invariants:
+  - "Foundation remains MAIN_ONLY and all Foundation-internal canonical paths continue to resolve from one exact authority_set_identity revision."
+  - "There remain exactly two organizational roles: Architect and Executor. Sync remains a named Executor specialization and gains no independent authority."
+  - "authority.lock.json remains external-authority-only and unchanged by external ecosystem synchronization; indexed ecosystem revisions are source/snapshot identity, not Foundation authority."
+  - "INDEXED != LOADED, PINNED != TRUSTED, SYNCED != ADOPTED, ADOPTED != AUTHORIZED, LOADED != AUTHORIZED, and SNAPSHOT != AUTHORITY remain enforced."
+  - "External source bytes are instruction-bearing data until separately admitted; no upstream AGENTS.md, hooks, scripts, installers, plugin bootstrap, commands, or session governance becomes active Foundation instruction merely because it was fetched or indexed."
+  - "No full upstream repository is vendored into agent-foundation."
+  - "No external capability is adopted, installed, symlinked, activated, or added to Foundation capability_routes by this task."
+  - "Current internal 15-skill taxonomy remains exactly unchanged; no current skill is retired, deleted, renamed, or semantically replaced."
+  - "Awesome remains discovery-only; following an Awesome link requires separate downstream source resolution before any capability admission."
+  - "Sync output is deterministic and reviewable; it contains no generated timestamps or host-specific paths that would create meaningless churn."
+  - "agent-runtime remains a separate orthogonal execution substrate and is not mutated by this task."
+
+forbidden_changes:
+  - "Execute, source, import, install, package-install, symlink, or activate upstream code, hooks, plugins, scripts, commands, rules, agents, or bootstrap instructions."
+  - "Clone or vendor a complete ECC, Superpowers, Matt skills, Awesome, or another external repository into agent-foundation."
+  - "Add any of the four ecosystems to profile/.agent/bootstrap/authority.lock.json."
+  - "Add external ecosystem skills directly to bootstrap capability_routes or Case Router as active/adopted capabilities."
+  - "Change Architect/Executor organizational authority, task lifecycle, review ownership, or acceptance semantics."
+  - "Create a new organizational role, fourth Foundation layer, package manager, plugin manager, daemon, scheduler, queue, database, workflow engine, generic dependency solver, or provider pool."
+  - "Retire or replace current internal skills."
+  - "Modify agent-runtime repository, Runtime installation/configuration/state, TCC, Keychain, System Settings, or host-global package configuration."
+  - "Create branches, PRs, tags, releases, or staging topology."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "A canonical external source registry exists with exactly the four authorized ecosystems and exact baseline revisions from this task, plus repository/ref/kind/license/indexing-policy metadata."
+    evidence_required: "Exact committed registry bytes and deterministic validation against the four authorized repository identities and SHAs."
+  - id: AC-2
+    requirement: "Each authorized ecosystem has one inert deterministic metadata snapshot at its exact baseline revision, and the aggregate catalog is reproducibly generated from those pinned source identities without executing upstream code."
+    evidence_required: "Exact snapshot/catalog paths, source SHA provenance, regeneration proof, stable-output comparison, and tests demonstrating no execution/install path."
+  - id: AC-3
+    requirement: "ECC catalog entries come only from skills/**/SKILL.md metadata; excluded ECC agent/command/hook/rule/script/runtime surfaces do not appear as capabilities."
+    evidence_required: "Source-specific parser tests and exact catalog assertions over representative included/excluded upstream paths."
+  - id: AC-4
+    requirement: "Superpowers entries preserve enough upstream facts to distinguish ordinary skills from session/bootstrap/hook behavior without activating that behavior."
+    evidence_required: "Pinned manifest/skill metadata evidence and tests proving hooks/bootstrap/installers are not executed or exposed as Foundation authority."
+  - id: AC-5
+    requirement: "Matt capability entries match the promoted skill inventory from .claude-plugin/plugin.json at the pinned revision; non-promoted repository skill surfaces are not default capability candidates."
+    evidence_required: "Exact promoted-manifest identity plus generated-catalog equality/containment assertions."
+  - id: AC-6
+    requirement: "Awesome is represented only as discovery metadata; its entries cannot satisfy capability routing or adoption/authorization state."
+    evidence_required: "Catalog kind assertions and fail-closed tests showing Awesome discovery entries are rejected where a capability entry is required."
+  - id: AC-7
+    requirement: "A bounded Sync Executor workflow can check and refresh source revisions/snapshots/catalog deterministically under explicit task authority without changing Foundation authority or activating external content."
+    evidence_required: "Repository-native script/tests covering check mode, refresh mode, stable ordering, malformed source failures, network/source failure behavior, and exact write boundaries."
+  - id: AC-8
+    requirement: "Bootstrap exposes one canonical repository-relative external capability catalog locator at the active Foundation authority_set_identity revision and fails closed for malformed, missing, or escaping paths."
+    evidence_required: "Bootstrap/validator/test evidence proving exact Foundation-revision resolution and no external authority-lock dependency for the catalog."
+  - id: AC-9
+    requirement: "The implementation introduces no external adoption, no full vendoring, no authority-lock change, no active external route, no skill-taxonomy change, and no agent-runtime mutation."
+    evidence_required: "Exact changed-path/diff proof, authority.lock identity proof, bootstrap route proof, skill count exactly 15, and upstream-execution negative assertions."
+  - id: AC-10
+    requirement: "All existing Foundation bootstrap, protocol, skill-library, and regression validation remains green."
+    evidence_required: "All required repository-native verification commands PASS on the final candidate."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0007 with the canonical task artifact validator before any implementation mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py"
+      required: true
+    - id: CHECK-3
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py --remote"
+      required: true
+    - id: CHECK-4
+      command_or_check: "python3 -B profile/.agent/bootstrap/test_bootstrap.py"
+      required: true
+    - id: CHECK-5
+      command_or_check: "python3 -B skills/scripts/validate_skill_library.py and python3 -B skills/scripts/test_validate_skill_library.py"
+      required: true
+    - id: CHECK-6
+      command_or_check: "Run the new external-capability sync/index test suite, including deterministic regeneration from the exact four pinned upstream revisions and negative tests for excluded/unsafe upstream surfaces."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Run Sync check mode against committed registry/snapshots/catalog and prove byte-identical deterministic output; perform no upstream code execution."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Prove authority.lock remains byte-identical to execution base, bootstrap has no active external ecosystem capability routes, skill taxonomy remains exactly 15, and no forbidden upstream content or Runtime mutation appears in the candidate diff."
+      required: true
+    - id: CHECK-9
+      command_or_check: "python3 -m py_compile for new/modified Python files and git diff --check."
+      required: true
+    - id: CHECK-10
+      command_or_check: "Fresh-resolve remote main immediately before non-force publication, then post-prove final main identity, ahead/behind, tracked worktree hygiene, and report publication."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files:
+    - "skills/.agent/external-capabilities/README.md"
+    - "skills/.agent/external-capabilities/sources.json"
+    - "skills/.agent/external-capabilities/catalog.json"
+    - "skills/.agent/external-capabilities/snapshots/ecc.json"
+    - "skills/.agent/external-capabilities/snapshots/superpowers.json"
+    - "skills/.agent/external-capabilities/snapshots/matt-skills.json"
+    - "skills/.agent/external-capabilities/snapshots/awesome.json"
+    - "skills/scripts/sync_external_capabilities.py"
+    - "skills/scripts/test_sync_external_capabilities.py"
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "No unlisted new files are authorized."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
