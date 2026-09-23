@@ -1,12 +1,12 @@
 protocol_version: 3
 
 task_id: TASK-0006
-task_revision: 3
+task_revision: 4
 state: APPROVED
 
 origin:
   type: explicit_operator_request
-  source: "2026-09-23 Foundation three-layer architecture direction plus Architect REVISION_REQUIRED review 2d68cb3c88f9243a98649691407001d690060528; revision 3 supersedes malformed revision-2 serialization"
+  source: "2026-09-23 Foundation three-layer architecture direction plus Architect REVISION_REQUIRED review 2d68cb3c88f9243a98649691407001d690060528; revision 4 supersedes protocol-invalid revision 3 scope serialization"
 
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
@@ -118,7 +118,7 @@ scope:
     - "Update repository-native validators/tests and concise discovery documentation needed to prove the new architecture contract."
     - "Publish TASK-0006 implementation and report by non-force fast-forward on main only."
 
-allowed_existing_files_or_components:
+  allowed_existing_files_or_components:
     - "README.md and concise Foundation discovery documentation."
     - "profile/ARCHITECT_PROFILE.md and profile/.agent/bootstrap/** where operator routing/navigation must reflect the canonical architecture."
     - "skills/architect/** and skills/executor/**."
