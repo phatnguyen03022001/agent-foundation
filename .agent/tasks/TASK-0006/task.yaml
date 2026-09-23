@@ -1,0 +1,231 @@
+protocol_version: 3
+
+task_id: TASK-0006
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  source: "2026-09-23 Foundation three-layer architecture direction after three independent read-only research reviews"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
+  task_protocol_path: skills/protocols/TASK_PROTOCOL.md
+
+architect_analysis_skills:
+  - architect
+  - research
+  - reuse-first
+  - simplicity
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator direction for the Foundation three-layer architecture"
+    role: "material architecture decision and scope authority"
+    precedence: 1
+  - source: "profile/ARCHITECT_PROFILE.md@c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
+    role: "current operator configuration and execution-surface boundaries"
+    precedence: 2
+  - source: "skills/architect/SKILL.md@c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
+    role: "current Architect ownership and routing semantics"
+    precedence: 3
+  - source: "skills/executor/SKILL.md@c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
+    role: "current Executor ownership and execution semantics"
+    precedence: 4
+  - source: "skills/protocols/TASK_PROTOCOL.md@c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
+    role: "current protocol-v3 role, authority, lifecycle, and evidence semantics"
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "explicit operator three-layer architecture decision plus current Foundation semantic ownership at c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
+  rationale: "This task intentionally changes reusable Foundation governance/control-plane structure while preserving the existing two organizational roles, MAIN_ONLY topology, semantic subtree ownership, and agent-runtime separation."
+
+objective: "Cut over agent-foundation to an explicit maximum-three-layer architecture in which L0 is the minimal Architect/Executor governance kernel, L1 owns capability control and continuity coordination, and L2 owns reusable capability/knowledge; reduce duplicated methodology from L0 without yet vendoring external ecosystems, retiring existing skills, or introducing a new orchestration system."
+
+architecture_contract:
+  l0:
+    name: GOVERNANCE_KERNEL
+    owns:
+      - "Architect final governance judgment and task authority."
+      - "Executor exact repository/task/base binding and restrictive mutation authority."
+      - "Task/report/review ownership and lifecycle boundaries."
+      - "Authority-versus-capability separation, repository rebinding, cross-repository isolation, and minimum freshness/safety invariants."
+    organizational_roles:
+      - Architect
+      - Executor
+  l1:
+    name: CONTROL_AND_CONTINUITY
+    owns:
+      - "Capability discovery/indexing and deterministic routing."
+      - "Immutable external source resolution and compatibility/admission metadata."
+      - "Read-only research fan-out and compact advisory evidence return."
+      - "Sync as a named Executor specialization for bounded deterministic synchronization work."
+      - "Non-authoritative cross-repository finding continuity semantics."
+  l2:
+    name: CAPABILITY_AND_KNOWLEDGE
+    owns:
+      - "Reusable internal and external skills."
+      - "Standards, document models, references, catalogs, and repository-local capabilities."
+      - "Engineering methodology such as research, debugging, verification, security review, optimization, and domain guidance."
+  orthogonal_substrates:
+    - "agent-runtime"
+    - "GitHub"
+    - "MCP"
+    - "native execution tools"
+
+scope:
+  required_changes:
+    - "Establish one concise canonical generic contract for the three-layer Foundation architecture and make existing governance/navigation artifacts point to it rather than duplicating the same semantics."
+    - "Keep exactly two organizational roles in reusable governance: Architect and Executor. Define Sync and read-only Researcher as Executor specializations with no independent task, mutation, review, or acceptance authority."
+    - "Refactor Architect and Executor reusable role guidance so L0 retains authority/binding/lifecycle/safety invariants while generic engineering methodology and capability-specific HOW are referenced through L1/L2 instead of being duplicated in role bodies."
+    - "Refactor Task Protocol only where necessary to keep it the L0 semantic owner for cross-role authority/lifecycle semantics and remove control-plane or methodology detail that has a clearer L1/L2 owner."
+    - "Define the L1 capability-control invariants needed for later external reuse: INDEXED != LOADED, PINNED != TRUSTED, SYNCED != ADOPTED, ADOPTED != AUTHORIZED, LOADED != AUTHORIZED, and SNAPSHOT != AUTHORITY."
+    - "Define bounded independent research fan-out semantics: fresh read-only Executor-specialized researchers receive one exact target/base/question, no peer results or unnecessary conversation history, return compact evidence, and never own final decisions."
+    - "Define non-authoritative cross-repository finding continuity semantics without allowing automatic sibling-repository mutation, automatic task creation, or target rebinding."
+    - "Update bootstrap/navigation metadata only as required to expose the new canonical control-plane owner while preserving exact immutable authority resolution and fail-closed behavior."
+    - "Update repository-native validators/tests and concise discovery documentation needed to prove the new architecture contract."
+    - "Publish TASK-0006 implementation and report by non-force fast-forward on main only."
+
+allowed_existing_files_or_components:
+    - "README.md and concise Foundation discovery documentation."
+    - "profile/ARCHITECT_PROFILE.md and profile/.agent/bootstrap/** where operator routing/navigation must reflect the canonical architecture."
+    - "skills/architect/** and skills/executor/**."
+    - "skills/protocols/**."
+    - "skills/.agent/case-router.yaml only if deterministic routing metadata materially requires an update."
+    - "skills/contracts/** and skills/templates/** only when required to preserve protocol-v3 consistency."
+    - "skills/scripts/** and existing skills tests/validators required to prove acceptance."
+    - ".agent/tasks/TASK-0006/**."
+
+invariants:
+  - "Foundation remains MAIN_ONLY with main as canonical working/stable branch."
+  - "There remain exactly two organizational roles: Architect and Executor."
+  - "Architect remains the sole owner of final canonical acceptance/revision/block judgment."
+  - "Executor specialization never grants additional authority."
+  - "Sync is not a third governance role and cannot self-admit upstream content, change architecture, self-accept work, or mutate another repository without a fresh explicit binding/task."
+  - "Read-only researchers are advisory Executor specializations and cannot mutate repositories or create canonical task/review authority."
+  - "External or L2 content never grants L0 authority merely because it is indexed, pinned, loaded, mature, or popular."
+  - "agent-runtime remains a separate execution repository and transport/substrate, not a Foundation organizational role or fourth architecture layer."
+  - "profile, skills, documents, and standards remain distinct semantic ownership domains inside agent-foundation."
+  - "No shared mutable cross-repository authority object, task queue, scheduler, database, daemon, workflow engine, provider pool, or orchestration service is introduced."
+  - "Current external ecosystems are not vendored or activated by this task."
+  - "Current internal reusable skills are not retired, deleted, or replaced by this task."
+  - "Current 15-skill taxonomy remains unchanged during this architecture cutover."
+  - "Existing protocol-v3 historical task/report/review evidence remains valid and is not rewritten."
+
+forbidden_changes:
+  - "Vendor, clone, install, symlink, execute, or activate ECC, Superpowers, Matt skills, Awesome, or another external ecosystem."
+  - "Delete, retire, rename, or semantically replace any current reusable skill."
+  - "Create a new organizational role or change acceptance ownership."
+  - "Create a fourth Foundation architecture layer."
+  - "Modify agent-runtime repository, installed Runtime, Runtime configuration, service state, TCC, Keychain, or System Settings."
+  - "Create branches, PRs, tags, releases, or staging topology."
+  - "Introduce a database, service, daemon, queue, scheduler, package manager, plugin manager, or generic orchestration framework."
+  - "Auto-create tasks or mutate sibling repositories from deferred findings."
+  - "Change repository metadata or archive state."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Canonical Foundation guidance defines exactly three conceptual layers: L0 Governance Kernel, L1 Control and Continuity, and L2 Capability and Knowledge, with agent-runtime/GitHub/MCP/native tools explicitly orthogonal substrates rather than extra layers."
+    evidence_required: "Exact committed canonical paths plus validator/test evidence proving the three-layer terminology and boundaries are internally consistent."
+  - id: AC-2
+    requirement: "Reusable governance still defines exactly two organizational roles, Architect and Executor; Sync and read-only Researcher are explicitly Executor specializations with no independent acceptance or mutation authority."
+    evidence_required: "Exact committed role/protocol/profile text and focused tests or deterministic assertions preventing contradictory role declarations."
+  - id: AC-3
+    requirement: "Architect and Executor role bodies are materially slimmer at the authority kernel: generic methodology/capability-specific HOW is removed or delegated without weakening binding, authority, lifecycle, safety, evidence, or review guarantees."
+    evidence_required: "Before/after semantic diff with mapped retained L0 guarantees and removed/delegated L1/L2 responsibilities; no material guarantee may disappear without an explicit new canonical owner."
+  - id: AC-4
+    requirement: "A single canonical L1 control-plane owner defines capability-source/index/admission/loading/authorization distinctions including INDEXED != LOADED, PINNED != TRUSTED, SYNCED != ADOPTED, ADOPTED != AUTHORIZED, LOADED != AUTHORIZED, and SNAPSHOT != AUTHORITY."
+    evidence_required: "Exact committed control-plane contract/navigation plus deterministic resolution proof from bootstrap/discovery surfaces."
+  - id: AC-5
+    requirement: "Independent research fan-out is defined as bounded read-only Executor-specialized advisory work using exact target/base/question, minimum relevant context, no peer-result visibility before synthesis, compact evidence return, and Architect evidence-based synthesis rather than majority voting."
+    evidence_required: "Exact committed semantics and focused tests/static assertions where machine-checkable."
+  - id: AC-6
+    requirement: "Cross-repository findings have a non-authoritative continuity contract: a finding may be durably referenced for a future owner binding, but it cannot mutate the owner repository, create authority, create a task automatically, or bypass fresh revalidation after explicit rebinding."
+    evidence_required: "Exact committed semantics showing the complete authority boundary and no automatic cross-repository mutation path."
+  - id: AC-7
+    requirement: "No external ecosystem is vendored/activated and no current internal skill is retired or added; current skill taxonomy and semantic subtrees remain intact."
+    evidence_required: "Exact changed-path/diff proof plus current skill-library validation."
+  - id: AC-8
+    requirement: "Bootstrap, case routing, skill-library validation, historical protocol-v3 compatibility, and Foundation-native authority resolution remain green."
+    evidence_required: "All required repository-native verification commands PASS on the final candidate."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py"
+      required: true
+    - id: CHECK-2
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py --remote"
+      required: true
+    - id: CHECK-3
+      command_or_check: "python3 -B profile/.agent/bootstrap/test_bootstrap.py"
+      required: true
+    - id: CHECK-4
+      command_or_check: "python3 -B skills/scripts/validate_skill_library.py and the existing skills validator test suite"
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run focused deterministic assertions for exactly two organizational roles, the three-layer architecture contract, Sync/Researcher specialization boundaries, and capability-state non-equivalence invariants."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Prove cold bootstrap/capability navigation resolves only canonical Foundation paths at immutable authority and fails closed for malformed or missing new control-plane navigation."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Prove changed paths contain no external vendoring, no internal skill retirement/addition, no agent-runtime mutation, and no forbidden orchestration infrastructure; run git diff --check."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Fresh-resolve remote main immediately before canonical publication and post-prove final main identity, ahead/behind, worktree hygiene, and report publication."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
