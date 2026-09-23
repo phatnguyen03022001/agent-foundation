@@ -80,6 +80,35 @@ class BootstrapContractTests(unittest.TestCase):
         resolved["agent-skills"]["contents"] = {".agent/case-router.yaml": router}
         return resolved
 
+    def test_foundation_control_plane_locator_is_canonical(self) -> None:
+        self.assertEqual(
+            validate.foundation_control_plane_locator(self.bootstrap),
+            {
+                "owner": "agent-foundation",
+                "path": "skills/contracts/FOUNDATION_ARCHITECTURE.md",
+            },
+        )
+
+    def test_foundation_control_plane_locator_fails_closed(self) -> None:
+        for value in (
+            None,
+            {"owner": "agent-foundation", "path": "skills/contracts/MISSING.md"},
+            {"owner": "agent-skills", "path": "skills/contracts/FOUNDATION_ARCHITECTURE.md"},
+        ):
+            with self.subTest(value=value):
+                bootstrap = copy.deepcopy(self.bootstrap)
+                if value is None:
+                    bootstrap.pop("foundation_control_plane", None)
+                else:
+                    bootstrap["foundation_control_plane"] = value
+                with self.assertRaisesRegex(ValueError, "foundation_control_plane"):
+                    validate.validate_contract(bootstrap, self.lock)
+
+    def test_missing_foundation_control_plane_path_fails_closed(self) -> None:
+        with patch.object(Path, "is_file", return_value=False):
+            with self.assertRaisesRegex(ValueError, "missing Foundation control-plane path"):
+                validate.validate_local_foundation_control_plane(ROOT, self.bootstrap)
+
     def test_unresolvable_locked_revision_fails_closed(self) -> None:
         resolved = self.resolved_routes()
         del resolved["agent-runtime"]
@@ -394,6 +423,8 @@ class BootstrapContractTests(unittest.TestCase):
             location="LOCAL",
         )
         self.assertIn("case_router", result)
+        self.assertEqual(result["foundation_control_plane"]["revision"], PROFILE_REVISION)
+        self.assertEqual(result["foundation_control_plane"]["path"], "skills/contracts/FOUNDATION_ARCHITECTURE.md")
 
     def test_execution_reconstruction_resolves_execute_without_support_preload(self) -> None:
         reconstruct = getattr(validate, "reconstruct_execution_context", None)
@@ -419,7 +450,7 @@ class BootstrapContractTests(unittest.TestCase):
         result = reconstruct(ROOT, "b" * 40, target_locator, "EXECUTE", resolved)
         self.assertEqual(
             result["bootstrap_trace"],
-            ["PROFILE_REVISION", "AUTHORITY_LOCK", "CASE_ROUTER", "CASE", "CAPABILITY_ROUTE", "CANONICAL_ARTIFACT"],
+            ["PROFILE_REVISION", "AUTHORITY_LOCK", "FOUNDATION_CONTROL_PLANE", "CASE_ROUTER", "CASE", "CAPABILITY_ROUTE", "CANONICAL_ARTIFACT"],
         )
         self.assertEqual(result["case"], "EXECUTE")
         self.assertEqual(result["case_router"], {"cases": [{"id": "EXECUTE", "capabilities": ["executor"]}]})

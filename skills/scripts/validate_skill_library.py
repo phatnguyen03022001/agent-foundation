@@ -1007,6 +1007,68 @@ def validate_generated_program_template() -> None:
             error(f"{label}: coverage ref {ref!r} cannot be both covered and excluded")
 
 
+def validate_foundation_architecture_contract() -> None:
+    path = ROOT / "contracts" / "FOUNDATION_ARCHITECTURE.md"
+    label = "contracts/FOUNDATION_ARCHITECTURE.md"
+    if not path.is_file():
+        error(f"missing {label}")
+        return
+    text = path.read_text(encoding="utf-8")
+    layer_headings = re.findall(r"^## L\d+ — .+$", text, flags=re.MULTILINE)
+    expected_layers = [
+        "## L0 — Governance Kernel",
+        "## L1 — Control and Continuity",
+        "## L2 — Capability and Knowledge",
+    ]
+    if layer_headings != expected_layers:
+        error(f"{label}: must define exactly the canonical L0/L1/L2 layer headings")
+    required = (
+        "exactly two organizational roles: Architect and Executor",
+        "Sync and read-only Researcher are Executor specializations",
+        "INDEXED != LOADED",
+        "PINNED != TRUSTED",
+        "SYNCED != ADOPTED",
+        "ADOPTED != AUTHORIZED",
+        "LOADED != AUTHORIZED",
+        "SNAPSHOT != AUTHORITY",
+        "one exact target, base, and question",
+        "only minimum relevant context",
+        "peer results are not visible",
+        "compact evidence",
+        "not by majority voting",
+        "cannot mutate the owner repository",
+        "create a task automatically",
+        "freshly revalidated",
+        "orthogonal substrates",
+        "fourth Foundation layer",
+    )
+    for token in required:
+        if token not in text:
+            error(f"{label}: missing required architecture invariant {token!r}")
+    validate_links(path, text)
+
+    role_requirements = {
+        "architect/SKILL.md": ("../contracts/FOUNDATION_ARCHITECTURE.md", "Capability control and reusable HOW"),
+        "executor/SKILL.md": ("../contracts/FOUNDATION_ARCHITECTURE.md", "Capability HOW and acquisition"),
+        "protocols/TASK_PROTOCOL.md": ("../contracts/FOUNDATION_ARCHITECTURE.md", "Execution capability and authority boundary"),
+    }
+    forbidden_headings = {
+        "architect/SKILL.md": ("## External normative authority and execution environment",),
+        "executor/SKILL.md": ("## Repository construction and acquisition",),
+        "protocols/TASK_PROTOCOL.md": (
+            "## Execution environment, operator attention, and surface selection",
+            "## Deterministic execution bundling",
+        ),
+    }
+    for relative, tokens in role_requirements.items():
+        role_text = (ROOT / relative).read_text(encoding="utf-8")
+        for token in tokens:
+            if token not in role_text:
+                error(f"{relative}: missing Foundation architecture delegation marker {token!r}")
+        for heading in forbidden_headings[relative]:
+            if heading in role_text:
+                error(f"{relative}: L1/L2 detail remains duplicated under {heading!r}")
+
 def validate_task_document(label: str, doc: dict[str, Any]) -> None:
     doc = normalize_task_document(doc)
     validate_version(label, doc)
@@ -1640,6 +1702,7 @@ def main(argv: list[str] | None = None) -> int:
         error("frontmatter names do not match curated skill set")
 
     validate_readme_catalog()
+    validate_foundation_architecture_contract()
     validate_generated_program_template()
     validate_case_navigation()
     validate_task_template()

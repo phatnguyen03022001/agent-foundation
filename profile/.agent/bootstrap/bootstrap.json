@@ -5,6 +5,10 @@
     "owner": "agent-skills",
     "path": ".agent/case-router.yaml"
   },
+  "foundation_control_plane": {
+    "owner": "agent-foundation",
+    "path": "skills/contracts/FOUNDATION_ARCHITECTURE.md"
+  },
   "repository_contract": {
     "repository": "phatnguyen03022001/agent-foundation",
     "topology": "MAIN_ONLY",
@@ -95,7 +99,7 @@
     }
   ],
   "task_launch": {
-    "line_template": "TASK LAUNCH — {continuation} · {surface} · {model} · effort: {effort}",
+    "line_template": "TASK LAUNCH \u2014 {continuation} \u00b7 {surface} \u00b7 {model} \u00b7 effort: {effort}",
     "continuations": [
       "NEW",
       "CONTINUE"
@@ -110,10 +114,10 @@
       "surface"
     ],
     "fixtures": {
-      "CHATGPT_GITHUB": "TASK LAUNCH — NEW · CHATGPT_GITHUB · GPT-5.6 Sol · effort: HIGH",
-      "CHATGPT_LOCAL": "TASK LAUNCH — NEW · CHATGPT_LOCAL · GPT-5.6 Sol · effort: HIGH",
-      "CODEX_CLOUD": "TASK LAUNCH — NEW · CODEX_CLOUD · LUNA · effort: MEDIUM",
-      "CODEX_LOCAL": "TASK LAUNCH — NEW · CODEX_LOCAL · LUNA · effort: MEDIUM"
+      "CHATGPT_GITHUB": "TASK LAUNCH \u2014 NEW \u00b7 CHATGPT_GITHUB \u00b7 GPT-5.6 Sol \u00b7 effort: HIGH",
+      "CHATGPT_LOCAL": "TASK LAUNCH \u2014 NEW \u00b7 CHATGPT_LOCAL \u00b7 GPT-5.6 Sol \u00b7 effort: HIGH",
+      "CODEX_CLOUD": "TASK LAUNCH \u2014 NEW \u00b7 CODEX_CLOUD \u00b7 LUNA \u00b7 effort: MEDIUM",
+      "CODEX_LOCAL": "TASK LAUNCH \u2014 NEW \u00b7 CODEX_LOCAL \u00b7 LUNA \u00b7 effort: MEDIUM"
     },
     "prompt_template": "Target: {repository}\nBranch: {branch}\nTask: {task_path}\nTask revision: {task_revision}\nExact base HEAD: {base_head}\nPhase: {phase}\nExecution surface: {surface}\nResolve the canonical task at the exact base and obey it exactly. Communicate with the operator in Vietnamese. Persist repository artifacts in English."
   },

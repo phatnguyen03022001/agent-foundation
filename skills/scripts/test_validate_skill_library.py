@@ -839,6 +839,58 @@ class ValidatorRegressionTests(unittest.TestCase):
         self.assertIn("Supported protocol version: **3**", protocol)
 
 
+class Task0006FoundationArchitectureTests(unittest.TestCase):
+    def read(self, relative: str) -> str:
+        return (ROOT / relative).read_text(encoding="utf-8")
+
+    def test_three_layer_contract_and_orthogonal_substrates(self) -> None:
+        text = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
+        self.assertEqual(
+            re.findall(r"^## L\d+ — .+$", text, flags=re.MULTILINE),
+            ["## L0 — Governance Kernel", "## L1 — Control and Continuity", "## L2 — Capability and Knowledge"],
+        )
+        self.assertNotIn("## L3", text)
+        for token in ("agent-runtime", "GitHub", "MCP", "native execution tools", "orthogonal substrates"):
+            self.assertIn(token, text)
+
+    def test_two_roles_and_specialization_boundary(self) -> None:
+        text = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
+        for token in (
+            "exactly two organizational roles: Architect and Executor",
+            "Sync and read-only Researcher are Executor specializations",
+            "no independent task, mutation, review, acceptance, rebinding, or architecture authority",
+        ):
+            self.assertIn(token, text)
+        self.assertEqual(len(VALIDATOR_MODULE.EXPECTED_SKILLS), 15)
+
+    def test_capability_state_non_equivalence(self) -> None:
+        text = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
+        for token in (
+            "INDEXED != LOADED", "PINNED != TRUSTED", "SYNCED != ADOPTED",
+            "ADOPTED != AUTHORIZED", "LOADED != AUTHORIZED", "SNAPSHOT != AUTHORITY",
+        ):
+            self.assertIn(token, text)
+
+    def test_research_and_cross_repository_continuity(self) -> None:
+        text = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
+        for token in (
+            "one exact target, base, and question", "minimum relevant context",
+            "peer results are not visible", "compact evidence", "not by majority voting",
+            "cannot mutate the owner repository", "create a task automatically", "freshly revalidated",
+        ):
+            self.assertIn(token, text)
+
+    def test_role_kernels_delegate_l1_l2_detail(self) -> None:
+        architect = self.read("architect/SKILL.md")
+        executor = self.read("executor/SKILL.md")
+        protocol = self.read("protocols/TASK_PROTOCOL.md")
+        for text in (architect, executor, protocol):
+            self.assertIn("FOUNDATION_ARCHITECTURE.md", text)
+        self.assertNotIn("## External normative authority and execution environment", architect)
+        self.assertNotIn("## Repository construction and acquisition", executor)
+        self.assertNotIn("## Execution environment, operator attention, and surface selection", protocol)
+        self.assertNotIn("## Deterministic execution bundling", protocol)
+
 class CaseNavigationTests(unittest.TestCase):
     CASE_PATH = Path(".agent/case-router.yaml")
     CANONICAL_CASE = """cases:
@@ -1115,7 +1167,7 @@ class Task0004GovernanceTests(unittest.TestCase):
             self.assertIn(token, combined)
 
     def test_ac10_operator_attention_is_constrained_resource(self) -> None:
-        combined = self.read("architect/SKILL.md") + self.read("protocols/TASK_PROTOCOL.md")
+        combined = self.read("architect/SKILL.md") + self.read("protocols/TASK_PROTOCOL.md") + self.read("contracts/FOUNDATION_ARCHITECTURE.md")
         for token in (
             "operator attention/manual labor",
             "constrained resource",
@@ -2344,6 +2396,7 @@ class Task0025StableAdoptionGateTests(unittest.TestCase):
             "protocols/TASK_PROTOCOL.md",
             "architect/SKILL.md",
             "executor/SKILL.md",
+            "contracts/FOUNDATION_ARCHITECTURE.md",
         )
         generic = "\n".join((ROOT / path).read_text(encoding="utf-8") for path in generic_paths)
         self.assertNotIn("/Users/tienphat", generic)
@@ -2675,7 +2728,11 @@ class Task0049ExecutorFitDecompositionTests(unittest.TestCase):
 
 class Task0052ExecutorProcessOwnershipBoundaryTests(unittest.TestCase):
     def executor_doctrine(self) -> str:
-        return (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8").lower()
+        return (
+            (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8")
+            + "\n"
+            + (ROOT / "executor" / "references" / "ENGINEERING_HOW.md").read_text(encoding="utf-8")
+        ).lower()
 
     def test_scenario_a_exact_task_owned_pid_pgid_cleanup_may_be_allowed(self) -> None:
         executor = self.executor_doctrine()
@@ -2725,7 +2782,11 @@ class Task0052ExecutorProcessOwnershipBoundaryTests(unittest.TestCase):
 
 class Task0053ExecutorRepositoryConstructionTests(unittest.TestCase):
     def executor_doctrine(self) -> str:
-        return (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8").lower()
+        return (
+            (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8")
+            + "\n"
+            + (ROOT / "executor" / "references" / "ENGINEERING_HOW.md").read_text(encoding="utf-8")
+        ).lower()
 
     def test_scenario_a_greenfield_resolves_current_official_scaffold_before_manual_baseline(self) -> None:
         executor = self.executor_doctrine()
@@ -2829,7 +2890,8 @@ class Task0053ExecutorRepositoryConstructionTests(unittest.TestCase):
 
 class Task0054PlatformCompliantExecutionPublicationTests(unittest.TestCase):
     def doctrine(self, *paths: str) -> str:
-        return "\n".join((ROOT / path).read_text(encoding="utf-8").lower() for path in paths)
+        owned_paths = ("contracts/FOUNDATION_ARCHITECTURE.md",) + paths
+        return "\n".join((ROOT / path).read_text(encoding="utf-8").lower() for path in owned_paths)
 
     def test_scenario_a_semantic_capability_routing_outranks_nonmaterial_provider_handoff(self) -> None:
         combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")

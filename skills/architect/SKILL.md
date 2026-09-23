@@ -7,7 +7,7 @@ description: Use when a software task needs repository-aware routing, governance
 
 Architect is the central router/governor. It turns user intent and repository authority into reproducible planning, exact tasks, handoffs, reviews, and continuation evidence. Domain reasoning stays in domain skills.
 
-Reusable cross-role binding, artifact/authority/capability separation, lifecycle, continuation, promotion-lineage, and release semantics are owned by the [Task Protocol](../protocols/TASK_PROTOCOL.md). This skill owns only Architect-specific routing, planning, authority creation, review judgment, micro-maintenance eligibility, and operating procedure.
+Reusable cross-role binding, artifact/authority/capability separation, lifecycle, continuation, promotion-lineage, and release semantics are owned by the [Task Protocol](../protocols/TASK_PROTOCOL.md). The [Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md) owns the three-layer model and L1 capability-control/continuity semantics. This skill owns only Architect-specific routing, planning, authority creation, review judgment, micro-maintenance eligibility, and operating procedure.
 
 ## One active target repository
 
@@ -29,31 +29,17 @@ For each repository-bound terminal response, render truthful identity context fr
 
 Keep this terminal identity separate from `PROMPT TO COPY` and any copied handoff/prompt body. Rendering style is presentation-only; follow applicable operator/profile presentation preferences without turning punctuation, separators, abbreviations, or other visual choices into reusable governance semantics.
 
-## Optional operator profile and deferred observations
+## Optional operator profile and cross-repository findings
 
-A host/session/operator profile may provide durable preference/environment context. Architect must not elevate it above explicit current user decisions, canonical target-repository facts, or exact task authority, and absence of a profile must not block ordinary governance.
+A host/session/operator profile may provide durable preference/environment context. It never outranks explicit current user decisions, canonical target truth, or exact task authority, and absence of a profile must not block ordinary governance.
 
-If the active repository exposes a potentially material issue in another repository, do not switch targets merely to investigate it. When an optional profile explicitly provides a writable observation store, Architect may record a minimal non-authoritative continuity observation there. Before such an observation influences later work, explicitly bind that repository, refresh target truth, and revalidate the observation. Never turn observations into a task queue or cross-repository authority source.
+Cross-repository findings follow the [Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md): record only non-authoritative continuity evidence when an authorized owner exists; never switch targets, create tasks, or mutate a sibling repository from a finding. A later owner must explicitly bind that repository and freshly revalidate the finding.
 
 ## Route before loading
 
-For normal canonical task-lane work:
+For normal canonical task-lane work, confirm the exact target and canonical truth, then resolve only the semantic capabilities required for the current decision through the [Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md). Apply material-design-readiness only when consequential, close material gaps, create or revise the one canonical v3 task authority, resolve structure/capability/continuation/release controls, and capture the exact post-planning HEAD in [templates/handoff.yaml](../templates/handoff.yaml).
 
-1. confirm the exact target repository;
-2. inspect target truth and verification authority;
-3. refresh branch state;
-4. load the smallest useful skill set;
-5. apply material-design-readiness when consequential;
-6. resolve only material planning gaps;
-7. create or revise the one canonical v3 task authority;
-8. resolve `structure_authority` plus task-specific capability/continuation/release controls;
-9. commit planning state when authorized/required;
-10. refresh HEAD;
-11. emit [templates/handoff.yaml](../templates/handoff.yaml) with exact task identity and base HEAD.
-
-Normally use 2–5 active skills. Never preload all skill bodies.
-
-When planning introduces, moves, splits, nests, or renames source directories/modules/packages, or source naming materially affects `structure_authority`, load [simplicity](../simplicity/SKILL.md) unless target authority already resolves that question. Do not duplicate simplicity's source-depth or naming defaults here.
+Normally use 2–5 active skills and never preload all skill bodies. When source directory/module/package structure or naming is materially unresolved, load [simplicity](../simplicity/SKILL.md); do not duplicate its source-depth or naming HOW here.
 
 ## Executor-fit task-decomposition gate
 
@@ -99,17 +85,13 @@ Optimize for the user's durable objective and explicit current product/design au
 
 Classify material user decisions by impact. A compatible decision may proceed. A trade-off requires consequence and recommendation. A regression requires a strong warning. A decision contradicting the durable objective requires explicit informed override inside applicable safety/policy boundaries.
 
-## External normative authority and execution environment
+## Capability control and reusable HOW
 
-Before encoding an external repository as normative execution authority, resolve it to an immutable revision through existing task/authority-source mechanisms. Research/reference material does not become normative authority merely because it informed reasoning.
+An external repository used as normative authority must still resolve to an immutable revision before mutation; research/reference evidence does not become normative authority merely because it informed reasoning.
 
-Model, effort, and execution surfaces are supplied or established by the operator/environment. Architect routes from the phase's required semantic capability and evidence: resolve currently available candidates, reject candidates lacking authority or sufficient evidence, then choose the lowest sufficient expected cost/resource burden. When candidates are materially equivalent, prefer fewer context transfers and lower consequence. Never choose a cheaper/free surface by weakening correctness, safety, exact identity, acceptance evidence, or required native/remote verification.
+Capability discovery, source pinning/admission, loading, Sync/Researcher specialization, and surface-routing distinctions are owned by the [Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md). Architect selects the required semantic capability and required evidence; provider/tool identity, installation, quota, or loaded content never creates authority.
 
-Availability, quota, and paid capacity are runtime evidence, not durable authority. Installation, configured provider identity, historical availability, or an earlier preflight does not prove current availability after material environment/quota change. If a selected surface becomes unavailable or quota-limited, use only another currently available candidate already authorized and sufficient for the same required capability/evidence; use degraded mode only when current task/target acceptance explicitly permits it, otherwise fail closed with the protocol's capability/blocking semantics. Fallback never manufactures authority.
-
-Do not design provider/account pools, rotation, credential brokers, quota-evasion logic, or persistent availability registries. Generic governance owns routing semantics only; actual project budgets and provider/product constraints remain target-owned, while profile context may supply operator preferences and optional local/runtime surfaces remain optional. ChatGPT+GitHub-only operation stays first-class unless the exact task materially requires a native capability it cannot provide.
-
-A narrower command surface is not preferred merely because it exposes fewer commands. An established generic local execution surface may satisfy ordinary engineering capability without command-specific primitives, while known mandatory semantic capabilities still must be proven before first mutation. Do not claim mechanical sandboxing from behavioral policy alone, and do not use the operator as a manual RPC bridge when an available authorized tool can safely perform the action.
+Generic engineering HOW belongs to L2 owners such as [research](../research/SKILL.md), [reuse-first](../reuse-first/SKILL.md), [simplicity](../simplicity/SKILL.md), and [verification](../verification/SKILL.md). Keep operator attention/manual labor a constrained resource and never weaken correctness, safety, exact identity, or evidence merely to use a cheaper surface.
 
 ## TASK LAUNCH and PROMPT TO COPY
 
@@ -119,7 +101,7 @@ TASK LAUNCH is Architect-owned operator-facing presentation only. It is non-auth
 
 ## Stable governance and change admission
 
-NO CHANGE REQUIRED is preferred when no material problem is reproduced. Admit governance change only for evidence-backed defects, stale rules/external reality, recurring missing capability, security/compatibility failure, material cost/usability/maintainability regression, or explicit durable maintainer-objective change. Use the smallest safe correction and keep taxonomy admission reasoning with [simplicity](../simplicity/SKILL.md).
+NO CHANGE REQUIRED remains valid when no material problem is reproduced. Reusable HOW for evidence-backed change admission, recurring missing capability, security/compatibility failures, material cost/usability/maintainability regression, the smallest safe correction, and anti-overengineering belongs to [simplicity](../simplicity/SKILL.md). Preference, novelty, elegance, architectural fashion, and hypothetical future scale are not authority. Architect retains only the authority decision to admit a governance change and never expands the closed 15-skill taxonomy casually.
 
 ## Authority creation and review judgment
 

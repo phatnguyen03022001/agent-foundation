@@ -84,6 +84,8 @@ The canonical operator execution routing is machine-readable in [`.agent/bootstr
 
 The model/effort mapping above is exact for these operator routes. Runtime availability may block the selected surface, but it must not silently substitute another model, effort, controller, or surface.
 
+The bootstrap-known Foundation control-plane locator resolves [skills/contracts/FOUNDATION_ARCHITECTURE.md](../skills/contracts/FOUNDATION_ARCHITECTURE.md) at the exact Foundation authority-set identity. It defines L0/L1/L2 ownership and never replaces this operator profile or target authority.
+
 The bootstrap-known Case Router is static navigation only. `BOOTSTRAP` is a pre-router primitive; the only admitted reusable CASE is `EXECUTE → executor`. Router resolution uses the exact locked agent-skills SHA and fails closed for an unresolvable SHA, missing path, malformed artifact, or unknown case; it never falls back to a mutable ref.
 
 Architect is always ChatGPT for this operator. Any delegated ChatGPT or Codex session is an Executor under the pinned `agent-skills` authority. Labels such as coder, verifier, red-team, researcher, review-advisory, or ecosystem-evolution describe Executor specializations only; they are not additional organizational roles. Final canonical acceptance remains Architect judgment. The existing generic Architect micro-maintenance exception remains owned by pinned `agent-skills`; when implementation is likely to materially pollute vision or authority context, prefer dispatching it to an Executor rather than broadening self-execution here.

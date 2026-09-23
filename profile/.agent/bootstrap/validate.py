@@ -62,6 +62,34 @@ def load_contract(root: Path = ROOT) -> tuple[dict[str, Any], dict[str, Any]]:
     return bootstrap, lock
 
 
+def foundation_control_plane_locator(bootstrap: dict[str, Any]) -> dict[str, str]:
+    locator = bootstrap.get("foundation_control_plane")
+    expected = {
+        "owner": "agent-foundation",
+        "path": "skills/contracts/FOUNDATION_ARCHITECTURE.md",
+    }
+    if locator != expected:
+        raise ValueError("foundation_control_plane must identify the canonical Foundation control-plane path")
+    return dict(expected)
+
+
+def foundation_control_plane_artifact(
+    bootstrap: dict[str, Any], profile_revision: str
+) -> dict[str, str]:
+    locator = foundation_control_plane_locator(bootstrap)
+    return {
+        "repository": bootstrap["repository_contract"]["repository"],
+        "revision": profile_revision,
+        "path": locator["path"],
+    }
+
+
+def validate_local_foundation_control_plane(root: Path, bootstrap: dict[str, Any]) -> None:
+    locator = foundation_control_plane_locator(bootstrap)
+    path = root / locator["path"]
+    if not path.is_file():
+        raise ValueError(f"missing Foundation control-plane path: {locator['path']}")
+
 def case_router_locator(bootstrap: dict[str, Any], lock: dict[str, Any]) -> dict[str, str]:
     locator = bootstrap.get("case_router")
     if not isinstance(locator, dict):
@@ -188,6 +216,7 @@ def validate_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
             raise ValueError(f"invalid immutable revision: {owner}")
 
     case_router_locator(bootstrap, lock)
+    foundation_control_plane_locator(bootstrap)
 
     if bootstrap.get("repository_contract") != EXPECTED_REPOSITORY_CONTRACT:
         raise ValueError("repository_contract must explicitly declare agent-foundation MAIN_ONLY identity")
@@ -478,6 +507,7 @@ def reconstruct_context(
         raise ValueError("authority-set identity must be an exact agent-foundation commit")
     bootstrap, lock = load_contract(root)
     validate_contract(bootstrap, lock)
+    validate_local_foundation_control_plane(root, bootstrap)
     required_target_fields = bootstrap["target_binding"]["required_fields"]
     if set(target_locator) != set(required_target_fields):
         raise ValueError("target locator requires exactly the canonical binding fields")
@@ -492,6 +522,7 @@ def reconstruct_context(
         "authority_set_identity": profile_revision,
         "authority_lock": lock,
         "case_router": case_router_locator(bootstrap, lock),
+        "foundation_control_plane": foundation_control_plane_artifact(bootstrap, profile_revision),
         "repository_contract": bootstrap["repository_contract"],
         "target_binding": dict(target_locator),
         "capability_routes": select_capability_routes(bootstrap, required_capabilities),
@@ -510,6 +541,7 @@ def reconstruct_execution_context(
         raise ValueError("authority-set identity must be an exact agent-foundation commit")
     bootstrap, lock = load_contract(root)
     validate_contract(bootstrap, lock)
+    validate_local_foundation_control_plane(root, bootstrap)
     required_target_fields = bootstrap["target_binding"]["required_fields"]
     if set(target_locator) != set(required_target_fields):
         raise ValueError("target locator requires exactly the canonical binding fields")
@@ -527,6 +559,7 @@ def reconstruct_execution_context(
         "bootstrap_trace": [
             "PROFILE_REVISION",
             "AUTHORITY_LOCK",
+            "FOUNDATION_CONTROL_PLANE",
             "CASE_ROUTER",
             "CASE",
             "CAPABILITY_ROUTE",
@@ -534,6 +567,7 @@ def reconstruct_execution_context(
         ],
         "authority_set_identity": profile_revision,
         "authority_lock": lock,
+        "foundation_control_plane": foundation_control_plane_artifact(bootstrap, profile_revision),
         "target_binding": dict(target_locator),
         "case_router": router,
         "case": case_id,
@@ -553,6 +587,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         bootstrap, lock = load_contract()
         validate_contract(bootstrap, lock)
+        validate_local_foundation_control_plane(ROOT, bootstrap)
         if args.remote:
             validate_resolution(bootstrap, lock, resolve_remote(lock))
     except (OSError, ValueError, json.JSONDecodeError, KeyError) as exc:

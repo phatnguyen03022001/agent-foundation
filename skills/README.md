@@ -6,7 +6,7 @@ A deliberately curated library of **exactly 15** reusable agent skills plus dete
 
 ## Governance ownership
 
-[Task Protocol](protocols/TASK_PROTOCOL.md) is the semantic owner for reusable cross-role task-governance semantics. Architect and Executor skills own role-local procedure and safety boundaries; contracts own artifact-specific obligations; templates are example/default shapes. Protocol semantic validity and current validator serialization support are distinct: the constrained validator mechanically enforces supported structure only for serialization inside its deterministic subset. This README is discovery and navigation, not a second normative protocol.
+[Foundation Architecture](contracts/FOUNDATION_ARCHITECTURE.md) is the single canonical generic owner for the three-layer Foundation model and L1 capability-control/continuity semantics. [Task Protocol](protocols/TASK_PROTOCOL.md) remains the L0 semantic owner for reusable cross-role task-governance semantics. Architect and Executor skills own role-local procedure and safety boundaries; contracts own artifact-specific obligations; templates are example/default shapes. Protocol semantic validity and current validator serialization support are distinct: the constrained validator mechanically enforces supported structure only for serialization inside its deterministic subset. This README is discovery and navigation, not a second normative protocol.
 
 The normal flow is planning and exact handoff → restrictive execution and Executor report → Architect review → exact-SHA verification when required → explicit promotion → separately authorized release. Binding, lifecycle, authority/capability separation, continuation, promotion lineage, and release semantics are defined only by the Task Protocol.
 
@@ -56,6 +56,7 @@ There is one task model, not task-lite/task-compact variants. Navigation:
 - [templates/review.yaml](templates/review.yaml): Architect-owned judgment shape;
 - [templates/continuation.yaml](templates/continuation.yaml): post-review exact-identity continuation shape;
 - [templates/program.generated.json](templates/program.generated.json): optional derived generated-planning snapshot with authority `NONE`, never task/lifecycle authority;
+- [contracts/FOUNDATION_ARCHITECTURE.md](contracts/FOUNDATION_ARCHITECTURE.md): three-layer Foundation and L1 control/continuity contract;
 - [contracts/IMPLEMENTATION_CONTRACT.md](contracts/IMPLEMENTATION_CONTRACT.md): task artifact obligations;
 - [contracts/IMPLEMENTATION_REPORT.md](contracts/IMPLEMENTATION_REPORT.md): report artifact obligations;
 - [contracts/ARCHITECT_REVIEW.md](contracts/ARCHITECT_REVIEW.md): review artifact obligations;
