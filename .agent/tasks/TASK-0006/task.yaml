@@ -1,12 +1,13 @@
 protocol_version: 3
 
 task_id: TASK-0006
-task_revision: 4
+task_revision: 5
 state: APPROVED
 
 origin:
-  type: explicit_operator_request
-  source: "2026-09-23 Foundation three-layer architecture direction plus Architect REVISION_REQUIRED review 2d68cb3c88f9243a98649691407001d690060528; revision 4 supersedes protocol-invalid revision 3 scope serialization"
+  type: revision_required
+  task_id: "TASK-0006"
+  gap_id: "F-0006-001"
 
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
