@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 import urllib.error
@@ -126,19 +127,25 @@ def validate_registry(registry: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 class GitHubClient:
+    def __init__(self) -> None:
+        self._token = os.environ.get("GITHUB_TOKEN") or None
+
     def _request(self, url: str) -> bytes:
-        request = urllib.request.Request(
-            url,
-            headers={
-                "Accept": "application/vnd.github+json",
-                "User-Agent": "agent-foundation-external-capability-sync/1",
-            },
-        )
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "agent-foundation-external-capability-sync/1",
+        }
+        if self._token:
+            headers["Authorization"] = f"Bearer {self._token}"
+        request = urllib.request.Request(url, headers=headers)
         try:
             with urllib.request.urlopen(request, timeout=30) as response:
                 return response.read()
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
-            raise SourceError(f"GitHub source request failed: {url}: {exc}") from exc
+            detail = str(exc)
+            if self._token:
+                detail = detail.replace(self._token, "<redacted>")
+            raise SourceError(f"GitHub source request failed: {url}: {detail}") from exc
 
     def json(self, url: str) -> Any:
         try:
