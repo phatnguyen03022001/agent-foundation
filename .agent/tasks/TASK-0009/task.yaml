@@ -1,0 +1,252 @@
+protocol_version: 3
+
+task_id: TASK-0009
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0009"
+  gap_id: "VISION-EXECUTION-ATTEMPT-CONTINUITY"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "18f1bfc4da5ffc8939187317ebb4b8e260fbbacd"
+
+architect_analysis_skills:
+  - architect
+  - reliability
+  - verification
+  - simplicity
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - reliability
+    - simplicity
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator request to make interrupted Executor attempts durably detectable without a heartbeat daemon or orchestration service"
+    role: "material objective and scope authority"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0008/review.yaml@18f1bfc4da5ffc8939187317ebb4b8e260fbbacd"
+    role: "accepted L1 research/continuity implementation and current Foundation state"
+    precedence: 2
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@18f1bfc4da5ffc8939187317ebb4b8e260fbbacd"
+    role: "canonical L0/L1/L2 ownership and non-authoritative continuity semantics"
+    precedence: 3
+  - source: "skills/executor/SKILL.md@18f1bfc4da5ffc8939187317ebb4b8e260fbbacd"
+    role: "Executor binding, checkpoint, terminal, and local-hygiene semantics"
+    precedence: 4
+  - source: "skills/protocols/TASK_PROTOCOL.md@18f1bfc4da5ffc8939187317ebb4b8e260fbbacd"
+    role: "task lifecycle, continuation, local mutable state, and terminal-result semantics"
+    precedence: 5
+  - source: "documents/DOCUMENT_MODEL.md@18f1bfc4da5ffc8939187317ebb4b8e260fbbacd"
+    role: "domain-boundary evidence that execution-attempt state is work-control telemetry, not project documentation authority"
+    precedence: 6
+  - source: "standards/STANDARD_MODEL.md@18f1bfc4da5ffc8939187317ebb4b8e260fbbacd"
+    role: "evidence semantics: stale/missing evidence remains unresolved and never becomes PASS"
+    precedence: 7
+  - source: "standards/standards/observability.yaml@18f1bfc4da5ffc8939187317ebb4b8e260fbbacd"
+    role: "attributable failure and material state-transition detectability"
+    precedence: 8
+  - source: "standards/standards/reliability.yaml@18f1bfc4da5ffc8939187317ebb4b8e260fbbacd"
+    role: "bounded waiting/restart/recovery semantics"
+    precedence: 9
+  - source: "standards/standards/assurance.yaml@18f1bfc4da5ffc8939187317ebb4b8e260fbbacd"
+    role: "attributable evidence and explicit UNKNOWN treatment"
+    precedence: 10
+
+structure_authority:
+  status: RESOLVED
+  source: "accepted three-layer Foundation architecture plus current documents/standards ownership"
+  rationale: "Execution-attempt liveness is L1 local operational continuity. It must not become L0 authority, project-document truth, a fourth layer, or an Agent Runtime service requirement."
+
+objective: "Add a minimal local-only execution-attempt continuity contract and tool so an Architect or successor Executor can distinguish confirmed terminal attempts from fresh leases and stale non-terminal attempts, recover the last known checkpoint, and classify stale attempts as INTERRUPTED_UNKNOWN without inventing an exact death timestamp, heartbeat daemon, provider-specific session API, or new authority."
+
+scope:
+  required_changes:
+    - "Create one canonical Execution Attempt Continuity contract defining a local operational attempt record with authority NONE and an opaque attempt_id bound to exact repository, task id/revision, and exact execution base."
+    - "Store execution-attempt state only in repository-local Git metadata resolved with git rev-parse --git-path under an agent-foundation/execution-attempts namespace. The tool must not create tracked/untracked worktree files merely to record liveness."
+    - "Define producer states RUNNING and TERMINAL. Define observer classifications TERMINAL_CONFIRMED, ACTIVE_LEASE, and INTERRUPTED_UNKNOWN. A non-terminal stale lease may only become INTERRUPTED_UNKNOWN; it must never manufacture DEAD, FAILED, TERMINAL, or an exact death timestamp."
+    - "Record started_at_utc, last_seen_at_utc, lease_seconds, last checkpoint kind, and bounded checkpoint Git identities/state sufficient to guide recovery. Local timestamps are operational telemetry only and never authority or canonical remote truth."
+    - "Provide deterministic stdlib-only start, heartbeat, checkpoint, terminal, inspect, and list-current-task operations. Start creates one attempt record; heartbeat only refreshes last_seen_at_utc; checkpoint refreshes last_seen plus bounded Git checkpoint metadata; terminal writes one explicit terminal result and terminal_at_utc."
+    - "Use a bounded lease with a documented default. The Executor must be able to refresh heartbeat/checkpoint explicitly during long work; no background process, daemon, scheduler, automation, or periodic service is introduced."
+    - "Inspect must classify from the record plus current time without mutating it. When a RUNNING attempt exceeds its lease, return INTERRUPTED_UNKNOWN together with last_seen_at_utc and the last checkpoint; do not infer when the chat actually died."
+    - "Recovery semantics must require fresh repository inspection after INTERRUPTED_UNKNOWN. Attempt telemetry may guide checkpoint recovery but cannot substitute for fresh HEAD/remote/worktree evidence or authorize reset/cleanup/publication."
+    - "Terminal marking must be explicit and idempotent for the same terminal result. A successor must not rewrite a confirmed terminal attempt back to RUNNING."
+    - "Attempt records must exclude secrets, tokens, full prompts/conversation history, raw tool logs, diffs, report bodies, and broad file inventories."
+    - "Expose one canonical Foundation-relative bootstrap/navigation locator for the execution-continuity contract/tool. The local attempt-state directory itself remains local Git metadata and is never a bootstrap authority artifact."
+    - "Update Architect, Executor, Task Protocol, and Foundation Architecture only where needed so long-running Executor workflows create/refresh/terminalize attempt state at bounded execution boundaries and recovery sessions inspect it before discarding local work."
+    - "Add focused tests for exact binding, state transitions, lease classification, stale UNKNOWN behavior, terminal idempotency, local Git-metadata containment, no worktree pollution, path traversal rejection, no secret/log payload fields, and recovery-not-authority semantics."
+    - "Consult documents/ and standards/ as normative semantic/evidence constraints and keep them unchanged unless a directly contradictory canonical rule is discovered. Any required documents/standards mutation is architecture/spec expansion and must stop for Architect revision."
+    - "Publish TASK-0009 implementation and report by non-force fast-forward on main only."
+
+  allowed_existing_files_or_components:
+    - "profile/.agent/bootstrap/bootstrap.json"
+    - "profile/.agent/bootstrap/validate.py"
+    - "profile/.agent/bootstrap/test_bootstrap.py"
+    - "skills/contracts/FOUNDATION_ARCHITECTURE.md"
+    - "skills/architect/SKILL.md"
+    - "skills/executor/SKILL.md"
+    - "skills/protocols/TASK_PROTOCOL.md"
+    - "skills/README.md"
+    - "skills/scripts/validate_skill_library.py"
+    - "skills/scripts/test_validate_skill_library.py"
+    - "README.md only if one concise navigation sentence is materially required"
+    - ".agent/tasks/TASK-0009/**"
+
+  expected_files_are_restrictive: false
+
+invariants:
+  - "Foundation remains MAIN_ONLY and all canonical Foundation-internal paths resolve from one exact authority_set_identity revision."
+  - "There remain exactly two organizational roles: Architect and Executor."
+  - "Execution-attempt state has authority NONE and never changes task/review/acceptance/rebinding/release authority."
+  - "No execution-attempt record or stale lease may claim exact chat death time. Exact death time is UNKNOWN unless an external authoritative surface explicitly supplies it."
+  - "ACTIVE_LEASE means the last-seen lease is still fresh; it is not proof that the chat UI or model process is currently alive."
+  - "INTERRUPTED_UNKNOWN means a non-terminal attempt is stale and lacks a terminal marker; it is not equivalent to FAILED or TERMINAL."
+  - "TERMINAL_CONFIRMED requires an explicit terminal marker written by the attempt owner/successor under valid current authority."
+  - "Execution-attempt local telemetry never substitutes for fresh GitHub canonical truth, fresh repository inspection, or task authority."
+  - "The attempt store lives under Git metadata only and must not pollute target worktrees or require .gitignore changes."
+  - "No daemon, background heartbeat, scheduler, queue, database, message bus, telemetry service, provider SDK, browser automation, or Agent Runtime mutation is introduced."
+  - "TASK-0007 external capability plane, TASK-0008 continuity findings, authority.lock semantics, documents/, standards/, and the exact 15-skill taxonomy remain unchanged except for explicitly authorized navigation/wording."
+  - "agent-runtime remains an orthogonal execution substrate and is not modified."
+
+forbidden_changes:
+  - "Claim or persist a synthetic exact death timestamp inferred from lease expiry."
+  - "Create a heartbeat daemon, LaunchAgent, cron job, scheduled task, background process, server, database, queue, or remote liveness service."
+  - "Require hidden ChatGPT session identifiers or provider-private APIs."
+  - "Store execution-attempt state in tracked or untracked worktree paths."
+  - "Commit execution-attempt records to GitHub."
+  - "Store secrets, tokens, prompt bodies, conversation transcripts, raw logs, file diffs, or broad file listings in attempt records."
+  - "Allow stale attempt state to authorize reset, cleanup, mutation, publication, rebinding, task creation, or acceptance."
+  - "Modify documents/ or standards/ unless a direct canonical contradiction is found and Architect revises the task."
+  - "Modify agent-runtime repository, Runtime installation/configuration/state, TCC, Keychain, System Settings, or host-global configuration."
+  - "Create branches, PRs, tags, releases, or staging topology."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "A canonical Execution Attempt Continuity contract and machine-readable template exist with authority NONE, exact repository/task/base binding, bounded timestamps/lease, checkpoint metadata, and explicit RUNNING/TERMINAL producer states."
+    evidence_required: "Exact committed contract/template plus positive/negative validation tests for binding, required fields, closed states, timestamp shape, bounded lease, and forbidden payload fields."
+  - id: AC-2
+    requirement: "Attempt state is stored only under repository-local Git metadata using git rev-parse --git-path and creates no tracked or untracked worktree artifact."
+    evidence_required: "Focused tests in temporary Git repositories proving the resolved path, containment, worktree cleanliness, and no .gitignore mutation."
+  - id: AC-3
+    requirement: "Observer classification is truth-preserving: TERMINAL_CONFIRMED requires an explicit terminal marker; ACTIVE_LEASE is only a fresh last-seen lease; stale non-terminal attempts classify only as INTERRUPTED_UNKNOWN with no exact death timestamp."
+    evidence_required: "Deterministic clock-controlled tests across fresh, boundary, stale, and terminal cases, including negative assertions for DEAD/FAILED/death_at inference."
+  - id: AC-4
+    requirement: "Start, heartbeat, checkpoint, terminal, inspect, and current-task listing are deterministic, bounded, stdlib-only, and preserve terminal idempotency."
+    evidence_required: "Focused CLI/library tests proving allowed transitions, repeated terminal behavior, attempt isolation, malformed/path-traversal failures, and bounded output."
+  - id: AC-5
+    requirement: "Checkpoint metadata is sufficient to guide recovery but explicitly non-authoritative; recovery still requires fresh HEAD/remote/worktree inspection before cleanup, continuation, or publication."
+    evidence_required: "Contract/role/protocol semantics plus tests/static assertions that inspect output carries authority NONE and cannot assert canonical Git truth or authorize consequence."
+  - id: AC-6
+    requirement: "Long-running Executor guidance creates/refreshes attempt state at bounded lifecycle checkpoints and marks terminal state when a terminal result is reached, without requiring a background heartbeat."
+    evidence_required: "Minimal Architect/Executor/Task Protocol/Foundation Architecture diff mapping the new L1 owner and preserving all existing L0 authority."
+  - id: AC-7
+    requirement: "Bootstrap exposes only canonical Foundation-relative execution-continuity contract/tool locators at the active authority_set_identity revision; local attempt data itself is never bootstrap authority or remote state."
+    evidence_required: "Bootstrap local/remote and fail-closed locator tests."
+  - id: AC-8
+    requirement: "The design conforms to existing documents/standards ownership and evidence semantics without mutating documents/ or standards/: missing/stale liveness evidence remains UNKNOWN; material failure state is attributable; retry/recovery remains bounded."
+    evidence_required: "Exact unchanged blob proof for documents/ and standards/ plus traceability notes/tests to DOCUMENT_MODEL, STANDARD_MODEL, OBS, REL, and ASR semantics."
+  - id: AC-9
+    requirement: "TASK-0007 external capability plane, TASK-0008 continuity findings, authority.lock, agent-runtime, and exact 15-skill taxonomy remain unchanged."
+    evidence_required: "Exact diff/blob proof and skill-library validation."
+  - id: AC-10
+    requirement: "All existing Foundation bootstrap, protocol, skill-library, and regression validation remains green."
+    evidence_required: "All required repository-native verification commands PASS on the final candidate."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0009 with the canonical task artifact validator before any implementation mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Run focused execution-attempt continuity tests first, including Git-metadata containment, no worktree pollution, deterministic clock/lease classification, terminal idempotency, and forbidden-field/path failures."
+      required: true
+    - id: CHECK-3
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py and python3 -B profile/.agent/bootstrap/validate.py --remote"
+      required: true
+    - id: CHECK-4
+      command_or_check: "python3 -B profile/.agent/bootstrap/test_bootstrap.py"
+      required: true
+    - id: CHECK-5
+      command_or_check: "python3 -B skills/scripts/validate_skill_library.py and python3 -B skills/scripts/test_validate_skill_library.py"
+      required: true
+    - id: CHECK-6
+      command_or_check: "Run TASK-0008 research-fanout and continuity-finding focused regressions to prove no L1 continuity regression."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Prove documents/ and standards/ blobs are unchanged from execution base and map implementation semantics to DOCUMENT_MODEL plus OBS/REL/ASR evidence constraints."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Prove authority.lock, external capability plane, agent-runtime, and skill taxonomy remain unchanged; exactly two organizational roles remain."
+      required: true
+    - id: CHECK-9
+      command_or_check: "python3 -m py_compile for new/modified Python files and git diff --check."
+      required: true
+    - id: CHECK-10
+      command_or_check: "Fresh-resolve remote main immediately before non-force publication, then post-prove final main identity, ahead/behind, tracked worktree hygiene, and report publication."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files:
+    - "skills/contracts/EXECUTION_CONTINUITY.md"
+    - "skills/templates/execution-attempt.yaml"
+    - "skills/scripts/execution_attempt.py"
+    - "skills/scripts/test_execution_attempt.py"
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "No unlisted new files are authorized."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
