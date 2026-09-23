@@ -1,0 +1,360 @@
+protocol_version: 3
+
+task_id: TASK-0005
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0005/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+  candidate_commit: "6ed5029e214095a182abe72043566d1bd93323c2"
+  candidate_tree: "f33d59fbf819742b358b83c233dfa1192ee4db0d"
+  candidate_parent: "4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+
+candidate_changed_paths:
+  - .agent/tasks/TASK-0005/task.yaml
+  - README.md
+
+pre_retirement_foundation_gate:
+  exact_base:
+    local_head: "4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+    remote_main: "4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+    branch: main
+    ahead: 0
+    behind: 0
+    clean: true
+    local_branches:
+      - main
+    remote_heads:
+      - main
+  accepted_reviews:
+    TASK-0001: ACCEPTED
+    TASK-0002: ACCEPTED
+    TASK-0003: ACCEPTED
+    TASK-0004: ACCEPTED
+  authority_set:
+    agent-skills:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "87a37a72a4952b1da273d9af308642f4295fda6b"
+    agent-standards:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "0da0d5864fe5e458af564f3c6ba9959cefd99639"
+    agent-documents:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+    agent-runtime:
+      repository: phatnguyen03022001/agent-runtime
+      revision: "ac33afadccf2b222ddf48d6c6b45de82951046a2"
+  generated_program:
+    path: profile/.agent/program.generated.json
+    authority: NONE
+    support_locations_foundation_native: true
+    runtime_external: true
+  current_positive_locator_scan:
+    inspected_surfaces:
+      - README.md
+      - profile/.agent/bootstrap/bootstrap.json
+      - profile/.agent/bootstrap/authority.lock.json
+      - profile/.agent/program.generated.json
+      - skills/templates
+      - skills/.agent/case-router.yaml
+    architect-profile_positive_matches: 0
+    agent-skills_positive_matches: 0
+    agent-documents_positive_matches: 0
+    agent-standards_positive_matches: 0
+    historical_and_negative_fixtures_preserved: true
+  imported_source_tip_ancestry:
+    method: "git branch --contains <source-tip> --format=%(refname:short)"
+    architect-profile:
+      source_tip: "5afd25b567e3817c111d84fe28b4edc0598e5081"
+      foundation_main_contains: true
+    agent-skills:
+      source_tip: "4f4ef2b45e1a025bc499702919431c0d0d61419c"
+      foundation_main_contains: true
+    agent-documents:
+      source_tip: "ff135cde2dbebbffcd0c33415a7abaf1b2e2c4ec"
+      foundation_main_contains: true
+    agent-standards:
+      source_tip: "4eb149686329b3a5ad74d66a6fce050d930ada39"
+      foundation_main_contains: true
+
+legacy_repositories:
+  architect-profile:
+    repository: phatnguyen03022001/architect-profile
+    before:
+      exists: true
+      visibility: PUBLIC
+      archived: false
+      description: null
+      default_branch: main
+      open_pr_count: 0
+      branches:
+        dev: "5afd25b567e3817c111d84fe28b4edc0598e5081"
+        main: "508c64f02640911f1fdca81c8cde08748921eae7"
+      tags: {}
+      source_tip_resolved: true
+      representative_historical_commit:
+        sha: "508c64f02640911f1fdca81c8cde08748921eae7"
+        resolved: true
+    description_update:
+      value: "Archived historical source. Active canonical repository: phatnguyen03022001/agent-foundation. Retained for historical repo@SHA:path references."
+      verified_before_archive: true
+    archive:
+      sequential_order: 1
+      mutation_succeeded: true
+      verified_immediately: true
+    after:
+      exists: true
+      name_with_owner: phatnguyen03022001/architect-profile
+      visibility: PUBLIC
+      archived: true
+      description: "Archived historical source. Active canonical repository: phatnguyen03022001/agent-foundation. Retained for historical repo@SHA:path references."
+      default_branch: main
+      open_pr_count: 0
+      branches:
+        dev: "5afd25b567e3817c111d84fe28b4edc0598e5081"
+        main: "508c64f02640911f1fdca81c8cde08748921eae7"
+      tags: {}
+      source_tip_resolved: true
+      representative_historical_commit_resolved: true
+      git_ls_remote_readable: true
+      git_content_changed: false
+  agent-skills:
+    repository: phatnguyen03022001/agent-skills
+    before:
+      exists: true
+      visibility: PUBLIC
+      archived: false
+      description: null
+      default_branch: main
+      open_pr_count: 0
+      branches:
+        dev: "4f4ef2b45e1a025bc499702919431c0d0d61419c"
+        main: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+      tags:
+        v1.0.0: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+      source_tip_resolved: true
+      representative_historical_commit:
+        sha: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+        resolved: true
+      workflow:
+        name: "Validate skill library"
+        path: .github/workflows/validate-skill-library.yml
+        state: active
+        trigger: "push on dev"
+    description_update:
+      value: "Archived historical source. Active canonical repository: phatnguyen03022001/agent-foundation. Retained for historical repo@SHA:path references."
+      verified_before_archive: true
+    archive:
+      sequential_order: 2
+      mutation_succeeded: true
+      verified_immediately: true
+    after:
+      exists: true
+      name_with_owner: phatnguyen03022001/agent-skills
+      visibility: PUBLIC
+      archived: true
+      description: "Archived historical source. Active canonical repository: phatnguyen03022001/agent-foundation. Retained for historical repo@SHA:path references."
+      default_branch: main
+      open_pr_count: 0
+      branches:
+        dev: "4f4ef2b45e1a025bc499702919431c0d0d61419c"
+        main: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+      tags:
+        v1.0.0: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+      source_tip_resolved: true
+      representative_historical_commit_resolved: true
+      git_ls_remote_readable: true
+      git_content_changed: false
+      workflow:
+        name: "Validate skill library"
+        state: active
+        mutation_attempted: false
+        disposition: "Historical workflow state recorded only. The repository is archived/read-only and the workflow is push-triggered on dev, so no independent Actions mutation was authorized or required."
+  agent-documents:
+    repository: phatnguyen03022001/agent-documents
+    before:
+      exists: true
+      visibility: PUBLIC
+      archived: false
+      description: null
+      default_branch: main
+      open_pr_count: 0
+      branches:
+        dev: "ff135cde2dbebbffcd0c33415a7abaf1b2e2c4ec"
+        main: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
+      tags:
+        v1.0.0: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
+      source_tip_resolved: true
+      representative_historical_commit:
+        sha: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
+        resolved: true
+    description_update:
+      value: "Archived historical source. Active canonical repository: phatnguyen03022001/agent-foundation. Retained for historical repo@SHA:path references."
+      verified_before_archive: true
+    archive:
+      sequential_order: 3
+      mutation_succeeded: true
+      verified_immediately: true
+    after:
+      exists: true
+      name_with_owner: phatnguyen03022001/agent-documents
+      visibility: PUBLIC
+      archived: true
+      description: "Archived historical source. Active canonical repository: phatnguyen03022001/agent-foundation. Retained for historical repo@SHA:path references."
+      default_branch: main
+      open_pr_count: 0
+      branches:
+        dev: "ff135cde2dbebbffcd0c33415a7abaf1b2e2c4ec"
+        main: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
+      tags:
+        v1.0.0: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
+      source_tip_resolved: true
+      representative_historical_commit_resolved: true
+      git_ls_remote_readable: true
+      git_content_changed: false
+  agent-standards:
+    repository: phatnguyen03022001/agent-standards
+    before:
+      exists: true
+      visibility: PUBLIC
+      archived: false
+      description: null
+      default_branch: main
+      open_pr_count: 0
+      branches:
+        dev: "4eb149686329b3a5ad74d66a6fce050d930ada39"
+        main: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+      tags:
+        v1.0.0: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+      source_tip_resolved: true
+      representative_historical_commit:
+        sha: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+        resolved: true
+    description_update:
+      value: "Archived historical source. Active canonical repository: phatnguyen03022001/agent-foundation. Retained for historical repo@SHA:path references."
+      verified_before_archive: true
+    archive:
+      sequential_order: 4
+      mutation_succeeded: true
+      verified_immediately: true
+    after:
+      exists: true
+      name_with_owner: phatnguyen03022001/agent-standards
+      visibility: PUBLIC
+      archived: true
+      description: "Archived historical source. Active canonical repository: phatnguyen03022001/agent-foundation. Retained for historical repo@SHA:path references."
+      default_branch: main
+      open_pr_count: 0
+      branches:
+        dev: "4eb149686329b3a5ad74d66a6fce050d930ada39"
+        main: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+      tags:
+        v1.0.0: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+      source_tip_resolved: true
+      representative_historical_commit_resolved: true
+      git_ls_remote_readable: true
+      git_content_changed: false
+
+retirement_integrity:
+  descriptions_all_verified_before_first_archive: true
+  archived_exactly:
+    - phatnguyen03022001/architect-profile
+    - phatnguyen03022001/agent-skills
+    - phatnguyen03022001/agent-documents
+    - phatnguyen03022001/agent-standards
+  partial_retirement: false
+  branch_sets_preserved: true
+  branch_shas_preserved: true
+  tags_preserved: true
+  historical_commits_resolvable: true
+  public_git_readability_preserved: true
+  repository_deletion_performed: false
+  repository_transfer_performed: false
+  repository_rename_performed: false
+  visibility_change_performed: false
+  default_branch_change_performed: false
+  legacy_git_commit_performed: false
+  legacy_branch_or_tag_mutation_performed: false
+  releases_issues_prs_collaborators_rulesets_branch_protection_actions_mutated: false
+  historical_repo_sha_path_identity_preserved: true
+
+active_repositories:
+  agent-foundation:
+    name_with_owner: phatnguyen03022001/agent-foundation
+    visibility: PUBLIC
+    archived: false
+    default_branch: main
+    role: "active canonical support repository"
+  agent-runtime:
+    name_with_owner: phatnguyen03022001/agent-runtime
+    visibility: PUBLIC
+    archived: false
+    default_branch: main
+    role: "separate active execution repository"
+
+foundation_closure:
+  readme_modified: true
+  change: "Replaced only the stale pending-retirement sentence with the completed consolidation state."
+  semantic_owners_preserved:
+    - profile
+    - skills
+    - documents
+    - standards
+  agent_runtime_remains_separate: true
+  protected_surfaces_changed: false
+  protected_surface_proof: "git diff --name-only 4091a2b610927b10fe061134e9a464e9a2c8f5b1 6ed5029e214095a182abe72043566d1bd93323c2 returned exactly .agent/tasks/TASK-0005/task.yaml and README.md."
+
+verification:
+  bootstrap_validator:
+    command: "python3 -B profile/.agent/bootstrap/validate.py"
+    result: PASS
+    signal: "OPM_BOOTSTRAP = TRUE"
+  bootstrap_unit_tests:
+    command: "python3 -B profile/.agent/bootstrap/test_bootstrap.py"
+    result: PASS
+    tests_run: 32
+    failures: 0
+    errors: 0
+  skills_validator:
+    command: "python3 -B skills/scripts/validate_skill_library.py"
+    result: PASS
+    signal: "OK: validated curated 15-skill taxonomy and protocol v3"
+    warnings: 4
+  git_diff_check:
+    command: "git diff --check"
+    result: PASS
+  standards_dependency_install_attempted: false
+
+publication:
+  candidate_published: true
+  candidate_remote_main: "6ed5029e214095a182abe72043566d1bd93323c2"
+  candidate_local_head: "6ed5029e214095a182abe72043566d1bd93323c2"
+  candidate_ahead: 0
+  candidate_behind: 0
+  candidate_clean: true
+  local_branches:
+    - main
+  remote_branches:
+    - main
+  report_expected_parent: "6ed5029e214095a182abe72043566d1bd93323c2"
+  report_commit_binding: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  final_remote_main: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  final_local_head: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  final_ahead_behind: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  final_clean_state: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  report_commit_note: "A Git commit cannot self-contain its own content-addressed commit SHA. Resolve exact report commit/tree and final local/remote state immediately after report publication and return them as terminal handoff evidence."
+
+remaining_work:
+  - "Independent Architect review of TASK-0005 report and exact published report commit."
+  - "No further consolidation task is implied when the recorded retirement predicates remain true."
+
+terminal_result: NEEDS_REVIEW
+architect_acceptance_claimed: false
