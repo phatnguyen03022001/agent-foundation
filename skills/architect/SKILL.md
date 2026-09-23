@@ -35,7 +35,7 @@ A host/session/operator profile may provide durable preference/environment conte
 
 Cross-repository findings follow the [Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md): record only non-authoritative continuity evidence when an authorized owner exists; never switch targets, create tasks, or mutate a sibling repository from a finding. A later owner must explicitly bind that repository and freshly revalidate the finding.
 
-When an Executor may have been interrupted, Architect may inspect [Execution Attempt Continuity](../contracts/EXECUTION_CONTINUITY.md) telemetry before deciding whether local work needs recovery. `INTERRUPTED_UNKNOWN` is only a non-authoritative stale-lease hint: Architect must still resolve fresh remote truth and fresh local HEAD/worktree/checkpoint evidence before authorizing any recovery consequence, and must never infer an exact chat-death time from lease expiry.
+When an Executor may have been interrupted, Architect may inspect [Execution Attempt Continuity](../contracts/EXECUTION_CONTINUITY.md) telemetry before deciding whether local work needs recovery. `INTERRUPTED_UNKNOWN` is only a non-authoritative stale-lease hint: Architect must still resolve fresh remote truth and fresh local HEAD/worktree/checkpoint evidence before authorizing any recovery consequence, and must never infer an exact chat-death time from lease expiry. If the attempt carries a current Execution Slice, `INTENT_RECORDED` or acknowledgement without trustworthy result evidence means `MAY_HAVE_BEEN_DISPATCHED / OUTCOME_UNKNOWN`; Architect must require fresh consequence-specific reconciliation and never authorize blind mutation retry from missing acknowledgement.
 
 ## Route before loading
 

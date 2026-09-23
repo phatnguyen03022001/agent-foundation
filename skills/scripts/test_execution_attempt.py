@@ -22,6 +22,7 @@ class ExecutionAttemptTests(unittest.TestCase):
     task_revision = 1
     t0 = datetime(2026, 9, 23, 12, 0, 0, tzinfo=timezone.utc)
     attempt_id = "0123456789abcdef0123456789abcdef"
+    slice_id = "abcdef0123456789abcdef0123456789"
 
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory()
@@ -73,6 +74,21 @@ class ExecutionAttemptTests(unittest.TestCase):
         values.update(overrides)
         return attempts.start_attempt(**values)
 
+    def start_slice(self, **overrides):
+        values = {
+            "root": self.root,
+            "attempt_id": self.attempt_id,
+            "operation_class": "git_publication",
+            "carrier": "repo_publish",
+            "intent": "publish_candidate",
+            "reconciliation_kind": "git_publication",
+            "postcondition_kind": "remote_ref_identity",
+            "now": self.t0 + timedelta(seconds=5),
+            "execution_slice_id": self.slice_id,
+        }
+        values.update(overrides)
+        return attempts.record_slice_intent(**values)
+
     def record_path(self) -> Path:
         raw = self.git(
             "rev-parse", "--git-path", "agent-foundation/execution-attempts"
@@ -90,6 +106,9 @@ class ExecutionAttemptTests(unittest.TestCase):
         self.assertEqual(record["execution_base"], self.base)
         self.assertEqual(record["state"], "RUNNING")
         self.assertEqual(record["authority"], "NONE")
+        self.assertEqual(record["schema_version"], attempts.SCHEMA_VERSION)
+        self.assertEqual(record["next_slice_ordinal"], 1)
+        self.assertIsNone(record["current_slice"])
 
         with self.assertRaisesRegex(ValueError, "repository binding"):
             self.start(
@@ -106,6 +125,18 @@ class ExecutionAttemptTests(unittest.TestCase):
                 task_revision=2,
                 attempt_id="3123456789abcdef0123456789abcdef",
             )
+
+    def test_legacy_record_is_readable_and_upgrade_is_explicit(self) -> None:
+        record = self.start()
+        legacy = {key: value for key, value in record.items() if key in attempts.LEGACY_RECORD_KEYS}
+        legacy["schema_version"] = attempts.LEGACY_SCHEMA_VERSION
+        attempts._write_record(self.root, legacy, create=False)
+        inspected = attempts.inspect_attempt(self.root, self.attempt_id, now=self.t0)
+        self.assertTrue(inspected["legacy_schema"])
+        self.assertIsNone(inspected["current_slice"])
+        upgraded = attempts.upgrade_attempt(self.root, self.attempt_id)
+        self.assertEqual(upgraded["schema_version"], attempts.SCHEMA_VERSION)
+        self.assertIsNone(upgraded["current_slice"])
 
     def test_storage_is_inside_git_metadata_and_does_not_pollute_worktree(self) -> None:
         before = self.git("status", "--porcelain=v1")
@@ -130,6 +161,125 @@ class ExecutionAttemptTests(unittest.TestCase):
         self.assertEqual(changed, {"last_seen_at_utc"})
         self.assertEqual(updated["state"], "RUNNING")
         self.assertEqual(updated["authority"], "NONE")
+
+    def test_slice_intent_is_persisted_before_dispatch_and_bounded_to_one(self) -> None:
+        self.start()
+        updated = self.start_slice()
+        current = updated["current_slice"]
+        self.assertEqual(current["execution_slice_id"], self.slice_id)
+        self.assertEqual(current["lifecycle_observation"], "INTENT_RECORDED")
+        self.assertEqual(current["result_classification"], "UNRESOLVED")
+        self.assertEqual(current["authority"], "NONE")
+        persisted = attempts._read_record(self.root, self.attempt_id)
+        self.assertEqual(persisted["current_slice"], current)
+        with self.assertRaisesRegex(ValueError, "one unresolved"):
+            self.start_slice(execution_slice_id="1123456789abcdef0123456789abcdef")
+
+    def test_possible_dispatch_before_ack_is_outcome_unknown(self) -> None:
+        self.start()
+        self.start_slice()
+        recovered = attempts.inspect_attempt(
+            self.root, self.attempt_id, now=self.t0 + timedelta(seconds=6)
+        )
+        self.assertEqual(recovered["current_slice"]["lifecycle_observation"], "INTENT_RECORDED")
+        self.assertEqual(recovered["slice_recovery_classification"], "OUTCOME_UNKNOWN")
+        self.assertFalse(attempts.retry_is_legal(recovered["current_slice"]))
+
+    def test_intent_only_and_ack_only_crashes_are_outcome_unknown(self) -> None:
+        self.start()
+        self.start_slice()
+        intent_only = attempts.inspect_attempt(
+            self.root, self.attempt_id, now=self.t0 + timedelta(seconds=6)
+        )
+        self.assertEqual(intent_only["slice_recovery_classification"], "OUTCOME_UNKNOWN")
+        self.assertFalse(attempts.retry_is_legal(intent_only["current_slice"]))
+        attempts.observe_slice(
+            self.root,
+            self.attempt_id,
+            self.slice_id,
+            "ACK_OBSERVED",
+            now=self.t0 + timedelta(seconds=10),
+        )
+        ack_only = attempts.inspect_attempt(
+            self.root, self.attempt_id, now=self.t0 + timedelta(seconds=11)
+        )
+        self.assertEqual(ack_only["current_slice"]["lifecycle_observation"], "ACK_OBSERVED")
+        self.assertEqual(ack_only["slice_recovery_classification"], "OUTCOME_UNKNOWN")
+        self.assertFalse(attempts.retry_is_legal(ack_only["current_slice"]))
+
+    def test_result_observation_requires_later_checkpoint_before_clear(self) -> None:
+        self.start()
+        self.start_slice()
+        attempts.observe_slice(
+            self.root,
+            self.attempt_id,
+            self.slice_id,
+            "RESULT_SUCCEEDED",
+            now=self.t0 + timedelta(seconds=10),
+        )
+        inspected = attempts.inspect_attempt(
+            self.root, self.attempt_id, now=self.t0 + timedelta(seconds=11)
+        )
+        self.assertEqual(inspected["slice_recovery_classification"], "SUCCEEDED")
+        with self.assertRaisesRegex(ValueError, "checkpoint"):
+            attempts.clear_slice(
+                self.root,
+                self.attempt_id,
+                self.slice_id,
+                now=self.t0 + timedelta(seconds=12),
+            )
+        attempts.checkpoint_attempt(
+            self.root,
+            self.attempt_id,
+            "result-observed",
+            now=self.t0 + timedelta(seconds=13),
+        )
+        cleared = attempts.clear_slice(
+            self.root,
+            self.attempt_id,
+            self.slice_id,
+            now=self.t0 + timedelta(seconds=14),
+        )
+        self.assertIsNone(cleared["current_slice"])
+
+    def test_outcome_unknown_requires_fresh_reconciliation_before_retry(self) -> None:
+        self.start()
+        self.start_slice()
+        unknown = attempts.observe_slice(
+            self.root,
+            self.attempt_id,
+            self.slice_id,
+            "OUTCOME_UNKNOWN",
+            now=self.t0 + timedelta(seconds=10),
+        )
+        self.assertFalse(attempts.retry_is_legal(unknown["current_slice"]))
+        with self.assertRaisesRegex(ValueError, "fresh attributable state"):
+            attempts.reconcile_slice(
+                self.root,
+                self.attempt_id,
+                self.slice_id,
+                "EFFECT_ABSENT_PRECONDITIONS_HOLD",
+                fresh=False,
+                now=self.t0 + timedelta(seconds=11),
+            )
+        unresolved = attempts.reconcile_slice(
+            self.root,
+            self.attempt_id,
+            self.slice_id,
+            "UNRESOLVED",
+            fresh=True,
+            now=self.t0 + timedelta(seconds=12),
+        )
+        self.assertFalse(attempts.retry_is_legal(unresolved["current_slice"]))
+        reconciled = attempts.reconcile_slice(
+            self.root,
+            self.attempt_id,
+            self.slice_id,
+            "EFFECT_ABSENT_PRECONDITIONS_HOLD",
+            fresh=True,
+            now=self.t0 + timedelta(seconds=13),
+        )
+        self.assertTrue(attempts.retry_is_legal(reconciled["current_slice"]))
 
     def test_checkpoint_records_bounded_recovery_hints(self) -> None:
         self.start()
@@ -270,6 +420,54 @@ class ExecutionAttemptTests(unittest.TestCase):
             [],
         )
 
+    def test_carrier_selection_is_survival_aware_and_capability_gated(self) -> None:
+        self.assertEqual(
+            attempts.select_carrier(
+                bounded_sync_safe=True,
+                long_or_uncertain=False,
+                interactive=False,
+                survival_sensitive=False,
+                mutating=True,
+                recoverable_async_available=False,
+                independently_reconcilable=False,
+            ),
+            "terminal_exec",
+        )
+        self.assertEqual(
+            attempts.select_carrier(
+                bounded_sync_safe=False,
+                long_or_uncertain=True,
+                interactive=False,
+                survival_sensitive=True,
+                mutating=True,
+                recoverable_async_available=True,
+                independently_reconcilable=False,
+            ),
+            "recoverable_async",
+        )
+        self.assertEqual(
+            attempts.select_carrier(
+                bounded_sync_safe=False,
+                long_or_uncertain=True,
+                interactive=False,
+                survival_sensitive=True,
+                mutating=False,
+                recoverable_async_available=False,
+                independently_reconcilable=False,
+            ),
+            "terminal_start",
+        )
+        with self.assertRaisesRegex(ValueError, "CURRENT_PHASE_CAPABILITY_UNAVAILABLE"):
+            attempts.select_carrier(
+                bounded_sync_safe=False,
+                long_or_uncertain=True,
+                interactive=False,
+                survival_sensitive=True,
+                mutating=True,
+                recoverable_async_available=False,
+                independently_reconcilable=False,
+            )
+
     def test_path_traversal_and_malformed_identity_are_rejected(self) -> None:
         self.start()
         for value in (
@@ -287,13 +485,21 @@ class ExecutionAttemptTests(unittest.TestCase):
         for field in (
             "secret",
             "token",
+            "argv",
+            "raw_argv",
+            "environment",
+            "env",
             "prompt",
             "conversation",
             "logs",
             "tool_logs",
+            "raw_logs",
             "diff",
+            "full_diff",
+            "file_body",
             "file_contents",
             "file_inventory",
+            "inventory",
             "report_body",
             "death_at",
         ):
@@ -302,6 +508,23 @@ class ExecutionAttemptTests(unittest.TestCase):
                 bad[field] = "forbidden"
                 with self.assertRaisesRegex(ValueError, "forbidden"):
                     attempts.validate_record(bad)
+
+    def test_slice_telemetry_rejects_raw_command_like_intent(self) -> None:
+        self.start()
+        with self.assertRaisesRegex(ValueError, "bounded non-secret identifier"):
+            self.start_slice(intent="git push origin main")
+
+    def test_reconciliation_classes_are_exact_and_machine_checkable(self) -> None:
+        self.assertEqual(
+            attempts.RECONCILIATION_RULES,
+            {
+                "runtime_start": "runtime_session_identity",
+                "expected_state_filesystem": "expected_state",
+                "git_commit_update": "git_object_identity",
+                "git_publication": "remote_ref_identity",
+                "report_publication": "remote_report_identity",
+            },
+        )
 
     def test_authority_none_is_enforced(self) -> None:
         record = self.start()

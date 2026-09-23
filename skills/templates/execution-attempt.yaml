@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 artifact: EXECUTION_ATTEMPT
 authority: NONE
 attempt_id: "0123456789abcdef0123456789abcdef"
@@ -11,5 +11,7 @@ last_seen_at_utc: "2026-01-01T00:00:00Z"
 lease_seconds: 900
 state: RUNNING
 last_checkpoint: null
+next_slice_ordinal: 1
+current_slice: null
 terminal_result: null
 terminal_at_utc: null

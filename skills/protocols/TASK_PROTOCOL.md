@@ -43,7 +43,9 @@ Repository-local execution-attempt telemetry is `LOCAL_MUTABLE` operational evid
 
 Producer state is only `RUNNING` or explicit `TERMINAL`. Observer classification is only `TERMINAL_CONFIRMED`, `ACTIVE_LEASE`, or `INTERRUPTED_UNKNOWN`. Lease expiry never manufactures failed/dead/terminal state or an exact death timestamp. No background heartbeat, daemon, polling service, scheduler, or automatic recovery is implied.
 
-After an interrupted or ambiguous attempt, a successor must still refresh the mutable evidence required by the next consequence: canonical remote truth, local HEAD, index/worktree, local checkpoints, and current task/revision/base authority. Attempt telemetry may guide inspection but cannot authorize cleanup, continuation, mutation, publication, rebinding, review, acceptance, promotion, or release.
+After an interrupted or ambiguous attempt, a successor must still refresh the mutable evidence required by the next consequence: canonical remote truth, local HEAD, index/worktree, local checkpoints, and current task/revision/base authority. A `RUNNING` attempt may carry at most one unresolved consequence-bearing Execution Slice with `authority NONE`. Its caller-known intent is persisted before dispatch; `INTENT_RECORDED` or an acknowledgement without trustworthy consequence evidence means the request may have been dispatched and therefore recovers as `OUTCOME_UNKNOWN`. Attempt/slice telemetry may guide inspection but cannot authorize cleanup, continuation, mutation, retry, publication, rebinding, review, acceptance, promotion, or release.
+
+An ambiguous response to a mutating operation is never evidence of failure, non-dispatch, or safe retry. `OUTCOME_UNKNOWN` requires fresh consequence-specific reconciliation before repetition; retry is legal only when attributable fresh state establishes the intended effect is absent while original preconditions still hold, or the exact selected tool contract proves replay safe. Missing or inconclusive reconciliation remains unresolved.
 
 ## Optional operator profile
 
@@ -283,7 +285,7 @@ Guard by consequence rather than executable name: the same generic capability ma
 
 ## Execution mechanics boundary
 
-Deterministic execution bundling is Executor-local HOW owned by the [Executor skill](../executor/SKILL.md). Its mechanics do not add authority, lifecycle state, mutation scope, or weaker evidence. L0 requires consequence-appropriate freshness, independently attributable required evidence, and stop-on-failure semantics.
+Deterministic execution bundling is Executor-local HOW owned by the [Executor skill](../executor/SKILL.md). Its mechanics do not add authority, lifecycle state, mutation scope, or weaker evidence. L0 requires consequence-appropriate freshness, independently attributable required evidence, stop-on-failure semantics, and the decision priority `correctness -> survivability/recoverability -> boundedness -> round-trip minimization`. Fewer synchronization boundaries never justify unrecoverable consequence ambiguity.
 
 ## Target-authoritative Git topologies
 

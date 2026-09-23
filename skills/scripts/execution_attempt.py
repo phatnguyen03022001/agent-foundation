@@ -18,7 +18,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-SCHEMA_VERSION = 1
+LEGACY_SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 ARTIFACT = "EXECUTION_ATTEMPT"
 AUTHORITY = "NONE"
 DEFAULT_LEASE_SECONDS = 900
@@ -28,13 +29,15 @@ MAX_UNTRACKED_COUNT = 100
 MAX_LIST_RESULTS = 100
 
 ATTEMPT_ID_RE = re.compile(r"^[0-9a-f]{32}$")
+SLICE_ID_RE = ATTEMPT_ID_RE
 TASK_ID_RE = re.compile(r"^TASK-[0-9]{4,}$")
 REPOSITORY_RE = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 CHECKPOINT_KIND_RE = re.compile(r"^[A-Za-z0-9_.-]{1,64}$")
+BOUNDED_TOKEN_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$")
 RFC3339_UTC_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$")
 
-RECORD_KEYS = {
+LEGACY_RECORD_KEYS = {
     "schema_version",
     "artifact",
     "authority",
@@ -51,6 +54,50 @@ RECORD_KEYS = {
     "terminal_result",
     "terminal_at_utc",
 }
+RECORD_KEYS = LEGACY_RECORD_KEYS | {
+    "next_slice_ordinal",
+    "current_slice",
+}
+SLICE_KEYS = {
+    "authority",
+    "execution_slice_id",
+    "ordinal",
+    "operation_class",
+    "carrier",
+    "intent",
+    "reconciliation_kind",
+    "postcondition_kind",
+    "lifecycle_observation",
+    "observed_at_utc",
+    "runtime_session_observation",
+    "reconciliation_result",
+    "result_classification",
+}
+RECONCILIATION_RULES = {
+    "runtime_start": "runtime_session_identity",
+    "expected_state_filesystem": "expected_state",
+    "git_commit_update": "git_object_identity",
+    "git_publication": "remote_ref_identity",
+    "report_publication": "remote_report_identity",
+}
+SLICE_OBSERVATION_RESULTS = {
+    "ACK_OBSERVED": ("ACK_OBSERVED", "UNRESOLVED"),
+    "RESULT_SUCCEEDED": ("RESULT_OBSERVED", "SUCCEEDED"),
+    "RESULT_NO_EFFECT": ("RESULT_OBSERVED", "NO_EFFECT"),
+    "OUTCOME_UNKNOWN": ("OUTCOME_UNKNOWN", "OUTCOME_UNKNOWN"),
+}
+RECONCILIATION_RESULTS = frozenset({
+    "EFFECT_PRESENT",
+    "EFFECT_ABSENT_PRECONDITIONS_HOLD",
+    "REPLAY_SAFE_CONTRACT",
+    "UNRESOLVED",
+})
+RESOLVED_SLICE_RESULTS = frozenset({
+    "SUCCEEDED",
+    "NO_EFFECT",
+    "EFFECT_PRESENT",
+    "RETRY_ALLOWED",
+})
 CHECKPOINT_KEYS = {
     "kind",
     "observed_at_utc",
@@ -68,18 +115,29 @@ FORBIDDEN_FIELD_TOKENS = {
     "tokens",
     "credential",
     "credentials",
+    "argv",
+    "raw_argv",
+    "environment",
+    "env",
     "prompt",
     "prompts",
     "conversation",
     "transcript",
+    "transcripts",
     "log",
     "logs",
+    "raw_log",
+    "raw_logs",
     "tool_log",
     "tool_logs",
     "diff",
+    "full_diff",
+    "file_body",
+    "file_bodies",
     "file_content",
     "file_contents",
     "file_inventory",
+    "inventory",
     "report_body",
     "death_at",
     "death_at_utc",
@@ -254,13 +312,78 @@ def _reject_forbidden_fields(value: Any) -> None:
             _reject_forbidden_fields(nested)
 
 
+def _bounded_token(value: Any, label: str) -> str:
+    if not isinstance(value, str) or not BOUNDED_TOKEN_RE.fullmatch(value):
+        raise ValueError(f"{label} must be a bounded non-secret identifier")
+    return value
+
+
+def _validate_slice(slice_record: Any, *, started: datetime, last_seen: datetime) -> dict[str, Any]:
+    if not isinstance(slice_record, dict) or set(slice_record) != SLICE_KEYS:
+        raise ValueError("current_slice fields are invalid")
+    if slice_record["authority"] != AUTHORITY:
+        raise ValueError("execution slice authority must be NONE")
+    if not SLICE_ID_RE.fullmatch(str(slice_record["execution_slice_id"])):
+        raise ValueError("invalid execution_slice_id")
+    ordinal = slice_record["ordinal"]
+    if type(ordinal) is not int or ordinal < 1:
+        raise ValueError("execution slice ordinal is invalid")
+
+    operation_class = _bounded_token(slice_record["operation_class"], "operation_class")
+    reconciliation_kind = _bounded_token(slice_record["reconciliation_kind"], "reconciliation_kind")
+    postcondition_kind = _bounded_token(slice_record["postcondition_kind"], "postcondition_kind")
+    if operation_class not in RECONCILIATION_RULES:
+        raise ValueError("unsupported execution slice operation_class")
+    if reconciliation_kind != operation_class:
+        raise ValueError("reconciliation_kind must match operation_class")
+    if RECONCILIATION_RULES[reconciliation_kind] != postcondition_kind:
+        raise ValueError("postcondition_kind does not match reconciliation rule")
+    _bounded_token(slice_record["carrier"], "carrier")
+    _bounded_token(slice_record["intent"], "intent")
+
+    observed = _parse_utc(slice_record["observed_at_utc"])
+    if observed < started or observed > last_seen:
+        raise ValueError("execution slice timestamp is outside attempt bounds")
+    runtime_session = slice_record["runtime_session_observation"]
+    if runtime_session is not None:
+        _bounded_token(runtime_session, "runtime_session_observation")
+    lifecycle = slice_record["lifecycle_observation"]
+    result = slice_record["result_classification"]
+    reconciliation_result = slice_record["reconciliation_result"]
+    if lifecycle == "INTENT_RECORDED" and result != "UNRESOLVED":
+        raise ValueError("INTENT_RECORDED slice must remain unresolved")
+    if lifecycle == "ACK_OBSERVED" and result != "UNRESOLVED":
+        raise ValueError("ACK_OBSERVED slice must remain unresolved")
+    if lifecycle == "OUTCOME_UNKNOWN" and result != "OUTCOME_UNKNOWN":
+        raise ValueError("OUTCOME_UNKNOWN lifecycle requires OUTCOME_UNKNOWN result")
+    if lifecycle == "RESULT_OBSERVED" and result not in {"SUCCEEDED", "NO_EFFECT"}:
+        raise ValueError("RESULT_OBSERVED slice result is invalid")
+    if lifecycle == "RECONCILED" and result not in {"EFFECT_PRESENT", "RETRY_ALLOWED", "OUTCOME_UNKNOWN"}:
+        raise ValueError("RECONCILED slice result is invalid")
+    if lifecycle not in {"INTENT_RECORDED", "ACK_OBSERVED", "OUTCOME_UNKNOWN", "RESULT_OBSERVED", "RECONCILED"}:
+        raise ValueError("execution slice lifecycle observation is invalid")
+    if lifecycle == "RECONCILED":
+        if reconciliation_result not in RECONCILIATION_RESULTS:
+            raise ValueError("reconciled slice requires reconciliation_result")
+    elif reconciliation_result is not None:
+        raise ValueError("reconciliation_result requires RECONCILED lifecycle")
+    return slice_record
+
+
 def validate_record(record: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(record, dict):
         raise ValueError("execution-attempt record must be an object")
     _reject_forbidden_fields(record)
-    if set(record) != RECORD_KEYS:
-        raise ValueError("execution-attempt record fields are invalid")
-    if record["schema_version"] != SCHEMA_VERSION or record["artifact"] != ARTIFACT:
+    schema_version = record.get("schema_version")
+    if schema_version == LEGACY_SCHEMA_VERSION:
+        if set(record) != LEGACY_RECORD_KEYS:
+            raise ValueError("legacy execution-attempt record fields are invalid")
+    elif schema_version == SCHEMA_VERSION:
+        if set(record) != RECORD_KEYS:
+            raise ValueError("execution-attempt record fields are invalid")
+    else:
+        raise ValueError("unsupported execution-attempt schema_version")
+    if record["artifact"] != ARTIFACT:
         raise ValueError("execution-attempt record identity is invalid")
     if record["authority"] != AUTHORITY:
         raise ValueError("execution-attempt authority must be NONE")
@@ -276,6 +399,16 @@ def validate_record(record: dict[str, Any]) -> dict[str, Any]:
     last_seen = _parse_utc(record["last_seen_at_utc"])
     if last_seen < started:
         raise ValueError("last_seen_at_utc precedes started_at_utc")
+
+    if schema_version == SCHEMA_VERSION:
+        next_slice_ordinal = record["next_slice_ordinal"]
+        if type(next_slice_ordinal) is not int or next_slice_ordinal < 1:
+            raise ValueError("next_slice_ordinal is invalid")
+        current_slice = record["current_slice"]
+        if current_slice is not None:
+            _validate_slice(current_slice, started=started, last_seen=last_seen)
+            if current_slice["ordinal"] >= next_slice_ordinal:
+                raise ValueError("current_slice ordinal must precede next_slice_ordinal")
 
     checkpoint = record["last_checkpoint"]
     if checkpoint is not None:
@@ -353,6 +486,11 @@ def _write_record(root: Path, record: dict[str, Any], *, create: bool) -> Path:
             handle.flush()
             os.fsync(handle.fileno())
         os.replace(temp_name, path)
+        directory_fd = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
     finally:
         if os.path.exists(temp_name):
             os.unlink(temp_name)
@@ -401,11 +539,30 @@ def start_attempt(
         "lease_seconds": lease_seconds,
         "state": "RUNNING",
         "last_checkpoint": None,
+        "next_slice_ordinal": 1,
+        "current_slice": None,
         "terminal_result": None,
         "terminal_at_utc": None,
     }
     _write_record(root_path, record, create=True)
     return record
+
+
+def upgrade_attempt(root: Path | str, attempt_id: str) -> dict[str, Any]:
+    root_path = _repository_root(root)
+    record = _read_record(root_path, attempt_id)
+    if record["schema_version"] == SCHEMA_VERSION:
+        return record
+    if record["schema_version"] != LEGACY_SCHEMA_VERSION:
+        raise ValueError("unsupported execution-attempt schema_version")
+    if record["state"] != "RUNNING":
+        raise ValueError("only a RUNNING legacy attempt can be upgraded")
+    upgraded = dict(record)
+    upgraded["schema_version"] = SCHEMA_VERSION
+    upgraded["next_slice_ordinal"] = 1
+    upgraded["current_slice"] = None
+    _write_record(root_path, upgraded, create=False)
+    return upgraded
 
 
 def heartbeat_attempt(
@@ -423,6 +580,155 @@ def heartbeat_attempt(
     record["last_seen_at_utc"] = _format_utc(current)
     _write_record(root_path, record, create=False)
     return record
+
+
+def _require_slice_capable_running(record: dict[str, Any]) -> None:
+    if record["schema_version"] != SCHEMA_VERSION:
+        raise ValueError("legacy execution-attempt record requires explicit upgrade")
+    if record["state"] != "RUNNING":
+        raise ValueError("TERMINAL attempt cannot accept execution slices")
+
+
+def _current_slice(record: dict[str, Any], execution_slice_id: str) -> dict[str, Any]:
+    _require_slice_capable_running(record)
+    current = record["current_slice"]
+    if current is None:
+        raise ValueError("no unresolved execution slice")
+    if current["execution_slice_id"] != execution_slice_id:
+        raise ValueError("execution_slice_id does not match current slice")
+    return current
+
+
+def record_slice_intent(
+    root: Path | str,
+    attempt_id: str,
+    operation_class: str,
+    carrier: str,
+    intent: str,
+    reconciliation_kind: str,
+    postcondition_kind: str,
+    *,
+    now: datetime | None = None,
+    execution_slice_id: str | None = None,
+) -> dict[str, Any]:
+    root_path = _repository_root(root)
+    record = _read_record(root_path, attempt_id)
+    _require_slice_capable_running(record)
+    if record["current_slice"] is not None:
+        raise ValueError("one unresolved execution slice is already active")
+    _bounded_token(operation_class, "operation_class")
+    _bounded_token(carrier, "carrier")
+    _bounded_token(intent, "intent")
+    _bounded_token(reconciliation_kind, "reconciliation_kind")
+    _bounded_token(postcondition_kind, "postcondition_kind")
+    if operation_class not in RECONCILIATION_RULES:
+        raise ValueError("unsupported execution slice operation_class")
+    if reconciliation_kind != operation_class:
+        raise ValueError("reconciliation_kind must match operation_class")
+    if RECONCILIATION_RULES[reconciliation_kind] != postcondition_kind:
+        raise ValueError("postcondition_kind does not match reconciliation rule")
+    identity = uuid.uuid4().hex if execution_slice_id is None else execution_slice_id
+    if not SLICE_ID_RE.fullmatch(identity):
+        raise ValueError("invalid execution_slice_id")
+    current = now or _now_utc()
+    _assert_forward_time(record, current)
+    timestamp = _format_utc(current)
+    ordinal = record["next_slice_ordinal"]
+    record["last_seen_at_utc"] = timestamp
+    record["next_slice_ordinal"] = ordinal + 1
+    record["current_slice"] = {
+        "authority": AUTHORITY,
+        "execution_slice_id": identity,
+        "ordinal": ordinal,
+        "operation_class": operation_class,
+        "carrier": carrier,
+        "intent": intent,
+        "reconciliation_kind": reconciliation_kind,
+        "postcondition_kind": postcondition_kind,
+        "lifecycle_observation": "INTENT_RECORDED",
+        "observed_at_utc": timestamp,
+        "runtime_session_observation": None,
+        "reconciliation_result": None,
+        "result_classification": "UNRESOLVED",
+    }
+    _write_record(root_path, record, create=False)
+    return record
+
+
+def observe_slice(
+    root: Path | str,
+    attempt_id: str,
+    execution_slice_id: str,
+    observation: str,
+    *,
+    runtime_session_observation: str | None = None,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    if observation not in SLICE_OBSERVATION_RESULTS:
+        raise ValueError("unsupported execution slice observation")
+    if runtime_session_observation is not None:
+        _bounded_token(runtime_session_observation, "runtime_session_observation")
+    root_path = _repository_root(root)
+    record = _read_record(root_path, attempt_id)
+    current_slice = _current_slice(record, execution_slice_id)
+    if current_slice["lifecycle_observation"] == "RECONCILED":
+        raise ValueError("reconciled execution slice cannot accept direct observation")
+    current = now or _now_utc()
+    _assert_forward_time(record, current)
+    timestamp = _format_utc(current)
+    lifecycle, result = SLICE_OBSERVATION_RESULTS[observation]
+    current_slice["lifecycle_observation"] = lifecycle
+    current_slice["result_classification"] = result
+    current_slice["observed_at_utc"] = timestamp
+    if runtime_session_observation is not None:
+        current_slice["runtime_session_observation"] = runtime_session_observation
+    record["last_seen_at_utc"] = timestamp
+    _write_record(root_path, record, create=False)
+    return record
+
+
+def reconcile_slice(
+    root: Path | str,
+    attempt_id: str,
+    execution_slice_id: str,
+    reconciliation_result: str,
+    *,
+    fresh: bool,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    if fresh is not True:
+        raise ValueError("reconciliation must be based on fresh attributable state")
+    if reconciliation_result not in RECONCILIATION_RESULTS:
+        raise ValueError("unsupported reconciliation_result")
+    root_path = _repository_root(root)
+    record = _read_record(root_path, attempt_id)
+    current_slice = _current_slice(record, execution_slice_id)
+    if current_slice["result_classification"] in RESOLVED_SLICE_RESULTS:
+        raise ValueError("resolved execution slice cannot be reconciled again")
+    current = now or _now_utc()
+    _assert_forward_time(record, current)
+    timestamp = _format_utc(current)
+    if reconciliation_result == "EFFECT_PRESENT":
+        result_classification = "EFFECT_PRESENT"
+    elif reconciliation_result in {"EFFECT_ABSENT_PRECONDITIONS_HOLD", "REPLAY_SAFE_CONTRACT"}:
+        result_classification = "RETRY_ALLOWED"
+    else:
+        result_classification = "OUTCOME_UNKNOWN"
+    current_slice["lifecycle_observation"] = "RECONCILED"
+    current_slice["observed_at_utc"] = timestamp
+    current_slice["reconciliation_result"] = reconciliation_result
+    current_slice["result_classification"] = result_classification
+    record["last_seen_at_utc"] = timestamp
+    _write_record(root_path, record, create=False)
+    return record
+
+
+def retry_is_legal(slice_record: dict[str, Any]) -> bool:
+    return (
+        slice_record.get("result_classification") == "RETRY_ALLOWED"
+        and slice_record.get("reconciliation_result")
+        in {"EFFECT_ABSENT_PRECONDITIONS_HOLD", "REPLAY_SAFE_CONTRACT"}
+    )
 
 
 def _checkpoint_git_state(root: Path) -> dict[str, Any]:
@@ -480,6 +786,61 @@ def checkpoint_attempt(
     return record
 
 
+def clear_slice(
+    root: Path | str,
+    attempt_id: str,
+    execution_slice_id: str,
+    *,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    root_path = _repository_root(root)
+    record = _read_record(root_path, attempt_id)
+    current_slice = _current_slice(record, execution_slice_id)
+    if current_slice["result_classification"] not in RESOLVED_SLICE_RESULTS:
+        raise ValueError("unresolved or unknown execution slice cannot be cleared")
+    checkpoint = record["last_checkpoint"]
+    if checkpoint is None:
+        raise ValueError("execution slice requires a coherent checkpoint before clear")
+    if _parse_utc(checkpoint["observed_at_utc"]) < _parse_utc(current_slice["observed_at_utc"]):
+        raise ValueError("checkpoint predates execution slice result observation")
+    current = now or _now_utc()
+    _assert_forward_time(record, current)
+    record["last_seen_at_utc"] = _format_utc(current)
+    record["current_slice"] = None
+    _write_record(root_path, record, create=False)
+    return record
+
+
+def slice_recovery_classification(slice_record: dict[str, Any] | None) -> str | None:
+    if slice_record is None:
+        return None
+    result = slice_record["result_classification"]
+    if result in {"UNRESOLVED", "OUTCOME_UNKNOWN"}:
+        return "OUTCOME_UNKNOWN"
+    return result
+
+
+def select_carrier(
+    *,
+    bounded_sync_safe: bool,
+    long_or_uncertain: bool,
+    interactive: bool,
+    survival_sensitive: bool,
+    mutating: bool,
+    recoverable_async_available: bool,
+    independently_reconcilable: bool,
+) -> str:
+    if bounded_sync_safe and not long_or_uncertain and not interactive:
+        return "terminal_exec"
+    if recoverable_async_available:
+        return "recoverable_async"
+    if not mutating or independently_reconcilable:
+        return "terminal_start"
+    if long_or_uncertain or interactive or survival_sensitive:
+        raise ValueError("CURRENT_PHASE_CAPABILITY_UNAVAILABLE")
+    raise ValueError("CURRENT_PHASE_CAPABILITY_UNAVAILABLE")
+
+
 def terminal_attempt(
     root: Path | str,
     attempt_id: str,
@@ -521,8 +882,11 @@ def inspect_record(record: dict[str, Any], *, now: datetime | None = None) -> di
             seconds=record["lease_seconds"]
         )
         classification = "ACTIVE_LEASE" if current <= expiry else "INTERRUPTED_UNKNOWN"
+    current_slice = record.get("current_slice") if record["schema_version"] == SCHEMA_VERSION else None
     return {
         "authority": AUTHORITY,
+        "schema_version": record["schema_version"],
+        "legacy_schema": record["schema_version"] == LEGACY_SCHEMA_VERSION,
         "attempt_id": record["attempt_id"],
         "repository": record["repository"],
         "task_id": record["task_id"],
@@ -531,6 +895,8 @@ def inspect_record(record: dict[str, Any], *, now: datetime | None = None) -> di
         "classification": classification,
         "last_seen_at_utc": record["last_seen_at_utc"],
         "last_checkpoint": record["last_checkpoint"],
+        "current_slice": current_slice,
+        "slice_recovery_classification": slice_recovery_classification(current_slice),
         "terminal_result": record["terminal_result"] if classification == "TERMINAL_CONFIRMED" else None,
         "terminal_at_utc": record["terminal_at_utc"] if classification == "TERMINAL_CONFIRMED" else None,
     }
@@ -598,9 +964,34 @@ def _parser() -> argparse.ArgumentParser:
     start.add_argument("--execution-base", required=True)
     start.add_argument("--lease-seconds", type=int, default=DEFAULT_LEASE_SECONDS)
 
-    for name in ("heartbeat", "inspect"):
+    for name in ("heartbeat", "inspect", "upgrade"):
         command = sub.add_parser(name)
         command.add_argument("--attempt-id", required=True)
+
+    slice_intent = sub.add_parser("slice-intent")
+    slice_intent.add_argument("--attempt-id", required=True)
+    slice_intent.add_argument("--operation-class", required=True)
+    slice_intent.add_argument("--carrier", required=True)
+    slice_intent.add_argument("--intent", required=True)
+    slice_intent.add_argument("--reconciliation-kind", required=True)
+    slice_intent.add_argument("--postcondition-kind", required=True)
+    slice_intent.add_argument("--execution-slice-id")
+
+    slice_observe = sub.add_parser("slice-observe")
+    slice_observe.add_argument("--attempt-id", required=True)
+    slice_observe.add_argument("--execution-slice-id", required=True)
+    slice_observe.add_argument("--observation", required=True)
+    slice_observe.add_argument("--runtime-session-observation")
+
+    slice_reconcile = sub.add_parser("slice-reconcile")
+    slice_reconcile.add_argument("--attempt-id", required=True)
+    slice_reconcile.add_argument("--execution-slice-id", required=True)
+    slice_reconcile.add_argument("--reconciliation-result", required=True)
+    slice_reconcile.add_argument("--fresh", action="store_true")
+
+    slice_clear = sub.add_parser("slice-clear")
+    slice_clear.add_argument("--attempt-id", required=True)
+    slice_clear.add_argument("--execution-slice-id", required=True)
 
     checkpoint = sub.add_parser("checkpoint")
     checkpoint.add_argument("--attempt-id", required=True)
@@ -634,6 +1025,37 @@ def main(argv: list[str] | None = None) -> int:
             )
         elif args.operation == "heartbeat":
             result = heartbeat_attempt(root, args.attempt_id)
+        elif args.operation == "upgrade":
+            result = upgrade_attempt(root, args.attempt_id)
+        elif args.operation == "slice-intent":
+            result = record_slice_intent(
+                root,
+                args.attempt_id,
+                args.operation_class,
+                args.carrier,
+                args.intent,
+                args.reconciliation_kind,
+                args.postcondition_kind,
+                execution_slice_id=args.execution_slice_id,
+            )
+        elif args.operation == "slice-observe":
+            result = observe_slice(
+                root,
+                args.attempt_id,
+                args.execution_slice_id,
+                args.observation,
+                runtime_session_observation=args.runtime_session_observation,
+            )
+        elif args.operation == "slice-reconcile":
+            result = reconcile_slice(
+                root,
+                args.attempt_id,
+                args.execution_slice_id,
+                args.reconciliation_result,
+                fresh=args.fresh,
+            )
+        elif args.operation == "slice-clear":
+            result = clear_slice(root, args.attempt_id, args.execution_slice_id)
         elif args.operation == "checkpoint":
             result = checkpoint_attempt(root, args.attempt_id, args.kind)
         elif args.operation == "terminal":
