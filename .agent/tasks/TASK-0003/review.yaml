@@ -1,0 +1,51 @@
+protocol_version: 3
+
+task_id: TASK-0003
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0003/report.yaml
+  commit: "2d89d13c45f53774c2097a96bf13fe6e742aee84"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: NOT_REQUIRED
+
+accepted_candidate:
+  commit: "ff35060ede0bae58924fe5a5df679256f52badd4"
+  role: "exact TASK-0003 Foundation-native support Authority Set location-cutover candidate"
+
+acceptance_basis:
+  - "Fresh review-boundary observation proves local main = origin/main = 2d89d13c45f53774c2097a96bf13fe6e742aee84, ahead/behind 0/0, clean worktree, one worktree, and remote heads exactly {main}."
+  - "Candidate ff35060ede0bae58924fe5a5df679256f52badd4 is the single-parent direct child of exact accepted base b474b9647d27e86f3862c699448a1d324761f4d0; report commit 2d89d13c45f53774c2097a96bf13fe6e742aee84 is its direct child and adds only .agent/tasks/TASK-0003/report.yaml."
+  - "Candidate diff is restricted to TASK-0003 task authority, root README, authority.lock, bootstrap validator, and focused bootstrap tests; bootstrap.json, PROGRAM, profile README, support subtrees, prior canonical tasks, and historical artifacts are unchanged."
+  - "Fresh GitHub proof resolves each selected agent-skills, agent-standards, and agent-documents revision through both its legacy repository and phatnguyen03022001/agent-foundation with identical exact commit SHA and identical tree SHA."
+  - "The selected support revision SHAs remain unchanged, imported development tips remain unselected, semantic owner keys remain distinct, and agent-runtime remains external at ac33afadccf2b222ddf48d6c6b45de82951046a2."
+  - "Fresh independent verification passes local bootstrap validation, remote bootstrap validation, all 32 focused bootstrap tests, and git diff --check; negative tests preserve fail-closed legacy-repository and mutable-ref behavior."
+  - "Case Router and routed capability paths continue to resolve from exact immutable owner revisions, so physical co-location does not collapse semantic ownership."
+  - "profile/.agent/program.generated.json remains unchanged, stale, authority NONE, and explicitly deferred to the integration-closure successor."
+
+follow_up_tasks:
+  - task_id: TASK-0004
+    repository: phatnguyen03022001/agent-foundation
+    purpose: "Close Foundation integration by regenerating non-authoritative derived navigation from current canonical inputs, removing remaining live legacy-location assumptions, and proving bounded cold bootstrap/navigation/verification without retiring legacy repositories."
+
+notes:
+  - "This ACCEPTED review is a support Authority Set location cutover only; it does not promote imported dev tips or authorize legacy repository retirement."
+  - "Future ordinary post-consolidation Foundation authority adoption may require a separately explicit owner-root/path-prefix contract; this review does not infer or authorize one."
