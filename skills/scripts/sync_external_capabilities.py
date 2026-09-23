@@ -11,6 +11,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -245,11 +246,15 @@ def skill_entries(
     ]
     entries: list[dict[str, Any]] = []
     seen_ids: set[str] = set()
-    for path in selected:
-        name, description = parse_frontmatter(
-            client.text(source["repository"], source["snapshot_revision"], path),
-            path,
-        )
+    with ThreadPoolExecutor(max_workers=min(16, max(1, len(selected)))) as pool:
+        texts = list(pool.map(
+            lambda path: client.text(
+                source["repository"], source["snapshot_revision"], path
+            ),
+            selected,
+        ))
+    for path, text in zip(selected, texts):
+        name, description = parse_frontmatter(text, path)
         entry = capability_entry(source, path, name, description)
         if entry["id"] in seen_ids:
             raise SourceError(f"duplicate capability id: {entry['id']}")
