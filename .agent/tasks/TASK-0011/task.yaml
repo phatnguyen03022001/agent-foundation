@@ -1,0 +1,274 @@
+protocol_version: 3
+
+task_id: TASK-0011
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0011"
+  gap_id: "VISION-EXECUTION-SURVIVAL-SEMANTICS"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+
+architect_analysis_skills:
+  - architect
+  - reliability
+  - verification
+  - simplicity
+
+execution_skills:
+  required:
+    - executor
+    - reliability
+    - verification
+    - simplicity
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator direction to harden long-horizon Executor survival against interruption, lost acknowledgements, and ambiguous side-effect outcomes"
+    role: "material objective and scope authority"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0010/review.yaml@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "accepted current Foundation state"
+    precedence: 2
+  - source: ".agent/tasks/TASK-0009/review.yaml@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "accepted execution-attempt continuity baseline"
+    precedence: 3
+  - source: "skills/contracts/EXECUTION_CONTINUITY.md@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "current attempt continuity and recovery semantics"
+    precedence: 4
+  - source: "skills/executor/SKILL.md@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "current execution bundle, carrier, checkpoint, and restrictive-execution semantics"
+    precedence: 5
+  - source: "skills/protocols/TASK_PROTOCOL.md@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "L0 task/retry/publication/reconciliation authority"
+    precedence: 6
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "L1 capability routing and substrate boundaries"
+    precedence: 7
+  - source: "documents/DOCUMENT_MODEL.md@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "documentation ownership boundary; execution survival remains work-control semantics"
+    precedence: 8
+  - source: "standards/STANDARD_MODEL.md@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "UNKNOWN/PASS/evidence interpretation"
+    precedence: 9
+  - source: "standards/standards/correctness.yaml@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "partial/raced/degraded-state correctness constraints"
+    precedence: 10
+  - source: "standards/standards/reliability.yaml@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "bounded retry/restart/recovery constraints"
+    precedence: 11
+  - source: "standards/standards/observability.yaml@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "attributable degraded/failure-state constraints"
+    precedence: 12
+  - source: "standards/standards/operability.yaml@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "defined/verifiable lifecycle and recovery transitions"
+    precedence: 13
+  - source: "standards/standards/data-integrity.yaml@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "silent loss/duplication/replay/partial-write constraints"
+    precedence: 14
+  - source: "standards/standards/assurance.yaml@95b2879228df2e543dd67b44ba7d4f80bddfbe95"
+    role: "attributable evidence and unresolved-state requirements"
+    precedence: 15
+
+structure_authority:
+  status: RESOLVED
+  source: "accepted three-layer Foundation architecture plus TASK-0009 execution-attempt continuity"
+  rationale: "Execution survival extends existing L1 continuity and Executor procedure. It does not add a new organizational role, fourth layer, workflow engine, Runtime implementation, or product-document authority."
+
+objective: "Extend Foundation execution semantics so conversation/tool transport interruption cannot authorize blind mutation retry: preserve the existing bounded Execution Bundle model, prioritize survivability/recoverability over round-trip minimization, add one minimal unresolved Execution Slice under each active Execution Attempt, persist caller-known pre-dispatch intent before consequence-bearing dispatch, classify ambiguous mutating outcomes as OUTCOME_UNKNOWN, require consequence-specific reconciliation before retry, and fail closed when current selected Runtime lacks the later keyed recoverable-session capability."
+
+scope:
+  required_changes:
+    - "Preserve Execution Bundle as the bounded deterministic synchronization-reduction abstraction. Do not replace it with per-tool orchestration."
+    - "Define execution decision priority as correctness, then survivability/recoverability, then boundedness, then round-trip minimization. Round-trip reduction never overrides recoverability."
+    - "Add one minimal Execution Slice concept under an active Execution Attempt. The attempt lifecycle remains RUNNING/TERMINAL and observer classifications ACTIVE_LEASE/INTERRUPTED_UNKNOWN/TERMINAL_CONFIRMED remain unchanged."
+    - "Persist at most one unresolved/current consequence-bearing slice in existing repository-local Git metadata. Do not create an independent database, queue, registry service, or second continuity store."
+    - "Generate an opaque caller-known execution_slice_id before any consequence-bearing dispatch and atomically persist slice intent before the first side-effecting request may leave the caller."
+    - "Persist only bounded non-secret slice data sufficient for recovery: slice identity/ordinal, operation class, selected carrier, bounded intent, reconciliation kind/postcondition kind, lifecycle observation, optional known runtime session observation, and result classification. Do not persist raw argv, environment, credentials, prompt/conversation bodies, raw tool output, full diffs, file bodies, or broad inventories."
+    - "Define generic OUTCOME_UNKNOWN semantics: if a mutating request may have left the caller and the response does not establish whether the side effect occurred, the outcome is unknown. Lost response is neither failure nor evidence that no side effect happened."
+    - "Define a generic no-blind-retry invariant: OUTCOME_UNKNOWN requires consequence-specific fresh reconciliation before any repeated mutation. Retry is permitted only when fresh attributable state establishes that the intended effect is absent and the original preconditions still hold, or when the selected tool's exact idempotent/expected-state contract proves replay-safe."
+    - "Define consequence-specific reconciliation classes at minimum for long Runtime start, expected-state filesystem mutation, Git commit/update, canonical Git publication, and report publication. Reuse existing expected-state/remote-observation semantics rather than adding a transaction framework."
+    - "Define minimal slice crash semantics: INTENT_RECORDED with no later trustworthy observation means MAY_HAVE_BEEN_DISPATCHED / OUTCOME_UNKNOWN, not NOT_DISPATCHED. Do not require a fictitious durable DISPATCHED transition around a network call."
+    - "When a slice result and postcondition are established and a coherent recovery checkpoint exists, mark/clear the unresolved slice so Git/post-state becomes the durable consequence evidence. Do not retain unbounded slice history."
+    - "Define carrier selection without inventing a platform timeout: confidently bounded, non-interactive, synchronously safe work may use terminal_exec; long, duration-uncertain, interactive, or survival-sensitive work requires a recoverable asynchronous carrier when such capability is currently authorized and available."
+    - "A duration guideline around one minute may be expressed only as non-normative operational guidance/soft policy if useful. Do not encode 25/30-minute platform assumptions, 8-minute rules, or tool-boundary counts as correctness semantics."
+    - "Define transitional capability gating: TASK-0011 does not activate a keyed Runtime capability and does not change authority.lock.json. Until a later accepted Runtime revision and Foundation cutover provide caller-keyed recoverable terminal sessions, survival-sensitive asynchronous mutation that cannot be independently reconciled must fail closed as CURRENT_PHASE_CAPABILITY_UNAVAILABLE or use an already-authorized expected-state/bounded alternative that preserves proof."
+    - "Unkeyed terminal_start may remain usable only where the consequence is read-only, independently replay-safe, or otherwise fully reconcilable under current authority; it must not be described as lost-ACK recoverable."
+    - "Define evidence-compaction semantics: model-visible output should be the minimum sufficient bounded evidence; large/raw logs remain external and addressable where available. Truncated/missing raw evidence never becomes PASS and may require safe re-verification."
+    - "Extend execution_attempt.py/template/tests deterministically and compatibly. Existing TASK-0009 attempt records must either remain readable as legacy records with no active slice or be handled by an explicit fail-closed version rule; do not silently reinterpret old bytes."
+    - "Update Architect/Executor/Task Protocol/Foundation Architecture only where needed to route survival, unknown-outcome, and successor-recovery semantics without duplicating standards or document-model ownership."
+    - "Consult documents/ and standards/ as normative ownership/evidence constraints and keep those domains byte-unchanged. If implementation appears to require changing documents/ or standards/, stop for Architect revision."
+    - "Preserve TASK-0007 external capability plane, TASK-0008 research/continuity semantics, TASK-0009 attempt lease semantics, TASK-0010 rationalization, authority.lock.json, and agent-runtime."
+    - "Publish TASK-0011 implementation and report by non-force fast-forward on main only."
+
+  allowed_existing_files_or_components:
+    - "skills/executor/SKILL.md"
+    - "skills/architect/SKILL.md"
+    - "skills/protocols/TASK_PROTOCOL.md"
+    - "skills/contracts/FOUNDATION_ARCHITECTURE.md"
+    - "skills/contracts/EXECUTION_CONTINUITY.md"
+    - "skills/scripts/execution_attempt.py"
+    - "skills/scripts/test_execution_attempt.py"
+    - "skills/templates/execution-attempt.yaml"
+    - "profile/.agent/bootstrap/bootstrap.json only if a locator/contract version reference must be updated"
+    - "profile/.agent/bootstrap/validate.py only if required by a bootstrap contract-version update"
+    - "profile/.agent/bootstrap/test_bootstrap.py only if required by a bootstrap contract-version update"
+    - "skills/scripts/validate_skill_library.py only if required to validate the evolved continuity contract"
+    - "skills/scripts/test_validate_skill_library.py only if required to validate the evolved continuity contract"
+    - ".agent/tasks/TASK-0011/**"
+
+  expected_files_are_restrictive: false
+
+invariants:
+  - "Foundation remains MAIN_ONLY with exactly two organizational roles: Architect and Executor."
+  - "Execution Bundle remains a bounded deterministic execution abstraction; this task changes carrier-selection priority, not the existence of bundling."
+  - "Execution Attempt producer states remain exactly RUNNING and TERMINAL; ACTIVE_LEASE remains lease freshness only; INTERRUPTED_UNKNOWN remains non-terminal uncertainty; TERMINAL_CONFIRMED still requires explicit terminalization."
+  - "Execution Slice is local L1 continuity telemetry with authority NONE and never grants mutation, task, review, acceptance, rebinding, promotion, release, or publication authority."
+  - "At most one unresolved consequence-bearing slice is required per active attempt; no unbounded execution transcript or slice event log is introduced."
+  - "A consequence-bearing slice identity and intent exist durably before the side-effecting dispatch may occur."
+  - "INTENT_RECORDED without trustworthy later evidence never proves dispatch did not happen."
+  - "Lost or ambiguous response to a mutating operation produces OUTCOME_UNKNOWN unless a stronger tool contract or fresh postcondition observation establishes the effect."
+  - "OUTCOME_UNKNOWN never authorizes blind retry."
+  - "Fresh remote/local/task/postcondition evidence remains required before continuation, cleanup, replay, publication, or recovery consequence."
+  - "No hard ChatGPT time limit, universal tool-call cap, or arbitrary model/tool-boundary count is encoded as a Foundation correctness fact."
+  - "Current authority.lock.json remains unchanged and the current selected Runtime is not claimed to provide caller-keyed lost-ACK recovery."
+  - "No new daemon, scheduler, queue, database, workflow engine, generic retry engine, process supervisor, service, provider-private API, organizational role, or fourth Foundation layer is introduced."
+  - "documents/ and standards/ remain byte-unchanged."
+  - "agent-runtime source, installation, service, runtime.env, host permissions, and deployment state remain untouched."
+
+forbidden_changes:
+  - "Remove or weaken existing TASK-0009 attempt continuity semantics."
+  - "Replace Execution Bundle with a generic orchestrator or one-tool-at-a-time workflow."
+  - "Treat lost response as failure, not-dispatched, safe retry, or automatic permission to repeat mutation."
+  - "Persist raw argv, environment, credentials, secrets, prompts, transcripts, raw tool logs, full diffs, file bodies, or broad inventories in slice telemetry."
+  - "Create unbounded slice history or a second persistent continuity database/store."
+  - "Claim current unkeyed terminal_start is deterministically recoverable from a lost start acknowledgement."
+  - "Change authority.lock.json or pin a new Runtime revision."
+  - "Modify agent-runtime repository or Runtime lifecycle/configuration/state."
+  - "Modify documents/ or standards/."
+  - "Create branches, PRs, tags, releases, staging topology, daemons, queues, schedulers, or databases."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Execution Bundle remains canonical while its optimization priority explicitly places survivability/recoverability ahead of round-trip minimization."
+    evidence_required: "Exact Executor/Task Protocol contract diff and regression/static tests proving bounded bundling, permitted splits, and survival-aware carrier choice coexist."
+  - id: AC-2
+    requirement: "An active Execution Attempt can persist exactly one bounded unresolved Execution Slice with caller-known opaque identity and intent before consequence-bearing dispatch."
+    evidence_required: "Exact contract/template/tool implementation plus deterministic tests for atomic pre-dispatch persistence, identity binding, one-unresolved-slice bound, and legacy attempt compatibility."
+  - id: AC-3
+    requirement: "Slice telemetry remains authority NONE, local Git-metadata-only, bounded, non-secret, and does not become an execution transcript or second authority store."
+    evidence_required: "Schema/validator tests rejecting forbidden payload classes and proving no tracked/untracked worktree pollution."
+  - id: AC-4
+    requirement: "Generic OUTCOME_UNKNOWN semantics and no-blind-retry behavior are defined for mutating requests whose response does not establish outcome."
+    evidence_required: "Contract + focused state-machine tests covering intent-only crash, ambiguous response, safe reconciliation, and rejection of blind repeated mutation."
+  - id: AC-5
+    requirement: "Consequence-specific reconciliation is defined for long Runtime start, expected-state file mutation, Git commit/update, Git publication, and report publication without introducing a transaction framework."
+    evidence_required: "Machine-checkable reconciliation classification fixtures/tests and exact links to existing expected-state/remote-observation semantics where applicable."
+  - id: AC-6
+    requirement: "Carrier selection is deterministic enough to protect survival while remaining capability-gated: terminal_exec is limited to bounded synchronous-safe work; long/uncertain/interactive/survival-sensitive work requires a recoverable async carrier when available."
+    evidence_required: "Positive/negative carrier-selection tests including current keyed-capability-unavailable cases."
+  - id: AC-7
+    requirement: "Before Runtime Task B/C activation, Foundation remains internally coherent: authority.lock is unchanged and unsafe survival-sensitive async mutation fails closed or uses an independently reconcilable already-authorized alternative."
+    evidence_required: "Exact authority.lock blob proof, capability-gating tests, and no claim of keyed Runtime availability."
+  - id: AC-8
+    requirement: "Evidence-compaction semantics preserve truthful proof: large/raw output stays external/addressable where available; truncation or missing evidence remains unresolved and never becomes PASS."
+    evidence_required: "Contract/tests covering bounded model-visible evidence, truncated/missing evidence, and safe verification rerun versus forbidden mutation replay."
+  - id: AC-9
+    requirement: "TASK-0007/0008/0009/0010 semantics remain intact; documents/, standards/, authority.lock.json, and agent-runtime remain unchanged."
+    evidence_required: "Exact blob/tree/diff proof plus focused regressions for external capabilities, research fan-out, continuity findings, execution attempts, and rationalized skill library."
+  - id: AC-10
+    requirement: "All existing Foundation bootstrap, skill-library, protocol, continuity, and regression verification remains green on the final candidate."
+    evidence_required: "All required repository-native verification commands PASS."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0011 with the canonical task artifact validator before any implementation mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Run focused execution-survival/slice tests first: pre-dispatch intent persistence, legacy attempt compatibility, one unresolved slice, authority NONE, forbidden payloads, crash points, OUTCOME_UNKNOWN, no-blind-retry, and carrier gating."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run deterministic failure-injection tests at minimum for crash after intent write/before dispatch, after possible dispatch/before ACK observation, after ACK observation/before checkpoint, and after result observation/before checkpoint; observer must not infer more than durable evidence proves."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run carrier-selection/reconciliation tests for terminal_exec, current unkeyed terminal_start, expected-state filesystem mutation, Git commit/update, repo publication, and report publication."
+      required: true
+    - id: CHECK-5
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py and authenticated python3 -B profile/.agent/bootstrap/validate.py --remote."
+      required: true
+    - id: CHECK-6
+      command_or_check: "python3 -B profile/.agent/bootstrap/test_bootstrap.py; run the updated skill-library validator and full skill regression suite."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Run TASK-0007 external capability tests, TASK-0008 research/continuity tests, TASK-0009 execution-attempt tests including legacy records, and TASK-0010 rationalization validation."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Prove documents/, standards/, authority.lock.json, external-capabilities provenance, and agent-runtime remain unchanged from execution base; exactly two organizational roles remain."
+      required: true
+    - id: CHECK-9
+      command_or_check: "python3 -m py_compile for modified Python files and git diff --check."
+      required: true
+    - id: CHECK-10
+      command_or_check: "Fresh-resolve remote main immediately before non-force publication, publish candidate/report, then prove final remote identity, report-only lineage, ahead/behind, and tracked worktree hygiene."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files: []
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "TASK-0011 must evolve the existing execution-attempt continuity surfaces rather than create a second survival subsystem."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
