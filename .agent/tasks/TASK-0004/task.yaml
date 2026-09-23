@@ -1,0 +1,178 @@
+protocol_version: 3
+
+task_id: TASK-0004
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_handoff
+  source: "2026-09-23 TASK-0004 — Foundation Integration Closure"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: exact_commit
+  commit: "7165c17a63fed33dbd71050e5990cbeb9f363940"
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "7165c17a63fed33dbd71050e5990cbeb9f363940"
+  task_protocol_path: skills/protocols/TASK_PROTOCOL.md
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+    - github-workflow
+
+authority_sources:
+  - source: "explicit operator handoff for TASK-0004"
+    role: "exact execution authority, scope, invariants, and acceptance boundary"
+    precedence: 1
+  - source: "skills/protocols/TASK_PROTOCOL.md@7165c17a63fed33dbd71050e5990cbeb9f363940"
+    role: "Task Protocol v3 execution/report semantics"
+    precedence: 2
+  - source: ".agent/tasks/TASK-0001/review.yaml@7165c17a63fed33dbd71050e5990cbeb9f363940"
+    role: "accepted history-preserving Foundation bootstrap lineage"
+    precedence: 3
+  - source: ".agent/tasks/TASK-0002/review.yaml@7165c17a63fed33dbd71050e5990cbeb9f363940"
+    role: "accepted Foundation self-identity and MAIN_ONLY lineage"
+    precedence: 4
+  - source: ".agent/tasks/TASK-0003/review.yaml@7165c17a63fed33dbd71050e5990cbeb9f363940"
+    role: "accepted Foundation-native support Authority Set location lineage"
+    precedence: 5
+  - source: "profile/.agent/bootstrap/authority.lock.json@7165c17a63fed33dbd71050e5990cbeb9f363940"
+    role: "current selected Authority Set"
+    precedence: 6
+
+objective: "Close the active agent-foundation integration layer after TASK-0001 through TASK-0003 by fully regenerating the non-authoritative PROGRAM from current Foundation-native inputs, proving bounded cold bootstrap/navigation without active legacy support repository dependence, verifying all four semantic domains with owner-native checks, and leaving the repository ready for a separately authorized legacy-retirement task."
+
+scope:
+  required_changes:
+    - "Persist TASK-0004 task and truthful Executor report under .agent/tasks/TASK-0004/."
+    - "Fully regenerate profile/.agent/program.generated.json from the exact pre-TASK-0004 Foundation snapshot 7165c17a63fed33dbd71050e5990cbeb9f363940."
+    - "Preserve protocol_version 3, artifact_type GENERATED_PROGRAM, authority NONE, and FULL_REGENERATION_ON_MATERIAL_INPUT_CHANGE."
+    - "Represent agent-skills, agent-standards, and agent-documents as external authorities in phatnguyen03022001/agent-foundation at their exact unchanged selected revisions; keep agent-runtime external at its exact locked revision."
+    - "Make accepted TASK-0001, TASK-0002, and TASK-0003 lineage discoverable through exact immutable Foundation references."
+    - "Search and classify live legacy repository assumptions without rewriting historical evidence, negative fixtures, provenance, or original source identity."
+    - "Prove cold EXECUTE routing to agent-skills/executor/SKILL.md at exact locked authority and prove agent-runtime remains separately resolvable."
+    - "Run existing owner-native verification for profile, skills, documents, and standards without introducing root verification infrastructure."
+    - "Update root README.md minimally to reflect completed integration closure and retained legacy repositories pending separate retirement authority."
+
+invariants:
+  - "The Authority Set revisions remain exactly agent-skills 87a37a72a4952b1da273d9af308642f4295fda6b, agent-standards 0da0d5864fe5e458af564f3c6ba9959cefd99639, agent-documents c34d34d1842975fa895fc0e3d5273e5826b32205, and agent-runtime ac33afadccf2b222ddf48d6c6b45de82951046a2."
+  - "Semantic owner boundaries remain distinct even where support owners share the physical Foundation repository."
+  - "Imported development tips are not promoted."
+  - "profile/.agent/bootstrap/bootstrap.json, authority.lock.json, validate.py, and test_bootstrap.py remain byte-identical unless a reproduced material defect requires the smallest correction."
+  - "skills/**, documents/**, standards/**, profile/ARCHITECT_PROFILE.md, profile/ARCHITECT_CALIBRATION.md, TASK-0001/**, TASK-0002/**, TASK-0003/**, and historical profile/.agent/tasks/** remain unchanged unless exact task authority explicitly permits otherwise."
+  - "PROGRAM remains derived navigation only, contains no mutable completion/status/orchestration semantics, and cannot grant authority."
+  - "No local or remote branch other than main is created."
+
+forbidden_changes:
+  - "Do not change Authority Set revisions or promote imported development tips."
+  - "Do not redesign bootstrap, Case Router, Task Protocol, semantic ownership, or Agent Runtime."
+  - "Do not add Capability Index, snapshot machinery, Project Sources changes, root verifier/orchestrator/CI/Makefile/package manager/registry/daemon, or other convenience infrastructure."
+  - "Do not retire, archive, delete, rename, or mutate legacy source repositories."
+  - "Do not modify agent-runtime or Runtime/service/TCC/Keychain/System Settings."
+  - "Do not create branches, PRs, tags, releases, force pushes, worktrees, clones, caches, or task state outside the target repository."
+
+capability_requirements:
+  EXECUTION:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  REVIEW:
+    - repository_content_read
+    - exact_commit_report_resolution
+    - remote_ref_read
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "PROGRAM is fully regenerated, schema-valid, authority NONE, bound to Foundation@7165c17a63fed33dbd71050e5990cbeb9f363940, uses current Foundation-native support authority locations, keeps runtime external, and contains no stale five-repository synthesis state."
+    evidence_required: "PROGRAM before/after identity, exact synthesis/external-authority fields, validator PASS, and stale-locator scan."
+  - id: AC-2
+    requirement: "Current positive bootstrap/authority/navigation paths no longer require legacy support repositories while historical/provenance/negative fixtures remain correctly classified."
+    evidence_required: "Tracked current-material scan with path-by-path classification."
+  - id: AC-3
+    requirement: "Cold exact Foundation bootstrap reconstructs EXECUTE -> executor -> phatnguyen03022001/agent-foundation@87a37a72a4952b1da273d9af308642f4295fda6b:executor/SKILL.md with no chat history, cwd inference, local-directory authority, mutable fallback, or broad support preload."
+    evidence_required: "Exact bootstrap/lock/router/canonical-artifact reconstruction evidence and focused tests."
+  - id: AC-4
+    requirement: "agent-runtime remains separately resolvable from phatnguyen03022001/agent-runtime@ac33afadccf2b222ddf48d6c6b45de82951046a2."
+    evidence_required: "Remote bootstrap validation and exact locked runtime path resolution."
+  - id: AC-5
+    requirement: "Profile bootstrap local/remote validation and focused tests pass without protected bootstrap changes."
+    evidence_required: "Exact command results, test count, and protected blob proof."
+  - id: AC-6
+    requirement: "Skills curated validator and validator tests pass from the imported skills owner."
+    evidence_required: "Exact commands and result/test counts."
+  - id: AC-7
+    requirement: "Documents owner-native validator test suite passes without treating Foundation itself as a target product docs repository."
+    evidence_required: "Exact unittest command and result/test count."
+  - id: AC-8
+    requirement: "Standards repository-native verification passes, or any genuine missing dependency/capability is reported exactly without substitution."
+    evidence_required: "Exact standards verifier result and test count or exact blocker."
+  - id: AC-9
+    requirement: "Only authorized integration-closure paths change; protected surfaces remain byte-identical; root README states the current closure truth and retained legacy repositories."
+    evidence_required: "Base/candidate tree or blob identities, changed-path list, README diff, and git diff --check."
+  - id: AC-10
+    requirement: "main is published only by non-force fast-forward with fresh expected-head consistency; final local/remote state is clean, 0/0, and branch sets remain MAIN_ONLY."
+    evidence_required: "Fresh pre-publication and post-publication Git proof."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py"
+      required: true
+    - id: CHECK-2
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py --remote"
+      required: true
+    - id: CHECK-3
+      command_or_check: "python3 -B profile/.agent/bootstrap/test_bootstrap.py"
+      required: true
+    - id: CHECK-4
+      command_or_check: "python3 -B skills/scripts/validate_skill_library.py and the existing skills validator test suite"
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run the existing documents validator test suite."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Run the existing standards repository-native verification path."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Prove cold EXECUTE canonical artifact resolution, runtime external resolution, stale legacy-location classification, changed paths, protected identities, and git diff --check."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Fresh-resolve remote main immediately before each publication consequence and post-prove final refs/hygiene."
+      required: true
+
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true

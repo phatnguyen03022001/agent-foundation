@@ -17,7 +17,7 @@ execution:
   final_execution_head: ""
 
 skill_library:
-  repository: phatnguyen03022001/agent-skills
+  repository: phatnguyen03022001/agent-foundation
   authorized_revision: ""
 
 capability_preflight:

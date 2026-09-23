@@ -24,7 +24,7 @@ execution_base:
   require_exact_match: true
 
 skill_library:
-  repository: phatnguyen03022001/agent-skills
+  repository: phatnguyen03022001/agent-foundation
   revision: "<exact immutable commit SHA>"
 
 architect_analysis_skills: []

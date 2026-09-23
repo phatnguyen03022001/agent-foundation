@@ -404,7 +404,7 @@ class ValidatorRegressionTests(unittest.TestCase):
             ("templates/task.yaml", "verification.authoritative_verification.mechanism", '    mechanism: ""'),
             ("templates/task.yaml", "verification.authoritative_verification.expected_signal", '    expected_signal: ""'),
             ("templates/report.yaml", "execution.branch.role", "    role: integration"),
-            ("templates/report.yaml", "skill_library.repository", "  repository: phatnguyen03022001/agent-skills"),
+            ("templates/report.yaml", "skill_library.repository", "  repository: phatnguyen03022001/agent-foundation"),
             ("templates/report.yaml", "execution_skills_used.recommended", "  recommended: []"),
             ("templates/report.yaml", "execution_skills_used.external", "  external: []"),
             ("templates/report.yaml", "pushed", "pushed: false"),

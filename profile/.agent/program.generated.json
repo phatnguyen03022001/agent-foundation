@@ -5,234 +5,91 @@
   "invalidation": "FULL_REGENERATION_ON_MATERIAL_INPUT_CHANGE",
   "synthesis": {
     "target": {
-      "repository": "phatnguyen03022001/architect-profile",
-      "source_revision": "cb043a410f26d2d282e477d4e1b83057b0cb6834"
+      "repository": "phatnguyen03022001/agent-foundation",
+      "source_revision": "7165c17a63fed33dbd71050e5990cbeb9f363940"
     },
     "external_authorities": [
       {
-        "source": "phatnguyen03022001/agent-skills",
+        "source": "phatnguyen03022001/agent-foundation",
         "revision": "87a37a72a4952b1da273d9af308642f4295fda6b"
+      },
+      {
+        "source": "phatnguyen03022001/agent-foundation",
+        "revision": "0da0d5864fe5e458af564f3c6ba9959cefd99639"
+      },
+      {
+        "source": "phatnguyen03022001/agent-foundation",
+        "revision": "c34d34d1842975fa895fc0e3d5273e5826b32205"
       },
       {
         "source": "phatnguyen03022001/agent-runtime",
         "revision": "ac33afadccf2b222ddf48d6c6b45de82951046a2"
-      },
-      {
-        "source": "phatnguyen03022001/agent-standards",
-        "revision": "0da0d5864fe5e458af564f3c6ba9959cefd99639"
-      },
-      {
-        "source": "phatnguyen03022001/agent-documents",
-        "revision": "c34d34d1842975fa895fc0e3d5273e5826b32205"
       }
     ],
     "synthesis_policy": {
-      "id": "TASK-0047-runtime-authority-refresh",
-      "revision": "cb043a410f26d2d282e477d4e1b83057b0cb6834"
+      "id": "TASK-0004-foundation-integration-closure",
+      "revision": "7165c17a63fed33dbd71050e5990cbeb9f363940"
     }
   },
   "coverage": {
     "required_refs": [
-      "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0041/review.yaml",
-      "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0042/review.yaml",
-      "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0043/review.yaml",
-      "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0044/review.yaml",
-      "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0046/review.yaml",
-      "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0047/review.yaml",
-      "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0048/review.yaml",
-      "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0049/review.yaml",
-      "architect-profile@df3f0814eac1524526983bbee86e6d2ab051b7e0:.agent/tasks/TASK-0031/review.yaml",
-      "architect-profile@df3f0814eac1524526983bbee86e6d2ab051b7e0:.agent/tasks/TASK-0033/review.yaml",
-      "agent-runtime@69c4760ab07e9cb04263eae36d95f39887f31c23:.agent/tasks/TASK-0020/review.yaml",
-      "agent-runtime@69c4760ab07e9cb04263eae36d95f39887f31c23:.agent/tasks/TASK-0021/review.yaml",
-      "agent-runtime@69c4760ab07e9cb04263eae36d95f39887f31c23:.agent/tasks/TASK-0022/review.yaml",
-      "agent-standards@1141b9dbfce0110d6623f5a877c2d04843caa6eb:.agent/tasks/TASK-0013/review.yaml",
-      "agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82:.agent/tasks/TASK-0008/review.yaml",
-      "architect-profile@46d02a4677db0dd6b5d51ad2ecf9e797e91f6958:.agent/tasks/TASK-0035/task.yaml",
-      "architect-profile@abbddf8d9c0341628e966e95b649b5380dbbf90f:.agent/tasks/TASK-0034/review.yaml",
-      "agent-skills@4f4ef2b45e1a025bc499702919431c0d0d61419c:.agent/tasks/TASK-0054/review.yaml",
-      "agent-runtime@99d9e94346ca54916686911c998b5721d60014b6:.agent/tasks/TASK-0086/review.yaml",
-      "architect-profile@593062e63c7bab4d353fcd2843dfddd9e61a21f2:.agent/tasks/TASK-0035/review.yaml",
-      "architect-profile@94ef7f0202495559f22ae1cb39f710691d830f16:.agent/tasks/TASK-0046/task.yaml",
-      "agent-runtime@66d72e2b11606583e14e7f89ea62aee8fa3823a5:.agent/tasks/TASK-0096/review.yaml",
-      "architect-profile@4cbac8f89a26206f342e8cacf7401a466eb5df05:.agent/tasks/TASK-0046/review.yaml",
-      "architect-profile@cb043a410f26d2d282e477d4e1b83057b0cb6834:.agent/tasks/TASK-0047/task.yaml"
+      "agent-foundation@7165c17a63fed33dbd71050e5990cbeb9f363940:.agent/tasks/TASK-0001/review.yaml",
+      "agent-foundation@7165c17a63fed33dbd71050e5990cbeb9f363940:.agent/tasks/TASK-0002/review.yaml",
+      "agent-foundation@7165c17a63fed33dbd71050e5990cbeb9f363940:.agent/tasks/TASK-0003/review.yaml"
     ],
     "exclusions": []
   },
   "items": [
     {
-      "id": "CLOSURE-EVIDENCE",
+      "id": "FOUNDATION-HISTORY-CONSOLIDATION",
       "traceability": [
-        "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0041/review.yaml",
-        "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0042/review.yaml",
-        "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0044/review.yaml",
-        "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0046/review.yaml",
-        "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0047/review.yaml",
-        "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0048/review.yaml",
-        "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0049/review.yaml",
-        "architect-profile@df3f0814eac1524526983bbee86e6d2ab051b7e0:.agent/tasks/TASK-0031/review.yaml",
-        "architect-profile@df3f0814eac1524526983bbee86e6d2ab051b7e0:.agent/tasks/TASK-0033/review.yaml",
-        "agent-runtime@69c4760ab07e9cb04263eae36d95f39887f31c23:.agent/tasks/TASK-0020/review.yaml",
-        "agent-runtime@69c4760ab07e9cb04263eae36d95f39887f31c23:.agent/tasks/TASK-0021/review.yaml",
-        "agent-runtime@69c4760ab07e9cb04263eae36d95f39887f31c23:.agent/tasks/TASK-0022/review.yaml",
-        "agent-standards@1141b9dbfce0110d6623f5a877c2d04843caa6eb:.agent/tasks/TASK-0013/review.yaml",
-        "agent-documents@6a087c7559235b47cfa365bd78c351b3a52b1e82:.agent/tasks/TASK-0008/review.yaml",
-        "architect-profile@abbddf8d9c0341628e966e95b649b5380dbbf90f:.agent/tasks/TASK-0034/review.yaml",
-        "agent-skills@4f4ef2b45e1a025bc499702919431c0d0d61419c:.agent/tasks/TASK-0054/review.yaml",
-        "agent-runtime@99d9e94346ca54916686911c998b5721d60014b6:.agent/tasks/TASK-0086/review.yaml",
-        "agent-runtime@66d72e2b11606583e14e7f89ea62aee8fa3823a5:.agent/tasks/TASK-0096/review.yaml",
-        "architect-profile@4cbac8f89a26206f342e8cacf7401a466eb5df05:.agent/tasks/TASK-0046/review.yaml"
+        "agent-foundation@7165c17a63fed33dbd71050e5990cbeb9f363940:.agent/tasks/TASK-0001/review.yaml"
       ],
       "depends_on": [],
       "obligations": [],
       "acceptance_refs": [
-        "Each closure remains decided only by its named canonical owner evidence."
+        "Use the accepted TASK-0001 review as the immutable navigation point for history-preserving physical Foundation consolidation."
       ],
       "required_evidence": [
-        "Use the named immutable task/report/review lineage when a closure predicate is materially relevant."
+        "Resolve the exact TASK-0001 review from the recorded Foundation snapshot when consolidation lineage is materially relevant."
       ],
       "required_capabilities": [
         "repository_content_read"
       ]
     },
     {
-      "id": "ACTUAL-ARTIFACT-VALIDATION",
+      "id": "FOUNDATION-SELF-IDENTITY",
       "traceability": [
-        "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0043/review.yaml",
-        "architect-profile@46d02a4677db0dd6b5d51ad2ecf9e797e91f6958:.agent/tasks/TASK-0035/task.yaml"
+        "agent-foundation@7165c17a63fed33dbd71050e5990cbeb9f363940:.agent/tasks/TASK-0002/review.yaml"
       ],
       "depends_on": [
-        "CLOSURE-EVIDENCE"
+        "FOUNDATION-HISTORY-CONSOLIDATION"
       ],
       "obligations": [],
       "acceptance_refs": [
-        "TASK-0043 owner evidence validates actual task, report, and review artifacts through the existing schema checks."
+        "Use the accepted TASK-0002 review as the immutable navigation point for Foundation self-identity and MAIN_ONLY bootstrap semantics."
       ],
       "required_evidence": [
-        "Exact TASK-0043 owner evidence and an actual-artifact validation result."
+        "Resolve the exact TASK-0002 review from the recorded Foundation snapshot when Foundation lifecycle identity is materially relevant."
       ],
       "required_capabilities": [
         "repository_content_read"
       ]
     },
     {
-      "id": "ENVIRONMENT-RECONCILIATION",
+      "id": "FOUNDATION-SUPPORT-AUTHORITY-LOCATION",
       "traceability": [
-        "agent-skills@de060ab9c61627eeec02937519eddfffd8bc1e26:.agent/tasks/TASK-0044/review.yaml",
-        "architect-profile@46d02a4677db0dd6b5d51ad2ecf9e797e91f6958:.agent/tasks/TASK-0035/task.yaml"
+        "agent-foundation@7165c17a63fed33dbd71050e5990cbeb9f363940:.agent/tasks/TASK-0003/review.yaml"
       ],
       "depends_on": [
-        "CLOSURE-EVIDENCE"
+        "FOUNDATION-SELF-IDENTITY"
       ],
       "obligations": [],
       "acceptance_refs": [
-        "A separately scoped repo-local command aligns an operator env file to example order and keys while retaining opaque values, inserting quoted <thi\u1ebfu key> for missing keys, grouping extras, and exposing no values."
+        "Use the accepted TASK-0003 review as the immutable navigation point for Foundation-native support Authority Set physical resolution while semantic owners remain distinct."
       ],
       "required_evidence": [
-        "Exact task authority and a no-value-exposure proof."
-      ],
-      "required_capabilities": [
-        "repository_content_read"
-      ]
-    },
-    {
-      "id": "NATURAL-ILETS-PILOT",
-      "traceability": [
-        "architect-profile@46d02a4677db0dd6b5d51ad2ecf9e797e91f6958:.agent/tasks/TASK-0035/task.yaml"
-      ],
-      "depends_on": [
-        "CLOSURE-EVIDENCE"
-      ],
-      "obligations": [],
-      "acceptance_refs": [
-        "A new phatnguyen03022001/ilets product task reaches ACCEPTED end-to-end under the intended authority set; historical TASK-0045 alone is not that proof."
-      ],
-      "required_evidence": [
-        "Exact ilets target authority, accepted review identity, and fresh end-to-end evidence."
-      ],
-      "required_capabilities": [
-        "repository_content_read"
-      ]
-    },
-    {
-      "id": "COLD-SUCCESSOR-CONVERGENCE",
-      "traceability": [
-        "architect-profile@df3f0814eac1524526983bbee86e6d2ab051b7e0:.agent/tasks/TASK-0033/review.yaml",
-        "architect-profile@46d02a4677db0dd6b5d51ad2ecf9e797e91f6958:.agent/tasks/TASK-0035/task.yaml"
-      ],
-      "depends_on": [
-        "CLOSURE-EVIDENCE"
-      ],
-      "obligations": [],
-      "acceptance_refs": [
-        "Independent cold samples converge on material decisions; any reproduced ambiguity identifies its canonical owner and, after any necessary narrow correction, materially convergent fresh samples are required; NO_CHANGE_REQUIRED is valid."
-      ],
-      "required_evidence": [
-        "Independent cold samples compared by material decisions rather than wording."
-      ],
-      "required_capabilities": [
-        "repository_content_read"
-      ]
-    },
-    {
-      "id": "SCALE-STAGE-ADMISSION-CONVERGENCE",
-      "traceability": [
-        "architect-profile@df3f0814eac1524526983bbee86e6d2ab051b7e0:.agent/tasks/TASK-0033/review.yaml",
-        "architect-profile@46d02a4677db0dd6b5d51ad2ecf9e797e91f6958:.agent/tasks/TASK-0035/task.yaml"
-      ],
-      "depends_on": [
-        "COLD-SUCCESSOR-CONVERGENCE"
-      ],
-      "obligations": [],
-      "acceptance_refs": [
-        "Scale-stage admission converges on material evidence and patches an owner only for reproduced ambiguity."
-      ],
-      "required_evidence": [
-        "Independent scale-stage evidence and a bounded owner diagnosis for any ambiguity."
-      ],
-      "required_capabilities": [
-        "repository_content_read"
-      ]
-    },
-    {
-      "id": "FINAL-FIVE-REPOSITORY-SWEEP",
-      "traceability": [
-        "architect-profile@46d02a4677db0dd6b5d51ad2ecf9e797e91f6958:.agent/tasks/TASK-0035/task.yaml"
-      ],
-      "depends_on": [
-        "SCALE-STAGE-ADMISSION-CONVERGENCE"
-      ],
-      "obligations": [],
-      "acceptance_refs": [
-        "An ACCEPTED final five-repository live-governance and debt sweep identifies only observed remaining obligations and has no unresolved admitted MUST_CLOSE finding."
-      ],
-      "required_evidence": [
-        "Fresh bounded owner evidence across the five support repositories."
-      ],
-      "required_capabilities": [
-        "repository_content_read"
-      ]
-    },
-    {
-      "id": "INTENTIONAL-DEV-AUTHORITY-SELECTION",
-      "traceability": [
-        "architect-profile@abbddf8d9c0341628e966e95b649b5380dbbf90f:.agent/tasks/TASK-0034/review.yaml",
-        "architect-profile@46d02a4677db0dd6b5d51ad2ecf9e797e91f6958:.agent/tasks/TASK-0035/task.yaml",
-        "architect-profile@593062e63c7bab4d353fcd2843dfddd9e61a21f2:.agent/tasks/TASK-0035/review.yaml",
-        "architect-profile@94ef7f0202495559f22ae1cb39f710691d830f16:.agent/tasks/TASK-0046/task.yaml",
-        "architect-profile@4cbac8f89a26206f342e8cacf7401a466eb5df05:.agent/tasks/TASK-0046/review.yaml",
-        "architect-profile@cb043a410f26d2d282e477d4e1b83057b0cb6834:.agent/tasks/TASK-0047/task.yaml"
-      ],
-      "depends_on": [
-        "FINAL-FIVE-REPOSITORY-SWEEP"
-      ],
-      "obligations": [],
-      "acceptance_refs": [
-        "Separately scoped work selects an exact dev support authority set without implying main activation, freeze, or successor handoff."
-      ],
-      "required_evidence": [
-        "Fresh sweep evidence and separately granted selection authority."
+        "Resolve the exact TASK-0003 review from the recorded Foundation snapshot when support authority location or later retirement gating is materially relevant."
       ],
       "required_capabilities": [
         "repository_content_read"
