@@ -1,0 +1,421 @@
+protocol_version: 3
+
+task_id: TASK-0004
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0004/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "7165c17a63fed33dbd71050e5990cbeb9f363940"
+  final_execution_head: "04ea2ecb179487365250fbf0cdb7a11ab5ba5c18"
+  candidate_tree: "476875143586da1e101fe2ae7aac29b41226160d"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "7165c17a63fed33dbd71050e5990cbeb9f363940"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  available:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0004 designates no separate authoritative verifier."
+
+pushed: true
+
+collision_recovery:
+  preserved_candidate: "04ea2ecb179487365250fbf0cdb7a11ab5ba5c18"
+  candidate_already_published_by_concurrent_writer: true
+  collision_detected_before_recovery_executor_published_any_further_commit: true
+  architect_adjudication: "Preserve the already-published candidate as the TASK-0004 implementation checkpoint; do not revert, reset, amend, replace, or reconstruct it."
+  recovery_executor_claims_candidate_authorship: false
+  recovery_executor_independently_reverified_preserved_candidate: true
+  recovery_executor_is_sole_writer_for_report_only_continuation: true
+  normalized_checkpoint:
+    unstaged_task_edit_restored_to_candidate_bytes: true
+    preserved_staged_report_checkpoint: true
+  candidate_history_actions:
+    rewrite: false
+    amend: false
+    reset: false
+    force_push: false
+    history_rewrite: false
+  fresh_reverification:
+    bootstrap_local:
+      command: "python3 -B profile/.agent/bootstrap/validate.py"
+      result: PASS
+      signal: "OPM_BOOTSTRAP = TRUE"
+    skills_validator:
+      command: "python3 -B skills/scripts/validate_skill_library.py"
+      result: PASS
+    skills_tests:
+      command: "python3 -B skills/scripts/test_validate_skill_library.py"
+      result: PASS
+      tests_run: 151
+    documents_tests:
+      command: "python3 -B -m unittest discover -s documents/tests -v"
+      result: PASS
+      tests_run: 94
+    standards_verifier:
+      command: "python3 -B standards/tools/verify.py"
+      result: CAPABILITY_BLOCKED
+      exact_error: "ModuleNotFoundError: No module named 'yaml'"
+      declared_dependency: "PyYAML==6.0.2"
+      dependency_installation_attempted: false
+      substitute_verifier_used: false
+    git_diff_check:
+      command: "git diff --check"
+      result: PASS
+  remote_bootstrap_disposition:
+    candidate_boundary_validation: PASS
+    later_recheck: "HTTP Error 403: rate limit exceeded"
+    architect_independent_recheck: "HTTP Error 403: rate limit exceeded"
+    disposition: "Preserve the earlier successful candidate-boundary remote validation; record later GitHub API rate limiting separately and do not treat it as a product defect or repeatedly retry it."
+
+changed_paths:
+  - .agent/tasks/TASK-0004/task.yaml
+  - README.md
+  - profile/.agent/program.generated.json
+  - skills/scripts/test_validate_skill_library.py
+  - skills/templates/report.yaml
+  - skills/templates/task.yaml
+
+program:
+  path: profile/.agent/program.generated.json
+  before:
+    blob: "b7fc20a3c2957bb454afd3e58666d66d74c7d2f5"
+    sha256: "412bcb3aa5f736bac93a94fa266f3ec510e63dd4169c3292bfc83a7b2704cbbd"
+    target_repository: phatnguyen03022001/architect-profile
+    stale: true
+  after:
+    blob: "bebcb6a5ef5c965d6181807c2a900e1742b7c379"
+    sha256: "e335bd6d815fbba18720f4c70a2c6511013f8aa7d9cc8bdc0068116f7ecf1ce2"
+    protocol_version: 3
+    artifact_type: GENERATED_PROGRAM
+    authority: NONE
+    invalidation: FULL_REGENERATION_ON_MATERIAL_INPUT_CHANGE
+    schema_validation: PASS
+  synthesis_target:
+    repository: phatnguyen03022001/agent-foundation
+    source_revision: "7165c17a63fed33dbd71050e5990cbeb9f363940"
+  synthesis_policy:
+    id: TASK-0004-foundation-integration-closure
+    revision: "7165c17a63fed33dbd71050e5990cbeb9f363940"
+  external_authorities:
+    agent-skills:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "87a37a72a4952b1da273d9af308642f4295fda6b"
+    agent-standards:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "0da0d5864fe5e458af564f3c6ba9959cefd99639"
+    agent-documents:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+    agent-runtime:
+      repository: phatnguyen03022001/agent-runtime
+      revision: "ac33afadccf2b222ddf48d6c6b45de82951046a2"
+  required_refs:
+    - "agent-foundation@7165c17a63fed33dbd71050e5990cbeb9f363940:.agent/tasks/TASK-0001/review.yaml"
+    - "agent-foundation@7165c17a63fed33dbd71050e5990cbeb9f363940:.agent/tasks/TASK-0002/review.yaml"
+    - "agent-foundation@7165c17a63fed33dbd71050e5990cbeb9f363940:.agent/tasks/TASK-0003/review.yaml"
+  item_lineage:
+    - FOUNDATION-HISTORY-CONSOLIDATION
+    - FOUNDATION-SELF-IDENTITY
+    - FOUNDATION-SUPPORT-AUTHORITY-LOCATION
+  mutable_status_or_orchestration_state_present: false
+
+legacy_location_closure:
+  exhaustive_scan:
+    method: "git grep -n -F over tracked content for the four named legacy repository identities"
+    classification:
+      historical_task_or_provenance: RETAINED
+      negative_fail_closed_fixture: RETAINED
+      historical_replay_fixture: RETAINED
+      current_positive_locator: CORRECTED
+  reproduced_live_defect:
+    paths:
+      - skills/templates/task.yaml
+      - skills/templates/report.yaml
+      - skills/scripts/test_validate_skill_library.py
+    defect: "The reusable task/report templates still emitted phatnguyen03022001/agent-skills as a positive skill_library repository locator, with one matching validator regression expectation."
+    correction: "Changed the positive physical locator to phatnguyen03022001/agent-foundation and updated only the corresponding regression expectation."
+    protected_surface_exception_required: true
+  filtered_current_material_scan:
+    support_legacy_repository_matches_after_correction: 0
+    architect_profile_residual:
+      path: skills/scripts/test_validate_skill_library.py
+      line: 2314
+      classification: historical_replay_fixture
+      rationale: "The test asserts an immutable accepted identity embedded in imported historical TASK-0025 evidence; it is not a current bootstrap, authority, or navigation locator."
+  negative_fixture_preserved: profile/.agent/bootstrap/test_bootstrap.py
+
+cold_bootstrap:
+  foundation_revision: "7165c17a63fed33dbd71050e5990cbeb9f363940"
+  bootstrap_path: profile/.agent/bootstrap/bootstrap.json
+  authority_lock_path: profile/.agent/bootstrap/authority.lock.json
+  case_router:
+    semantic_owner: agent-skills
+    repository: phatnguyen03022001/agent-foundation
+    revision: "87a37a72a4952b1da273d9af308642f4295fda6b"
+    path: .agent/case-router.yaml
+    case: EXECUTE
+  resolved_owner_keys:
+    - agent-skills
+  bootstrap_trace:
+    - PROFILE_REVISION
+    - AUTHORITY_LOCK
+    - CASE_ROUTER
+    - CASE
+    - CAPABILITY_ROUTE
+    - CANONICAL_ARTIFACT
+  executor_artifact:
+    capability: executor
+    semantic_owner: agent-skills
+    repository: phatnguyen03022001/agent-foundation
+    revision: "87a37a72a4952b1da273d9af308642f4295fda6b"
+    path: executor/SKILL.md
+  no_support_preload: true
+  chat_history_present: false
+  cwd_present: false
+  mutable_ref_fallback_used: false
+  runtime_external:
+    repository: phatnguyen03022001/agent-runtime
+    revision: "ac33afadccf2b222ddf48d6c6b45de82951046a2"
+    routed_path: README.md
+
+verification:
+  program_schema:
+    mechanism: "Reuse skills/scripts/validate_skill_library.py validate_generated_program_template against profile/.agent/program.generated.json"
+    result: PASS
+  bootstrap_validator:
+    command: "python3 -B profile/.agent/bootstrap/validate.py"
+    result: PASS
+    signal: "OPM_BOOTSTRAP = TRUE"
+  bootstrap_remote_validator:
+    command: "python3 -B profile/.agent/bootstrap/validate.py --remote"
+    required_run_result: PASS
+    signal: "OPM_BOOTSTRAP = TRUE"
+    later_post_candidate_recheck:
+      result: RUNTIME_CAPABILITY_UNAVAILABLE
+      signal: "HTTP Error 403: rate limit exceeded"
+      note: "The required remote validation had already passed on the candidate worktree before candidate commit/publication; bootstrap and authority-lock bytes are unchanged in the candidate."
+  bootstrap_unit_tests:
+    command: "python3 -B profile/.agent/bootstrap/test_bootstrap.py"
+    result: PASS
+    tests_run: 32
+    failures: 0
+    errors: 0
+  skills_validator:
+    command: "python3 -B skills/scripts/validate_skill_library.py"
+    result: PASS
+    signal: "OK: validated curated 15-skill taxonomy and protocol v3"
+    warnings: 4
+  skills_validator_tests:
+    command: "python3 -B skills/scripts/test_validate_skill_library.py"
+    result: PASS
+    tests_run: 151
+    failures: 0
+    errors: 0
+  documents_tests:
+    command: "python3 -B -m unittest discover -s documents/tests -v"
+    result: PASS
+    tests_run: 94
+    failures: 0
+    errors: 0
+  standards_verifier:
+    command: "python3 -B standards/tools/verify.py"
+    result: CAPABILITY_BLOCKED
+    exit_code: 1
+    exact_error: "ModuleNotFoundError: No module named 'yaml'"
+    declared_dependency: "PyYAML==6.0.2"
+    dependency_source: standards/requirements-validator.txt
+    installation_attempted: false
+    substitute_verifier_used: false
+  git_diff_check:
+    command: "git diff --check"
+    result: PASS
+
+protected_surfaces:
+  unchanged:
+    documents_tree:
+      base: "c0bf2080ddee6e549a1605c13d4ff9041984c636"
+      candidate: "c0bf2080ddee6e549a1605c13d4ff9041984c636"
+    standards_tree:
+      base: "1807ad6e7d1a8ddfe8987ebe937886d9fd85e268"
+      candidate: "1807ad6e7d1a8ddfe8987ebe937886d9fd85e268"
+    architect_profile_blob:
+      base: "09eede6bdf5634072c5880d12159cc2efc81a5db"
+      candidate: "09eede6bdf5634072c5880d12159cc2efc81a5db"
+    architect_calibration_blob:
+      base: "130be418e862b2d0ea3a0ed82660524869a7cb9f"
+      candidate: "130be418e862b2d0ea3a0ed82660524869a7cb9f"
+    bootstrap_json_blob:
+      base: "fa7359d1141830362a222c2293b69992daf163a0"
+      candidate: "fa7359d1141830362a222c2293b69992daf163a0"
+    authority_lock_blob:
+      base: "4f792062bcf423f0a198a7b91107996ed2ded690"
+      candidate: "4f792062bcf423f0a198a7b91107996ed2ded690"
+    bootstrap_validate_blob:
+      base: "945e0d4ba732aabc21c56e4006769a1feee06dd5"
+      candidate: "945e0d4ba732aabc21c56e4006769a1feee06dd5"
+    bootstrap_tests_blob:
+      base: "48de2232710ce7e42b49d96de90fc46db7cc7426"
+      candidate: "48de2232710ce7e42b49d96de90fc46db7cc7426"
+    task_0001_tree:
+      base: "4cb1f5f11acad9670028fd19632d532cac81ab4d"
+      candidate: "4cb1f5f11acad9670028fd19632d532cac81ab4d"
+    task_0002_tree:
+      base: "3b891df0c4926b24c99c12fbbc9510a4679589f9"
+      candidate: "3b891df0c4926b24c99c12fbbc9510a4679589f9"
+    task_0003_tree:
+      base: "9da564080b6a3423923753a3e78e183f02d97fc7"
+      candidate: "9da564080b6a3423923753a3e78e183f02d97fc7"
+    historical_profile_tasks_tree:
+      base: "ce019849a2251d34eb3e6c055f0fd3414e50efff"
+      candidate: "ce019849a2251d34eb3e6c055f0fd3414e50efff"
+    profile_readme_blob:
+      base: "42004746928e0d7d0a16ec25c5feda11e027c1e7"
+      candidate: "42004746928e0d7d0a16ec25c5feda11e027c1e7"
+  skills_exception:
+    base_tree: "3322c2bbabec89d77ac956701d680c36c80e0a7e"
+    candidate_tree: "c15db31a0120871fb2fcfd7a989e692bdc23a3e3"
+    exact_changed_paths:
+      - skills/scripts/test_validate_skill_library.py
+      - skills/templates/report.yaml
+      - skills/templates/task.yaml
+    rationale: "A reproduced current positive legacy locator in reusable templates required the smallest correction; all skills owner-native validation then passed."
+
+readme_disposition:
+  root_readme_modified: true
+  before_blob: "40832e2a1882089daad67473e170c0434120e6f4"
+  candidate_blob: "4c6a4b66c203b61b000a42b28080ba0fcd63b47c"
+  statements:
+    - "Physical consolidation and Foundation self identity are complete."
+    - "Support Authority Set location cutover is complete."
+    - "Generated navigation is refreshed from current Foundation-native inputs."
+    - "Semantic owners remain distinct."
+    - "agent-runtime remains separate."
+    - "Legacy source repositories remain retained pending separately authorized retirement."
+  architect_acceptance_claimed: false
+  legacy_retirement_claimed: false
+  profile_readme_modified: false
+
+publication:
+  candidate_published: true
+  candidate_remote_main: "04ea2ecb179487365250fbf0cdb7a11ab5ba5c18"
+  candidate_local_head: "04ea2ecb179487365250fbf0cdb7a11ab5ba5c18"
+  candidate_ahead: 0
+  candidate_behind: 0
+  candidate_clean: true
+  local_branches:
+    - main
+  remote_branches:
+    - main
+  report_expected_parent: "04ea2ecb179487365250fbf0cdb7a11ab5ba5c18"
+  report_commit_binding: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  final_remote_main: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  final_local_head: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  final_ahead_behind: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  final_clean_state: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  report_commit_note: "A Git commit cannot self-contain its own content-addressed commit SHA. Task Protocol v3 therefore requires exact report commit/tree and final remote/local state to be resolved immediately after report publication and returned as external terminal handoff evidence."
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "PROGRAM was fully replaced, validates against the existing GENERATED_PROGRAM schema logic, preserves protocol_version 3 / GENERATED_PROGRAM / authority NONE / FULL_REGENERATION_ON_MATERIAL_INPUT_CHANGE, targets Foundation@7165c17a63fed33dbd71050e5990cbeb9f363940, selects the three Foundation-hosted support authority revisions plus external runtime, and removes the obsolete five-repository projection."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Exhaustive legacy-location scan retained historical/provenance and negative fixtures; the only current positive locator defect was the skills task/report template repository default and its matching regression expectation, which were minimally corrected. Filtered current material has zero legacy agent-skills/standards/documents repository matches; the only architect-profile residual is an explicit historical replay fixture."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Cold reconstruction used only actual locked agent-skills router/executor paths and resolved EXECUTE to phatnguyen03022001/agent-foundation@87a37a72a4952b1da273d9af308642f4295fda6b:executor/SKILL.md with resolved_owner_keys={agent-skills}, no chat_history, no cwd, and no mutable fallback."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Authority lock and cold proof keep agent-runtime external at phatnguyen03022001/agent-runtime@ac33afadccf2b222ddf48d6c6b45de82951046a2; required remote bootstrap validation passed before candidate publication."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Local bootstrap validator PASS, required remote validator PASS, 32/32 focused tests PASS, and all four protected bootstrap blobs are byte-identical to base."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Curated skills validator PASS and 151/151 validator tests PASS after the bounded live-locator correction."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Documents owner-native unittest suite PASS: 94/94; documents/tools/validate.py was not misapplied to Foundation as a target product docs repository."
+  - criterion_id: AC-8
+    status: CAPABILITY_BLOCKED_RECORDED
+    evidence: "Canonical standards verifier could not start tools/validate.py because the existing Python environment lacks yaml; standards/requirements-validator.txt declares PyYAML==6.0.2. No dependency installation or substitute verifier was used."
+  - criterion_id: AC-9
+    status: PASS
+    evidence: "git diff --check PASS; documents, standards, profile authority docs, bootstrap, prior Foundation tasks, historical profile tasks, and profile README are unchanged. The only protected skills changes are the three exact files required by the reproduced positive legacy-locator defect."
+  - criterion_id: AC-10
+    status: PARTIAL_POST_REPORT
+    evidence: "Candidate publication used the fresh expected remote head 7165c17a63fed33dbd71050e5990cbeb9f363940 and non-force direct-child publication to 04ea2ecb179487365250fbf0cdb7a11ab5ba5c18; candidate state is clean 0/0 with local/remote branch set {main}. Exact report commit/final state is necessarily external post-publication evidence."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Local bootstrap validator returned OPM_BOOTSTRAP = TRUE."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Required remote bootstrap validator returned OPM_BOOTSTRAP = TRUE before candidate commit; a later post-publication recheck hit GitHub API rate limiting and is separately recorded."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Focused bootstrap suite passed 32/32 tests."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Curated skills validator passed and its validator suite passed 151/151 tests."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Documents owner-native validator test suite passed 94/94 tests."
+  - check_id: CHECK-6
+    result: CAPABILITY_BLOCKED_RECORDED
+    evidence: "Canonical standards verifier exits 1 because yaml is unavailable; PyYAML==6.0.2 is declared but was not installed or substituted."
+  - check_id: CHECK-7
+    result: PASS
+    evidence: "Cold EXECUTE resolution, runtime external identity, legacy-location classification, protected identities, changed paths, PROGRAM schema, and git diff --check are recorded above."
+  - check_id: CHECK-8
+    result: PARTIAL_POST_REPORT
+    evidence: "Candidate publication is clean 0/0 on main; exact report commit and final remote/local identity require immediate external post-publication resolution."
+
+mutations:
+  legacy_source_repositories_mutated: false
+  agent_runtime_mutated: false
+  host_runtime_service_tcc_keychain_system_settings_mutated: false
+  state_created_outside_target_repository: false
+  branch_created: false
+  pr_created: false
+  tag_or_release_created: false
+  force_push_used: false
+
+remaining_legacy_retirement_work:
+  - "Legacy source repositories are intentionally retained and no archive/delete/rename/branch-retirement action is authorized by TASK-0004."
+  - "Any legacy retirement requires a separate explicitly authorized task and fresh canonical evidence; this report fabricates no successor task artifact."
+
+result: NEEDS_REVIEW
