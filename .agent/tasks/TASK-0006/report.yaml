@@ -1,8 +1,8 @@
 protocol_version: 3
 
 task_id: TASK-0006
-task_revision: 1
-report_revision: 1
+task_revision: 5
+report_revision: 2
 state: REPORTED
 
 task_source:
@@ -13,11 +13,11 @@ execution:
   branch:
     name: main
     role: stable
-  authorized_base_head: "5fcb3d0b43be0a063b2139ee44e4c8963cff321c"
-  final_execution_head: "60c476a72cc50d6e3d1fe2f50f44be26ee8df977"
-  candidate_commit: "60c476a72cc50d6e3d1fe2f50f44be26ee8df977"
-  candidate_tree: "6e2a53994facf125e82bf531c595c59227aa0c88"
-  candidate_parent: "5fcb3d0b43be0a063b2139ee44e4c8963cff321c"
+  authorized_base_head: "f7aafdff6a15c666a3b54c6ce5b71df4d432c714"
+  final_execution_head: "98dd7e0a7ff266aa35c9edfc850e6e4e5ab4f391"
+  candidate_commit: "98dd7e0a7ff266aa35c9edfc850e6e4e5ab4f391"
+  candidate_tree: "846df2b915f7df44d46470d45d27712fed677a02"
+  candidate_parent: "f7aafdff6a15c666a3b54c6ce5b71df4d432c714"
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
@@ -30,7 +30,7 @@ capability_preflight:
     - local_test_execution
     - non_force_git_publication
   available:
-    - AGENT_RUNTIME
+    - SentinelX
     - git
     - python3
   missing: []
@@ -40,60 +40,66 @@ authoritative_verification:
   required: false
   performed: false
   result: NOT_REQUIRED
-  evidence: "TASK-0006 designates no separate authoritative verifier."
+  evidence: "TASK-0006 revision 5 designates no separate authoritative verifier."
 
 pushed: true
 
 acceptance_evidence:
   - criterion_id: AC-1
     status: PASS
-    evidence: "skills/contracts/FOUNDATION_ARCHITECTURE.md defines exactly L0 Governance Kernel, L1 Control and Continuity, and L2 Capability and Knowledge; agent-runtime, GitHub, MCP, and native tools are orthogonal substrates."
+    evidence: "The accepted canonical Foundation architecture remains exactly L0 Governance Kernel, L1 Control and Continuity, and L2 Capability and Knowledge; Runtime, GitHub, MCP, and native tools remain orthogonal substrates."
   - criterion_id: AC-2
     status: PASS
-    evidence: "The canonical architecture contract and L0 protocol retain exactly Architect and Executor; Sync and read-only Researcher are Executor specializations without independent mutation, review, acceptance, rebinding, or architecture authority."
+    evidence: "The accepted two-role model remains unchanged: Architect and Executor only; Sync and read-only Researcher remain Executor specializations without independent mutation or acceptance authority."
   - criterion_id: AC-3
     status: PASS
-    evidence: "Authority-kernel slimming is measured against the authorized base: Architect 140->122 lines / 2401->2178 words; Executor 160->115 / 3814->2567; Task Protocol 411->373 / 8652->7079. Delegated process/repository HOW is preserved in skills/executor/references/ENGINEERING_HOW.md and L1 control semantics in the Foundation architecture contract; the complete regression suite remains green."
+    evidence: "The accepted slim L0 role kernels remain intact; this revision changes authority resolution and active discovery wording only and does not reconstruct or expand the three-layer implementation."
   - criterion_id: AC-4
     status: PASS
-    evidence: "The single L1 contract defines INDEXED != LOADED, PINNED != TRUSTED, SYNCED != ADOPTED, ADOPTED != AUTHORIZED, LOADED != AUTHORIZED, and SNAPSHOT != AUTHORITY; bootstrap exposes foundation_control_plane at the exact Foundation authority-set identity."
+    evidence: "The accepted L1 capability-state non-equivalence contract remains intact and bootstrap now resolves that control-plane path at the active Foundation authority-set revision."
   - criterion_id: AC-5
     status: PASS
-    evidence: "The L1 contract requires one exact target/base/question, minimum relevant context, peer-result isolation before synthesis, compact advisory evidence, and Architect synthesis by evidence quality rather than majority voting."
+    evidence: "The accepted independent read-only research fan-out semantics remain intact and the complete skill regression suite remains green."
   - criterion_id: AC-6
     status: PASS
-    evidence: "Cross-repository findings remain authority NONE until explicit future binding and fresh revalidation; they cannot mutate the owner repository, auto-create tasks, create acceptance authority, or auto-rebind the active target."
+    evidence: "The accepted non-authoritative cross-repository finding continuity semantics remain intact and no automatic sibling mutation or task creation path was introduced."
   - criterion_id: AC-7
     status: PASS
-    evidence: "Scope proof includes tracked and untracked changes: 13 authorized Foundation paths, exactly 15 SKILL.md files, no external ecosystem vendoring/activation path, no skill addition/retirement, and no agent-runtime mutation."
+    evidence: "Implementation changes are limited to nine authorized active Foundation files; skill count remains exactly 15; no external ecosystem is vendored or activated; agent-runtime is not mutated; historical protocol-v3 task/report/review evidence is not rewritten by the implementation candidate."
   - criterion_id: AC-8
     status: PASS
-    evidence: "Candidate 60c476a72cc50d6e3d1fe2f50f44be26ee8df977 passed local/remote bootstrap validation, 35 bootstrap tests, curated skill validation, 156 skill regression tests, focused TASK-0006 assertions, and diff checks before publication."
+    evidence: "Candidate 98dd7e0a7ff266aa35c9edfc850e6e4e5ab4f391 passes local bootstrap validation, post-publication remote bootstrap validation, 36 bootstrap tests, skill-library validation, 156 skill regression tests, task/review artifact validation, Python compilation, and git diff checks."
+  - criterion_id: AC-9
+    status: PASS
+    evidence: "authority.lock.json now contains only agent-runtime@ac33afadccf2b222ddf48d6c6b45de82951046a2. Internal route owners are semantic domains skills/standards/documents with repository-relative Foundation paths; Case Router is skills/.agent/case-router.yaml. Cold reconstruction proves every internal canonical route receives one supplied Foundation authority_set_identity revision while agent-runtime alone resolves through its independent immutable external pin. Legacy internal revision-selection aliases are rejected by validation."
 
 executor_checks:
   - check_id: CHECK-1
     result: PASS
-    evidence: "python3 -B profile/.agent/bootstrap/validate.py"
+    evidence: "python3 -B profile/.agent/bootstrap/validate.py returned OPM_BOOTSTRAP = TRUE."
   - check_id: CHECK-2
     result: PASS
-    evidence: "python3 -B profile/.agent/bootstrap/validate.py --remote, including a post-candidate-publication run."
+    evidence: "python3 -B profile/.agent/bootstrap/validate.py --remote returned OPM_BOOTSTRAP = TRUE after candidate 98dd7e0a7ff266aa35c9edfc850e6e4e5ab4f391 was published."
   - check_id: CHECK-3
     result: PASS
-    evidence: "python3 -B profile/.agent/bootstrap/test_bootstrap.py: 35 tests PASS."
+    evidence: "python3 -B profile/.agent/bootstrap/test_bootstrap.py ran 36 tests with OK."
   - check_id: CHECK-4
     result: PASS
-    evidence: "python3 -B skills/scripts/validate_skill_library.py PASS; python3 -B skills/scripts/test_validate_skill_library.py: 156 tests PASS."
+    evidence: "python3 -B skills/scripts/validate_skill_library.py passed and python3 -B skills/scripts/test_validate_skill_library.py ran 156 tests with OK."
   - check_id: CHECK-5
     result: PASS
-    evidence: "Task0006FoundationArchitectureTests deterministically assert exactly three layers, exactly two roles, specialization boundaries, all six capability-state non-equivalences, research fan-out, cross-repository continuity, and delegated ownership."
+    evidence: "Existing TASK-0006 focused architecture assertions remain green, including exactly three layers, exactly two roles, specialization boundaries, and the six capability-state non-equivalence invariants."
   - check_id: CHECK-6
     result: PASS
-    evidence: "Bootstrap tests bind foundation_control_plane to the canonical Foundation path at exact profile revision and fail closed for missing, malformed, or physically unavailable control-plane navigation."
+    evidence: "Bootstrap tests prove canonical Foundation control-plane and Case Router navigation and fail closed for malformed, missing, or wrong-owner paths."
   - check_id: CHECK-7
     result: PASS
-    evidence: "Combined tracked+untracked path proof found only 13 authorized Foundation paths; taxonomy remains 15 skills; no vendored ecosystem/Runtime/orchestration path was introduced; git diff --check and staged diff --check passed."
+    evidence: "Exact implementation diff contains nine authorized active Foundation files only; skill count is 15; no runtime repository path, external vendoring, skill add/remove, or orchestration infrastructure appears; git diff --check passed. Pre-existing untracked .DS_Store was preserved byte-identically and excluded from commits."
   - check_id: CHECK-8
     result: EXTERNAL_POST_PUBLICATION_PROOF_REQUIRED
-    evidence: "Candidate publication already used a fresh origin/main=5fcb3d0b43be0a063b2139ee44e4c8963cff321c gate and resolved remote candidate identity. Final report-commit publication, final main identity, ahead/behind, and worktree hygiene are intentionally proven outside this same-commit report after publication."
+    evidence: "Candidate publication used fresh remote main=f7aafdff6a15c666a3b54c6ce5b71df4d432c714 and non-force push, then remote main resolved exactly to candidate 98dd7e0a7ff266aa35c9edfc850e6e4e5ab4f391. Final report-commit publication and final main/ahead-behind/worktree proof are intentionally performed after this report commit is published."
+  - check_id: CHECK-9
+    result: PASS
+    evidence: "Static lock proof shows only agent-runtime remains independently pinned; active legacy revision-selector scan returns NONE; synthetic cold reconstruction validates one Foundation revision across internal routes and the separate Runtime revision; test_ac9_internal_routes_share_foundation_identity_and_runtime_stays_external passes."
 
 result: NEEDS_REVIEW
