@@ -2,11 +2,17 @@ protocol_version: 3
 
 task_id: TASK-0005
 task_revision: 1
-report_revision: 1
+report_revision: 2
 state: REPORTED
 
 task_source:
   path: .agent/tasks/TASK-0005/task.yaml
+
+revision_provenance:
+  supersedes_report_revision: 1
+  prior_report_commit: "5f2cb1563801974468ba1df44abd8db0e01302d6"
+  architect_revision_required_review: "2dae00783995cda9472006abe9d34d6f5039b36d"
+  change_scope: "Serialization validity only; no retirement execution or GitHub metadata mutation occurred in report revision 2."
 
 execution:
   repository: phatnguyen03022001/agent-foundation
@@ -14,9 +20,22 @@ execution:
     name: main
     role: stable
   authorized_base_head: "4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+  final_execution_head: "6ed5029e214095a182abe72043566d1bd93323c2"
   candidate_commit: "6ed5029e214095a182abe72043566d1bd93323c2"
   candidate_tree: "f33d59fbf819742b358b83c233dfa1192ee4db0d"
   candidate_parent: "4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0005 designates no separate authoritative verifier."
+
+pushed: true
 
 candidate_changed_paths:
   - .agent/tasks/TASK-0005/task.yaml
@@ -98,7 +117,7 @@ legacy_repositories:
       branches:
         dev: "5afd25b567e3817c111d84fe28b4edc0598e5081"
         main: "508c64f02640911f1fdca81c8cde08748921eae7"
-      tags: {}
+      tags: []
       source_tip_resolved: true
       representative_historical_commit:
         sha: "508c64f02640911f1fdca81c8cde08748921eae7"
@@ -121,7 +140,7 @@ legacy_repositories:
       branches:
         dev: "5afd25b567e3817c111d84fe28b4edc0598e5081"
         main: "508c64f02640911f1fdca81c8cde08748921eae7"
-      tags: {}
+      tags: []
       source_tip_resolved: true
       representative_historical_commit_resolved: true
       git_ls_remote_readable: true
@@ -139,7 +158,8 @@ legacy_repositories:
         dev: "4f4ef2b45e1a025bc499702919431c0d0d61419c"
         main: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
       tags:
-        v1.0.0: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+        - name: v1.0.0
+          sha: "76f2d3877d1698f91eb5a6117e2301ed49480379"
       source_tip_resolved: true
       representative_historical_commit:
         sha: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
@@ -168,7 +188,8 @@ legacy_repositories:
         dev: "4f4ef2b45e1a025bc499702919431c0d0d61419c"
         main: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
       tags:
-        v1.0.0: "76f2d3877d1698f91eb5a6117e2301ed49480379"
+        - name: v1.0.0
+          sha: "76f2d3877d1698f91eb5a6117e2301ed49480379"
       source_tip_resolved: true
       representative_historical_commit_resolved: true
       git_ls_remote_readable: true
@@ -191,7 +212,8 @@ legacy_repositories:
         dev: "ff135cde2dbebbffcd0c33415a7abaf1b2e2c4ec"
         main: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
       tags:
-        v1.0.0: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
+        - name: v1.0.0
+          sha: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
       source_tip_resolved: true
       representative_historical_commit:
         sha: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
@@ -215,7 +237,8 @@ legacy_repositories:
         dev: "ff135cde2dbebbffcd0c33415a7abaf1b2e2c4ec"
         main: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
       tags:
-        v1.0.0: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
+        - name: v1.0.0
+          sha: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
       source_tip_resolved: true
       representative_historical_commit_resolved: true
       git_ls_remote_readable: true
@@ -233,7 +256,8 @@ legacy_repositories:
         dev: "4eb149686329b3a5ad74d66a6fce050d930ada39"
         main: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
       tags:
-        v1.0.0: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+        - name: v1.0.0
+          sha: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
       source_tip_resolved: true
       representative_historical_commit:
         sha: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
@@ -257,7 +281,8 @@ legacy_repositories:
         dev: "4eb149686329b3a5ad74d66a6fce050d930ada39"
         main: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
       tags:
-        v1.0.0: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+        - name: v1.0.0
+          sha: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
       source_tip_resolved: true
       representative_historical_commit_resolved: true
       git_ls_remote_readable: true
@@ -313,6 +338,10 @@ foundation_closure:
   protected_surface_proof: "git diff --name-only 4091a2b610927b10fe061134e9a464e9a2c8f5b1 6ed5029e214095a182abe72043566d1bd93323c2 returned exactly .agent/tasks/TASK-0005/task.yaml and README.md."
 
 verification:
+  report_artifact_validator:
+    command: "python3 -B skills/scripts/validate_skill_library.py --artifact report .agent/tasks/TASK-0005/report.yaml"
+    result: PASS
+    signal: "OK: validated report artifact .agent/tasks/TASK-0005/report.yaml"
   bootstrap_validator:
     command: "python3 -B profile/.agent/bootstrap/validate.py"
     result: PASS
@@ -344,7 +373,7 @@ publication:
     - main
   remote_branches:
     - main
-  report_expected_parent: "6ed5029e214095a182abe72043566d1bd93323c2"
+  report_expected_parent: "2dae00783995cda9472006abe9d34d6f5039b36d"
   report_commit_binding: EXTERNAL_POST_PUBLICATION_RESOLUTION
   final_remote_main: EXTERNAL_POST_PUBLICATION_RESOLUTION
   final_local_head: EXTERNAL_POST_PUBLICATION_RESOLUTION
@@ -352,9 +381,32 @@ publication:
   final_clean_state: EXTERNAL_POST_PUBLICATION_RESOLUTION
   report_commit_note: "A Git commit cannot self-contain its own content-addressed commit SHA. Resolve exact report commit/tree and final local/remote state immediately after report publication and return them as terminal handoff evidence."
 
+acceptance_evidence:
+  - criterion_id: RETIREMENT-CLOSURE
+    status: PASS
+    evidence: "The preserved TASK-0005 execution archived exactly the four legacy repositories as PUBLIC/read-only historical sources, preserved branch/tag identities and historical resolution, kept agent-foundation and agent-runtime active, and changed Foundation only through the accepted implementation candidate 6ed5029e214095a182abe72043566d1bd93323c2. Report revision 2 only repairs canonical protocol serialization."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Bootstrap validator returned OPM_BOOTSTRAP = TRUE."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Focused bootstrap suite passed 32/32 tests."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Curated skills validator passed."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "git diff --check passed."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Retirement evidence remains the already-observed TASK-0005 execution evidence; report revision 2 performs no legacy repository or GitHub metadata mutation."
+
 remaining_work:
-  - "Independent Architect review of TASK-0005 report and exact published report commit."
+  - "Independent Architect review of TASK-0005 report revision 2 and exact published report commit."
   - "No further consolidation task is implied when the recorded retirement predicates remain true."
 
+result: NEEDS_REVIEW
 terminal_result: NEEDS_REVIEW
 architect_acceptance_claimed: false
