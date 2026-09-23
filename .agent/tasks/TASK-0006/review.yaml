@@ -1,15 +1,15 @@
 protocol_version: 3
 
 task_id: TASK-0006
-task_revision: 1
-review_revision: 1
-state: REVISION_REQUIRED
+task_revision: 5
+review_revision: 2
+state: ACCEPTED
 
 reviewed_report:
   repository: phatnguyen03022001/agent-foundation
   path: .agent/tasks/TASK-0006/report.yaml
-  commit: "840fd79a8e939d0dac7994ee5d53020fc9a88daf"
-  report_revision: 1
+  commit: "5488456889032412b68f885299511cf904862af0"
+  report_revision: 2
 
 independence:
   reviewer_role: ARCHITECT
@@ -21,23 +21,24 @@ contract_compliance:
   identity: PASS
   execution_base: PASS
   skill_rules: PASS
-  scope: REVISION_REQUIRED
-  structure_policy: REVISION_REQUIRED
+  scope: PASS
+  structure_policy: PASS
   git_authority: PASS
-  acceptance_criteria: REVISION_REQUIRED
+  acceptance_criteria: PASS
   verifier_evidence: NOT_REQUIRED
 
 promotion_readiness:
   eligible_for_candidate_capture: false
-  reason: "The three-layer candidate preserves the legacy per-owner internal authority-lock model after physical/lifecycle consolidation into one Foundation repository, so the architecture cutover is incomplete."
+  reason: "TASK-0006 is a MAIN_ONLY Foundation architecture cutover already published on canonical main; no separate promotion phase is required."
 
 follow_up_tasks: []
 
 notes:
-  - "Exact report revision 1 at 840fd79a8e939d0dac7994ee5d53020fc9a88daf and implementation candidate 60c476a72cc50d6e3d1fe2f50f44be26ee8df977 were independently resolved from canonical GitHub main."
-  - "The implementation correctly establishes the L0/L1/L2 contract, retains exactly Architect and Executor as organizational roles, keeps Sync/Researcher as Executor specializations, preserves the 15-skill taxonomy, and leaves agent-runtime separate."
-  - "Material revision finding F-0006-001: profile/.agent/bootstrap/authority.lock.json is unchanged and still contains independent internal entries agent-skills@87a37a72a4952b1da273d9af308642f4295fda6b, agent-standards@0da0d5864fe5e458af564f3c6ba9959cefd99639, and agent-documents@c34d34d1842975fa895fc0e3d5273e5826b32205 even though all three now resolve inside phatnguyen03022001/agent-foundation."
-  - "Material revision finding F-0006-002: bootstrap capability_routes and case_router still use legacy semantic-owner aliases as revision selectors, and validate.py explicitly requires those three independent internal lock entries. This preserves the old multi-repository authority model inside the consolidated repository instead of one coherent Foundation snapshot identity."
-  - "A Git commit identifies one top-level tree snapshot for the repository. After Foundation physical/lifecycle consolidation, internal profile/skills/documents/standards authority must resolve from one exact Foundation revision; semantic ownership may remain path/domain-specific, but internal revision ownership must not remain independently pinned."
-  - "The required correction is not to point at mutable main. It is to bind all Foundation-internal canonical paths to one exact Foundation authority-set revision for the active bootstrap context, while keeping genuinely external repositories such as agent-runtime independently pinned."
-  - "The current candidate must not be accepted merely because its validators pass: those validators currently encode and therefore prove the obsolete multi-pin invariant."
+  - "Exact report revision 2 at 5488456889032412b68f885299511cf904862af0 and implementation candidate 98dd7e0a7ff266aa35c9edfc850e6e4e5ab4f391 were independently resolved from canonical GitHub main."
+  - "Candidate 98dd7e0a7ff266aa35c9edfc850e6e4e5ab4f391 is the single direct child of revision-5 execution base f7aafdff6a15c666a3b54c6ce5b71df4d432c714 and changes only nine authorized active Foundation paths; report commit 5488456889032412b68f885299511cf904862af0 is its direct child and changes only .agent/tasks/TASK-0006/report.yaml."
+  - "The accepted three-layer architecture remains L0 Governance Kernel, L1 Control and Continuity, and L2 Capability and Knowledge with exactly two organizational roles, Architect and Executor; Sync and read-only Researcher remain Executor specializations."
+  - "REVISION_REQUIRED findings F-0006-001 and F-0006-002 are closed: authority.lock.json now contains only the independently versioned external agent-runtime authority; no architect-profile, agent-skills, agent-standards, or agent-documents internal revision pin remains."
+  - "Bootstrap internal owners are semantic domains only: skills, standards, and documents route repository-relative paths inside agent-foundation, while profile/bootstrap paths participate in the same Foundation authority-set revision. Semantic ownership remains path-specific and is no longer revision-specific."
+  - "Independent source review confirms validate.py rejects legacy internal aliases, requires exactly the external lock set, resolves all Foundation canonical paths against one supplied exact Foundation revision, and resolves agent-runtime separately from its immutable external pin."
+  - "Independent test review confirms explicit coverage for lock-only-external authority, rejection of legacy internal revision aliases, semantic-domain ownership without pins, one-revision execution reconstruction, and AC-9 internal-route identity with Runtime remaining external."
+  - "Fresh remote review confirms canonical main at the reviewed report boundary is 5488456889032412b68f885299511cf904862af0. The Executor's final publication evidence reports ahead/behind 0/0, clean tracked worktree, 36/36 bootstrap tests, 156/156 skill regression tests, canonical validators PASS, and CHECK-9 PASS."
