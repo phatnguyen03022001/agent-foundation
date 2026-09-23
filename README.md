@@ -11,4 +11,4 @@ Semantic ownership remains separated across those subtrees. `agent-runtime` rema
 
 GitHub `main` is canonical and this repository is `MAIN_ONLY`. Historical source commits are intentionally retained in the ancestry of `main`.
 
-TASK-0001 establishes physical consolidation and history continuity only. Semantic, bootstrap, and authority cutover are not completed by this task.
+TASK-0001 established physical consolidation and history continuity. TASK-0002 establishes the Foundation self-identity / `MAIN_ONLY` bootstrap contract at [`profile/.agent/bootstrap/bootstrap.json`](profile/.agent/bootstrap/bootstrap.json). The selected support Authority Set is still the existing locked external support revisions; Authority Set cutover is pending, and the four legacy repositories are not retired by TASK-0002.

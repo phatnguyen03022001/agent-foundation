@@ -1,0 +1,156 @@
+protocol_version: 3
+
+task_id: TASK-0002
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_handoff
+  source: "2026-09-23 TASK-0002 — Foundation Self-Identity Cutover"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: exact_commit
+  commit: "4b11fad1a3531825423c463b5982cc1d6a48b63b"
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "4b11fad1a3531825423c463b5982cc1d6a48b63b"
+  task_protocol_path: skills/protocols/TASK_PROTOCOL.md
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+    - github-workflow
+
+authority_sources:
+  - source: "explicit operator handoff for TASK-0002"
+    role: "exact execution authority and acceptance boundary"
+    precedence: 1
+  - source: "skills/protocols/TASK_PROTOCOL.md@4b11fad1a3531825423c463b5982cc1d6a48b63b"
+    role: "Task Protocol v3 execution/report semantics"
+    precedence: 2
+  - source: "profile/.agent/bootstrap/authority.lock.json@4b11fad1a3531825423c463b5982cc1d6a48b63b"
+    role: "selected support Authority Set that must remain byte-identical"
+    precedence: 3
+
+objective: >-
+  Cut the imported profile bootstrap self-identity from architect-profile / DEV_MAIN
+  to phatnguyen03022001/agent-foundation / MAIN_ONLY while preserving the selected
+  support Authority Set byte-for-byte and preserving generic topology policy.
+
+scope:
+  required_changes:
+    - "Update Foundation self repository contract to agent-foundation / MAIN_ONLY with working and stable refs both main."
+    - "Update Foundation self lifecycle so evolution and activation refs both resolve to main."
+    - "Make self-owned bootstrap locators repository-root-relative from agent-foundation."
+    - "Keep bootstrap_default_topology as the generic DEV_MAIN default unless evidence proves otherwise."
+    - "Update only the validator/tests required to fail closed on the new Foundation identity and topology."
+    - "Update profile/README.md and root README.md only enough to describe the new physical self identity."
+    - "Persist this task and the truthful Executor report under .agent/tasks/TASK-0002/."
+
+invariants:
+  - "profile/.agent/bootstrap/authority.lock.json remains byte-identical."
+  - "Selected support repositories and immutable revisions remain unchanged."
+  - "Case Router and capability-route semantics remain unchanged."
+  - "skills/**, documents/**, standards/**, historical profile/.agent/tasks/**, and .agent/tasks/TASK-0001/** remain unchanged."
+  - "profile/.agent/program.generated.json remains unchanged and non-authoritative even if stale."
+  - "No local or remote branch other than main is created."
+  - "No source repository, agent-runtime, Runtime/service/TCC/Keychain/System Settings state is mutated."
+
+forbidden_changes:
+  - "Do not perform support Authority Set cutover or adopt imported dev tips."
+  - "Do not regenerate PROGRAM, Capability Index, snapshots, or Project Sources."
+  - "Do not redesign Case Router, capability ownership, Task Protocol, branch policy, or Agent Runtime."
+  - "Do not create branches, PRs, tags, releases, force pushes, worktrees, clones, or temp state outside the repository."
+
+capability_requirements:
+  EXECUTION:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  REVIEW:
+    - repository_content_read
+    - exact_commit_report_resolution
+    - remote_ref_read
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Foundation self repository contract is exactly phatnguyen03022001/agent-foundation / MAIN_ONLY with working_ref=main and stable_ref=main."
+    evidence_required: "Bootstrap bytes, validator assertions, and focused tests."
+  - id: AC-2
+    requirement: "Foundation authority-set self lifecycle requires no dev ref; evolution_ref=main and activation_ref=main."
+    evidence_required: "Bootstrap bytes, validator assertions, and focused tests."
+  - id: AC-3
+    requirement: "Self-owned bootstrap paths resolve from the physical agent-foundation repository root."
+    evidence_required: "Repository-root validator/test execution."
+  - id: AC-4
+    requirement: "authority.lock.json is byte-identical and its selected support repositories/revisions are unchanged."
+    evidence_required: "Exact before/after SHA-256 equality and unit assertion."
+  - id: AC-5
+    requirement: "Generic DEV_MAIN default, Case Router, and capability-route semantics are unchanged and remain fail-closed."
+    evidence_required: "Bootstrap diff and focused tests."
+  - id: AC-6
+    requirement: "No protected subtree or historical task artifact changes."
+    evidence_required: "Exact base-to-candidate path/tree proof."
+  - id: AC-7
+    requirement: "Validator, bootstrap unit tests, Python compile checks, and git diff --check all pass."
+    evidence_required: "Exact command results and test count."
+  - id: AC-8
+    requirement: "main is published by non-force fast-forward only and final repository state is clean with remote branches exactly {main}."
+    evidence_required: "Fresh pre-publication CAS and post-publication remote/local proof."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Run profile bootstrap validator from the Foundation repository root."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Run focused profile bootstrap unittest suite."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run py_compile for changed Python files and git diff --check."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Prove authority.lock SHA-256 equality and exact protected-subtree/base-to-candidate scope."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Search live non-historical profile/bootstrap material for stale Foundation self claims."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Fresh-resolve remote main before each publication consequence and post-prove final refs/hygiene."
+      required: true
+
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true

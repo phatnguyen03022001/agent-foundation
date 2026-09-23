@@ -7,12 +7,12 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / ".agent" / "bootstrap"))
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "profile" / ".agent" / "bootstrap"))
 
 import validate  # noqa: E402
 
-VALIDATOR = ROOT / ".agent" / "bootstrap" / "validate.py"
+VALIDATOR = ROOT / "profile" / ".agent" / "bootstrap" / "validate.py"
 PROFILE_REVISION = "707acfea1f749591621751785b87ae792355a0eb"
 
 
@@ -29,6 +29,36 @@ class BootstrapContractTests(unittest.TestCase):
             check=False,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_foundation_repository_contract_is_main_only(self) -> None:
+        self.assertEqual(
+            self.bootstrap["repository_contract"],
+            {
+                "repository": "phatnguyen03022001/agent-foundation",
+                "topology": "MAIN_ONLY",
+                "working_ref": "main",
+                "stable_ref": "main",
+                "local_policy": "MANAGED_MIRROR",
+            },
+        )
+        self.assertEqual(self.bootstrap["authority_lock"], "profile/.agent/bootstrap/authority.lock.json")
+        self.assertEqual(self.bootstrap["bootstrap_default_topology"], "DEV_MAIN")
+
+    def test_legacy_architect_profile_self_identity_fails_closed(self) -> None:
+        bootstrap = copy.deepcopy(self.bootstrap)
+        bootstrap["repository_contract"].update(
+            repository="phatnguyen03022001/architect-profile",
+            topology="DEV_MAIN",
+            working_ref="dev",
+        )
+        with self.assertRaisesRegex(ValueError, "agent-foundation MAIN_ONLY identity"):
+            validate.validate_contract(bootstrap, self.lock)
+
+    def test_foundation_dev_self_contract_fails_closed(self) -> None:
+        bootstrap = copy.deepcopy(self.bootstrap)
+        bootstrap["repository_contract"]["working_ref"] = "dev"
+        with self.assertRaisesRegex(ValueError, "agent-foundation MAIN_ONLY identity"):
+            validate.validate_contract(bootstrap, self.lock)
 
     def test_duplicate_capability_entrypoint_fails_closed(self) -> None:
         bootstrap = copy.deepcopy(self.bootstrap)
@@ -216,11 +246,11 @@ class BootstrapContractTests(unittest.TestCase):
             with self.subTest(controller=key[0], location=key[1]):
                 self.assertEqual(validate.normalize_surface(self.bootstrap, *key)["id"], surface_id)
 
-    def test_authority_identity_uses_profile_commit_without_self_pin(self) -> None:
+    def test_authority_identity_uses_foundation_main_without_self_pin(self) -> None:
         identity = self.bootstrap["authority_set_identity"]
-        self.assertEqual(identity["source"], "ARCHITECT_PROFILE_COMMIT")
+        self.assertEqual(identity["source"], "AGENT_FOUNDATION_COMMIT")
         self.assertFalse(identity["self_pin"])
-        self.assertEqual(identity["evolution_ref"], "dev")
+        self.assertEqual(identity["evolution_ref"], "main")
         self.assertEqual(identity["activation_ref"], "main")
         self.assertEqual(identity["rollback"], "FORWARD_ACTIVATION_COMMIT")
         self.assertNotIn("architect-profile", self.lock["repositories"])
@@ -308,9 +338,9 @@ class BootstrapContractTests(unittest.TestCase):
         self.assertEqual(
             result["repository_contract"],
             {
-                "repository": "phatnguyen03022001/architect-profile",
-                "topology": "DEV_MAIN",
-                "working_ref": "dev",
+                "repository": "phatnguyen03022001/agent-foundation",
+                "topology": "MAIN_ONLY",
+                "working_ref": "main",
                 "stable_ref": "main",
                 "local_policy": "MANAGED_MIRROR",
             },
@@ -341,7 +371,7 @@ class BootstrapContractTests(unittest.TestCase):
         if not callable(reconstruct):
             return
         target_locator = {
-            "repository": "phatnguyen03022001/architect-profile",
+            "repository": "owner/repo",
             "branch": "dev",
             "task_path": ".agent/tasks/TASK-0018/task.yaml",
             "task_revision": 1,

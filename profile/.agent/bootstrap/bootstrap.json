@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "authority_lock": ".agent/bootstrap/authority.lock.json",
+  "authority_lock": "profile/.agent/bootstrap/authority.lock.json",
   "case_router": {
     "owner": "agent-skills",
     "path": ".agent/case-router.yaml"
   },
   "repository_contract": {
-    "repository": "phatnguyen03022001/architect-profile",
-    "topology": "DEV_MAIN",
-    "working_ref": "dev",
+    "repository": "phatnguyen03022001/agent-foundation",
+    "topology": "MAIN_ONLY",
+    "working_ref": "main",
     "stable_ref": "main",
     "local_policy": "MANAGED_MIRROR"
   },
@@ -118,9 +118,9 @@
     "prompt_template": "Target: {repository}\nBranch: {branch}\nTask: {task_path}\nTask revision: {task_revision}\nExact base HEAD: {base_head}\nPhase: {phase}\nExecution surface: {surface}\nResolve the canonical task at the exact base and obey it exactly. Communicate with the operator in Vietnamese. Persist repository artifacts in English."
   },
   "authority_set_identity": {
-    "source": "ARCHITECT_PROFILE_COMMIT",
+    "source": "AGENT_FOUNDATION_COMMIT",
     "self_pin": false,
-    "evolution_ref": "dev",
+    "evolution_ref": "main",
     "activation_ref": "main",
     "rollback": "FORWARD_ACTIVATION_COMMIT"
   },

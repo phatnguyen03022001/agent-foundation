@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and resolve the architect-profile OPM-01 bootstrap contract."""
+"""Validate and resolve the agent-foundation profile bootstrap contract."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 
 EXPECTED_REPOSITORIES = {
@@ -32,9 +32,9 @@ EXPECTED_SURFACES = {
 }
 
 EXPECTED_REPOSITORY_CONTRACT = {
-    "repository": "phatnguyen03022001/architect-profile",
-    "topology": "DEV_MAIN",
-    "working_ref": "dev",
+    "repository": "phatnguyen03022001/agent-foundation",
+    "topology": "MAIN_ONLY",
+    "working_ref": "main",
     "stable_ref": "main",
     "local_policy": "MANAGED_MIRROR",
 }
@@ -49,10 +49,10 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def load_contract(root: Path = ROOT) -> tuple[dict[str, Any], dict[str, Any]]:
-    bootstrap = load_json(root / ".agent" / "bootstrap" / "bootstrap.json")
+    bootstrap = load_json(root / "profile" / ".agent" / "bootstrap" / "bootstrap.json")
     lock_rel = bootstrap.get("authority_lock")
-    if not isinstance(lock_rel, str) or not lock_rel:
-        raise ValueError("authority_lock must be a repository-relative path")
+    if lock_rel != "profile/.agent/bootstrap/authority.lock.json":
+        raise ValueError("authority_lock must identify the Foundation repository-relative bootstrap lock")
     lock_path = (root / lock_rel).resolve()
     try:
         lock_path.relative_to(root.resolve())
@@ -190,19 +190,19 @@ def validate_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
     case_router_locator(bootstrap, lock)
 
     if bootstrap.get("repository_contract") != EXPECTED_REPOSITORY_CONTRACT:
-        raise ValueError("repository_contract must explicitly declare OPM-01 DEV_MAIN authority")
+        raise ValueError("repository_contract must explicitly declare agent-foundation MAIN_ONLY identity")
     if bootstrap.get("bootstrap_default_topology") != "DEV_MAIN":
         raise ValueError("bootstrap default topology must be DEV_MAIN")
 
     identity = bootstrap.get("authority_set_identity")
     if identity != {
-        "source": "ARCHITECT_PROFILE_COMMIT",
+        "source": "AGENT_FOUNDATION_COMMIT",
         "self_pin": False,
-        "evolution_ref": "dev",
+        "evolution_ref": "main",
         "activation_ref": "main",
         "rollback": "FORWARD_ACTIVATION_COMMIT",
     }:
-        raise ValueError("authority-set identity must be the architect-profile commit without self-pin")
+        raise ValueError("authority-set identity must use the agent-foundation main lifecycle without self-pin")
 
     target_binding = bootstrap.get("target_binding")
     if target_binding != {
@@ -475,7 +475,7 @@ def reconstruct_context(
     location: str,
 ) -> dict[str, Any]:
     if not SHA_RE.fullmatch(profile_revision):
-        raise ValueError("authority-set identity must be an exact architect-profile commit")
+        raise ValueError("authority-set identity must be an exact agent-foundation commit")
     bootstrap, lock = load_contract(root)
     validate_contract(bootstrap, lock)
     required_target_fields = bootstrap["target_binding"]["required_fields"]
@@ -507,7 +507,7 @@ def reconstruct_execution_context(
     resolved: dict[str, dict[str, Any]],
 ) -> dict[str, Any]:
     if not SHA_RE.fullmatch(profile_revision):
-        raise ValueError("authority-set identity must be an exact architect-profile commit")
+        raise ValueError("authority-set identity must be an exact agent-foundation commit")
     bootstrap, lock = load_contract(root)
     validate_contract(bootstrap, lock)
     required_target_fields = bootstrap["target_binding"]["required_fields"]
