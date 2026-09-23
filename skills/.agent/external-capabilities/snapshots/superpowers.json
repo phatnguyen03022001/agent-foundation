@@ -1,0 +1,185 @@
+{
+  "entries": [
+    {
+      "description": "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation.",
+      "id": "superpowers:brainstorming",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/brainstorming/SKILL.md",
+      "title": "brainstorming"
+    },
+    {
+      "description": "Use when a superpowers session went wrong and your human partner wants to know why — repeated work, ignored plans, stumbles, poor results, a skill that didn't fire, \"it took too long\", \"why is it so expensive\", \"what is it doing\" — or wants to build a bug report for the superpowers maintainers, for the current session or a past one identified by id or path, on any harness.",
+      "id": "superpowers:diagnosing-superpowers",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/diagnosing-superpowers/SKILL.md",
+      "title": "diagnosing-superpowers"
+    },
+    {
+      "description": "Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies",
+      "id": "superpowers:dispatching-parallel-agents",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/dispatching-parallel-agents/SKILL.md",
+      "title": "dispatching-parallel-agents"
+    },
+    {
+      "description": "Use when executing an implementation plan in the current session as the implementer yourself — your human partner chose inline execution, or no subagent tool is available",
+      "id": "superpowers:executing-plans",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/executing-plans/SKILL.md",
+      "title": "executing-plans"
+    },
+    {
+      "description": "Use when implementation is complete, all tests pass, and you need to decide how to integrate the work",
+      "id": "superpowers:finishing-a-development-branch",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/finishing-a-development-branch/SKILL.md",
+      "title": "finishing-a-development-branch"
+    },
+    {
+      "description": "Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation",
+      "id": "superpowers:receiving-code-review",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/receiving-code-review/SKILL.md",
+      "title": "receiving-code-review"
+    },
+    {
+      "description": "Use when completing tasks, implementing major features, or before merging to verify work meets requirements",
+      "id": "superpowers:requesting-code-review",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/requesting-code-review/SKILL.md",
+      "title": "requesting-code-review"
+    },
+    {
+      "description": "Use when executing implementation plans with independent tasks in the current session",
+      "id": "superpowers:subagent-driven-development",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/subagent-driven-development/SKILL.md",
+      "title": "subagent-driven-development"
+    },
+    {
+      "description": "Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes",
+      "id": "superpowers:systematic-debugging",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/systematic-debugging/SKILL.md",
+      "title": "systematic-debugging"
+    },
+    {
+      "description": "Use when implementing any feature or bugfix, before writing implementation code",
+      "id": "superpowers:test-driven-development",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/test-driven-development/SKILL.md",
+      "title": "test-driven-development"
+    },
+    {
+      "description": "Use when starting feature work that needs isolation from current workspace or before executing implementation plans - ensures an isolated workspace exists via native tools or git worktree fallback",
+      "id": "superpowers:using-git-worktrees",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/using-git-worktrees/SKILL.md",
+      "title": "using-git-worktrees"
+    },
+    {
+      "description": "Use when starting any conversation - establishes how to find and use skills, requiring skill invocation before ANY response including clarifying questions",
+      "id": "superpowers:using-superpowers",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/using-superpowers/SKILL.md",
+      "title": "using-superpowers"
+    },
+    {
+      "description": "Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always",
+      "id": "superpowers:verification-before-completion",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/verification-before-completion/SKILL.md",
+      "title": "verification-before-completion"
+    },
+    {
+      "description": "Use when you have a spec or requirements for a multi-step task, before touching code",
+      "id": "superpowers:writing-plans",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/writing-plans/SKILL.md",
+      "title": "writing-plans"
+    },
+    {
+      "description": "Use when creating new skills, editing existing skills, or verifying skills work before deployment",
+      "id": "superpowers:writing-skills",
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "source": "superpowers",
+      "source_path": "skills/writing-skills/SKILL.md",
+      "title": "writing-skills"
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "id": "superpowers",
+    "kind": "capability_source",
+    "license": "MIT",
+    "repository": "obra/superpowers",
+    "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+    "tracking_ref": "main"
+  },
+  "source_metadata": {
+    "non_capability_behavioral_surfaces": [
+      "hooks/hooks-cursor.json",
+      "hooks/hooks.json",
+      "hooks/run-hook.cmd",
+      "hooks/session-start",
+      "tests/hermes/test_bootstrap.py",
+      "tests/hooks/test-session-start.sh",
+      "tests/opencode/test-bootstrap-caching.mjs",
+      "tests/opencode/test-bootstrap-caching.sh",
+      "tests/opencode/test-session-bootstrap.mjs",
+      "tests/opencode/test-session-bootstrap.sh"
+    ],
+    "plugin_manifest": {
+      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
+      "license": "MIT",
+      "name": "superpowers",
+      "path": ".claude-plugin/plugin.json",
+      "version": "6.4.1"
+    },
+    "skill_root": "skills/"
+  }
+}

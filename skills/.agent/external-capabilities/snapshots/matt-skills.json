@@ -1,0 +1,373 @@
+{
+  "entries": [
+    {
+      "description": "Ask which skill or flow fits your situation. A router over the skills in this repo.",
+      "id": "matt-skills:ask-matt",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/ask-matt/SKILL.md",
+      "status": "promoted",
+      "title": "ask-matt"
+    },
+    {
+      "description": "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \\\"review since X\\\".",
+      "id": "matt-skills:code-review",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/code-review/SKILL.md",
+      "status": "promoted",
+      "title": "code-review"
+    },
+    {
+      "description": "Shared vocabulary for designing deep modules. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary.",
+      "id": "matt-skills:codebase-design",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/codebase-design/SKILL.md",
+      "status": "promoted",
+      "title": "codebase-design"
+    },
+    {
+      "description": "Diagnosis loop for hard bugs and performance regressions. Use when the user says \"diagnose\"/\"debug this\", or reports something broken/throwing/failing/slow.",
+      "id": "matt-skills:diagnosing-bugs",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/diagnosing-bugs/SKILL.md",
+      "status": "promoted",
+      "title": "diagnosing-bugs"
+    },
+    {
+      "description": "Build and sharpen a project's domain model. Use when discussing codebase terminology, writing or editing a CONTEXT.md, or recording or editing an ADR.",
+      "id": "matt-skills:domain-modeling",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/domain-modeling/SKILL.md",
+      "status": "promoted",
+      "title": "domain-modeling"
+    },
+    {
+      "description": "A relentless interview to sharpen a plan or design.",
+      "id": "matt-skills:grill-me",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/productivity/grill-me/SKILL.md",
+      "status": "promoted",
+      "title": "grill-me"
+    },
+    {
+      "description": "A relentless interview to sharpen a plan or design, which also creates docs (ADR's and glossary) as we go.",
+      "id": "matt-skills:grill-with-docs",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/grill-with-docs/SKILL.md",
+      "status": "promoted",
+      "title": "grill-with-docs"
+    },
+    {
+      "description": "Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.",
+      "id": "matt-skills:grilling",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/productivity/grilling/SKILL.md",
+      "status": "promoted",
+      "title": "grilling"
+    },
+    {
+      "description": "Compact the current conversation into a handoff document for another agent to pick up.",
+      "id": "matt-skills:handoff",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/productivity/handoff/SKILL.md",
+      "status": "promoted",
+      "title": "handoff"
+    },
+    {
+      "description": "Implement a piece of work based on a spec or set of tickets.",
+      "id": "matt-skills:implement",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/implement/SKILL.md",
+      "status": "promoted",
+      "title": "implement"
+    },
+    {
+      "description": "Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.",
+      "id": "matt-skills:improve-codebase-architecture",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/improve-codebase-architecture/SKILL.md",
+      "status": "promoted",
+      "title": "improve-codebase-architecture"
+    },
+    {
+      "description": "Build a throwaway prototype to answer a design question. Use when the user wants to sanity-check whether a state model or logic feels right, or explore what a UI should look like.",
+      "id": "matt-skills:prototype",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/prototype/SKILL.md",
+      "status": "promoted",
+      "title": "prototype"
+    },
+    {
+      "description": "Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo. Use when the user wants a topic researched, docs or API facts gathered, or reading legwork delegated to a background agent.",
+      "id": "matt-skills:research",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/research/SKILL.md",
+      "status": "promoted",
+      "title": "research"
+    },
+    {
+      "description": "Use when you need to resolve an in-progress git merge/rebase conflict.",
+      "id": "matt-skills:resolving-merge-conflicts",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/resolving-merge-conflicts/SKILL.md",
+      "status": "promoted",
+      "title": "resolving-merge-conflicts"
+    },
+    {
+      "description": "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills.",
+      "id": "matt-skills:setup-matt-pocock-skills",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
+      "status": "promoted",
+      "title": "setup-matt-pocock-skills"
+    },
+    {
+      "description": "Test-driven development. Use when the user wants to build features or fix bugs test-first, mentions \"red-green-refactor\", or wants integration tests.",
+      "id": "matt-skills:tdd",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/tdd/SKILL.md",
+      "status": "promoted",
+      "title": "tdd"
+    },
+    {
+      "description": "Teach the user a new skill or concept, within this workspace.",
+      "id": "matt-skills:teach",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/productivity/teach/SKILL.md",
+      "status": "promoted",
+      "title": "teach"
+    },
+    {
+      "description": "Turn a decision you can't fully answer into a questionnaire for someone else to fill in.",
+      "id": "matt-skills:to-questionnaire",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/productivity/to-questionnaire/SKILL.md",
+      "status": "promoted",
+      "title": "to-questionnaire"
+    },
+    {
+      "description": "Turn the current conversation into a spec and publish it to the project issue tracker: no interview, just synthesis of what you've already discussed.",
+      "id": "matt-skills:to-spec",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/to-spec/SKILL.md",
+      "status": "promoted",
+      "title": "to-spec"
+    },
+    {
+      "description": "Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the configured tracker (edges as text in one file per ticket locally, or native blocking links on a real tracker).",
+      "id": "matt-skills:to-tickets",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/to-tickets/SKILL.md",
+      "status": "promoted",
+      "title": "to-tickets"
+    },
+    {
+      "description": "Move issues and external PRs through a state machine of triage roles, categorise, verify, grill if needed, and write agent-ready briefs.",
+      "id": "matt-skills:triage",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/triage/SKILL.md",
+      "status": "promoted",
+      "title": "triage"
+    },
+    {
+      "description": "Stop. That last message did not land: re-pitch it.",
+      "id": "matt-skills:wait-what",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/productivity/wait-what/SKILL.md",
+      "status": "promoted",
+      "title": "wait-what"
+    },
+    {
+      "description": "Plan a huge chunk of work (more than one agent session can hold) as a shared map of decision tickets on your issue tracker, and resolve them one at a time until the way to the destination is clear.",
+      "id": "matt-skills:wayfinder",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/wayfinder/SKILL.md",
+      "status": "promoted",
+      "title": "wayfinder"
+    },
+    {
+      "description": "Generate an interactive bash wizard that walks a human through steps only they can perform. Use when provisioning infrastructure, setting up credentials or CI secrets, walking an unfamiliar third-party dashboard, or running a one-off migration or cutover. Don't invoke this for steps the agent can perform itself.",
+      "id": "matt-skills:wizard",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/engineering/wizard/SKILL.md",
+      "status": "promoted",
+      "title": "wizard"
+    },
+    {
+      "description": "Writing documents for agents. Use when creating or editing skills, or modifying AGENTS.md or CLAUDE.md.",
+      "id": "matt-skills:writing-for-agents",
+      "invocation": {
+        "declared_by": ".claude-plugin/plugin.json"
+      },
+      "kind": "capability",
+      "license": "MIT",
+      "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source": "matt-skills",
+      "source_path": "skills/productivity/writing-for-agents/SKILL.md",
+      "status": "promoted",
+      "title": "writing-for-agents"
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "id": "matt-skills",
+    "kind": "capability_source",
+    "license": "MIT",
+    "repository": "mattpocock/skills",
+    "revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+    "tracking_ref": "main"
+  },
+  "source_metadata": {
+    "plugin_manifest": {
+      "description": "Matt Pocock's agent skills for real engineering: grilling, spec/ticket flows, TDD, code review, domain modelling and more. Plug-and-play, not vibe coding.",
+      "license": "MIT",
+      "name": "mattpocock-skills",
+      "path": ".claude-plugin/plugin.json",
+      "version": "1.2.3"
+    },
+    "promoted_skill_count": 25
+  }
+}

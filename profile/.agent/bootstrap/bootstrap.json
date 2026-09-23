@@ -9,6 +9,10 @@
     "owner": "skills",
     "path": "skills/contracts/FOUNDATION_ARCHITECTURE.md"
   },
+  "external_capability_catalog": {
+    "owner": "skills",
+    "path": "skills/.agent/external-capabilities/catalog.json"
+  },
   "repository_contract": {
     "repository": "phatnguyen03022001/agent-foundation",
     "topology": "MAIN_ONLY",

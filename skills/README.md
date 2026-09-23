@@ -62,6 +62,12 @@ There is one task model, not task-lite/task-compact variants. Navigation:
 - [contracts/ARCHITECT_REVIEW.md](contracts/ARCHITECT_REVIEW.md): review artifact obligations;
 - [protocols/TASK_PROTOCOL.md](protocols/TASK_PROTOCOL.md): reusable cross-role semantic authority.
 
+## External capability discovery
+
+[External capability plane](.agent/external-capabilities/README.md) provides the Foundation-owned registry, immutable metadata snapshots, and aggregate discovery catalog for approved external ecosystems. The catalog is inert navigation data with authority `NONE`; it does not add active capability routes, trust, adoption, installation, or authorization.
+
+Use `python3 -B scripts/sync_external_capabilities.py --check` to regenerate the pinned metadata in memory and verify byte-identical committed output. Advancing tracking refs requires an explicit approved Foundation task and the script's `--refresh --task <path>` gate.
+
 ## Validation
 
 The stdlib-only validator checks the exact taxonomy, frontmatter/catalog, constrained YAML, canonical templates, generated-program JSON shape/graph/coverage invariants, protocol-v3 compatibility, required doctrine tokens, and internal links. The repository keeps one bounded validation workflow on relevant pushes to `dev`; workflow policy is owned by [github-workflow](github-workflow/SKILL.md).

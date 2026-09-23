@@ -62,6 +62,8 @@ Sync is a named Executor specialization for bounded deterministic synchronizatio
 
 This task does not create a package manager, plugin manager, registry service, daemon, scheduler, queue, database, provider pool, or workflow engine. Later external ecosystem reuse must fit these same boundaries.
 
+The Foundation-owned external capability plane lives at `skills/.agent/external-capabilities/`. Its registry selects immutable upstream snapshot identities; source snapshots and the aggregate catalog are inert metadata. Bootstrap exposes only the aggregate catalog locator at the active Foundation `authority_set_identity` revision. The catalog is not a capability route, trust decision, adoption record, or authority source. Awesome entries remain discovery-only pointers and require separate downstream source resolution before capability admission.
+
 ### Independent read-only research fan-out
 
 Independent research fan-out is advisory Executor-specialized work:

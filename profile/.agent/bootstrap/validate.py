@@ -99,6 +99,47 @@ def validate_local_foundation_control_plane(root: Path, bootstrap: dict[str, Any
     if not path.is_file():
         raise ValueError(f"missing Foundation control-plane path: {locator['path']}")
 
+
+def external_capability_catalog_locator(bootstrap: dict[str, Any]) -> dict[str, str]:
+    locator = bootstrap.get("external_capability_catalog")
+    expected = {
+        "owner": "skills",
+        "path": "skills/.agent/external-capabilities/catalog.json",
+    }
+    if locator != expected:
+        raise ValueError(
+            "external_capability_catalog must identify the canonical Foundation external catalog path"
+        )
+    return dict(expected)
+
+
+def external_capability_catalog_artifact(
+    bootstrap: dict[str, Any], foundation_revision: str
+) -> dict[str, str]:
+    locator = external_capability_catalog_locator(bootstrap)
+    return {
+        "repository": bootstrap["repository_contract"]["repository"],
+        "revision": foundation_revision,
+        "path": locator["path"],
+    }
+
+
+def validate_local_external_capability_catalog(
+    root: Path, bootstrap: dict[str, Any]
+) -> None:
+    locator = external_capability_catalog_locator(bootstrap)
+    path = root / locator["path"]
+    if not path.is_file():
+        raise ValueError(f"missing external capability catalog path: {locator['path']}")
+    catalog = load_json(path)
+    if (
+        catalog.get("schema_version") != 1
+        or catalog.get("authority") != "NONE"
+        or not isinstance(catalog.get("entries"), list)
+    ):
+        raise ValueError("external capability catalog is malformed or authoritative")
+
+
 def case_router_locator(bootstrap: dict[str, Any]) -> dict[str, str]:
     locator = bootstrap.get("case_router")
     expected = {
@@ -236,6 +277,7 @@ def validate_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
 
     case_router_locator(bootstrap)
     foundation_control_plane_locator(bootstrap)
+    external_capability_catalog_locator(bootstrap)
 
     if bootstrap.get("repository_contract") != EXPECTED_REPOSITORY_CONTRACT:
         raise ValueError("repository_contract must explicitly declare agent-foundation MAIN_ONLY identity")
@@ -438,6 +480,7 @@ def required_foundation_paths(bootstrap: dict[str, Any]) -> set[str]:
         "profile/.agent/bootstrap/authority.lock.json",
         case_router_locator(bootstrap)["path"],
         foundation_control_plane_locator(bootstrap)["path"],
+        external_capability_catalog_locator(bootstrap)["path"],
     }
     paths.update(
         route["path"]
@@ -578,6 +621,7 @@ def reconstruct_context(
     bootstrap, lock = load_contract(root)
     validate_contract(bootstrap, lock)
     validate_local_foundation_control_plane(root, bootstrap)
+    validate_local_external_capability_catalog(root, bootstrap)
     required_target_fields = bootstrap["target_binding"]["required_fields"]
     if set(target_locator) != set(required_target_fields):
         raise ValueError("target locator requires exactly the canonical binding fields")
@@ -593,6 +637,9 @@ def reconstruct_context(
         "authority_lock": lock,
         "case_router": case_router_locator(bootstrap),
         "foundation_control_plane": foundation_control_plane_artifact(bootstrap, profile_revision),
+        "external_capability_catalog": external_capability_catalog_artifact(
+            bootstrap, profile_revision
+        ),
         "repository_contract": bootstrap["repository_contract"],
         "target_binding": dict(target_locator),
         "capability_routes": select_capability_routes(bootstrap, required_capabilities),
@@ -612,6 +659,7 @@ def reconstruct_execution_context(
     bootstrap, lock = load_contract(root)
     validate_contract(bootstrap, lock)
     validate_local_foundation_control_plane(root, bootstrap)
+    validate_local_external_capability_catalog(root, bootstrap)
     required_target_fields = bootstrap["target_binding"]["required_fields"]
     if set(target_locator) != set(required_target_fields):
         raise ValueError("target locator requires exactly the canonical binding fields")
@@ -638,6 +686,9 @@ def reconstruct_execution_context(
         "authority_set_identity": profile_revision,
         "authority_lock": lock,
         "foundation_control_plane": foundation_control_plane_artifact(bootstrap, profile_revision),
+        "external_capability_catalog": external_capability_catalog_artifact(
+            bootstrap, profile_revision
+        ),
         "target_binding": dict(target_locator),
         "case_router": router,
         "case": case_id,
@@ -672,6 +723,7 @@ def main(argv: list[str] | None = None) -> int:
         bootstrap, lock = load_contract()
         validate_contract(bootstrap, lock)
         validate_local_foundation_control_plane(ROOT, bootstrap)
+        validate_local_external_capability_catalog(ROOT, bootstrap)
         if args.remote:
             foundation_revision = current_foundation_revision(ROOT)
             validate_resolution(

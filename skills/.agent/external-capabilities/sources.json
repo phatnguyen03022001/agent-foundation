@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "awesome",
+      "repository": "sindresorhus/awesome",
+      "tracking_ref": "main",
+      "snapshot_revision": "bc98e517ddca672f55f9857d714fc3ea3c3540b2",
+      "kind": "discovery_source",
+      "license": "CC0-1.0",
+      "indexing_policy": {
+        "mode": "awesome_markdown_links",
+        "readme": "readme.md"
+      }
+    },
+    {
+      "id": "ecc",
+      "repository": "affaan-m/ECC",
+      "tracking_ref": "main",
+      "snapshot_revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+      "kind": "capability_source",
+      "license": "MIT",
+      "indexing_policy": {
+        "mode": "skill_frontmatter",
+        "include": "skills/**/SKILL.md"
+      }
+    },
+    {
+      "id": "matt-skills",
+      "repository": "mattpocock/skills",
+      "tracking_ref": "main",
+      "snapshot_revision": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "kind": "capability_source",
+      "license": "MIT",
+      "indexing_policy": {
+        "mode": "manifest_promoted_skills",
+        "manifest": ".claude-plugin/plugin.json"
+      }
+    },
+    {
+      "id": "superpowers",
+      "repository": "obra/superpowers",
+      "tracking_ref": "main",
+      "snapshot_revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+      "kind": "capability_source",
+      "license": "MIT",
+      "indexing_policy": {
+        "mode": "skill_frontmatter",
+        "include": "skills/**/SKILL.md",
+        "manifest": ".claude-plugin/plugin.json"
+      }
+    }
+  ]
+}

@@ -123,6 +123,53 @@ class BootstrapContractTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "missing Foundation control-plane path"):
                 validate.validate_local_foundation_control_plane(ROOT, self.bootstrap)
 
+    def test_external_capability_catalog_locator_is_canonical(self) -> None:
+        self.assertEqual(
+            validate.external_capability_catalog_locator(self.bootstrap),
+            {
+                "owner": "skills",
+                "path": "skills/.agent/external-capabilities/catalog.json",
+            },
+        )
+        self.assertEqual(
+            validate.external_capability_catalog_artifact(self.bootstrap, PROFILE_REVISION),
+            {
+                "repository": "phatnguyen03022001/agent-foundation",
+                "revision": PROFILE_REVISION,
+                "path": "skills/.agent/external-capabilities/catalog.json",
+            },
+        )
+
+    def test_external_capability_catalog_locator_fails_closed(self) -> None:
+        for value in (
+            None,
+            {"owner": "skills", "path": "skills/.agent/external-capabilities/../catalog.json"},
+            {"owner": "agent-skills", "path": "skills/.agent/external-capabilities/catalog.json"},
+        ):
+            with self.subTest(value=value):
+                bootstrap = copy.deepcopy(self.bootstrap)
+                if value is None:
+                    bootstrap.pop("external_capability_catalog", None)
+                else:
+                    bootstrap["external_capability_catalog"] = value
+                with self.assertRaisesRegex(ValueError, "external_capability_catalog"):
+                    validate.validate_contract(bootstrap, self.lock)
+
+    def test_missing_external_capability_catalog_path_fails_closed(self) -> None:
+        with patch.object(Path, "is_file", return_value=False):
+            with self.assertRaisesRegex(ValueError, "missing external capability catalog path"):
+                validate.validate_local_external_capability_catalog(ROOT, self.bootstrap)
+
+    def test_malformed_external_capability_catalog_fails_closed(self) -> None:
+        with patch.object(Path, "is_file", return_value=True):
+            with patch.object(
+                validate,
+                "load_json",
+                return_value={"schema_version": 1, "authority": "ADOPTED", "entries": []},
+            ):
+                with self.assertRaisesRegex(ValueError, "malformed or authoritative"):
+                    validate.validate_local_external_capability_catalog(ROOT, self.bootstrap)
+
     def test_unresolvable_locked_revision_fails_closed(self) -> None:
         resolved = self.resolved_routes()
         del resolved["agent-runtime"]
@@ -138,6 +185,14 @@ class BootstrapContractTests(unittest.TestCase):
     def test_missing_case_router_path_fails_closed(self) -> None:
         resolved = self.resolved_routes()
         resolved["agent-foundation"]["paths"].discard("skills/.agent/case-router.yaml")
+        with self.assertRaisesRegex(ValueError, "missing Foundation canonical path"):
+            validate.validate_resolution(self.bootstrap, self.lock, resolved, PROFILE_REVISION)
+
+    def test_missing_external_capability_catalog_remote_path_fails_closed(self) -> None:
+        resolved = self.resolved_routes()
+        resolved["agent-foundation"]["paths"].discard(
+            "skills/.agent/external-capabilities/catalog.json"
+        )
         with self.assertRaisesRegex(ValueError, "missing Foundation canonical path"):
             validate.validate_resolution(self.bootstrap, self.lock, resolved, PROFILE_REVISION)
 
@@ -431,6 +486,11 @@ class BootstrapContractTests(unittest.TestCase):
         self.assertIn("case_router", result)
         self.assertEqual(result["foundation_control_plane"]["revision"], PROFILE_REVISION)
         self.assertEqual(result["foundation_control_plane"]["path"], "skills/contracts/FOUNDATION_ARCHITECTURE.md")
+        self.assertEqual(result["external_capability_catalog"]["revision"], PROFILE_REVISION)
+        self.assertEqual(
+            result["external_capability_catalog"]["path"],
+            "skills/.agent/external-capabilities/catalog.json",
+        )
 
     def test_execution_reconstruction_resolves_execute_from_one_foundation_revision(self) -> None:
         target_locator = {
@@ -452,6 +512,14 @@ class BootstrapContractTests(unittest.TestCase):
             ["PROFILE_REVISION", "AUTHORITY_LOCK", "FOUNDATION_CONTROL_PLANE", "CASE_ROUTER", "CASE", "CAPABILITY_ROUTE", "CANONICAL_ARTIFACT"],
         )
         self.assertEqual(result["case"], "EXECUTE")
+        self.assertEqual(
+            result["external_capability_catalog"],
+            {
+                "repository": "phatnguyen03022001/agent-foundation",
+                "revision": foundation_revision,
+                "path": "skills/.agent/external-capabilities/catalog.json",
+            },
+        )
         self.assertEqual(
             result["canonical_artifacts"],
             [{
