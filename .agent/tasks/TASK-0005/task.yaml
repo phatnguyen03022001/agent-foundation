@@ -1,0 +1,156 @@
+protocol_version: 3
+
+task_id: TASK-0005
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_handoff
+  source: "2026-09-23 TASK-0005 — Legacy Source Retirement"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: exact_commit
+  commit: "4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+  task_protocol_path: skills/protocols/TASK_PROTOCOL.md
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+    - github-workflow
+
+authority_sources:
+  - source: "explicit operator handoff for TASK-0005"
+    role: "exact execution authority, GitHub metadata mutation scope, retirement invariants, and acceptance boundary"
+    precedence: 1
+  - source: "skills/protocols/TASK_PROTOCOL.md@4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+    role: "Task Protocol v3 execution/report semantics"
+    precedence: 2
+  - source: ".agent/tasks/TASK-0001/review.yaml@4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+    role: "accepted history-preserving Foundation bootstrap"
+    precedence: 3
+  - source: ".agent/tasks/TASK-0002/review.yaml@4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+    role: "accepted Foundation self-identity"
+    precedence: 4
+  - source: ".agent/tasks/TASK-0003/review.yaml@4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+    role: "accepted Foundation-native support Authority Set cutover"
+    precedence: 5
+  - source: ".agent/tasks/TASK-0004/review.yaml@4091a2b610927b10fe061134e9a464e9a2c8f5b1"
+    role: "accepted integration closure and legacy-retirement gate"
+    precedence: 6
+
+objective: "Retire architect-profile, agent-skills, agent-documents, and agent-standards as archived/read-only historical GitHub repositories while preserving public readability, branch/tag history, exact Git identities, historical repo@SHA:path resolution, and agent-foundation as the active canonical support repository."
+
+legacy_repositories:
+  architect-profile:
+    repository: phatnguyen03022001/architect-profile
+    expected_dev: "5afd25b567e3817c111d84fe28b4edc0598e5081"
+    expected_main: "508c64f02640911f1fdca81c8cde08748921eae7"
+  agent-skills:
+    repository: phatnguyen03022001/agent-skills
+    expected_dev: "4f4ef2b45e1a025bc499702919431c0d0d61419c"
+    expected_main: "ed8d9fb35bb8b052530ca879e68a227d77e4a8a6"
+  agent-documents:
+    repository: phatnguyen03022001/agent-documents
+    expected_dev: "ff135cde2dbebbffcd0c33415a7abaf1b2e2c4ec"
+    expected_main: "6918f46282f4a92bbc61071444a5ff5dab30ddc9"
+  agent-standards:
+    repository: phatnguyen03022001/agent-standards
+    expected_dev: "4eb149686329b3a5ad74d66a6fce050d930ada39"
+    expected_main: "3f4950f280a3a35fee81471d4b83715fa72cf9ee"
+
+scope:
+  required_changes:
+    - "Persist TASK-0005 task and truthful Executor report under .agent/tasks/TASK-0005/."
+    - "Update only each legacy GitHub repository description to identify phatnguyen03022001/agent-foundation as the active canonical repository and retained historical repo@SHA:path purpose."
+    - "After all description updates verify, archive exactly architect-profile, agent-skills, agent-documents, and agent-standards, sequentially with verification after each archive mutation."
+    - "Update only the Foundation root README minimally after all retirement proofs succeed."
+    - "Publish the Foundation implementation candidate and report by non-force fast-forward only."
+
+retirement_invariants:
+  - "Legacy repositories remain retained and publicly readable."
+  - "No repository is deleted, transferred, renamed, or made private."
+  - "Default branch remains main."
+  - "dev and main remain present at their exact pre-retirement SHAs."
+  - "Existing tags remain unchanged."
+  - "No Git commit, branch, tag, release, issue, PR, collaborator, ruleset, branch-protection, or Actions configuration mutation occurs in legacy repositories."
+  - "Historical references and negative fixtures mentioning legacy repositories remain untouched."
+  - "agent-foundation and agent-runtime remain active and are not archived."
+  - "agent-runtime remains a separate execution repository."
+  - "Semantic owners remain profile, skills, documents, and standards."
+
+pre_retirement_gates:
+  - "TASK-0001, TASK-0002, TASK-0003, and TASK-0004 reviews are ACCEPTED."
+  - "Current Authority Set resolves agent-skills, agent-standards, and agent-documents from agent-foundation and agent-runtime from agent-runtime."
+  - "No current positive bootstrap/authority/navigation locator requires a legacy repository."
+  - "profile/.agent/program.generated.json has authority NONE and Foundation-native support authority locations."
+  - "Each legacy repository is PUBLIC, not archived, default main, open PR count zero, and branch/ref identities match the exact expected state."
+  - "Imported source-tip commits remain reachable from agent-foundation/main."
+  - "If any gate fails, perform no retirement mutation and return ARCHITECT_JUDGMENT_REQUIRED."
+
+partial_failure:
+  - "Archive repositories sequentially and verify after each mutation."
+  - "If a later archive fails after an earlier archive succeeded, do not unarchive automatically; record the exact partial state and return ARCHITECT_JUDGMENT_REQUIRED."
+
+protected_foundation_surfaces:
+  - "profile/**"
+  - "skills/**"
+  - "documents/**"
+  - "standards/**"
+  - ".agent/tasks/TASK-0001/**"
+  - ".agent/tasks/TASK-0002/**"
+  - ".agent/tasks/TASK-0003/**"
+  - ".agent/tasks/TASK-0004/**"
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py"
+      required: true
+    - id: CHECK-2
+      command_or_check: "python3 -B profile/.agent/bootstrap/test_bootstrap.py"
+      required: true
+    - id: CHECK-3
+      command_or_check: "python3 -B skills/scripts/validate_skill_library.py"
+      required: true
+    - id: CHECK-4
+      command_or_check: "git diff --check"
+      required: true
+    - id: CHECK-5
+      command_or_check: "Post-retirement GitHub metadata, branch/tag identity, historical commit resolution, public git ls-remote readability, open PR zero, and Foundation ancestry proofs."
+      required: true
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: true
+  publish_release: false
+
+github_metadata_authority:
+  allowed:
+    - "For each of the four named legacy repositories: update repository description only."
+    - "For each of the four named legacy repositories: set archived=true only."
+  forbidden:
+    - "Any other GitHub repository setting or content mutation."
+
+execution_ready: true
