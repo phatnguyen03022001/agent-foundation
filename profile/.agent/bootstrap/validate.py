@@ -7,6 +7,7 @@ import argparse
 import base64
 import binascii
 import json
+import os
 import re
 import subprocess
 import sys
@@ -525,15 +526,22 @@ def validate_resolution(
     resolve_case_router(bootstrap, foundation_revision, resolved)
 
 def _github_json(url: str) -> dict[str, Any]:
-    request = urllib.request.Request(
-        url,
-        headers={"Accept": "application/vnd.github+json", "User-Agent": "architect-profile-opm-validator/1"},
-    )
+    token = os.environ.get("GITHUB_TOKEN") or None
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "architect-profile-opm-validator/1",
+    }
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    request = urllib.request.Request(url, headers=headers)
     try:
         with urllib.request.urlopen(request, timeout=20) as response:
             value = json.load(response)
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
-        raise ValueError(f"remote resolution failed: {url}: {exc}") from exc
+    except (urllib.error.URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
+        detail = str(exc)
+        if token:
+            detail = detail.replace(token, "<redacted>")
+        raise ValueError(f"remote resolution failed: {url}: {detail}") from exc
     if not isinstance(value, dict):
         raise ValueError(f"remote resolution returned non-object: {url}")
     return value

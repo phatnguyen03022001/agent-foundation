@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import copy
 import base64
+import io
+import os
 import subprocess
 import sys
 import unittest
@@ -233,6 +235,41 @@ class BootstrapContractTests(unittest.TestCase):
         lock["repositories"]["agent-runtime"]["revision"] = "main"
         with self.assertRaisesRegex(ValueError, "invalid immutable revision"):
             validate.validate_contract(self.bootstrap, lock)
+
+    def test_github_json_adds_authorization_when_environment_token_exists(self) -> None:
+        token = "bootstrap-test-token"
+        with patch.dict(os.environ, {"GITHUB_TOKEN": token}, clear=True):
+            with patch.object(
+                validate.urllib.request,
+                "urlopen",
+                return_value=io.BytesIO(b"{}"),
+            ) as mocked:
+                validate._github_json("https://api.github.com/example")
+        request = mocked.call_args.args[0]
+        self.assertEqual(request.get_header("Authorization"), f"Bearer {token}")
+
+    def test_github_json_omits_authorization_without_environment_token(self) -> None:
+        with patch.dict(os.environ, {}, clear=True):
+            with patch.object(
+                validate.urllib.request,
+                "urlopen",
+                return_value=io.BytesIO(b"{}"),
+            ) as mocked:
+                validate._github_json("https://api.github.com/example")
+        request = mocked.call_args.args[0]
+        self.assertIsNone(request.get_header("Authorization"))
+
+    def test_github_json_redacts_environment_token_from_errors(self) -> None:
+        token = "bootstrap-never-leak-token"
+        with patch.dict(os.environ, {"GITHUB_TOKEN": token}, clear=True):
+            with patch.object(
+                validate.urllib.request,
+                "urlopen",
+                side_effect=OSError(f"synthetic failure containing {token}"),
+            ):
+                with self.assertRaises(ValueError) as caught:
+                    validate._github_json("https://api.github.com/example")
+        self.assertNotIn(token, str(caught.exception))
 
     def test_remote_resolution_loads_router_bytes_from_the_locked_tree_blob(self) -> None:
         router = "cases:\n  - id: EXECUTE\n    capabilities:\n      - executor\n"
