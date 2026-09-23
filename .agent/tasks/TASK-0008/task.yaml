@@ -1,0 +1,244 @@
+protocol_version: 3
+
+task_id: TASK-0008
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0008"
+  gap_id: "VISION-L1-RESEARCH-CONTINUITY"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "9365f167d82bb68f21f1ba7d5854bbc4ab4d074b"
+
+architect_analysis_skills:
+  - architect
+  - research
+  - simplicity
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+  recommended:
+    - research
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator direction to operationalize independent read-only research fan-out and cross-repository finding continuity without adding governance roles or orchestration infrastructure"
+    role: "material objective and scope authority"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0007/review.yaml@9365f167d82bb68f21f1ba7d5854bbc4ab4d074b"
+    role: "accepted external capability plane and current Foundation main"
+    precedence: 2
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@9365f167d82bb68f21f1ba7d5854bbc4ab4d074b"
+    role: "canonical L1 research fan-out and cross-repository continuity semantics"
+    precedence: 3
+  - source: "skills/architect/SKILL.md@9365f167d82bb68f21f1ba7d5854bbc4ab4d074b"
+    role: "Architect routing, review, and evidence-synthesis authority"
+    precedence: 4
+  - source: "skills/protocols/TASK_PROTOCOL.md@9365f167d82bb68f21f1ba7d5854bbc4ab4d074b"
+    role: "FOLLOW_UP classification, repository isolation, lifecycle, and durable evidence semantics"
+    precedence: 5
+  - source: "profile/ARCHITECT_PROFILE.md@9365f167d82bb68f21f1ba7d5854bbc4ab4d074b"
+    role: "operator context-minimization and GitHub-canonical preferences"
+    precedence: 6
+
+structure_authority:
+  status: RESOLVED
+  source: "accepted TASK-0006 three-layer architecture and TASK-0007 L1 external capability implementation"
+  rationale: "Research fan-out and finding continuity are L1 control-and-continuity concerns. They must remain non-authoritative coordination primitives under the existing Architect/Executor role model."
+
+objective: "Operationalize L1 independent read-only research fan-out and cross-repository finding continuity with small repository-native contracts, templates, validation, and deterministic owner-keyed continuity storage, while preserving exactly two organizational roles, one-target authority, Architect final synthesis, and non-authoritative deferred findings."
+
+scope:
+  required_changes:
+    - "Create one canonical machine-readable Research Request contract/template for advisory read-only Executor-specialized research. It must bind exact target repository, exact base revision, one bounded question, allowed evidence scope, minimal context references, no mutation authority, no final decision authority, and no peer-result visibility before return."
+    - "Create one canonical machine-readable Research Result contract/template with compact FACTS, INFERENCES, OPTIONS, RECOMMENDATION, RISKS, UNKNOWN, and EVIDENCE sections. Material facts must carry source locators/identities; the result authority is NONE."
+    - "Define a three-way fan-out rule that permits Architect to issue exactly three independent fresh-context research requests for materially uncertain direction-setting, while keeping normal single-research execution valid for narrower questions. The three researchers remain Executor specializations, do not see peer results before returning, and Architect synthesizes by evidence quality/applicability rather than majority vote or score."
+    - "Provide one small deterministic repository-native renderer/validator that can validate Research Request/Result artifacts and, when given three valid request inputs, render three standalone prompt packets without embedding full conversation history or peer output."
+    - "Create one canonical non-authoritative Continuity Finding schema/template for cross-repository FOLLOW_UP evidence. Each finding must bind source repository, source task/report/evidence locator when available, owner repository, bounded summary, observed fact versus inference, and status UNVALIDATED_FOR_OWNER."
+    - "Create one Foundation-owned owner-keyed continuity store under profile/.agent/continuity/ where each owner repository resolves to one small deterministic JSON file containing only non-authoritative finding pointers/metadata, never copied full task/report bodies."
+    - "Provide one deterministic repository-native continuity tool that can record/deduplicate a finding only under explicit current authority, writes only the owner-keyed continuity file, never mutates the owner repository, never creates a task, and never changes finding authority above NONE."
+    - "Define binding-time consumption semantics: when Architect explicitly binds owner repository B, load only B's continuity file, fresh-resolve B canonical truth, revalidate each material finding, then discard, retain, or separately task it through normal Architect authority. Stale continuity data never authorizes action."
+    - "Expose canonical repository-relative locators for the research contracts and continuity root through bootstrap/profile navigation at the active Foundation authority_set_identity revision, with fail-closed validation for malformed, missing, or escaping paths."
+    - "Update Architect/Executor/Task Protocol wording only where necessary to route existing research/FOLLOW_UP semantics to these L1 primitives without duplicating generic methodology or changing L0 authority."
+    - "Add repository-native tests proving independence boundaries, no peer-result leakage, authority NONE, owner-keyed isolation, deduplication, path containment, no automatic cross-repository mutation/task creation, and fresh-revalidation requirement."
+    - "Publish TASK-0008 implementation and report by non-force fast-forward on main only."
+
+  allowed_existing_files_or_components:
+    - "profile/.agent/bootstrap/bootstrap.json"
+    - "profile/.agent/bootstrap/validate.py"
+    - "profile/.agent/bootstrap/test_bootstrap.py"
+    - "profile/ARCHITECT_PROFILE.md only if a concise operator-owned writable continuity-store declaration is required"
+    - "skills/contracts/FOUNDATION_ARCHITECTURE.md"
+    - "skills/architect/SKILL.md"
+    - "skills/executor/SKILL.md"
+    - "skills/protocols/TASK_PROTOCOL.md"
+    - "skills/README.md"
+    - "skills/scripts/validate_skill_library.py"
+    - "skills/scripts/test_validate_skill_library.py"
+    - "README.md only if one concise navigation sentence is materially required"
+    - ".agent/tasks/TASK-0008/**"
+
+  expected_files_are_restrictive: false
+
+invariants:
+  - "Foundation remains MAIN_ONLY and all Foundation-internal canonical paths resolve from one exact authority_set_identity revision."
+  - "There remain exactly two organizational roles: Architect and Executor."
+  - "Researcher and Sync remain Executor specializations; specialization grants no additional authority."
+  - "Research artifacts and continuity findings always have authority NONE and cannot create task, review, acceptance, mutation, rebinding, or release authority."
+  - "Architect remains the sole owner of final research synthesis and canonical direction-setting judgment."
+  - "Independent research means no peer-result visibility before individual return and no unnecessary full-conversation history in researcher input."
+  - "Majority vote, model score, confidence averaging, or council consensus cannot substitute for evidence-based Architect synthesis."
+  - "A continuity finding about repository B never mutates B and never authorizes action in B before explicit B binding and fresh revalidation."
+  - "Continuity storage contains bounded pointers/metadata, not copied reports, transcripts, raw research logs, secrets, credentials, or large evidence bodies."
+  - "Owner-keyed continuity lookup must not require scanning all repositories or all historical task reports."
+  - "No daemon, queue, scheduler, database, telemetry service, message bus, issue tracker abstraction, or generic multi-agent orchestration framework is introduced."
+  - "TASK-0007 external capability plane, authority.lock semantics, and 15-skill taxonomy remain unchanged."
+  - "agent-runtime remains an orthogonal execution substrate and is not mutated by this task."
+
+forbidden_changes:
+  - "Create a third organizational role or make Researcher/Sync a governance peer of Architect/Executor."
+  - "Create automatic researcher spawning infrastructure that depends on a provider-specific SDK or runtime framework."
+  - "Give Researcher write authority to target repositories or final decision authority."
+  - "Allow Researcher A/B/C to consume another researcher's result before its own result is finalized."
+  - "Automatically create, prioritize, schedule, or execute tasks from continuity findings."
+  - "Automatically mutate, open PRs/issues in, or otherwise write to an owner repository merely because a finding targets it."
+  - "Store secrets, access tokens, raw full conversation history, full task/report copies, or broad repository dumps in continuity files."
+  - "Modify external capability snapshots/catalog semantics from TASK-0007 except for navigation references strictly required by this task."
+  - "Modify agent-runtime repository, Runtime installation/configuration/state, TCC, Keychain, System Settings, or host-global configuration."
+  - "Create branches, PRs, tags, releases, or staging topology."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Canonical Research Request and Research Result contracts exist, are machine-validated, have authority NONE, and bind exact target/base/question with compact evidence-oriented output."
+    evidence_required: "Exact committed schemas/templates plus positive/negative validator tests for required fields, immutable base identity, read-only authority, evidence locators, and malformed artifacts."
+  - id: AC-2
+    requirement: "The three-way research fan-out mechanism renders exactly three standalone fresh-context prompt packets from three valid requests without peer-result content or full conversation history and preserves Architect-only final synthesis."
+    evidence_required: "Deterministic renderer output/tests proving three independent packets, no cross-packet result leakage, bounded context references, and no voting/acceptance authority."
+  - id: AC-3
+    requirement: "Researcher remains an Executor specialization and no new organizational role, provider SDK dependency, or multi-agent orchestration framework is introduced."
+    evidence_required: "Role-contract diff, dependency/diff proof, and tests/static assertions preserving exactly two organizational roles."
+  - id: AC-4
+    requirement: "Canonical Continuity Finding contract and owner-keyed store exist with authority NONE, status UNVALIDATED_FOR_OWNER, bounded source/evidence locators, and deterministic deduplication."
+    evidence_required: "Exact schema/template/store paths plus tests for owner-key generation, deduplication, bounded fields, authority/status invariants, and deterministic serialization."
+  - id: AC-5
+    requirement: "Recording a continuity finding cannot mutate the owner repository, create a task, rebind target authority, or write outside the Foundation continuity root."
+    evidence_required: "Write-boundary tests, path traversal rejection, negative tests for task/owner-repository mutation surfaces, and exact changed-path proof."
+  - id: AC-6
+    requirement: "Binding-time consumption loads only the explicitly bound owner's continuity file and requires fresh owner-repository truth/revalidation before any finding consequence."
+    evidence_required: "Deterministic lookup/revalidation contract plus tests showing unrelated owner files are not loaded and stale/unvalidated findings cannot become authorized actions."
+  - id: AC-7
+    requirement: "Bootstrap/profile navigation exposes canonical Foundation-relative locators for research contracts and continuity root at the active authority_set_identity revision and fails closed for malformed/missing/escaping locators."
+    evidence_required: "Bootstrap local/remote validation and focused fail-closed tests."
+  - id: AC-8
+    requirement: "Existing Architect/Executor/FOLLOW_UP semantics route to the new L1 primitives without weakening L0 task/report/review ownership, one-target binding, repository isolation, or acceptance authority."
+    evidence_required: "Semantic diff mapping retained L0 guarantees and new L1 owners, plus existing protocol/skill regression PASS."
+  - id: AC-9
+    requirement: "TASK-0007 external capability plane, authority.lock identity, external adoption state, and exact 15-skill taxonomy remain unchanged."
+    evidence_required: "Exact blob/diff proof for authority.lock and external capability artifacts unless navigation-only change is explicitly required, plus skill-library validation."
+  - id: AC-10
+    requirement: "All existing Foundation bootstrap, protocol, skill-library, and regression validation remains green."
+    evidence_required: "All required repository-native verification commands PASS on the final candidate."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0008 with the canonical task artifact validator before any implementation mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py"
+      required: true
+    - id: CHECK-3
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py --remote"
+      required: true
+    - id: CHECK-4
+      command_or_check: "python3 -B profile/.agent/bootstrap/test_bootstrap.py"
+      required: true
+    - id: CHECK-5
+      command_or_check: "python3 -B skills/scripts/validate_skill_library.py and python3 -B skills/scripts/test_validate_skill_library.py"
+      required: true
+    - id: CHECK-6
+      command_or_check: "Run the new research-fanout contract/renderer tests including exact three-packet independence, no peer-result leakage, authority NONE, malformed input failures, and deterministic output."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Run the new continuity-finding tests including owner-key isolation, deterministic deduplication, path containment, bounded metadata, no automatic task/owner-repository mutation, and fresh-revalidation gating."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Prove exactly two organizational roles remain; authority.lock and TASK-0007 external capability/adoption state remain unchanged; skill taxonomy remains exactly 15; agent-runtime is untouched."
+      required: true
+    - id: CHECK-9
+      command_or_check: "python3 -m py_compile for new/modified Python files and git diff --check."
+      required: true
+    - id: CHECK-10
+      command_or_check: "Fresh-resolve remote main immediately before non-force publication, then post-prove final main identity, ahead/behind, tracked worktree hygiene, and report publication."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files:
+    - "skills/templates/research-request.yaml"
+    - "skills/templates/research-result.yaml"
+    - "skills/templates/continuity-finding.yaml"
+    - "skills/scripts/research_fanout.py"
+    - "skills/scripts/test_research_fanout.py"
+    - "skills/scripts/continuity_findings.py"
+    - "skills/scripts/test_continuity_findings.py"
+    - "profile/.agent/continuity/README.md"
+    - "profile/.agent/continuity/.gitkeep"
+  unlisted_new_files:
+    allowed: true
+    max: 1
+    within:
+      - "profile/.agent/continuity/"
+    purpose: "One owner-keyed continuity JSON fixture or canonical empty-index artifact may be added only if required by the chosen deterministic storage design."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
