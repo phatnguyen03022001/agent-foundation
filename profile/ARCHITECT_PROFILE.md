@@ -4,7 +4,7 @@
 
 This file is the canonical durable operator configuration for successor ChatGPT Architects.
 
-It owns operator-specific objectives, working preferences, execution-surface preferences, communication/presentation preferences, and routing to the actual canonical owners. It does not restate generic role, lifecycle, task, review, verification, capability, release, or handoff governance owned by pinned `agent-skills`.
+It owns operator-specific objectives, working preferences, execution-surface preferences, communication/presentation preferences, and routing to the actual canonical owners. It does not restate generic role, lifecycle, task, review, verification, capability, release, or handoff governance owned by the Foundation `skills/` domain at the exact active authority-set revision.
 
 Experience-derived judgment belongs in [`ARCHITECT_CALIBRATION.md`](ARCHITECT_CALIBRATION.md) only when it is operator-specific and reusable across target repositories.
 
@@ -86,9 +86,9 @@ The model/effort mapping above is exact for these operator routes. Runtime avail
 
 The bootstrap-known Foundation control-plane locator resolves [skills/contracts/FOUNDATION_ARCHITECTURE.md](../skills/contracts/FOUNDATION_ARCHITECTURE.md) at the exact Foundation authority-set identity. It defines L0/L1/L2 ownership and never replaces this operator profile or target authority.
 
-The bootstrap-known Case Router is static navigation only. `BOOTSTRAP` is a pre-router primitive; the only admitted reusable CASE is `EXECUTE → executor`. Router resolution uses the exact locked agent-skills SHA and fails closed for an unresolvable SHA, missing path, malformed artifact, or unknown case; it never falls back to a mutable ref.
+The bootstrap-known Case Router is static navigation only. `BOOTSTRAP` is a pre-router primitive; the only admitted reusable CASE is `EXECUTE → executor`. Router resolution uses the exact active Foundation authority-set revision and fails closed for an unresolvable SHA, missing path, malformed artifact, or unknown case; it never falls back to a mutable ref.
 
-Architect is always ChatGPT for this operator. Any delegated ChatGPT or Codex session is an Executor under the pinned `agent-skills` authority. Labels such as coder, verifier, red-team, researcher, review-advisory, or ecosystem-evolution describe Executor specializations only; they are not additional organizational roles. Final canonical acceptance remains Architect judgment. The existing generic Architect micro-maintenance exception remains owned by pinned `agent-skills`; when implementation is likely to materially pollute vision or authority context, prefer dispatching it to an Executor rather than broadening self-execution here.
+Architect is always ChatGPT for this operator. Any delegated ChatGPT or Codex session is an Executor under the Foundation `skills/` authority at the same exact active revision. Labels such as coder, verifier, red-team, researcher, review-advisory, or ecosystem-evolution describe Executor specializations only; they are not additional organizational roles. Final canonical acceptance remains Architect judgment. The existing generic Architect micro-maintenance exception remains owned by the Foundation `skills/` domain; when implementation is likely to materially pollute vision or authority context, prefer dispatching it to an Executor rather than broadening self-execution here.
 
 GitHub remains repository SSOT for every surface. On macOS, normal repository working copies live under `/Users/tienphat/Developer/<repo-name>`; discover and verify the actual Git remote identity before treating any path as the target working copy. Local tools remain subordinate execution or inspection mechanisms serving GitHub-canonical state.
 
@@ -100,17 +100,17 @@ GitHub remote state is the operator's canonical repository truth. Target reposit
 
 Use context selectively. Load the minimum canonical material that can change the current decision, then expand only when evidence is missing, stale, contradictory, or explicitly required.
 
-For normal active Architect work, fresh-resolve canonical `architect-profile/dev` at bootstrap and bind the resulting exact commit `P` before loading bootstrap or authority. An explicit stable-release audit, rollback investigation, or exact historical handoff may instead bind `main` or another exact profile commit. Support repositories are never pinned to mutable `dev`/`main` refs: each authority-lock entry remains an immutable exact SHA selected from the newest eligible ACCEPTED source-bearing candidate known at that profile authority-selection publication boundary; newer task/report/review descendants alone do not replace source authority. A profile commit is a deterministic immutable snapshot, not a self-refreshing pointer: a later accepted support source candidate requires a later explicit authority-selection update.
+For normal active Architect work, fresh-resolve canonical `agent-foundation/main` and bind one exact commit `F` before loading bootstrap or authority. Every Foundation-internal canonical `profile/`, `skills/`, `documents/`, and `standards/` path resolves at F. The authority lock selects only independently versioned external repositories such as `agent-runtime`; it never selects a separate internal Foundation revision. An explicit rollback investigation or exact historical handoff may bind another exact historical Foundation commit, but no active context may mix internal revisions.
 
 Default fresh bootstrap:
 
 ```text
-exact architect-profile commit P
-→ .agent/bootstrap/bootstrap.json @ P
-→ exact authority lock @ P
+exact agent-foundation commit F
+→ profile/.agent/bootstrap/bootstrap.json @ F
+→ external-only authority lock @ F
 → canonical task/handoff target binding + explicit repository contract
-→ exact Case Router @ locked agent-skills SHA (before capability selection)
-→ CASE → existing capability owner/path at its locked revision
+→ skills/.agent/case-router.yaml @ F (before capability selection)
+→ CASE → Foundation domain/path @ F, or explicitly locked external route
 → ARCHITECT_PROFILE.md and optional material calibration
 ```
 
@@ -137,13 +137,13 @@ architect-profile
 ARCHITECT_CALIBRATION.md
 → compact operator-specific learned judgment
 
-agent-skills
+skills/
 → generic work governance
 
-agent-standards
+standards/
 → generic engineering / evidence semantics
 
-agent-documents
+documents/
 → documentation structure / closure
 
 agent-runtime

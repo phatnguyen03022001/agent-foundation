@@ -2,11 +2,11 @@
   "version": 1,
   "authority_lock": "profile/.agent/bootstrap/authority.lock.json",
   "case_router": {
-    "owner": "agent-skills",
-    "path": ".agent/case-router.yaml"
+    "owner": "skills",
+    "path": "skills/.agent/case-router.yaml"
   },
   "foundation_control_plane": {
-    "owner": "agent-foundation",
+    "owner": "skills",
     "path": "skills/contracts/FOUNDATION_ARCHITECTURE.md"
   },
   "repository_contract": {
@@ -20,43 +20,43 @@
   "capability_routes": [
     {
       "capability": "architect",
-      "owner": "agent-skills",
-      "path": "architect/SKILL.md"
+      "owner": "skills",
+      "path": "skills/architect/SKILL.md"
     },
     {
       "capability": "executor",
-      "owner": "agent-skills",
-      "path": "executor/SKILL.md"
+      "owner": "skills",
+      "path": "skills/executor/SKILL.md"
     },
     {
       "capability": "task_protocol",
-      "owner": "agent-skills",
-      "path": "protocols/TASK_PROTOCOL.md"
+      "owner": "skills",
+      "path": "skills/protocols/TASK_PROTOCOL.md"
     },
     {
       "capability": "simplicity",
-      "owner": "agent-skills",
-      "path": "simplicity/SKILL.md"
+      "owner": "skills",
+      "path": "skills/simplicity/SKILL.md"
     },
     {
       "capability": "github_workflow",
-      "owner": "agent-skills",
-      "path": "github-workflow/SKILL.md"
+      "owner": "skills",
+      "path": "skills/github-workflow/SKILL.md"
     },
     {
       "capability": "verification",
-      "owner": "agent-skills",
-      "path": "verification/SKILL.md"
+      "owner": "skills",
+      "path": "skills/verification/SKILL.md"
     },
     {
       "capability": "engineering_assurance",
-      "owner": "agent-standards",
-      "path": "STANDARD_MODEL.md"
+      "owner": "standards",
+      "path": "standards/STANDARD_MODEL.md"
     },
     {
       "capability": "documentation_closure",
-      "owner": "agent-documents",
-      "path": "DOCUMENT_MODEL.md"
+      "owner": "documents",
+      "path": "documents/DOCUMENT_MODEL.md"
     },
     {
       "capability": "local_execution_transport",

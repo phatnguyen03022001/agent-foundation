@@ -1,18 +1,6 @@
 {
   "version": 1,
   "repositories": {
-    "agent-skills": {
-      "repository": "phatnguyen03022001/agent-foundation",
-      "revision": "87a37a72a4952b1da273d9af308642f4295fda6b"
-    },
-    "agent-standards": {
-      "repository": "phatnguyen03022001/agent-foundation",
-      "revision": "0da0d5864fe5e458af564f3c6ba9959cefd99639"
-    },
-    "agent-documents": {
-      "repository": "phatnguyen03022001/agent-foundation",
-      "revision": "c34d34d1842975fa895fc0e3d5273e5826b32205"
-    },
     "agent-runtime": {
       "repository": "phatnguyen03022001/agent-runtime",
       "revision": "ac33afadccf2b222ddf48d6c6b45de82951046a2"

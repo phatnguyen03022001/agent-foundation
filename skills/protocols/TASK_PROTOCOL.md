@@ -1,6 +1,6 @@
 # Task Protocol
 
-This protocol defines reusable Architect-to-Executor governance across repositories. `agent-skills` owns how work is governed; each target repository owns what its product is and stores its live tasks.
+This protocol defines reusable Architect-to-Executor governance across repositories. the Foundation `skills/` domain owns how work is governed; each target repository owns what its product is and stores its live tasks.
 
 This file is the L0 semantic owner for reusable cross-role task-governance semantics, including repository/task binding, organizational-role and acceptance boundaries, artifact/authority/capability separation, handoff/base identity, lifecycle and continuation, promotion lineage, and release separation. The [Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md) owns the three-layer model and L1 capability-control/continuity semantics; L2 skills, standards, and documents own reusable HOW. Role skills own role-local procedure and safety boundaries; contracts own artifact-specific obligations; templates are example/default shapes; README is discovery/overview. Protocol semantic validity and current validator serialization support are distinct: the constrained validator mechanically enforces supported structure only for serialization inside its deterministic subset. If a summary conflicts with this protocol, this protocol governs.
 
@@ -176,7 +176,7 @@ A task-bound Architect or Executor terminal response includes a concise identity
 
 Terminal identity is presentation and continuity context only. By itself it creates no repository binding, task authority, lifecycle state, acceptance, capability, or evidence, and it never substitutes for canonical task, handoff, report, review, continuation, promotion, release, or exact-ref authority.
 
-Terminal identity remains outside `PROMPT TO COPY` and outside other copied handoff or prompt content. Exact punctuation, separators, abbreviated repository rendering, or other operator-specific visual styling are profile/presentation concerns rather than reusable `agent-skills` semantics.
+Terminal identity remains outside `PROMPT TO COPY` and outside other copied handoff or prompt content. Exact punctuation, separators, abbreviated repository rendering, or other operator-specific visual styling are profile/presentation concerns rather than reusable Foundation `skills/` semantics.
 
 [templates/continuation.yaml](../templates/continuation.yaml) carries exact identity for a later post-review phase: protocol/task identity, phase, `reviewed_report.commit`, report revision, `promotion_candidate_head`, exact expected refs, prior result/lifecycle state, and one next authorized action. Canonical new continuations serialize `expected_refs` as zero or more `{ref, commit}` records using target-authoritative ref identities; they do not infer branch names, roles, topology, or a stable branch name from generic governance. Existing expanded v3 continuations using `expected_refs.dev/main` remain accepted compatibility input and are not reinterpreted as the canonical shape.
 

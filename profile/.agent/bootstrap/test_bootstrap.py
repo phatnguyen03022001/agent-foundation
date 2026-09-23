@@ -66,25 +66,39 @@ class BootstrapContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "duplicate capability"):
             validate.validate_contract(bootstrap, self.lock)
 
-    def resolved_routes(self):
-        resolved = {}
-        for owner, entry in self.lock["repositories"].items():
-            resolved[owner] = {"revision": entry["revision"], "paths": set()}
-        for route in self.bootstrap["capability_routes"]:
-            resolved[route["owner"]]["paths"].add(route["path"])
-        return resolved
+    def resolved_routes(self, foundation_revision: str = PROFILE_REVISION) -> dict:
+        foundation_paths = set(validate.required_foundation_paths(self.bootstrap))
+        runtime_revision = self.lock["repositories"]["agent-runtime"]["revision"]
+        runtime_paths = {
+            route["path"]
+            for route in self.bootstrap["capability_routes"]
+            if route["owner"] == "agent-runtime"
+        }
+        return {
+            "agent-foundation": {
+                "revision": foundation_revision,
+                "paths": foundation_paths,
+            },
+            "agent-runtime": {
+                "revision": runtime_revision,
+                "paths": runtime_paths,
+            },
+        }
 
-    def resolved_routes_with_router(self, router: str) -> dict:
-        resolved = self.resolved_routes()
-        resolved["agent-skills"]["paths"].add(".agent/case-router.yaml")
-        resolved["agent-skills"]["contents"] = {".agent/case-router.yaml": router}
+    def resolved_routes_with_router(
+        self, router: str, foundation_revision: str = PROFILE_REVISION
+    ) -> dict:
+        resolved = self.resolved_routes(foundation_revision)
+        path = "skills/.agent/case-router.yaml"
+        resolved["agent-foundation"]["paths"].add(path)
+        resolved["agent-foundation"]["contents"] = {path: router}
         return resolved
 
     def test_foundation_control_plane_locator_is_canonical(self) -> None:
         self.assertEqual(
             validate.foundation_control_plane_locator(self.bootstrap),
             {
-                "owner": "agent-foundation",
+                "owner": "skills",
                 "path": "skills/contracts/FOUNDATION_ARCHITECTURE.md",
             },
         )
@@ -92,7 +106,7 @@ class BootstrapContractTests(unittest.TestCase):
     def test_foundation_control_plane_locator_fails_closed(self) -> None:
         for value in (
             None,
-            {"owner": "agent-foundation", "path": "skills/contracts/MISSING.md"},
+            {"owner": "skills", "path": "skills/contracts/MISSING.md"},
             {"owner": "agent-skills", "path": "skills/contracts/FOUNDATION_ARCHITECTURE.md"},
         ):
             with self.subTest(value=value):
@@ -113,24 +127,27 @@ class BootstrapContractTests(unittest.TestCase):
         resolved = self.resolved_routes()
         del resolved["agent-runtime"]
         with self.assertRaisesRegex(ValueError, "unresolvable locked revision"):
-            validate.validate_resolution(self.bootstrap, self.lock, resolved)
+            validate.validate_resolution(self.bootstrap, self.lock, resolved, PROFILE_REVISION)
 
     def test_missing_routed_path_fails_closed(self) -> None:
         resolved = self.resolved_routes()
-        resolved["agent-skills"]["paths"].remove("executor/SKILL.md")
-        with self.assertRaisesRegex(ValueError, "missing routed path"):
-            validate.validate_resolution(self.bootstrap, self.lock, resolved)
+        resolved["agent-foundation"]["paths"].remove("skills/executor/SKILL.md")
+        with self.assertRaisesRegex(ValueError, "missing Foundation canonical path"):
+            validate.validate_resolution(self.bootstrap, self.lock, resolved, PROFILE_REVISION)
 
     def test_missing_case_router_path_fails_closed(self) -> None:
-        with self.assertRaisesRegex(ValueError, "missing Case Router path"):
-            validate.validate_resolution(self.bootstrap, self.lock, self.resolved_routes())
+        resolved = self.resolved_routes()
+        resolved["agent-foundation"]["paths"].discard("skills/.agent/case-router.yaml")
+        with self.assertRaisesRegex(ValueError, "missing Foundation canonical path"):
+            validate.validate_resolution(self.bootstrap, self.lock, resolved, PROFILE_REVISION)
 
     def test_malformed_case_router_fails_closed(self) -> None:
         with self.assertRaisesRegex(ValueError, "malformed Case Router"):
             validate.validate_resolution(
                 self.bootstrap,
                 self.lock,
-                self.resolved_routes_with_router("cases:\n  - id: EXECUTE\n    capabilities: executor\n"),
+                self.resolved_routes_with_router('cases:\\n  - id: EXECUTE\\n    capabilities: executor\\n'),
+                PROFILE_REVISION,
             )
 
     def test_case_router_rejects_unadmitted_case(self) -> None:
@@ -138,9 +155,8 @@ class BootstrapContractTests(unittest.TestCase):
             validate.validate_resolution(
                 self.bootstrap,
                 self.lock,
-                self.resolved_routes_with_router(
-                    "cases:\n  - id: REVIEW\n    capabilities:\n      - executor\n"
-                ),
+                self.resolved_routes_with_router('cases:\n  - id: REVIEW\n    capabilities:\n      - executor\n'),
+                PROFILE_REVISION,
             )
 
     def test_case_router_rejects_lifecycle_or_dimension_fields(self) -> None:
@@ -148,9 +164,8 @@ class BootstrapContractTests(unittest.TestCase):
             validate.validate_resolution(
                 self.bootstrap,
                 self.lock,
-                self.resolved_routes_with_router(
-                    "cases:\n  - id: EXECUTE\n    capabilities:\n      - executor\n    state: READY\n"
-                ),
+                self.resolved_routes_with_router('cases:\\n  - id: EXECUTE\\n    capabilities:\\n      - executor\\n    state: READY\\n'),
+                PROFILE_REVISION,
             )
 
     def test_unknown_case_selection_fails_closed(self) -> None:
@@ -160,40 +175,43 @@ class BootstrapContractTests(unittest.TestCase):
 
     def test_mutable_ref_in_lock_fails_closed(self) -> None:
         lock = copy.deepcopy(self.lock)
-        lock["repositories"]["agent-skills"]["revision"] = "main"
+        lock["repositories"]["agent-runtime"]["revision"] = "main"
         with self.assertRaisesRegex(ValueError, "invalid immutable revision"):
             validate.validate_contract(self.bootstrap, lock)
 
     def test_remote_resolution_loads_router_bytes_from_the_locked_tree_blob(self) -> None:
         router = "cases:\n  - id: EXECUTE\n    capabilities:\n      - executor\n"
         router_blob = "c" * 40
-        routes_by_owner = {owner: [] for owner in self.lock["repositories"]}
-        for route in self.bootstrap["capability_routes"]:
-            routes_by_owner[route["owner"]].append(route["path"])
+        runtime_revision = self.lock["repositories"]["agent-runtime"]["revision"]
 
         def fake_github_json(url: str) -> dict:
-            if "/git/commits/" in url:
-                revision = url.rsplit("/", 1)[1]
-                owner = next(
-                    owner
-                    for owner, entry in self.lock["repositories"].items()
-                    if entry["revision"] == revision
-                )
-                return {"sha": revision, "tree": {"sha": f"{owner}-tree"}}
-            if "/git/trees/" in url:
-                owner = next(owner for owner in routes_by_owner if f"/{owner}-tree?" in url)
-                paths = routes_by_owner[owner]
-                entries = [{"path": path, "sha": f"{owner}-{index}"} for index, path in enumerate(paths)]
-                if owner == "agent-skills":
-                    entries.append({"path": ".agent/case-router.yaml", "sha": router_blob})
+            if f"/git/commits/{PROFILE_REVISION}" in url:
+                return {"sha": PROFILE_REVISION, "tree": {"sha": "foundation-tree"}}
+            if f"/git/commits/{runtime_revision}" in url:
+                return {"sha": runtime_revision, "tree": {"sha": "runtime-tree"}}
+            if "/git/trees/foundation-tree?" in url:
+                entries = [
+                    {"path": path, "sha": f"foundation-{index}"}
+                    for index, path in enumerate(sorted(validate.required_foundation_paths(self.bootstrap)))
+                ]
+                for item in entries:
+                    if item["path"] == "skills/.agent/case-router.yaml":
+                        item["sha"] = router_blob
                 return {"truncated": False, "tree": entries}
+            if "/git/trees/runtime-tree?" in url:
+                return {"truncated": False, "tree": [{"path": "README.md", "sha": "runtime-readme"}]}
             if url.endswith(f"/git/blobs/{router_blob}"):
                 return {"encoding": "base64", "content": base64.b64encode(router.encode()).decode()}
             self.fail(f"unexpected GitHub request: {url}")
 
         with patch.object(validate, "_github_json", side_effect=fake_github_json):
-            resolved = validate.resolve_remote(self.lock)
-        self.assertEqual(resolved["agent-skills"]["contents"][".agent/case-router.yaml"], router)
+            resolved = validate.resolve_remote(self.bootstrap, self.lock, PROFILE_REVISION)
+        self.assertEqual(
+            resolved["agent-foundation"]["contents"]["skills/.agent/case-router.yaml"],
+            router,
+        )
+        self.assertEqual(resolved["agent-foundation"]["revision"], PROFILE_REVISION)
+        self.assertEqual(resolved["agent-runtime"]["revision"], runtime_revision)
 
     def test_unknown_execution_surface_fails_closed(self) -> None:
         with self.assertRaisesRegex(ValueError, "unknown execution surface"):
@@ -241,22 +259,10 @@ class BootstrapContractTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "unauthorized execution routing"):
                     validate.validate_contract(bootstrap, self.lock)
 
-    def test_authority_lock_matches_selected_support_revisions_exactly(self) -> None:
+    def test_authority_lock_contains_only_external_runtime_authority(self) -> None:
         self.assertEqual(
             self.lock["repositories"],
             {
-                "agent-skills": {
-                    "repository": "phatnguyen03022001/agent-foundation",
-                    "revision": "87a37a72a4952b1da273d9af308642f4295fda6b",
-                },
-                "agent-standards": {
-                    "repository": "phatnguyen03022001/agent-foundation",
-                    "revision": "0da0d5864fe5e458af564f3c6ba9959cefd99639",
-                },
-                "agent-documents": {
-                    "repository": "phatnguyen03022001/agent-foundation",
-                    "revision": "c34d34d1842975fa895fc0e3d5273e5826b32205",
-                },
                 "agent-runtime": {
                     "repository": "phatnguyen03022001/agent-runtime",
                     "revision": "ac33afadccf2b222ddf48d6c6b45de82951046a2",
@@ -264,35 +270,35 @@ class BootstrapContractTests(unittest.TestCase):
             },
         )
 
-    def test_legacy_support_repository_identities_fail_closed(self) -> None:
-        legacy_repositories = {
-            "agent-skills": "phatnguyen03022001/agent-skills",
-            "agent-standards": "phatnguyen03022001/agent-standards",
-            "agent-documents": "phatnguyen03022001/agent-documents",
-        }
-        for owner, repository in legacy_repositories.items():
+    def test_legacy_internal_revision_selection_aliases_fail_closed(self) -> None:
+        for owner in ("architect-profile", "agent-skills", "agent-standards", "agent-documents"):
             with self.subTest(owner=owner):
                 lock = copy.deepcopy(self.lock)
-                lock["repositories"][owner]["repository"] = repository
-                with self.assertRaisesRegex(ValueError, "incorrect support repository identity"):
+                lock["repositories"][owner] = {
+                    "repository": "phatnguyen03022001/agent-foundation",
+                    "revision": "a" * 40,
+                }
+                with self.assertRaisesRegex(ValueError, "must not be independently pinned"):
                     validate.validate_contract(self.bootstrap, lock)
 
-    def test_shared_foundation_repository_preserves_semantic_owners(self) -> None:
-        support_owners = ("agent-skills", "agent-standards", "agent-documents")
-        self.assertEqual(
-            {self.lock["repositories"][owner]["repository"] for owner in support_owners},
-            {"phatnguyen03022001/agent-foundation"},
-        )
-        self.assertEqual(
-            set(self.lock["repositories"]),
-            {"agent-skills", "agent-standards", "agent-documents", "agent-runtime"},
-        )
-        routes = {route["capability"]: route["owner"] for route in self.bootstrap["capability_routes"]}
-        self.assertEqual(routes["executor"], "agent-skills")
-        self.assertEqual(routes["engineering_assurance"], "agent-standards")
-        self.assertEqual(routes["documentation_closure"], "agent-documents")
-        self.assertEqual(routes["local_execution_transport"], "agent-runtime")
-        self.assertEqual(set(routes.values()), set(self.lock["repositories"]))
+    def test_foundation_domains_preserve_semantic_ownership_without_revision_pins(self) -> None:
+        routes = {route["capability"]: route for route in self.bootstrap["capability_routes"]}
+        self.assertEqual(routes["executor"]["owner"], "skills")
+        self.assertEqual(routes["engineering_assurance"]["owner"], "standards")
+        self.assertEqual(routes["documentation_closure"]["owner"], "documents")
+        self.assertEqual(routes["local_execution_transport"]["owner"], "agent-runtime")
+        self.assertEqual(set(self.lock["repositories"]), {"agent-runtime"})
+        for capability in (
+            "architect",
+            "executor",
+            "task_protocol",
+            "simplicity",
+            "github_workflow",
+            "verification",
+            "engineering_assurance",
+            "documentation_closure",
+        ):
+            self.assertNotIn(routes[capability]["owner"], self.lock["repositories"])
 
     def test_all_four_surfaces_normalize_uniquely(self) -> None:
         expected = {
@@ -426,11 +432,7 @@ class BootstrapContractTests(unittest.TestCase):
         self.assertEqual(result["foundation_control_plane"]["revision"], PROFILE_REVISION)
         self.assertEqual(result["foundation_control_plane"]["path"], "skills/contracts/FOUNDATION_ARCHITECTURE.md")
 
-    def test_execution_reconstruction_resolves_execute_without_support_preload(self) -> None:
-        reconstruct = getattr(validate, "reconstruct_execution_context", None)
-        self.assertTrue(callable(reconstruct))
-        if not callable(reconstruct):
-            return
+    def test_execution_reconstruction_resolves_execute_from_one_foundation_revision(self) -> None:
         target_locator = {
             "repository": "owner/repo",
             "branch": "dev",
@@ -440,33 +442,50 @@ class BootstrapContractTests(unittest.TestCase):
             "phase": "EXECUTION",
         }
         router = "cases:\n  - id: EXECUTE\n    capabilities:\n      - executor\n"
-        resolved = {
-            "agent-skills": {
-                "revision": self.lock["repositories"]["agent-skills"]["revision"],
-                "paths": {".agent/case-router.yaml", "executor/SKILL.md"},
-                "contents": {".agent/case-router.yaml": router},
-            }
-        }
-        result = reconstruct(ROOT, "b" * 40, target_locator, "EXECUTE", resolved)
+        foundation_revision = "b" * 40
+        resolved = self.resolved_routes_with_router(router, foundation_revision)
+        result = validate.reconstruct_execution_context(
+            ROOT, foundation_revision, target_locator, "EXECUTE", resolved
+        )
         self.assertEqual(
             result["bootstrap_trace"],
             ["PROFILE_REVISION", "AUTHORITY_LOCK", "FOUNDATION_CONTROL_PLANE", "CASE_ROUTER", "CASE", "CAPABILITY_ROUTE", "CANONICAL_ARTIFACT"],
         )
         self.assertEqual(result["case"], "EXECUTE")
-        self.assertEqual(result["case_router"], {"cases": [{"id": "EXECUTE", "capabilities": ["executor"]}]})
         self.assertEqual(
             result["canonical_artifacts"],
-            [
-                {
-                    "capability": "executor",
-                    "repository": "phatnguyen03022001/agent-foundation",
-                    "revision": self.lock["repositories"]["agent-skills"]["revision"],
-                    "path": "executor/SKILL.md",
-                }
-            ],
+            [{
+                "capability": "executor",
+                "repository": "phatnguyen03022001/agent-foundation",
+                "revision": foundation_revision,
+                "path": "skills/executor/SKILL.md",
+            }],
         )
         self.assertNotIn("chat_history", result)
         self.assertNotIn("cwd", result)
+
+    def test_ac9_internal_routes_share_foundation_identity_and_runtime_stays_external(self) -> None:
+        foundation_revision = "d" * 40
+        router = "cases:\n  - id: EXECUTE\n    capabilities:\n      - executor\n"
+        resolved = self.resolved_routes_with_router(router, foundation_revision)
+        artifacts = validate.canonical_artifacts(
+            foundation_revision,
+            self.lock,
+            self.bootstrap["capability_routes"],
+            resolved,
+        )
+        internal = [item for item in artifacts if item["repository"] == validate.FOUNDATION_REPOSITORY]
+        external = [item for item in artifacts if item["repository"] != validate.FOUNDATION_REPOSITORY]
+        self.assertTrue(internal)
+        self.assertEqual({item["revision"] for item in internal}, {foundation_revision})
+        self.assertEqual(
+            {(item["repository"], item["revision"]) for item in external},
+            {(
+                "phatnguyen03022001/agent-runtime",
+                self.lock["repositories"]["agent-runtime"]["revision"],
+            )},
+        )
+        self.assertFalse(set(self.lock["repositories"]) & validate.LEGACY_INTERNAL_OWNER_ALIASES)
 
     def test_fresh_context_reconstruction_requires_exact_target_locator(self) -> None:
         with self.assertRaisesRegex(ValueError, "target locator"):
@@ -485,13 +504,15 @@ class BootstrapContractTests(unittest.TestCase):
                 location="LOCAL",
             )
 
-    def test_generic_role_authority_remains_owned_by_agent_skills(self) -> None:
+    def test_generic_role_authority_remains_owned_by_foundation_skills_domain(self) -> None:
         routes = {route["capability"]: route for route in self.bootstrap["capability_routes"]}
         for capability in ("architect", "executor", "task_protocol"):
             with self.subTest(capability=capability):
-                self.assertEqual(routes[capability]["owner"], "agent-skills")
+                self.assertEqual(routes[capability]["owner"], "skills")
+                self.assertTrue(routes[capability]["path"].startswith("skills/"))
         for forbidden_key in ("roles", "role_engine", "review_roles", "executor_specializations"):
             self.assertNotIn(forbidden_key, self.bootstrap)
+
 
 
 if __name__ == "__main__":

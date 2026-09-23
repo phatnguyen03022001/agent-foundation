@@ -8,6 +8,7 @@ import base64
 import binascii
 import json
 import re
+import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -17,12 +18,21 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[3]
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 
-EXPECTED_REPOSITORIES = {
-    "agent-skills": "phatnguyen03022001/agent-foundation",
-    "agent-standards": "phatnguyen03022001/agent-foundation",
-    "agent-documents": "phatnguyen03022001/agent-foundation",
+FOUNDATION_REPOSITORY = "phatnguyen03022001/agent-foundation"
+FOUNDATION_RESOLVED_KEY = "agent-foundation"
+INTERNAL_DOMAINS = {
+    "profile": "profile",
+    "skills": "skills",
+    "documents": "documents",
+    "standards": "standards",
+}
+LEGACY_INTERNAL_OWNER_ALIASES = frozenset(
+    {"architect-profile", "agent-skills", "agent-documents", "agent-standards"}
+)
+EXPECTED_EXTERNAL_REPOSITORIES = {
     "agent-runtime": "phatnguyen03022001/agent-runtime",
 }
+
 
 EXPECTED_SURFACES = {
     "CHATGPT_GITHUB": ("CHATGPT", "GITHUB", "GITHUB", "GPT-5.6 Sol", "HIGH"),
@@ -65,13 +75,12 @@ def load_contract(root: Path = ROOT) -> tuple[dict[str, Any], dict[str, Any]]:
 def foundation_control_plane_locator(bootstrap: dict[str, Any]) -> dict[str, str]:
     locator = bootstrap.get("foundation_control_plane")
     expected = {
-        "owner": "agent-foundation",
+        "owner": "skills",
         "path": "skills/contracts/FOUNDATION_ARCHITECTURE.md",
     }
     if locator != expected:
         raise ValueError("foundation_control_plane must identify the canonical Foundation control-plane path")
     return dict(expected)
-
 
 def foundation_control_plane_artifact(
     bootstrap: dict[str, Any], profile_revision: str
@@ -90,20 +99,15 @@ def validate_local_foundation_control_plane(root: Path, bootstrap: dict[str, Any
     if not path.is_file():
         raise ValueError(f"missing Foundation control-plane path: {locator['path']}")
 
-def case_router_locator(bootstrap: dict[str, Any], lock: dict[str, Any]) -> dict[str, str]:
+def case_router_locator(bootstrap: dict[str, Any]) -> dict[str, str]:
     locator = bootstrap.get("case_router")
-    if not isinstance(locator, dict):
-        raise ValueError("case_router must be a bootstrap-known locator")
-    if set(locator) != {"owner", "path"}:
-        raise ValueError("case_router locator must contain exactly owner and path")
-    owner = locator.get("owner")
-    path = locator.get("path")
-    if owner != "agent-skills" or owner not in lock.get("repositories", {}):
-        raise ValueError("case_router must resolve from locked agent-skills")
-    if not isinstance(path, str) or path != ".agent/case-router.yaml":
-        raise ValueError("case_router path must be the canonical router path")
-    return {"owner": owner, "path": path}
-
+    expected = {
+        "owner": "skills",
+        "path": "skills/.agent/case-router.yaml",
+    }
+    if locator != expected:
+        raise ValueError("case_router must identify the canonical Foundation skills-domain router path")
+    return dict(expected)
 
 def parse_case_router(content: str) -> dict[str, Any]:
     if not isinstance(content, str):
@@ -141,25 +145,29 @@ def validate_case_router(router: dict[str, Any]) -> None:
 
 
 def resolve_case_router(
-    bootstrap: dict[str, Any], lock: dict[str, Any], resolved: dict[str, dict[str, Any]]
+    bootstrap: dict[str, Any],
+    foundation_revision: str,
+    resolved: dict[str, dict[str, Any]],
 ) -> dict[str, Any]:
-    locator = case_router_locator(bootstrap, lock)
-    entry = lock["repositories"][locator["owner"]]
-    observation = resolved.get(locator["owner"])
-    if observation is None or observation.get("revision") != entry["revision"]:
-        raise ValueError(f"unresolvable locked revision: {locator['owner']}@{entry['revision']}")
+    locator = case_router_locator(bootstrap)
+    observation = resolved.get(FOUNDATION_RESOLVED_KEY)
+    if observation is None or observation.get("revision") != foundation_revision:
+        raise ValueError(f"unresolvable Foundation authority-set revision: {foundation_revision}")
     paths = observation.get("paths")
     if not isinstance(paths, (set, frozenset)):
         paths = set(paths or [])
     if locator["path"] not in paths:
-        raise ValueError(f"missing Case Router path: {locator['owner']}@{entry['revision']}:{locator['path']}")
+        raise ValueError(
+            f"missing Case Router path: {FOUNDATION_REPOSITORY}@{foundation_revision}:{locator['path']}"
+        )
     contents = observation.get("contents")
     if not isinstance(contents, dict) or not isinstance(contents.get(locator["path"]), str):
-        raise ValueError(f"unresolvable Case Router bytes: {locator['owner']}@{entry['revision']}:{locator['path']}")
+        raise ValueError(
+            f"unresolvable Case Router bytes: {FOUNDATION_REPOSITORY}@{foundation_revision}:{locator['path']}"
+        )
     router = parse_case_router(contents[locator["path"]])
     validate_case_router(router)
     return router
-
 
 def select_case_capability_routes(
     bootstrap: dict[str, Any], router: dict[str, Any], case_id: str
@@ -173,49 +181,60 @@ def select_case_capability_routes(
 
 
 def canonical_artifacts(
-    lock: dict[str, Any], routes: list[dict[str, Any]], resolved: dict[str, dict[str, Any]]
+    foundation_revision: str,
+    lock: dict[str, Any],
+    routes: list[dict[str, Any]],
+    resolved: dict[str, dict[str, Any]],
 ) -> list[dict[str, str]]:
     artifacts: list[dict[str, str]] = []
     for route in routes:
         owner = route["owner"]
-        entry = lock["repositories"][owner]
-        observation = resolved.get(owner)
-        if observation is None or observation.get("revision") != entry["revision"]:
-            raise ValueError(f"unresolvable locked revision: {owner}@{entry['revision']}")
+        if owner in INTERNAL_DOMAINS:
+            repository = FOUNDATION_REPOSITORY
+            revision = foundation_revision
+            resolved_key = FOUNDATION_RESOLVED_KEY
+        else:
+            entry = lock["repositories"][owner]
+            repository = entry["repository"]
+            revision = entry["revision"]
+            resolved_key = owner
+        observation = resolved.get(resolved_key)
+        if observation is None or observation.get("revision") != revision:
+            raise ValueError(f"unresolvable routed revision: {repository}@{revision}")
         paths = observation.get("paths")
         if not isinstance(paths, (set, frozenset)):
             paths = set(paths or [])
         if route["path"] not in paths:
-            raise ValueError(f"missing routed path: {owner}@{entry['revision']}:{route['path']}")
-        artifacts.append(
-            {
-                "capability": route["capability"],
-                "repository": entry["repository"],
-                "revision": entry["revision"],
-                "path": route["path"],
-            }
-        )
+            raise ValueError(f"missing routed path: {repository}@{revision}:{route['path']}")
+        artifacts.append({
+            "capability": route["capability"],
+            "repository": repository,
+            "revision": revision,
+            "path": route["path"],
+        })
     return artifacts
-
 
 def validate_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
     repositories = lock.get("repositories")
     if not isinstance(repositories, dict):
         raise ValueError("authority lock repositories must be an object")
-    if "architect-profile" in repositories:
-        raise ValueError("architect-profile must not self-pin in authority lock")
-    if set(repositories) != set(EXPECTED_REPOSITORIES):
-        raise ValueError("authority lock must contain exactly the four OPM-01 support repositories")
-    for owner, repository in EXPECTED_REPOSITORIES.items():
+    legacy_internal = sorted(set(repositories) & LEGACY_INTERNAL_OWNER_ALIASES)
+    if legacy_internal:
+        raise ValueError(
+            f"Foundation-internal semantic owners must not be independently pinned: {legacy_internal}"
+        )
+    if set(repositories) != set(EXPECTED_EXTERNAL_REPOSITORIES):
+        raise ValueError("authority lock must contain exactly the independently versioned external authorities")
+    for owner, repository in EXPECTED_EXTERNAL_REPOSITORIES.items():
         entry = repositories.get(owner)
         if not isinstance(entry, dict):
-            raise ValueError(f"missing lock entry: {owner}")
+            raise ValueError(f"missing external lock entry: {owner}")
         if entry.get("repository") != repository:
-            raise ValueError(f"incorrect support repository identity: {owner}")
+            raise ValueError(f"incorrect external repository identity: {owner}")
         if not SHA_RE.fullmatch(str(entry.get("revision", ""))):
             raise ValueError(f"invalid immutable revision: {owner}")
 
-    case_router_locator(bootstrap, lock)
+    case_router_locator(bootstrap)
     foundation_control_plane_locator(bootstrap)
 
     if bootstrap.get("repository_contract") != EXPECTED_REPOSITORY_CONTRACT:
@@ -255,16 +274,26 @@ def validate_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
     for route in routes:
         if not isinstance(route, dict):
             raise ValueError("each capability route must be an object")
-        capability = route.get("capability")
-        owner = route.get("owner")
-        path = route.get("path")
+        if set(route) != {"capability", "owner", "path"}:
+            raise ValueError("capability route must contain exactly capability, owner, and path")
+        capability = route["capability"]
+        owner = route["owner"]
+        path = route["path"]
         if not all(isinstance(value, str) and value for value in (capability, owner, path)):
             raise ValueError("capability route requires capability, owner, and path")
         if capability in seen:
             raise ValueError(f"duplicate capability entrypoint: {capability}")
         seen.add(capability)
-        if owner not in repositories:
-            raise ValueError(f"capability route owner is not locked: {owner}")
+        if owner in LEGACY_INTERNAL_OWNER_ALIASES:
+            raise ValueError(f"legacy internal revision-selection alias is forbidden: {owner}")
+        if owner in INTERNAL_DOMAINS:
+            prefix = f"{INTERNAL_DOMAINS[owner]}/"
+            if not path.startswith(prefix):
+                raise ValueError(f"Foundation-internal capability path must stay inside domain {owner}: {capability}")
+        elif owner not in repositories:
+            raise ValueError(
+                f"capability route owner is neither a Foundation domain nor locked external owner: {owner}"
+            )
         if path.startswith("/") or ".." in Path(path).parts:
             raise ValueError(f"capability path must be repository-relative: {capability}")
 
@@ -317,7 +346,6 @@ def validate_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
             raise ValueError(f"TASK LAUNCH fixture mismatch: {surface_id}")
     if set(fixtures) != set(EXPECTED_SURFACES):
         raise ValueError("TASK LAUNCH fixtures must cover all execution surfaces")
-
 
 def normalize_surface(bootstrap: dict[str, Any], controller: str, location: str) -> dict[str, Any]:
     surfaces = bootstrap.get("execution_surfaces")
@@ -403,17 +431,46 @@ def select_capability_routes(bootstrap: dict[str, Any], required: list[str]) -> 
     return selected
 
 
+def required_foundation_paths(bootstrap: dict[str, Any]) -> set[str]:
+    paths = {
+        "profile/ARCHITECT_PROFILE.md",
+        "profile/.agent/bootstrap/bootstrap.json",
+        "profile/.agent/bootstrap/authority.lock.json",
+        case_router_locator(bootstrap)["path"],
+        foundation_control_plane_locator(bootstrap)["path"],
+    }
+    paths.update(
+        route["path"]
+        for route in bootstrap["capability_routes"]
+        if route["owner"] in INTERNAL_DOMAINS
+    )
+    return paths
+
+
 def validate_resolution(
     bootstrap: dict[str, Any],
     lock: dict[str, Any],
     resolved: dict[str, dict[str, Any]],
+    foundation_revision: str,
 ) -> None:
-    repositories = lock["repositories"]
-    for owner, entry in repositories.items():
+    if not SHA_RE.fullmatch(foundation_revision):
+        raise ValueError("authority-set identity must be an exact agent-foundation commit")
+
+    foundation = resolved.get(FOUNDATION_RESOLVED_KEY)
+    if foundation is None or foundation.get("revision") != foundation_revision:
+        raise ValueError(f"unresolvable Foundation authority-set revision: {foundation_revision}")
+    foundation_paths = foundation.get("paths")
+    if not isinstance(foundation_paths, (set, frozenset)):
+        foundation_paths = set(foundation_paths or [])
+    for path in sorted(required_foundation_paths(bootstrap)):
+        if path not in foundation_paths:
+            raise ValueError(
+                f"missing Foundation canonical path: {FOUNDATION_REPOSITORY}@{foundation_revision}:{path}"
+            )
+
+    for owner, entry in lock["repositories"].items():
         observation = resolved.get(owner)
-        if observation is None:
-            raise ValueError(f"unresolvable locked revision: {owner}@{entry['revision']}")
-        if observation.get("revision") != entry["revision"]:
+        if observation is None or observation.get("revision") != entry["revision"]:
             raise ValueError(f"unresolvable locked revision: {owner}@{entry['revision']}")
         paths = observation.get("paths")
         if not isinstance(paths, (set, frozenset)):
@@ -421,8 +478,8 @@ def validate_resolution(
         for route in bootstrap["capability_routes"]:
             if route["owner"] == owner and route["path"] not in paths:
                 raise ValueError(f"missing routed path: {owner}@{entry['revision']}:{route['path']}")
-    resolve_case_router(bootstrap, lock, resolved)
 
+    resolve_case_router(bootstrap, foundation_revision, resolved)
 
 def _github_json(url: str) -> dict[str, Any]:
     request = urllib.request.Request(
@@ -451,49 +508,62 @@ def _github_blob_text(repository: str, blob_sha: str) -> str:
         raise ValueError(f"router blob is malformed: {repository}@{blob_sha}") from exc
 
 
-def resolve_remote(lock: dict[str, Any]) -> dict[str, dict[str, Any]]:
+def _resolve_remote_repository(repository: str, revision: str) -> tuple[list[dict[str, Any]], set[str]]:
+    commit = _github_json(f"https://api.github.com/repos/{repository}/git/commits/{revision}")
+    if commit.get("sha") != revision:
+        raise ValueError(f"unresolvable immutable revision: {repository}@{revision}")
+    tree = commit.get("tree")
+    if not isinstance(tree, dict) or not isinstance(tree.get("sha"), str):
+        raise ValueError(f"immutable revision has no tree: {repository}@{revision}")
+    tree_data = _github_json(
+        f"https://api.github.com/repos/{repository}/git/trees/{tree['sha']}?recursive=1"
+    )
+    if tree_data.get("truncated") is True:
+        raise ValueError(f"remote tree is truncated: {repository}@{revision}")
+    entries = tree_data.get("tree")
+    if not isinstance(entries, list):
+        raise ValueError(f"remote tree missing entries: {repository}@{revision}")
+    paths = {
+        item["path"]
+        for item in entries
+        if isinstance(item, dict) and isinstance(item.get("path"), str)
+    }
+    return entries, paths
+
+
+def resolve_remote(
+    bootstrap: dict[str, Any],
+    lock: dict[str, Any],
+    foundation_revision: str,
+) -> dict[str, dict[str, Any]]:
+    if not SHA_RE.fullmatch(foundation_revision):
+        raise ValueError("authority-set identity must be an exact agent-foundation commit")
+
     resolved: dict[str, dict[str, Any]] = {}
+    entries, paths = _resolve_remote_repository(FOUNDATION_REPOSITORY, foundation_revision)
+    router_path = case_router_locator(bootstrap)["path"]
+    router_entry = next(
+        (item for item in entries if isinstance(item, dict) and item.get("path") == router_path),
+        None,
+    )
+    if not isinstance(router_entry, dict) or not isinstance(router_entry.get("sha"), str):
+        raise ValueError(
+            f"missing Case Router path: {FOUNDATION_REPOSITORY}@{foundation_revision}:{router_path}"
+        )
+    resolved[FOUNDATION_RESOLVED_KEY] = {
+        "revision": foundation_revision,
+        "paths": paths,
+        "contents": {
+            router_path: _github_blob_text(FOUNDATION_REPOSITORY, router_entry["sha"])
+        },
+    }
+
     for owner, entry in lock["repositories"].items():
         repository = entry["repository"]
         revision = entry["revision"]
-        commit = _github_json(f"https://api.github.com/repos/{repository}/git/commits/{revision}")
-        if commit.get("sha") != revision:
-            raise ValueError(f"unresolvable locked revision: {owner}@{revision}")
-        tree = commit.get("tree")
-        if not isinstance(tree, dict) or not isinstance(tree.get("sha"), str):
-            raise ValueError(f"locked revision has no tree: {owner}@{revision}")
-        tree_data = _github_json(
-            f"https://api.github.com/repos/{repository}/git/trees/{tree['sha']}?recursive=1"
-        )
-        if tree_data.get("truncated") is True:
-            raise ValueError(f"remote tree is truncated: {owner}@{revision}")
-        entries = tree_data.get("tree")
-        if not isinstance(entries, list):
-            raise ValueError(f"remote tree missing entries: {owner}@{revision}")
-        paths = {
-            item["path"]
-            for item in entries
-            if isinstance(item, dict) and isinstance(item.get("path"), str)
-        }
-        observation: dict[str, Any] = {"revision": revision, "paths": paths}
-        if owner == "agent-skills":
-            router_path = ".agent/case-router.yaml"
-            router_entry = next(
-                (
-                    item
-                    for item in entries
-                    if isinstance(item, dict) and item.get("path") == router_path
-                ),
-                None,
-            )
-            if not isinstance(router_entry, dict) or not isinstance(router_entry.get("sha"), str):
-                raise ValueError(f"missing Case Router path: {owner}@{revision}:{router_path}")
-            observation["contents"] = {
-                router_path: _github_blob_text(repository, router_entry["sha"])
-            }
-        resolved[owner] = observation
+        _entries, external_paths = _resolve_remote_repository(repository, revision)
+        resolved[owner] = {"revision": revision, "paths": external_paths}
     return resolved
-
 
 def reconstruct_context(
     root: Path,
@@ -521,7 +591,7 @@ def reconstruct_context(
     return {
         "authority_set_identity": profile_revision,
         "authority_lock": lock,
-        "case_router": case_router_locator(bootstrap, lock),
+        "case_router": case_router_locator(bootstrap),
         "foundation_control_plane": foundation_control_plane_artifact(bootstrap, profile_revision),
         "repository_contract": bootstrap["repository_contract"],
         "target_binding": dict(target_locator),
@@ -553,7 +623,7 @@ def reconstruct_execution_context(
     if not SHA_RE.fullmatch(target_locator["base_head"]):
         raise ValueError("target locator base_head must be an exact commit")
 
-    router = resolve_case_router(bootstrap, lock, resolved)
+    router = resolve_case_router(bootstrap, profile_revision, resolved)
     routes = select_case_capability_routes(bootstrap, router, case_id)
     return {
         "bootstrap_trace": [
@@ -572,8 +642,22 @@ def reconstruct_execution_context(
         "case_router": router,
         "case": case_id,
         "capability_routes": routes,
-        "canonical_artifacts": canonical_artifacts(lock, routes, resolved),
+        "canonical_artifacts": canonical_artifacts(profile_revision, lock, routes, resolved),
     }
+
+
+def current_foundation_revision(root: Path = ROOT) -> str:
+    result = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=root,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    revision = result.stdout.strip()
+    if result.returncode != 0 or not SHA_RE.fullmatch(revision):
+        raise ValueError("current Foundation checkout must resolve one exact HEAD commit")
+    return revision
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -589,7 +673,13 @@ def main(argv: list[str] | None = None) -> int:
         validate_contract(bootstrap, lock)
         validate_local_foundation_control_plane(ROOT, bootstrap)
         if args.remote:
-            validate_resolution(bootstrap, lock, resolve_remote(lock))
+            foundation_revision = current_foundation_revision(ROOT)
+            validate_resolution(
+                bootstrap,
+                lock,
+                resolve_remote(bootstrap, lock, foundation_revision),
+                foundation_revision,
+            )
     except (OSError, ValueError, json.JSONDecodeError, KeyError) as exc:
         print(f"OPM_BOOTSTRAP = FALSE: {exc}", file=sys.stderr)
         return 1

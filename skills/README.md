@@ -1,8 +1,8 @@
-# agent-skills
+# Foundation skills
 
 A deliberately curated library of **exactly 15** reusable agent skills plus deterministic contracts, templates, and protocols for software engineering across repositories.
 
-`agent-skills` defines **HOW WE WORK**. A target repository defines **WHAT THE PRODUCT IS** and stores live tasks/evidence. Supported protocol version is **3**; existing valid historical protocol-v3 artifacts remain valid canonical evidence even when their serialization is outside the current constrained validator subset and therefore need not be parseable by every later constrained validator.
+`skills/` defines **HOW WE WORK**. A target repository defines **WHAT THE PRODUCT IS** and stores live tasks/evidence. Supported protocol version is **3**; existing valid historical protocol-v3 artifacts remain valid canonical evidence even when their serialization is outside the current constrained validator subset and therefore need not be parseable by every later constrained validator.
 
 ## Governance ownership
 
@@ -16,7 +16,7 @@ The normal flow is planning and exact handoff → restrictive execution and Exec
 
 TASK LAUNCH is operator-facing presentation only. It is non-authoritative, is not persisted as task state, and remains separate from `PROMPT TO COPY`.
 
-`PROMPT TO COPY` is a compact authority locator to the canonical repository/task/base/phase authority, not duplicated authority. Generic `agent-skills` does not prescribe TASK LAUNCH field names, ordering, language, executor menus, model/effort display, or other operator-profile presentation choices.
+`PROMPT TO COPY` is a compact authority locator to the canonical repository/task/base/phase authority, not duplicated authority. Generic Foundation `skills/` guidance does not prescribe TASK LAUNCH field names, ordering, language, executor menus, model/effort display, or other operator-profile presentation choices.
 
 ## Maintenance and frozen taxonomy
 
