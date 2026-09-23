@@ -356,7 +356,7 @@ Structure is local when it consists of internal files or modules inside an alrea
 
 ## Stable maintenance and change admission
 
-NO CHANGE REQUIRED is valid when no material problem is reproduced. Preference, novelty, elegance, architectural fashion, and hypothetical future scale are not authority; [simplicity](../simplicity/SKILL.md) owns reusable change-admission HOW, including evidence-backed defects, recurring missing capability, security/compatibility issues, material cost/usability/maintainability regression, and the smallest safe correction. The 15-skill taxonomy remains closed by default, and any material governance change still requires Architect authority.
+NO CHANGE REQUIRED is valid when no material problem is reproduced. Preference, novelty, elegance, architectural fashion, and hypothetical future scale are not authority; [simplicity](../simplicity/SKILL.md) owns reusable change-admission HOW, including evidence-backed defects, recurring missing capability, security/compatibility issues, material cost/usability/maintainability regression, and the smallest safe correction. The rationalization-derived internal taxonomy remains closed to ad hoc additions by default, and any material governance change still requires Architect authority.
 
 ## Global structure invariants
 

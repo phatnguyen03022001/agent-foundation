@@ -103,7 +103,7 @@ L2 owns reusable HOW and domain knowledge:
 - catalogs and repository-local reusable capabilities;
 - engineering methodology such as research, debugging, verification, security review, optimization, reuse analysis, and domain guidance.
 
-The current 15-skill taxonomy remains unchanged. L2 content can inform work only through L0 authority and L1 routing; maturity, popularity, loading, or adoption does not grant permission.
+The active internal skill taxonomy is derived from `skills/.agent/rationalization.json`. External adoption changes only the source of reusable L2 HOW; L2 content can inform work only through L0 authority and L1 routing, and maturity, popularity, loading, synchronization, or adoption does not grant permission.
 
 ## Orthogonal substrates
 

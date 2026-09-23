@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "starting_taxonomy": [
+    "adversarial-audit",
+    "architect",
+    "cloud-run-basics",
+    "debugging",
+    "design-review",
+    "executor",
+    "gap-analysis",
+    "github-workflow",
+    "optimization",
+    "reliability",
+    "research",
+    "reuse-first",
+    "security-review",
+    "simplicity",
+    "verification"
+  ],
+  "dispositions": [
+    {
+      "skill_id": "adversarial-audit",
+      "current_path": "adversarial-audit/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "Owns reusable failure-pressure and governance-bypass HOW. Standards assurance/reliability define properties and evidence, while ecc:santa-method is a multi-agent convergence workflow rather than an equivalent fault-model methodology.",
+      "surviving_semantic_owner": "internal:adversarial-audit",
+      "external_capability": null
+    },
+    {
+      "skill_id": "architect",
+      "current_path": "architect/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "Mandatory Foundation organizational-role owner for routing, planning authority, task creation, and review judgment; external L2 capability cannot own or grant this authority.",
+      "surviving_semantic_owner": "internal:architect",
+      "external_capability": null
+    },
+    {
+      "skill_id": "cloud-run-basics",
+      "current_path": "cloud-run-basics/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "Pinned capability sources contain no exact Cloud Run capability. Awesome is discovery-only, so no admissible external capability can replace the deployment identity/IAM/cost/verification HOW.",
+      "surviving_semantic_owner": "internal:cloud-run-basics",
+      "external_capability": null
+    },
+    {
+      "skill_id": "debugging",
+      "current_path": "debugging/SKILL.md",
+      "disposition": "THIN_DELTA",
+      "rationale": "superpowers:systematic-debugging owns the generic reproduce/narrow/hypothesis/root-cause/fix method. Foundation retains only authority/scope boundaries, incident coordination, mitigation labeling, and routing to version-sensitive research.",
+      "surviving_semantic_owner": "internal:debugging",
+      "external_capability": {
+        "catalog_entry_id": "superpowers:systematic-debugging",
+        "repository": "obra/superpowers",
+        "revision": "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+        "path": "skills/systematic-debugging/SKILL.md"
+      }
+    },
+    {
+      "skill_id": "design-review",
+      "current_path": "design-review/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "Owns reusable architecture/design integrity HOW against target authority. documents/ owns project documentation truth and standards/ owns engineering requirements, but neither supplies this review method and no exact pinned external capability is equivalent.",
+      "surviving_semantic_owner": "internal:design-review",
+      "external_capability": null
+    },
+    {
+      "skill_id": "executor",
+      "current_path": "executor/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "Mandatory Foundation organizational-role owner for exact task execution, mutation gates, divergence handling, local hygiene, execution bundling, and report production.",
+      "surviving_semantic_owner": "internal:executor",
+      "external_capability": null
+    },
+    {
+      "skill_id": "gap-analysis",
+      "current_path": "gap-analysis/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "documents/DOCUMENT_MODEL.md owns documentation closure, but this skill provides broader reusable completeness analysis for plans, contracts, migrations, and implementation proposals; no exact pinned external capability covers that scope.",
+      "surviving_semantic_owner": "internal:gap-analysis",
+      "external_capability": null
+    },
+    {
+      "skill_id": "github-workflow",
+      "current_path": "github-workflow/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "Foundation-specific Git authority, canonical-remote, promotion-lineage, phase-capability, and release separation are material. ecc:git-workflow includes generic branch, rebase, hook, global-config, and force-push assumptions that are not compatible replacement semantics.",
+      "surviving_semantic_owner": "internal:github-workflow",
+      "external_capability": null
+    },
+    {
+      "skill_id": "optimization",
+      "current_path": "optimization/SKILL.md",
+      "disposition": "THIN_DELTA",
+      "rationale": "ecc:benchmark-optimization-loop owns the generic measured baseline/bottleneck/variant/re-measure loop. Foundation retains only bundle/synchronization optimization, assurance-preserving constraints, and routing across simplicity, verification, reliability, and cost.",
+      "surviving_semantic_owner": "internal:optimization",
+      "external_capability": {
+        "catalog_entry_id": "ecc:benchmark-optimization-loop",
+        "repository": "affaan-m/ECC",
+        "revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+        "path": "skills/benchmark-optimization-loop/SKILL.md"
+      }
+    },
+    {
+      "skill_id": "reliability",
+      "current_path": "reliability/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "standards/standards/reliability.yaml owns reliability requirements/evidence, while this skill owns reusable failure/recovery/incident HOW. No exact pinned external capability provides a compatible generic replacement.",
+      "surviving_semantic_owner": "internal:reliability",
+      "external_capability": null
+    },
+    {
+      "skill_id": "research",
+      "current_path": "research/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "Pinned external research capabilities add background-agent, monitoring, recommendation, or repo-note workflow assumptions. Foundation retains its generic source-order, claim-classification, conflict-resolution, freshness, and stop-condition HOW; L1 independent fan-out remains contract-owned.",
+      "surviving_semantic_owner": "internal:research",
+      "external_capability": null
+    },
+    {
+      "skill_id": "reuse-first",
+      "current_path": "reuse-first/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "ecc:search-first mixes package scoring, harness-specific agents/MCP discovery, and implementation actions. Foundation needs a smaller generic build-versus-reuse method aligned with exact capability-state and supply-chain boundaries.",
+      "surviving_semantic_owner": "internal:reuse-first",
+      "external_capability": null
+    },
+    {
+      "skill_id": "security-review",
+      "current_path": "security-review/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "standards/standards/security.yaml owns security requirements/evidence. ecc:security-review is a framework-heavy checklist and is not semantically equivalent to Foundation's concrete threat-path and trust-boundary review HOW.",
+      "surviving_semantic_owner": "internal:security-review",
+      "external_capability": null
+    },
+    {
+      "skill_id": "simplicity",
+      "current_path": "simplicity/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "Owns reusable solution-ladder, source-structure, and evidence-backed governance change-admission HOW. Maintainability/efficiency standards constrain outcomes but do not replace this method; no exact pinned external capability is equivalent.",
+      "surviving_semantic_owner": "internal:simplicity",
+      "external_capability": null
+    },
+    {
+      "skill_id": "verification",
+      "current_path": "verification/SKILL.md",
+      "disposition": "KEEP_FOUNDATION_SPECIFIC",
+      "rationale": "External verification capabilities are completion-gate or harness-specific loops. Foundation retains acceptance-to-evidence design, evidence-layer separation, deterministic execution-bundle semantics, and authoritative-verification boundaries; assurance standards own requirements rather than HOW.",
+      "surviving_semantic_owner": "internal:verification",
+      "external_capability": null
+    }
+  ]
+}

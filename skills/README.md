@@ -1,6 +1,6 @@
 # Foundation skills
 
-A deliberately curated library of **exactly 15** reusable agent skills plus deterministic contracts, templates, and protocols for software engineering across repositories.
+A deliberately curated library of reusable internal agent skills plus deterministic contracts, templates, and protocols for software engineering across repositories. The active internal taxonomy is derived from [`.agent/rationalization.json`](.agent/rationalization.json).
 
 `skills/` defines **HOW WE WORK**. A target repository defines **WHAT THE PRODUCT IS** and stores live tasks/evidence. Supported protocol version is **3**; existing valid historical protocol-v3 artifacts remain valid canonical evidence even when their serialization is outside the current constrained validator subset and therefore need not be parseable by every later constrained validator.
 
@@ -20,7 +20,7 @@ TASK LAUNCH is operator-facing presentation only. It is non-authoritative, is no
 
 ## Maintenance and frozen taxonomy
 
-Mature governance may correctly return NO CHANGE REQUIRED when no material reproduced problem exists. Corrective maintenance uses the smallest safe change. The exact 15-skill taxonomy remains closed by default; admission reasoning is owned by [simplicity](simplicity/SKILL.md), while this README keeps the discovery catalog unchanged.
+Mature governance may correctly return NO CHANGE REQUIRED when no material reproduced problem exists. Corrective maintenance uses the smallest safe change. The rationalization-derived internal taxonomy remains closed to ad hoc additions by default; admission reasoning is owned by [simplicity](simplicity/SKILL.md), while this README remains discovery/navigation rather than a second ownership registry.
 
 ## Curated skill catalog
 
@@ -44,7 +44,7 @@ Mature governance may correctly return NO CHANGE REQUIRED when no material repro
 | `cloud-run-basics` | domain | Google Cloud Run deployment, configuration, security, scaling, troubleshooting, and platform-specific cost behavior |
 <!-- SKILL_CATALOG_END -->
 
-The validator recursively discovers every `SKILL.md` and accepts only these exact fifteen top-level locations. A hidden or nested sixteenth skill is an error.
+The validator recursively discovers every `SKILL.md` and requires exact agreement with the `KEEP_FOUNDATION_SPECIFIC` plus `THIN_DELTA` records in `.agent/rationalization.json`. A replaced/retired implementation that still exists, an omitted retained/thin skill, or an extra hidden/nested skill is an error.
 
 ## Canonical v3 artifacts
 

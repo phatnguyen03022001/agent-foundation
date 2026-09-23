@@ -3,50 +3,24 @@ name: optimization
 description: Use when measured latency, throughput, memory, CPU, network, storage, build time, developer iteration time, cloud spend, or automation cost is materially outside a required budget.
 ---
 
-# Optimization
+# Optimization — Foundation Delta
 
-Optimize from evidence: measure → identify constraint → change → re-measure.
+Generic measured optimization methodology is adopted from the exact external capability:
 
-## Define the target
+- catalog entry: `ecc:benchmark-optimization-loop`
+- repository: `affaan-m/ECC`
+- revision: `bf70150eb2df8070024e5bdf08e4aa08959e2735`
+- path: `skills/benchmark-optimization-loop/SKILL.md`
 
-State the workload, metric, baseline, required budget, and measurement environment. Distinguish user-visible performance from microbenchmarks and total cost from a single unit price.
+That pinned capability owns the generic baseline → bottleneck → bounded variants → correctness gate → re-measure loop. It is L2 HOW only and grants no Foundation authority.
 
-Do not optimize a metric that has no project consequence.
+## Foundation-specific delta
 
-## Find the constraint
+- Never weaken task acceptance, correctness, security, reliability, or required evidence merely to improve a metric or reduce cost.
+- For Foundation model/runtime control-plane work, first remove redundant synchronization before adding parallelism or infrastructure. A mandatory full suite may subsume a focused happy-path suite when it proves the same predicate.
+- When comparing a serial verification plan with an `EXECUTION BUNDLE`, count equivalent assurance predicates on both sides. Synchronization reduction is meaningful only when the predicate set is preserved.
+- Parallel jobs are allowed only under the Executor/verification safety predicates: no shared mutable state, ordering dependency, conflicting rate-limited dependency, material resource contention, or loss of per-job attribution.
+- Use `simplicity` before introducing caches, queues, services, larger machines, or other machinery; use `reliability` when capacity/failure margins change; use `research` for current pricing or version-sensitive external behavior.
+- Optimization evidence remains implementation evidence. It does not create task, review, promotion, or release authority.
 
-Use profiling, tracing, query/build analysis, resource metrics, billing data, or controlled experiments appropriate to the system. Attribute the dominant cost before changing code or infrastructure.
-
-Consider:
-
-- algorithmic work and allocations;
-- database/query behavior;
-- serialization and payload size;
-- network round trips;
-- concurrency and queueing;
-- cache effectiveness and invalidation cost;
-- storage/read-write patterns;
-- build/test/CI critical path;
-- cloud resource sizing and idle capacity;
-- developer feedback-loop latency;
-- Actions or external-service fan-out.
-
-Check whether `simplicity` or `reuse-first` can remove work entirely before making the remaining work faster.
-
-## Change one meaningful variable
-
-Prefer optimizations that preserve conceptual integrity and have a rollback path. Record expected benefit and trade-offs, including complexity, reliability, security, portability, and dollar cost.
-
-Avoid speculative caches, parallelism, batching, denormalization, larger machines, or new services without evidence that they address the measured bottleneck.
-
-Prefer removal of unnecessary work before clever acceleration. A deleted network hop, query, build step, dependency, or redundant transformation often improves both performance and maintainability. For model/runtime control-plane work, first remove redundant synchronization such as a focused happy-path suite already subsumed by the mandatory full suite; then batch safe deterministic checks into an EXECUTION BUNDLE.
-
-Measure synchronization mechanically against an equivalent predicate-preserving serial plan: if the one-command-per-check baseline needs `N` model/runtime boundaries and the bundled plan needs `M`, reduction is `(N - M) / N`. Count the same assurance predicates on both sides. Parallel execution is allowed only with no shared mutable state, no ordering dependency, no conflicting externally rate-limited dependency, no material resource contention, and independently attributable results; otherwise serialize. Wall-clock telemetry may supplement this count when trustworthy, but it is not authority or a substitute for correctness.
-
-## Re-measure
-
-Repeat the same representative measurement after the change. Report absolute and relative effect, variance, and any shifted bottleneck. If the result is noise or fails the target, do not declare success.
-
-Cost optimization follows the same rule: verify current billing model and actual usage, reduce waste or right-size where evidence supports it, and do not weaken correctness or required reliability merely to lower a line item.
-
-Use `debugging` when a regression may be caused by incorrect behavior rather than resource constraints. Use `reliability` when optimization changes failure behavior or capacity margins.
+The external capability supplies the generic optimization loop; this skill retains only the Foundation compatibility and assurance delta.

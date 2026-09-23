@@ -13,12 +13,33 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SUPPORTED_PROTOCOL_VERSION = 3
-EXPECTED_SKILLS = frozenset({
-    "architect", "executor", "research", "reuse-first", "simplicity",
-    "design-review", "gap-analysis", "adversarial-audit", "security-review",
-    "verification", "debugging", "reliability", "optimization",
-    "github-workflow", "cloud-run-basics",
+STARTING_SKILLS = (
+    "adversarial-audit",
+    "architect",
+    "cloud-run-basics",
+    "debugging",
+    "design-review",
+    "executor",
+    "gap-analysis",
+    "github-workflow",
+    "optimization",
+    "reliability",
+    "research",
+    "reuse-first",
+    "security-review",
+    "simplicity",
+    "verification",
+)
+RATIONALE_DISPOSITIONS = frozenset({
+    "KEEP_FOUNDATION_SPECIFIC",
+    "THIN_DELTA",
+    "REPLACE_BY_EXTERNAL",
+    "RETIRE",
 })
+MANDATORY_INTERNAL_ROLES = frozenset({"architect", "executor"})
+EXTERNAL_DISPOSITIONS = frozenset({"THIN_DELTA", "REPLACE_BY_EXTERNAL"})
+INTERNAL_DISPOSITIONS = frozenset({"KEEP_FOUNDATION_SPECIFIC", "THIN_DELTA"})
+SHA40_RE = re.compile(r"^[0-9a-f]{40}$")
 FRONTMATTER_KEYS = frozenset({"name", "description"})
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CAPABILITY_RE = re.compile(r"^[a-z][a-z0-9_]*$")
@@ -163,7 +184,205 @@ def validate_links(path: Path, text: str) -> None:
             error(f"{path.relative_to(ROOT)}: broken internal link: {target}")
 
 
-def validate_readme_catalog() -> None:
+def _load_json_mapping(path: Path, label: str) -> dict[str, Any] | None:
+    if not path.is_file():
+        error(f"missing {label}")
+        return None
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        error(f"{label}: invalid JSON: {exc}")
+        return None
+    if type(document) is not dict:
+        error(f"{label}: top-level JSON document must be mapping")
+        return None
+    return document
+
+
+def validate_rationalization() -> frozenset[str]:
+    label = ".agent/rationalization.json"
+    document = _load_json_mapping(ROOT / ".agent" / "rationalization.json", label)
+    if document is None:
+        return frozenset()
+
+    if set(document) != {"schema_version", "starting_taxonomy", "dispositions"}:
+        error(f"{label}: top-level keys must be exactly schema_version, starting_taxonomy, dispositions")
+    if document.get("schema_version") != 1:
+        error(f"{label}: schema_version must be 1")
+
+    starting = document.get("starting_taxonomy")
+    if type(starting) is not list or any(type(item) is not str for item in starting):
+        error(f"{label}: starting_taxonomy must be a string list")
+        starting = []
+    elif tuple(starting) != STARTING_SKILLS:
+        error(f"{label}: starting_taxonomy must exactly match the TASK-0010 starting taxonomy in deterministic order")
+
+    dispositions = document.get("dispositions")
+    if type(dispositions) is not list:
+        error(f"{label}: dispositions must be a list")
+        return frozenset()
+
+    catalog = _load_json_mapping(
+        ROOT / ".agent" / "external-capabilities" / "catalog.json",
+        ".agent/external-capabilities/catalog.json",
+    )
+    sources = _load_json_mapping(
+        ROOT / ".agent" / "external-capabilities" / "sources.json",
+        ".agent/external-capabilities/sources.json",
+    )
+    catalog_entries = {}
+    source_entries = {}
+    if catalog is not None and type(catalog.get("entries")) is list:
+        catalog_entries = {
+            entry.get("id"): entry
+            for entry in catalog["entries"]
+            if type(entry) is dict and type(entry.get("id")) is str
+        }
+    if sources is not None and type(sources.get("sources")) is list:
+        source_entries = {
+            entry.get("id"): entry
+            for entry in sources["sources"]
+            if type(entry) is dict and type(entry.get("id")) is str
+        }
+
+    seen_ids: set[str] = set()
+    seen_owners: set[str] = set()
+    internal: set[str] = set()
+    ordered_ids: list[str] = []
+
+    required_keys = {
+        "skill_id",
+        "current_path",
+        "disposition",
+        "rationale",
+        "surviving_semantic_owner",
+        "external_capability",
+    }
+    external_keys = {"catalog_entry_id", "repository", "revision", "path"}
+
+    for index, record in enumerate(dispositions):
+        prefix = f"{label}: dispositions[{index}]"
+        if type(record) is not dict:
+            error(f"{prefix}: record must be a mapping")
+            continue
+        if set(record) != required_keys:
+            error(f"{prefix}: record keys must be exactly {sorted(required_keys)}")
+            continue
+
+        skill_id = record["skill_id"]
+        current_path = record["current_path"]
+        disposition = record["disposition"]
+        rationale = record["rationale"]
+        owner = record["surviving_semantic_owner"]
+        external = record["external_capability"]
+
+        if type(skill_id) is not str or skill_id not in STARTING_SKILLS:
+            error(f"{prefix}: unknown starting skill id {skill_id!r}")
+            continue
+        ordered_ids.append(skill_id)
+        if skill_id in seen_ids:
+            error(f"{label}: duplicate disposition for starting skill {skill_id!r}")
+        seen_ids.add(skill_id)
+
+        if current_path != f"{skill_id}/SKILL.md":
+            error(f"{prefix}: current_path must be {skill_id}/SKILL.md")
+        if disposition not in RATIONALE_DISPOSITIONS:
+            error(f"{prefix}: unsupported disposition {disposition!r}")
+            continue
+        if skill_id in MANDATORY_INTERNAL_ROLES and disposition != "KEEP_FOUNDATION_SPECIFIC":
+            error(f"{prefix}: {skill_id} must remain KEEP_FOUNDATION_SPECIFIC")
+
+        if type(rationale) is not str or not rationale.strip():
+            error(f"{prefix}: rationale must be non-empty")
+        elif len(rationale) > 1600:
+            error(f"{prefix}: rationale is not bounded")
+
+        if type(owner) is not str or not owner.strip():
+            error(f"{prefix}: surviving_semantic_owner must be non-empty")
+        elif owner in seen_owners:
+            error(f"{label}: duplicate semantic owner {owner!r}")
+        else:
+            seen_owners.add(owner)
+
+        if disposition in INTERNAL_DISPOSITIONS:
+            internal.add(skill_id)
+            if owner != f"internal:{skill_id}":
+                error(f"{prefix}: internal disposition must resolve to internal:{skill_id}")
+        elif disposition == "REPLACE_BY_EXTERNAL":
+            if type(external) is dict and type(external.get("catalog_entry_id")) is str:
+                expected_owner = f"external:{external['catalog_entry_id']}"
+                if owner != expected_owner:
+                    error(f"{prefix}: external replacement owner must be {expected_owner}")
+        elif disposition == "RETIRE":
+            if type(owner) is not str or not owner.startswith("canonical:"):
+                error(f"{prefix}: RETIRE must identify a canonical surviving owner")
+            else:
+                target = (ROOT.parent / owner.removeprefix("canonical:")).resolve()
+                try:
+                    target.relative_to(ROOT.parent.resolve())
+                except ValueError:
+                    error(f"{prefix}: RETIRE owner escapes Foundation repository")
+                else:
+                    if not target.exists():
+                        error(f"{prefix}: orphaned semantic capability; RETIRE owner does not exist")
+
+        if disposition in EXTERNAL_DISPOSITIONS:
+            if type(external) is not dict:
+                error(f"{prefix}: {disposition} requires exact external_capability metadata")
+                continue
+            if set(external) != external_keys:
+                error(f"{prefix}: external_capability keys must be exactly {sorted(external_keys)}")
+                continue
+            entry_id = external["catalog_entry_id"]
+            repository = external["repository"]
+            revision = external["revision"]
+            path = external["path"]
+            if not all(type(value) is str and value for value in (entry_id, repository, revision, path)):
+                error(f"{prefix}: external capability identity fields must be non-empty strings")
+                continue
+            if not SHA40_RE.fullmatch(revision):
+                error(f"{prefix}: external revision must be an exact immutable 40-hex SHA")
+
+            entry = catalog_entries.get(entry_id)
+            if type(entry) is not dict:
+                error(f"{prefix}: external catalog entry {entry_id!r} is missing")
+                continue
+            source_id = entry.get("source")
+            source = source_entries.get(source_id)
+            if entry.get("kind") != "capability" or type(source) is not dict or source.get("kind") != "capability_source":
+                error(f"{prefix}: discovery-only/Awesome entries cannot be adopted")
+                continue
+            if source_id == "awesome":
+                error(f"{prefix}: Awesome is discovery-only and cannot be adopted")
+            if entry.get("revision") != revision or source.get("snapshot_revision") != revision:
+                error(f"{prefix}: external revision does not match exact pinned catalog/source identity")
+            if entry.get("source_path") != path:
+                error(f"{prefix}: external path does not match catalog source_path")
+            if source.get("repository") != repository:
+                error(f"{prefix}: external repository does not match source registry")
+
+            if disposition == "THIN_DELTA":
+                skill_path = ROOT / skill_id / "SKILL.md"
+                if skill_path.is_file():
+                    body = skill_path.read_text(encoding="utf-8")
+                    for token in (entry_id, repository, revision, path):
+                        if token not in body:
+                            error(f"{prefix}: thin-delta skill is missing exact external reference token {token!r}")
+        else:
+            if external is not None:
+                error(f"{prefix}: {disposition} must not declare external_capability metadata")
+
+    missing = set(STARTING_SKILLS) - seen_ids
+    extra = seen_ids - set(STARTING_SKILLS)
+    if missing or extra:
+        error(f"{label}: starting-skill disposition coverage mismatch; missing={sorted(missing)} unexpected={sorted(extra)}")
+    if ordered_ids != list(STARTING_SKILLS):
+        error(f"{label}: dispositions must use deterministic starting-taxonomy order")
+
+    return frozenset(internal)
+
+
+def validate_readme_catalog(expected_skills: frozenset[str]) -> None:
     path = ROOT / "README.md"
     if not path.is_file():
         error("missing README.md")
@@ -177,11 +396,11 @@ def validate_readme_catalog() -> None:
     names = CATALOG_ROW_RE.findall(section)
     if len(names) != len(set(names)):
         error("README.md: duplicate skill in catalog")
-    if set(names) != EXPECTED_SKILLS:
+    if set(names) != expected_skills:
         error(
-            "README.md: catalog does not match curated skill set; "
-            f"missing={sorted(EXPECTED_SKILLS - set(names))} "
-            f"unexpected={sorted(set(names) - EXPECTED_SKILLS)}"
+            "README.md: catalog does not match rationalized internal skill set; "
+            f"missing={sorted(expected_skills - set(names))} "
+            f"unexpected={sorted(set(names) - expected_skills)}"
         )
     validate_links(path, text)
 
@@ -473,7 +692,7 @@ def load_json_document(relative_path: str) -> dict[str, Any] | None:
     return document
 
 
-def validate_case_navigation() -> None:
+def validate_case_navigation(expected_skills: frozenset[str]) -> None:
     label = CASE_ROUTER_PATH
     document = load_protocol_document(label)
     if document is None:
@@ -511,7 +730,7 @@ def validate_case_navigation() -> None:
         for capability in capabilities:
             if not CAPABILITY_RE.fullmatch(capability):
                 error(f"{label}: invalid capability key {capability!r}")
-            elif capability not in EXPECTED_SKILLS or not (ROOT / capability / "SKILL.md").is_file():
+            elif capability not in expected_skills or not (ROOT / capability / "SKILL.md").is_file():
                 error(f"{label}: unsupported capability key {capability!r}")
         if case_id == ADMITTED_CASE_ID and capabilities != ["executor"]:
             error(f"{label}: EXECUTE must route to exactly ['executor']")
@@ -1645,8 +1864,10 @@ def main(argv: list[str] | None = None) -> int:
     errors.clear()
     warnings.clear()
 
+    expected_skills = validate_rationalization()
+
     discovered = sorted(ROOT.rglob("SKILL.md"))
-    allowed = {ROOT / name / "SKILL.md" for name in EXPECTED_SKILLS}
+    allowed = {ROOT / name / "SKILL.md" for name in expected_skills}
     unexpected = [path for path in discovered if path not in allowed]
     missing = sorted(path for path in allowed if not path.is_file())
     if unexpected or missing or set(discovered) != allowed:
@@ -1698,13 +1919,13 @@ def main(argv: list[str] | None = None) -> int:
             warning(f"{rel}: {line_count} lines; Agent Skills recommends keeping SKILL.md under 500 lines")
         validate_links(path, text)
 
-    if set(seen_names) != EXPECTED_SKILLS:
-        error("frontmatter names do not match curated skill set")
+    if set(seen_names) != expected_skills:
+        error("frontmatter names do not match rationalized internal skill set")
 
-    validate_readme_catalog()
+    validate_readme_catalog(expected_skills)
     validate_foundation_architecture_contract()
     validate_generated_program_template()
-    validate_case_navigation()
+    validate_case_navigation(expected_skills)
     validate_task_template()
     validate_handoff_template()
     validate_report_template()
@@ -1720,7 +1941,7 @@ def main(argv: list[str] | None = None) -> int:
     if print_errors():
         return 1
 
-    print(f"\nOK: validated curated 15-skill taxonomy and protocol v{SUPPORTED_PROTOCOL_VERSION}")
+    print(f"\nOK: validated rationalized {len(expected_skills)}-skill internal taxonomy and protocol v{SUPPORTED_PROTOCOL_VERSION}")
     return 0
 
 

@@ -103,7 +103,7 @@ TASK LAUNCH is Architect-owned operator-facing presentation only. It is non-auth
 
 ## Stable governance and change admission
 
-NO CHANGE REQUIRED remains valid when no material problem is reproduced. Reusable HOW for evidence-backed change admission, recurring missing capability, security/compatibility failures, material cost/usability/maintainability regression, the smallest safe correction, and anti-overengineering belongs to [simplicity](../simplicity/SKILL.md). Preference, novelty, elegance, architectural fashion, and hypothetical future scale are not authority. Architect retains only the authority decision to admit a governance change and never expands the closed 15-skill taxonomy casually.
+NO CHANGE REQUIRED remains valid when no material problem is reproduced. Reusable HOW for evidence-backed change admission, recurring missing capability, security/compatibility failures, material cost/usability/maintainability regression, the smallest safe correction, and anti-overengineering belongs to [simplicity](../simplicity/SKILL.md). Preference, novelty, elegance, architectural fashion, and hypothetical future scale are not authority. Architect retains only the authority decision to admit a governance change and never expands the rationalization-derived internal taxonomy casually.
 
 ## Authority creation and review judgment
 

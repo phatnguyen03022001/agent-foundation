@@ -475,14 +475,28 @@ class ValidatorRegressionTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("unsupported review state", result.stdout + result.stderr)
 
-    def test_exact_fifteen_skill_invariant_is_explicit(self) -> None:
-        self.assertEqual(len(VALIDATOR_MODULE.EXPECTED_SKILLS), 15)
+    def test_internal_skill_taxonomy_is_derived_from_rationalization(self) -> None:
+        document = json.loads((ROOT / ".agent" / "rationalization.json").read_text(encoding="utf-8"))
+        expected = {
+            record["skill_id"]
+            for record in document["dispositions"]
+            if record["disposition"] in VALIDATOR_MODULE.INTERNAL_DISPOSITIONS
+        }
+        discovered = {path.parent.name for path in ROOT.rglob("SKILL.md")}
+        self.assertEqual(discovered, expected)
+        self.assertEqual(tuple(document["starting_taxonomy"]), VALIDATOR_MODULE.STARTING_SKILLS)
 
     def test_current_git_workflow_identity_is_github_workflow(self) -> None:
         current = "github-workflow"
         legacy = "github-" + "dev-main-workflow"
-        self.assertIn(current, VALIDATOR_MODULE.EXPECTED_SKILLS)
-        self.assertNotIn(legacy, VALIDATOR_MODULE.EXPECTED_SKILLS)
+        document = json.loads((ROOT / ".agent" / "rationalization.json").read_text(encoding="utf-8"))
+        internal = {
+            record["skill_id"]
+            for record in document["dispositions"]
+            if record["disposition"] in VALIDATOR_MODULE.INTERNAL_DISPOSITIONS
+        }
+        self.assertIn(current, internal)
+        self.assertNotIn(legacy, internal)
         path = ROOT / current / "SKILL.md"
         self.assertTrue(path.is_file())
         self.assertFalse((ROOT / legacy).exists())
@@ -835,7 +849,7 @@ class ValidatorRegressionTests(unittest.TestCase):
             "no workflow engine",
         ):
             self.assertIn(token, combined)
-        self.assertEqual(len(VALIDATOR_MODULE.EXPECTED_SKILLS), 15)
+        self.assertEqual(VALIDATOR_MODULE.MANDATORY_INTERNAL_ROLES, frozenset({"architect", "executor"}))
         self.assertIn("Supported protocol version: **3**", protocol)
 
 
@@ -861,7 +875,7 @@ class Task0006FoundationArchitectureTests(unittest.TestCase):
             "no independent task, mutation, review, acceptance, rebinding, or architecture authority",
         ):
             self.assertIn(token, text)
-        self.assertEqual(len(VALIDATOR_MODULE.EXPECTED_SKILLS), 15)
+        self.assertEqual(VALIDATOR_MODULE.MANDATORY_INTERNAL_ROLES, frozenset({"architect", "executor"}))
 
     def test_capability_state_non_equivalence(self) -> None:
         text = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
@@ -1197,22 +1211,27 @@ class Task0004GovernanceTests(unittest.TestCase):
         ):
             self.assertIn(token, combined)
 
-    def test_ac12_fifteen_skill_taxonomy_is_closed_by_default(self) -> None:
+    def test_ac12_rationalization_derived_taxonomy_is_closed_to_ad_hoc_additions(self) -> None:
         combined = (
             self.read("architect/SKILL.md")
             + self.read("simplicity/SKILL.md")
             + self.read("README.md")
         )
         for token in (
-            "15-skill taxonomy",
-            "closed by default",
+            "rationalization",
+            "closed to ad hoc additions",
             "materially distinct recurring responsibility",
             "exceptional correctness/security",
             "arbitrary numeric threshold",
         ):
             self.assertIn(token, combined)
-        self.assertEqual(len(VALIDATOR_MODULE.EXPECTED_SKILLS), 15)
-        self.assertEqual(len(list(ROOT.rglob("SKILL.md"))), 15)
+        document = json.loads(self.read(".agent/rationalization.json"))
+        expected = {
+            record["skill_id"]
+            for record in document["dispositions"]
+            if record["disposition"] in VALIDATOR_MODULE.INTERNAL_DISPOSITIONS
+        }
+        self.assertEqual({path.parent.name for path in ROOT.rglob("SKILL.md")}, expected)
 
 
 class Task0007ProtocolCorrectnessTests(unittest.TestCase):
@@ -3205,6 +3224,185 @@ class ActualArtifactCliTests(unittest.TestCase):
                 result = self.run_artifact_validator("task", path)
                 self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
                 self.assertIn("flow list", result.stdout + result.stderr)
+
+
+
+class Task0010RationalizationTests(unittest.TestCase):
+    def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
+        temp = tempfile.TemporaryDirectory()
+        root = Path(temp.name) / "repo"
+        shutil.copytree(ROOT, root)
+        self.addCleanup(temp.cleanup)
+        return temp, root
+
+    def run_validator(self, root: Path) -> subprocess.CompletedProcess[str]:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        original_root = VALIDATOR_MODULE.ROOT
+        try:
+            VALIDATOR_MODULE.ROOT = root
+            VALIDATOR_MODULE.errors.clear()
+            VALIDATOR_MODULE.warnings.clear()
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                returncode = VALIDATOR_MODULE.main()
+        finally:
+            VALIDATOR_MODULE.ROOT = original_root
+        return subprocess.CompletedProcess(
+            args=["python3", str(root / VALIDATOR)],
+            returncode=returncode,
+            stdout=stdout.getvalue(),
+            stderr=stderr.getvalue(),
+        )
+
+    def read_map(self, root: Path) -> dict:
+        return json.loads((root / ".agent" / "rationalization.json").read_text(encoding="utf-8"))
+
+    def write_map(self, root: Path, document: dict) -> None:
+        (root / ".agent" / "rationalization.json").write_text(
+            json.dumps(document, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+    def disposition(self, document: dict, skill_id: str) -> dict:
+        return next(record for record in document["dispositions"] if record["skill_id"] == skill_id)
+
+    def test_canonical_rationalization_passes_and_matches_filesystem(self) -> None:
+        result = self.run_validator(ROOT)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        document = self.read_map(ROOT)
+        expected = {
+            record["skill_id"]
+            for record in document["dispositions"]
+            if record["disposition"] in VALIDATOR_MODULE.INTERNAL_DISPOSITIONS
+        }
+        self.assertEqual({path.parent.name for path in ROOT.rglob("SKILL.md")}, expected)
+        self.assertEqual(
+            {record["skill_id"] for record in document["dispositions"] if record["disposition"] == "KEEP_FOUNDATION_SPECIFIC"},
+            {
+                "adversarial-audit", "architect", "cloud-run-basics", "design-review", "executor",
+                "gap-analysis", "github-workflow", "reliability", "research", "reuse-first",
+                "security-review", "simplicity", "verification",
+            },
+        )
+        self.assertEqual(
+            {record["skill_id"] for record in document["dispositions"] if record["disposition"] == "THIN_DELTA"},
+            {"debugging", "optimization"},
+        )
+
+    def test_missing_starting_skill_disposition_is_rejected(self) -> None:
+        _, root = self.fixture()
+        document = self.read_map(root)
+        document["dispositions"] = document["dispositions"][:-1]
+        self.write_map(root, document)
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("starting-skill disposition coverage mismatch", result.stdout + result.stderr)
+
+    def test_duplicate_disposition_is_rejected(self) -> None:
+        _, root = self.fixture()
+        document = self.read_map(root)
+        document["dispositions"].append(deepcopy(document["dispositions"][0]))
+        self.write_map(root, document)
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("duplicate disposition for starting skill", result.stdout + result.stderr)
+
+    def test_architect_and_executor_cannot_be_externalized_or_retired(self) -> None:
+        for skill_id in ("architect", "executor"):
+            with self.subTest(skill_id=skill_id):
+                _, root = self.fixture()
+                document = self.read_map(root)
+                record = self.disposition(document, skill_id)
+                record["disposition"] = "RETIRE"
+                record["surviving_semantic_owner"] = "canonical:missing-owner"
+                self.write_map(root, document)
+                result = self.run_validator(root)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(f"{skill_id} must remain KEEP_FOUNDATION_SPECIFIC", result.stdout + result.stderr)
+
+    def test_mutable_external_revision_is_rejected(self) -> None:
+        _, root = self.fixture()
+        document = self.read_map(root)
+        self.disposition(document, "debugging")["external_capability"]["revision"] = "main"
+        self.write_map(root, document)
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("external revision must be an exact immutable 40-hex SHA", result.stdout + result.stderr)
+
+    def test_discovery_only_awesome_adoption_is_rejected(self) -> None:
+        _, root = self.fixture()
+        document = self.read_map(root)
+        record = self.disposition(document, "adversarial-audit")
+        record["disposition"] = "THIN_DELTA"
+        record["external_capability"] = {
+            "catalog_entry_id": "awesome:004fdb18ab5263ba",
+            "repository": "sindresorhus/awesome",
+            "revision": "bc98e517ddca672f55f9857d714fc3ea3c3540b2",
+            "path": "readme.md",
+        }
+        self.write_map(root, document)
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("discovery-only/Awesome entries cannot be adopted", result.stdout + result.stderr)
+
+    def test_missing_external_path_is_rejected(self) -> None:
+        _, root = self.fixture()
+        document = self.read_map(root)
+        self.disposition(document, "optimization")["external_capability"]["path"] = ""
+        self.write_map(root, document)
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("external capability identity fields must be non-empty strings", result.stdout + result.stderr)
+
+    def test_missing_thin_delta_reference_is_rejected(self) -> None:
+        _, root = self.fixture()
+        path = root / "debugging" / "SKILL.md"
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+                "PIN_REMOVED",
+            ),
+            encoding="utf-8",
+        )
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("thin-delta skill is missing exact external reference token", result.stdout + result.stderr)
+
+    def test_duplicate_semantic_owner_is_rejected(self) -> None:
+        _, root = self.fixture()
+        document = self.read_map(root)
+        self.disposition(document, "design-review")["surviving_semantic_owner"] = "internal:adversarial-audit"
+        self.write_map(root, document)
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("duplicate semantic owner", result.stdout + result.stderr)
+
+    def test_orphaned_retire_owner_is_rejected(self) -> None:
+        _, root = self.fixture()
+        document = self.read_map(root)
+        record = self.disposition(document, "reliability")
+        record["disposition"] = "RETIRE"
+        record["surviving_semantic_owner"] = "canonical:missing-owner"
+        self.write_map(root, document)
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("orphaned semantic capability", result.stdout + result.stderr)
+
+    def test_rationalization_filesystem_disagreement_is_rejected(self) -> None:
+        _, root = self.fixture()
+        (root / "reliability" / "SKILL.md").unlink()
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("curated skill locations mismatch", result.stdout + result.stderr)
+
+    def test_disposition_order_is_deterministic(self) -> None:
+        _, root = self.fixture()
+        document = self.read_map(root)
+        document["dispositions"] = list(reversed(document["dispositions"]))
+        self.write_map(root, document)
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("deterministic starting-taxonomy order", result.stdout + result.stderr)
 
 
 if __name__ == "__main__":
