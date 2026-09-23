@@ -1,0 +1,31 @@
+schema_version: 1
+artifact: RESEARCH_RESULT
+authority: NONE
+
+request:
+  repository: owner/repo
+  base_revision: "0000000000000000000000000000000000000000"
+  request_digest: "0000000000000000000000000000000000000000000000000000000000000000"
+
+facts:
+  - statement: "Observed fact."
+    evidence:
+      - E1
+
+inferences:
+  - "Bounded inference derived from the facts."
+
+options:
+  - "Material option."
+
+recommendation: "Advisory recommendation for Architect synthesis."
+
+risks:
+  - "Material risk."
+
+unknown:
+  - "Material unknown."
+
+evidence:
+  - id: E1
+    locator: "owner/repo@0000000000000000000000000000000000000000:README.md"

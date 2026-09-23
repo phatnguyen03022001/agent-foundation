@@ -1,0 +1,22 @@
+schema_version: 1
+artifact: RESEARCH_REQUEST
+authority: NONE
+specialization: RESEARCHER
+
+target:
+  repository: owner/repo
+  base_revision: "0000000000000000000000000000000000000000"
+
+question: "One bounded research question."
+
+evidence_scope:
+  - "Inspect only evidence needed to answer the bounded question."
+
+context_refs:
+  - "owner/repo@0000000000000000000000000000000000000000:README.md"
+
+read_only: true
+mutation_authority: NONE
+decision_authority: NONE
+peer_results: []
+architect_synthesis_required: true

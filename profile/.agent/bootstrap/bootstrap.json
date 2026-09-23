@@ -13,6 +13,22 @@
     "owner": "skills",
     "path": "skills/.agent/external-capabilities/catalog.json"
   },
+  "research_request_contract": {
+    "owner": "skills",
+    "path": "skills/templates/research-request.yaml"
+  },
+  "research_result_contract": {
+    "owner": "skills",
+    "path": "skills/templates/research-result.yaml"
+  },
+  "continuity_finding_contract": {
+    "owner": "skills",
+    "path": "skills/templates/continuity-finding.yaml"
+  },
+  "continuity_root": {
+    "owner": "profile",
+    "path": "profile/.agent/continuity"
+  },
   "repository_contract": {
     "repository": "phatnguyen03022001/agent-foundation",
     "topology": "MAIN_ONLY",

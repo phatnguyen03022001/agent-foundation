@@ -33,6 +33,24 @@ LEGACY_INTERNAL_OWNER_ALIASES = frozenset(
 EXPECTED_EXTERNAL_REPOSITORIES = {
     "agent-runtime": "phatnguyen03022001/agent-runtime",
 }
+L1_NAVIGATION = {
+    "research_request_contract": {
+        "owner": "skills",
+        "path": "skills/templates/research-request.yaml",
+    },
+    "research_result_contract": {
+        "owner": "skills",
+        "path": "skills/templates/research-result.yaml",
+    },
+    "continuity_finding_contract": {
+        "owner": "skills",
+        "path": "skills/templates/continuity-finding.yaml",
+    },
+    "continuity_root": {
+        "owner": "profile",
+        "path": "profile/.agent/continuity",
+    },
+}
 
 
 EXPECTED_SURFACES = {
@@ -139,6 +157,44 @@ def validate_local_external_capability_catalog(
         or not isinstance(catalog.get("entries"), list)
     ):
         raise ValueError("external capability catalog is malformed or authoritative")
+
+
+def l1_navigation_locator(bootstrap: dict[str, Any], key: str) -> dict[str, str]:
+    expected = L1_NAVIGATION.get(key)
+    if expected is None:
+        raise ValueError(f"unknown L1 navigation key: {key}")
+    locator = bootstrap.get(key)
+    if locator != expected:
+        raise ValueError(f"{key} must identify its canonical Foundation repository-relative path")
+    return dict(expected)
+
+
+def l1_navigation_artifacts(
+    bootstrap: dict[str, Any], foundation_revision: str
+) -> dict[str, dict[str, str]]:
+    repository = bootstrap["repository_contract"]["repository"]
+    return {
+        key: {
+            "repository": repository,
+            "revision": foundation_revision,
+            "path": l1_navigation_locator(bootstrap, key)["path"],
+        }
+        for key in L1_NAVIGATION
+    }
+
+
+def validate_local_l1_navigation(root: Path, bootstrap: dict[str, Any]) -> None:
+    root_real = root.resolve()
+    for key in L1_NAVIGATION:
+        locator = l1_navigation_locator(bootstrap, key)
+        path = (root / locator["path"]).resolve()
+        try:
+            path.relative_to(root_real)
+        except ValueError as exc:
+            raise ValueError(f"{key} path escapes the Foundation repository") from exc
+        exists = path.is_dir() if key == "continuity_root" else path.is_file()
+        if not exists:
+            raise ValueError(f"missing canonical L1 navigation path: {key}={locator['path']}")
 
 
 def case_router_locator(bootstrap: dict[str, Any]) -> dict[str, str]:
@@ -279,6 +335,8 @@ def validate_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
     case_router_locator(bootstrap)
     foundation_control_plane_locator(bootstrap)
     external_capability_catalog_locator(bootstrap)
+    for key in L1_NAVIGATION:
+        l1_navigation_locator(bootstrap, key)
 
     if bootstrap.get("repository_contract") != EXPECTED_REPOSITORY_CONTRACT:
         raise ValueError("repository_contract must explicitly declare agent-foundation MAIN_ONLY identity")
@@ -483,6 +541,7 @@ def required_foundation_paths(bootstrap: dict[str, Any]) -> set[str]:
         foundation_control_plane_locator(bootstrap)["path"],
         external_capability_catalog_locator(bootstrap)["path"],
     }
+    paths.update(l1_navigation_locator(bootstrap, key)["path"] for key in L1_NAVIGATION)
     paths.update(
         route["path"]
         for route in bootstrap["capability_routes"]
@@ -630,6 +689,7 @@ def reconstruct_context(
     validate_contract(bootstrap, lock)
     validate_local_foundation_control_plane(root, bootstrap)
     validate_local_external_capability_catalog(root, bootstrap)
+    validate_local_l1_navigation(root, bootstrap)
     required_target_fields = bootstrap["target_binding"]["required_fields"]
     if set(target_locator) != set(required_target_fields):
         raise ValueError("target locator requires exactly the canonical binding fields")
@@ -648,6 +708,7 @@ def reconstruct_context(
         "external_capability_catalog": external_capability_catalog_artifact(
             bootstrap, profile_revision
         ),
+        "l1_navigation": l1_navigation_artifacts(bootstrap, profile_revision),
         "repository_contract": bootstrap["repository_contract"],
         "target_binding": dict(target_locator),
         "capability_routes": select_capability_routes(bootstrap, required_capabilities),
@@ -668,6 +729,7 @@ def reconstruct_execution_context(
     validate_contract(bootstrap, lock)
     validate_local_foundation_control_plane(root, bootstrap)
     validate_local_external_capability_catalog(root, bootstrap)
+    validate_local_l1_navigation(root, bootstrap)
     required_target_fields = bootstrap["target_binding"]["required_fields"]
     if set(target_locator) != set(required_target_fields):
         raise ValueError("target locator requires exactly the canonical binding fields")
@@ -697,6 +759,7 @@ def reconstruct_execution_context(
         "external_capability_catalog": external_capability_catalog_artifact(
             bootstrap, profile_revision
         ),
+        "l1_navigation": l1_navigation_artifacts(bootstrap, profile_revision),
         "target_binding": dict(target_locator),
         "case_router": router,
         "case": case_id,
@@ -732,6 +795,7 @@ def main(argv: list[str] | None = None) -> int:
         validate_contract(bootstrap, lock)
         validate_local_foundation_control_plane(ROOT, bootstrap)
         validate_local_external_capability_catalog(ROOT, bootstrap)
+        validate_local_l1_navigation(ROOT, bootstrap)
         if args.remote:
             foundation_revision = current_foundation_revision(ROOT)
             validate_resolution(

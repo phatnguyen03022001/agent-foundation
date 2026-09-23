@@ -125,6 +125,40 @@ class BootstrapContractTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "missing Foundation control-plane path"):
                 validate.validate_local_foundation_control_plane(ROOT, self.bootstrap)
 
+    def test_l1_navigation_locators_are_canonical(self) -> None:
+        self.assertEqual(
+            {
+                key: validate.l1_navigation_locator(self.bootstrap, key)
+                for key in validate.L1_NAVIGATION
+            },
+            validate.L1_NAVIGATION,
+        )
+
+    def test_l1_navigation_locators_fail_closed(self) -> None:
+        for key, expected in validate.L1_NAVIGATION.items():
+            with self.subTest(key=key):
+                bootstrap = copy.deepcopy(self.bootstrap)
+                bootstrap.pop(key, None)
+                with self.assertRaisesRegex(ValueError, key):
+                    validate.validate_contract(bootstrap, self.lock)
+
+                bootstrap = copy.deepcopy(self.bootstrap)
+                bootstrap[key] = dict(expected)
+                bootstrap[key]["path"] = "/outside"
+                with self.assertRaisesRegex(ValueError, key):
+                    validate.validate_contract(bootstrap, self.lock)
+
+    def test_missing_l1_navigation_path_fails_closed(self) -> None:
+        with patch.object(Path, "is_file", return_value=False):
+            with self.assertRaisesRegex(ValueError, "missing canonical L1 navigation path"):
+                validate.validate_local_l1_navigation(ROOT, self.bootstrap)
+
+    def test_missing_l1_navigation_remote_path_fails_closed(self) -> None:
+        resolved = self.resolved_routes()
+        resolved["agent-foundation"]["paths"].discard("skills/templates/research-request.yaml")
+        with self.assertRaisesRegex(ValueError, "missing Foundation canonical path"):
+            validate.validate_resolution(self.bootstrap, self.lock, resolved, PROFILE_REVISION)
+
     def test_external_capability_catalog_locator_is_canonical(self) -> None:
         self.assertEqual(
             validate.external_capability_catalog_locator(self.bootstrap),
@@ -527,6 +561,18 @@ class BootstrapContractTests(unittest.TestCase):
         self.assertEqual(
             result["external_capability_catalog"]["path"],
             "skills/.agent/external-capabilities/catalog.json",
+        )
+        self.assertEqual(
+            result["l1_navigation"]["research_request_contract"],
+            {
+                "repository": "phatnguyen03022001/agent-foundation",
+                "revision": PROFILE_REVISION,
+                "path": "skills/templates/research-request.yaml",
+            },
+        )
+        self.assertEqual(
+            result["l1_navigation"]["continuity_root"]["path"],
+            "profile/.agent/continuity",
         )
 
     def test_execution_reconstruction_resolves_execute_from_one_foundation_revision(self) -> None:

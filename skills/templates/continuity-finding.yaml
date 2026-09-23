@@ -1,0 +1,17 @@
+schema_version: 1
+artifact: CONTINUITY_FINDING
+authority: NONE
+status: UNVALIDATED_FOR_OWNER
+
+source:
+  repository: owner/source-repo
+  task_locator: ""
+  report_locator: ""
+
+owner_repository: owner/owner-repo
+summary: "Bounded continuity summary."
+observation: "Observed fact from the source binding."
+inference: "Bounded inference; may be empty when no inference is needed."
+
+evidence:
+  - "owner/source-repo@0000000000000000000000000000000000000000:path/to/evidence"

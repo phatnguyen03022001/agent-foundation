@@ -77,11 +77,15 @@ Independent research fan-out is advisory Executor-specialized work:
 
 A Researcher cannot create canonical task/review authority, rebind the target, or make the final decision.
 
+For materially uncertain direction-setting, Architect may issue exactly three independent fresh-context Research Requests using `skills/templates/research-request.yaml` and render standalone packets with `skills/scripts/research_fanout.py`. Narrower questions may use one Research Request. Every Research Request and Research Result has authority `NONE`; peer results remain absent until each return is final. Architect alone owns evidence synthesis and direction judgment, and neither majority vote, confidence averaging, model score, nor council consensus creates authority.
+
 ### Cross-repository finding continuity
 
 A finding discovered while bound to repository A may be durably referenced as non-authoritative evidence for a future owner of repository B. The reference has authority NONE until repository B is explicitly bound and the finding is freshly revalidated against B's current canonical truth.
 
 A cross-repository finding cannot mutate the owner repository, create a task automatically, create acceptance authority, rebind the active target, or bypass fresh revalidation. Durable continuity is a pointer/evidence obligation, not a shared mutable cross-repository authority object or task queue.
+
+Canonical Continuity Findings use `skills/templates/continuity-finding.yaml` with authority `NONE` and status `UNVALIDATED_FOR_OWNER`. Foundation stores only bounded pointer/metadata records under the owner-keyed `profile/.agent/continuity/` root. When Architect explicitly binds owner repository B, only B's continuity file is loaded; B's canonical truth is freshly resolved and each material finding is revalidated before Architect may discard it, retain it, or separately task it through normal L0 authority.
 
 ## L2 — Capability and Knowledge
 
