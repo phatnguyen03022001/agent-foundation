@@ -1,0 +1,55 @@
+protocol_version: 3
+
+task_id: TASK-0004
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0004/report.yaml
+  commit: "10b8761744a48be7642c77732c212641ab138956"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS_WITH_RECORDED_CAPABILITY_BLOCKER
+
+accepted_candidate:
+  commit: "04ea2ecb179487365250fbf0cdb7a11ab5ba5c18"
+  role: "exact TASK-0004 Foundation integration-closure implementation candidate"
+
+acceptance_basis:
+  - "Fresh review-boundary observation proves local main = origin/main = 10b8761744a48be7642c77732c212641ab138956, ahead/behind 0/0, clean worktree, one worktree, and remote heads exactly {main}."
+  - "Report commit 10b8761744a48be7642c77732c212641ab138956 is the single-parent direct child of preserved candidate 04ea2ecb179487365250fbf0cdb7a11ab5ba5c18 and adds only .agent/tasks/TASK-0004/report.yaml."
+  - "Collision provenance is explicit and truthful: the preserved candidate was published by a concurrent writer; recovery did not claim candidate authorship, rewrite, amend, reset, force-push, or reconstruct the candidate, and the post-collision task edit was normalized back to committed candidate bytes before report-only publication."
+  - "Candidate 04ea2ecb179487365250fbf0cdb7a11ab5ba5c18 is a direct child of exact accepted base 7165c17a63fed33dbd71050e5990cbeb9f363940 and changes only TASK-0004 task authority, root README, regenerated PROGRAM, and the three skills files required by the reproduced positive legacy-locator defect."
+  - "The skills exception is material and bounded: reusable task/report templates still positively named phatnguyen03022001/agent-skills as the skill_library repository after Foundation cutover; candidate updates only those two template locators and the corresponding regression expectation. Skills validation and all 151 validator tests pass."
+  - "PROGRAM is fully regenerated as protocol v3 GENERATED_PROGRAM with authority NONE and FULL_REGENERATION_ON_MATERIAL_INPUT_CHANGE, targets Foundation@7165c17a63fed33dbd71050e5990cbeb9f363940, records the three Foundation-hosted support authority revisions plus external agent-runtime, and preserves accepted TASK-0001 -> TASK-0002 -> TASK-0003 lineage."
+  - "Fresh live-material scan finds zero positive phatnguyen03022001/agent-skills, agent-standards, or agent-documents repository locators outside historical task evidence and negative fixtures. The remaining architect-profile literal is an explicitly historical replay fixture, not current authority/navigation."
+  - "Independent local verification passes bootstrap validation, skills validator, 151/151 skills tests, 94/94 documents tests, report artifact validation, and git diff --check. Earlier candidate-boundary remote bootstrap validation passed; later 403 responses are GitHub API rate limiting against unchanged bootstrap/authority bytes and are not treated as product defects."
+  - "Standards repository-native verification is accepted as a recorded capability blocker under AC-8: the verifier fails before execution because PyYAML is unavailable; requirements-validator.txt declares PyYAML==6.0.2; no dependency installation or substitute verifier was attempted. AC-8 explicitly permits exact reporting of a genuine missing dependency/capability instead of fabricated PASS."
+  - "Authority Set revisions, semantic owner boundaries, bootstrap and authority lock bytes, documents and standards trees, profile authority documents, prior Foundation task artifacts, and historical profile tasks remain unchanged; imported development tips remain unselected."
+
+follow_up_tasks:
+  - task_id: TASK-0005
+    origin:
+      type: admitted_follow_up
+      task_id: TASK-0004
+      gap_id: FOUNDATION-LEGACY-RETIREMENT
+
+notes:
+  - "TASK-0004 integration closure is accepted despite the standards environment dependency blocker because the task contract explicitly admits exact blocker evidence as satisfying AC-8."
+  - "This ACCEPTED review does not itself authorize deletion or history destruction of any legacy source repository."
