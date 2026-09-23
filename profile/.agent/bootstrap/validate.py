@@ -46,6 +46,14 @@ L1_NAVIGATION = {
         "owner": "skills",
         "path": "skills/templates/continuity-finding.yaml",
     },
+    "execution_continuity_contract": {
+        "owner": "skills",
+        "path": "skills/contracts/EXECUTION_CONTINUITY.md",
+    },
+    "execution_continuity_tool": {
+        "owner": "skills",
+        "path": "skills/scripts/execution_attempt.py",
+    },
     "continuity_root": {
         "owner": "profile",
         "path": "profile/.agent/continuity",

@@ -87,6 +87,12 @@ A cross-repository finding cannot mutate the owner repository, create a task aut
 
 Canonical Continuity Findings use `skills/templates/continuity-finding.yaml` with authority `NONE` and status `UNVALIDATED_FOR_OWNER`. Foundation stores only bounded pointer/metadata records under the owner-keyed `profile/.agent/continuity/` root. When Architect explicitly binds owner repository B, only B's continuity file is loaded; B's canonical truth is freshly resolved and each material finding is revalidated before Architect may discard it, retain it, or separately task it through normal L0 authority.
 
+### Execution-attempt continuity
+
+Local Executor liveness hints follow [Execution Attempt Continuity](EXECUTION_CONTINUITY.md). Producer state is only `RUNNING` or explicit `TERMINAL`; observers classify only `TERMINAL_CONFIRMED`, `ACTIVE_LEASE`, or `INTERRUPTED_UNKNOWN`. A fresh lease means only recent `last_seen_at_utc`; a stale non-terminal lease remains unknown and never manufactures failure, death, terminal state, or an exact death timestamp.
+
+Attempt records have authority `NONE` and live only in repository-local Git metadata resolved through `git rev-parse --git-path`. They are bounded recovery hints, not project documents, remote truth, task state, or a fourth layer. Recovery still requires fresh canonical remote, HEAD, index/worktree, checkpoint, and task-authority inspection. No daemon, background heartbeat, scheduler, automatic recovery, or Agent Runtime service is introduced.
+
 ## L2 — Capability and Knowledge
 
 L2 owns reusable HOW and domain knowledge:

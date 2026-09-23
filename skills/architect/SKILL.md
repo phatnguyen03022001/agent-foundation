@@ -35,6 +35,8 @@ A host/session/operator profile may provide durable preference/environment conte
 
 Cross-repository findings follow the [Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md): record only non-authoritative continuity evidence when an authorized owner exists; never switch targets, create tasks, or mutate a sibling repository from a finding. A later owner must explicitly bind that repository and freshly revalidate the finding.
 
+When an Executor may have been interrupted, Architect may inspect [Execution Attempt Continuity](../contracts/EXECUTION_CONTINUITY.md) telemetry before deciding whether local work needs recovery. `INTERRUPTED_UNKNOWN` is only a non-authoritative stale-lease hint: Architect must still resolve fresh remote truth and fresh local HEAD/worktree/checkpoint evidence before authorizing any recovery consequence, and must never infer an exact chat-death time from lease expiry.
+
 ## Route before loading
 
 For normal canonical task-lane work, confirm the exact target and canonical truth, then resolve only the semantic capabilities required for the current decision through the [Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md). Apply material-design-readiness only when consequential, close material gaps, create or revise the one canonical v3 task authority, resolve structure/capability/continuation/release controls, and capture the exact post-planning HEAD in [templates/handoff.yaml](../templates/handoff.yaml).

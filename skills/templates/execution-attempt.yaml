@@ -1,0 +1,15 @@
+schema_version: 1
+artifact: EXECUTION_ATTEMPT
+authority: NONE
+attempt_id: "0123456789abcdef0123456789abcdef"
+repository: "owner/repository"
+task_id: "TASK-0000"
+task_revision: 1
+execution_base: "0000000000000000000000000000000000000000"
+started_at_utc: "2026-01-01T00:00:00Z"
+last_seen_at_utc: "2026-01-01T00:00:00Z"
+lease_seconds: 900
+state: RUNNING
+last_checkpoint: null
+terminal_result: null
+terminal_at_utc: null

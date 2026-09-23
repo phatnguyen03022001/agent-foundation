@@ -37,6 +37,14 @@ Keep mutation consequences distinct:
 - **authorized target-ref mutation** moves a task-authorized repository ref in the current execution context, such as a local commit advancing the bound branch. Refresh the local/ref evidence required by the next consequence; it still does not imply canonical publication.
 - **canonical publication mutation** changes canonical remote truth, such as an authorized push, promotion, or durable report/review publication. Fresh `REMOTE_MUTABLE` proof is required after publication and again at a later review/promotion/release consequence boundary when that remote identity matters.
 
+### Execution-attempt continuity
+
+Repository-local execution-attempt telemetry is `LOCAL_MUTABLE` operational evidence governed by [Execution Attempt Continuity](../contracts/EXECUTION_CONTINUITY.md). It has authority `NONE`, is stored only in repository Git metadata, and does not become task/report/review/project-document authority or canonical remote truth.
+
+Producer state is only `RUNNING` or explicit `TERMINAL`. Observer classification is only `TERMINAL_CONFIRMED`, `ACTIVE_LEASE`, or `INTERRUPTED_UNKNOWN`. Lease expiry never manufactures failed/dead/terminal state or an exact death timestamp. No background heartbeat, daemon, polling service, scheduler, or automatic recovery is implied.
+
+After an interrupted or ambiguous attempt, a successor must still refresh the mutable evidence required by the next consequence: canonical remote truth, local HEAD, index/worktree, local checkpoints, and current task/revision/base authority. Attempt telemetry may guide inspection but cannot authorize cleanup, continuation, mutation, publication, rebinding, review, acceptance, promotion, or release.
+
 ## Optional operator profile
 
 A host/session/operator may supply an optional operator profile as durable preference/environment context. It is not target-repository factual or mutation authority; explicit current user decisions, canonical target facts, and exact task authority outrank it. A missing profile is not a blocker.

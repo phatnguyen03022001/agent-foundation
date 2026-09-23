@@ -134,6 +134,28 @@ class BootstrapContractTests(unittest.TestCase):
             validate.L1_NAVIGATION,
         )
 
+    def test_execution_continuity_navigation_is_canonical_and_local_state_is_not_bootstrap_authority(self) -> None:
+        artifacts = validate.l1_navigation_artifacts(self.bootstrap, PROFILE_REVISION)
+        self.assertEqual(
+            artifacts["execution_continuity_contract"],
+            {
+                "repository": "phatnguyen03022001/agent-foundation",
+                "revision": PROFILE_REVISION,
+                "path": "skills/contracts/EXECUTION_CONTINUITY.md",
+            },
+        )
+        self.assertEqual(
+            artifacts["execution_continuity_tool"],
+            {
+                "repository": "phatnguyen03022001/agent-foundation",
+                "revision": PROFILE_REVISION,
+                "path": "skills/scripts/execution_attempt.py",
+            },
+        )
+        self.assertFalse(
+            any("agent-foundation/execution-attempts" in str(value) for value in self.bootstrap.values())
+        )
+
     def test_l1_navigation_locators_fail_closed(self) -> None:
         for key, expected in validate.L1_NAVIGATION.items():
             with self.subTest(key=key):

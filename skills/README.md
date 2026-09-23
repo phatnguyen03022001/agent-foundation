@@ -55,8 +55,11 @@ There is one task model, not task-lite/task-compact variants. Navigation:
 - [templates/report.yaml](templates/report.yaml): Executor-owned evidence shape;
 - [templates/review.yaml](templates/review.yaml): Architect-owned judgment shape;
 - [templates/continuation.yaml](templates/continuation.yaml): post-review exact-identity continuation shape;
+- [templates/execution-attempt.yaml](templates/execution-attempt.yaml): local execution-attempt telemetry example with authority `NONE`;
 - [templates/program.generated.json](templates/program.generated.json): optional derived generated-planning snapshot with authority `NONE`, never task/lifecycle authority;
 - [contracts/FOUNDATION_ARCHITECTURE.md](contracts/FOUNDATION_ARCHITECTURE.md): three-layer Foundation and L1 control/continuity contract;
+- [contracts/EXECUTION_CONTINUITY.md](contracts/EXECUTION_CONTINUITY.md): local-only lease/checkpoint truth model and recovery boundary;
+- [scripts/execution_attempt.py](scripts/execution_attempt.py): stdlib-only local Git-metadata attempt operations;
 - [contracts/IMPLEMENTATION_CONTRACT.md](contracts/IMPLEMENTATION_CONTRACT.md): task artifact obligations;
 - [contracts/IMPLEMENTATION_REPORT.md](contracts/IMPLEMENTATION_REPORT.md): report artifact obligations;
 - [contracts/ARCHITECT_REVIEW.md](contracts/ARCHITECT_REVIEW.md): review artifact obligations;

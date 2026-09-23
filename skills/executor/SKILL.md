@@ -41,6 +41,14 @@ After GitHub publication or another task-authorized canonical-ref mutation, refr
 
 Temporary/reference/disposable checkouts remain non-authoritative and cannot substitute for a separately designated canonical local working copy. Their cleanup remains subject to the Local Hygiene Contract.
 
+## Execution-attempt continuity
+
+For a long-running local task, use [Execution Attempt Continuity](../contracts/EXECUTION_CONTINUITY.md) when the canonical Foundation surface is available: create one local `RUNNING` attempt after exact binding, then explicitly heartbeat or checkpoint at material work boundaries. There is no background heartbeat. When task authority permits commits and a coherent implementation boundary is already valid, prefer an early coherent Git checkpoint over carrying a large valid dirty worktree solely while waiting for broader verification.
+
+When a terminal result exists, explicitly terminalize the attempt with that result. A confirmed terminal attempt never returns to `RUNNING`. Lease freshness proves only recent telemetry; a stale non-terminal attempt is `INTERRUPTED_UNKNOWN`, not failed/dead/terminal and not an exact death time.
+
+On successor recovery, inspect attempt telemetry before discarding local work, but treat it only as `authority NONE` guidance. Recovery still fresh-resolves canonical remote truth and freshly inspects local HEAD, index/worktree, Git checkpoints, and current task/revision/base authority before cleanup, continuation, or publication. Attempt telemetry never authorizes those consequences.
+
 ## Execution bundles
 
 An **EXECUTION BUNDLE** is one bounded local/runtime invocation that runs multiple deterministic checks and returns one compact independently attributable `JOIN` result. A bundle is an invocation pattern only: it carries no authority or lifecycle state and creates no durable cache, registry, scheduler, queue, daemon, workflow engine, or Agent Runtime intelligence. Each job keeps a stable job/check identity, its own result, and enough evidence to attribute failure independently.
