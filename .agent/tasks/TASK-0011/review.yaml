@@ -1,0 +1,49 @@
+protocol_version: 3
+
+task_id: TASK-0011
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0011/report.yaml
+  commit: "c381c58fd1c2f85485ab6f07df0d0ac593e7d540"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: NOT_REQUIRED
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: "TASK-0011 is MAIN_ONLY and the accepted implementation/report lineage is already published on canonical main."
+
+follow_up_tasks:
+  - "Next program task is the separately governed agent-runtime Recoverable Long Sessions implementation consuming the accepted TASK-0011 survival contract."
+
+notes:
+  - "Exact implementation candidate 4bfff566e16fd81f78dc834bba492c087bf26763 and exact report revision 1 at c381c58fd1c2f85485ab6f07df0d0ac593e7d540 were independently resolved from canonical GitHub main."
+  - "Candidate 4bfff566e16fd81f78dc834bba492c087bf26763 is the direct child of TASK-0011 execution base 85857978453a977089ad2e9963216f6fda8b06a2 and changes exactly the eight authorized execution-survival surfaces: architect, executor, task protocol, Foundation Architecture, Execution Continuity, execution_attempt implementation/tests, and execution-attempt template."
+  - "Report commit c381c58fd1c2f85485ab6f07df0d0ac593e7d540 is the direct report-only child of the candidate and changes only .agent/tasks/TASK-0011/report.yaml."
+  - "The implementation preserves Execution Bundle while changing decision priority to correctness -> survivability/recoverability -> boundedness -> round-trip minimization; bounded synchronous-safe work may still use terminal_exec."
+  - "Execution Attempt schema v2 adds at most one unresolved current Execution Slice with authority NONE. Caller-known intent is persisted before consequence-bearing dispatch. INTENT_RECORDED without later trustworthy observation is treated as MAY_HAVE_BEEN_DISPATCHED / OUTCOME_UNKNOWN rather than FAILED, NOT_DISPATCHED, or SAFE_TO_RETRY."
+  - "OUTCOME_UNKNOWN never authorizes blind retry; fresh consequence-specific reconciliation is required before repeated mutation unless an exact selected tool contract independently proves replay safety."
+  - "TASK-0011 correctly remains transitional: authority.lock is unchanged and current unkeyed terminal_start is not claimed as lost-ACK recoverable for survival-sensitive mutation."
+  - "A real lost implementation-publication acknowledgement occurred during execution. The unresolved publication slice was independently reconciled from fresh remote state as EFFECT_PRESENT; the implementation candidate was not republished. This provides direct operational evidence for the new semantics."
+  - "Before report publication, independent Architect verification on the exact candidate established execution-attempt/slice tests 25/25 PASS, skill validation PASS, full skill regressions 168/168 PASS, and base-to-candidate git diff --check PASS."
+  - "Executor report records additional successful bootstrap, TASK-0007/0008/0009/0010 regressions, py_compile, and invariant checks. The report intentionally leaves CHECK-10 as POST_REPORT_PROOF_REQUIRED because a report cannot truthfully predict its own publication outcome."
+  - "Post-report Architect review independently establishes canonical remote main = c381c58fd1c2f85485ab6f07df0d0ac593e7d540, direct report-only lineage, and immutable boundaries: documents/DOCUMENT_MODEL.md, standards/STANDARD_MODEL.md, authority.lock.json, and external capability catalog are object-identical between execution base and candidate."
+  - "During final review, SentinelX command transport returned an internal tool failure before execution. This is not treated as a repository/test failure. Acceptance relies on prior independent exact-candidate runtime verification plus fresh canonical GitHub evidence and the Executor's attributable report for remaining checks."
