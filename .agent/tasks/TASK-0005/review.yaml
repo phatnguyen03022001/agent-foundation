@@ -1,0 +1,42 @@
+protocol_version: 3
+
+task_id: TASK-0005
+task_revision: 1
+review_revision: 1
+state: REVISION_REQUIRED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0005/report.yaml
+  commit: "5f2cb1563801974468ba1df44abd8db0e01302d6"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: FAIL
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: NOT_PROVEN
+  verifier_evidence: PASS
+
+promotion_readiness:
+  eligible_for_candidate_capture: false
+  reason: "The retirement candidate and external GitHub state independently verify, but the canonical TASK-0005 report artifact is not parseable by the protocol-v3 YAML validator and therefore cannot yet support durable ACCEPTED lifecycle evidence."
+
+follow_up_tasks: []
+
+notes:
+  - "Fresh review proves candidate 6ed5029e214095a182abe72043566d1bd93323c2 is the direct child of accepted base 4091a2b610927b10fe061134e9a464e9a2c8f5b1 and changes only .agent/tasks/TASK-0005/task.yaml plus README.md; report commit 5f2cb1563801974468ba1df44abd8db0e01302d6 is its report-only direct child."
+  - "Fresh GitHub review proves architect-profile, agent-skills, agent-documents, and agent-standards are PUBLIC, archived=true, default main, open PR count zero, and retain their exact dev/main SHAs; recorded tags remain unchanged and historical main commits remain remotely resolvable."
+  - "Fresh review proves agent-foundation and agent-runtime remain PUBLIC, active, not archived, default main, and all four imported source tips remain ancestors of Foundation main."
+  - "Fresh Foundation verification passes bootstrap validation, all 32 bootstrap tests, the curated skills validator, and git diff --check."
+  - "Blocking artifact defect: skills/scripts/validate_skill_library.py --artifact report .agent/tasks/TASK-0005/report.yaml fails at line 142 with 'expected mapping key'. The cause is dotted YAML mapping keys such as v1.0.0: under tags; the protocol parser admits mapping keys matching [A-Za-z_][A-Za-z0-9_-]*."
+  - "Required correction is report-only serialization. Do not modify or repeat retirement metadata mutations, do not alter candidate 6ed5029e214095a182abe72043566d1bd93323c2, and do not change archived repositories."
