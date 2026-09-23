@@ -1,0 +1,306 @@
+protocol_version: 3
+
+task_id: TASK-0003
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0003/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "b474b9647d27e86f3862c699448a1d324761f4d0"
+  candidate_commit: "ff35060ede0bae58924fe5a5df679256f52badd4"
+  candidate_tree: "e27bdcc03f79307240e082bec4d841d2f0eca5fb"
+
+candidate_changed_paths:
+  - .agent/tasks/TASK-0003/task.yaml
+  - README.md
+  - profile/.agent/bootstrap/authority.lock.json
+  - profile/.agent/bootstrap/test_bootstrap.py
+  - profile/.agent/bootstrap/validate.py
+
+authority_lock:
+  before:
+    agent-skills:
+      repository: phatnguyen03022001/agent-skills
+      revision: "87a37a72a4952b1da273d9af308642f4295fda6b"
+    agent-standards:
+      repository: phatnguyen03022001/agent-standards
+      revision: "0da0d5864fe5e458af564f3c6ba9959cefd99639"
+    agent-documents:
+      repository: phatnguyen03022001/agent-documents
+      revision: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+    agent-runtime:
+      repository: phatnguyen03022001/agent-runtime
+      revision: "ac33afadccf2b222ddf48d6c6b45de82951046a2"
+  after:
+    agent-skills:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "87a37a72a4952b1da273d9af308642f4295fda6b"
+    agent-standards:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "0da0d5864fe5e458af564f3c6ba9959cefd99639"
+    agent-documents:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+    agent-runtime:
+      repository: phatnguyen03022001/agent-runtime
+      revision: "ac33afadccf2b222ddf48d6c6b45de82951046a2"
+  sha256_before: "6f0dd9c22c2bde22efe61b615ff9388d84d183dcd58cb05f14c6d138166a81bd"
+  sha256_after: "660ef2a54e11f4381b091e1b7b0b636d1611d9197a9a5a2a1a2f52501b896a99"
+  support_revision_changed: false
+  runtime_entry_changed: false
+  semantic_owner_keys_changed: false
+
+semantic_preservation:
+  agent-skills:
+    original_repository: phatnguyen03022001/agent-skills
+    foundation_repository: phatnguyen03022001/agent-foundation
+    commit_before: "87a37a72a4952b1da273d9af308642f4295fda6b"
+    commit_after: "87a37a72a4952b1da273d9af308642f4295fda6b"
+    tree_before: "cf72df4881b04b1ce570e2817125a1e89573c129"
+    tree_after: "cf72df4881b04b1ce570e2817125a1e89573c129"
+    preserved: true
+  agent-standards:
+    original_repository: phatnguyen03022001/agent-standards
+    foundation_repository: phatnguyen03022001/agent-foundation
+    commit_before: "0da0d5864fe5e458af564f3c6ba9959cefd99639"
+    commit_after: "0da0d5864fe5e458af564f3c6ba9959cefd99639"
+    tree_before: "f25bcd6589a0dbc828d89f99f80fff402a135e4f"
+    tree_after: "f25bcd6589a0dbc828d89f99f80fff402a135e4f"
+    preserved: true
+  agent-documents:
+    original_repository: phatnguyen03022001/agent-documents
+    foundation_repository: phatnguyen03022001/agent-foundation
+    commit_before: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+    commit_after: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+    tree_before: "d826d57c22ac33843c2794845e09bc84e8b0125c"
+    tree_after: "d826d57c22ac33843c2794845e09bc84e8b0125c"
+    preserved: true
+
+remote_resolution:
+  exact_commit_fetch_preflight:
+    agent-skills: PASS
+    agent-standards: PASS
+    agent-documents: PASS
+  routed_paths:
+    agent-skills:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "87a37a72a4952b1da273d9af308642f4295fda6b"
+      paths:
+        - .agent/case-router.yaml
+        - architect/SKILL.md
+        - executor/SKILL.md
+        - protocols/TASK_PROTOCOL.md
+        - simplicity/SKILL.md
+        - github-workflow/SKILL.md
+        - verification/SKILL.md
+    agent-standards:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "0da0d5864fe5e458af564f3c6ba9959cefd99639"
+      paths:
+        - STANDARD_MODEL.md
+    agent-documents:
+      repository: phatnguyen03022001/agent-foundation
+      revision: "c34d34d1842975fa895fc0e3d5273e5826b32205"
+      paths:
+        - DOCUMENT_MODEL.md
+    agent-runtime:
+      repository: phatnguyen03022001/agent-runtime
+      revision: "ac33afadccf2b222ddf48d6c6b45de82951046a2"
+      paths:
+        - README.md
+  all_required_paths_resolved: true
+  case_router:
+    repository: phatnguyen03022001/agent-foundation
+    revision: "87a37a72a4952b1da273d9af308642f4295fda6b"
+    path: .agent/case-router.yaml
+    sha256: "549d9f3835c5cfaae0e249cc84c684c7ade573df5ea93e786c002ecc5954ea68"
+    resolved_from_exact_locked_revision: true
+
+capability_ownership:
+  semantic_owners:
+    - agent-skills
+    - agent-standards
+    - agent-documents
+    - agent-runtime
+  shared_physical_repository_owners:
+    - agent-skills
+    - agent-standards
+    - agent-documents
+  owner_semantics_collapsed: false
+  bootstrap_routes_changed: false
+
+imported_development_tips:
+  agent-skills:
+    imported_tip: "4f4ef2b45e1a025bc499702919431c0d0d61419c"
+    selected: false
+  agent-standards:
+    imported_tip: "4eb149686329b3a5ad74d66a6fce050d930ada39"
+    selected: false
+  agent-documents:
+    imported_tip: "ff135cde2dbebbffcd0c33415a7abaf1b2e2c4ec"
+    selected: false
+
+verification:
+  bootstrap_validator:
+    command: "python3 -B profile/.agent/bootstrap/validate.py"
+    result: PASS
+    signal: "OPM_BOOTSTRAP = TRUE"
+  bootstrap_remote_validator:
+    command: "python3 -B profile/.agent/bootstrap/validate.py --remote"
+    result: PASS
+    signal: "OPM_BOOTSTRAP = TRUE"
+    post_candidate_publication_recheck: PASS
+  bootstrap_unit_tests:
+    command: "python3 -B profile/.agent/bootstrap/test_bootstrap.py"
+    result: PASS
+    tests_run: 32
+    failures: 0
+    errors: 0
+    post_candidate_publication_recheck: PASS
+  python_compile:
+    command: "python3 -m py_compile profile/.agent/bootstrap/validate.py profile/.agent/bootstrap/test_bootstrap.py"
+    result: PASS
+    changed_python_files: 2
+    generated_cache_removed: true
+  git_diff_check:
+    command: "git diff --check"
+    result: PASS
+  legacy_repository_fail_closed:
+    result: PASS
+    covered_owners:
+      - agent-skills
+      - agent-standards
+      - agent-documents
+  mutable_revision_fail_closed:
+    result: PASS
+  shared_repository_owner_separation:
+    result: PASS
+  case_router_exact_lock:
+    result: PASS
+  remote_required_path_resolution:
+    result: PASS
+
+protected_surfaces:
+  base_tree_or_blob_ids:
+    skills: "3322c2bbabec89d77ac956701d680c36c80e0a7e"
+    documents: "c0bf2080ddee6e549a1605c13d4ff9041984c636"
+    standards: "1807ad6e7d1a8ddfe8987ebe937886d9fd85e268"
+    task_0001: "4cb1f5f11acad9670028fd19632d532cac81ab4d"
+    task_0002: "3b891df0c4926b24c99c12fbbc9510a4679589f9"
+    bootstrap_json: "fa7359d1141830362a222c2293b69992daf163a0"
+    program_generated: "b7fc20a3c2957bb454afd3e58666d66d74c7d2f5"
+  candidate_tree_or_blob_ids:
+    skills: "3322c2bbabec89d77ac956701d680c36c80e0a7e"
+    documents: "c0bf2080ddee6e549a1605c13d4ff9041984c636"
+    standards: "1807ad6e7d1a8ddfe8987ebe937886d9fd85e268"
+    task_0001: "4cb1f5f11acad9670028fd19632d532cac81ab4d"
+    task_0002: "3b891df0c4926b24c99c12fbbc9510a4679589f9"
+    bootstrap_json: "fa7359d1141830362a222c2293b69992daf163a0"
+    program_generated: "b7fc20a3c2957bb454afd3e58666d66d74c7d2f5"
+  changed: false
+  bootstrap_json_sha256: "459af8d9d412026b5e6716bab957f7319128edc506e4d518d67ce4f84bb3b1dc"
+  profile_readme_modified: false
+
+program_disposition:
+  path: profile/.agent/program.generated.json
+  blob_before: "b7fc20a3c2957bb454afd3e58666d66d74c7d2f5"
+  blob_after: "b7fc20a3c2957bb454afd3e58666d66d74c7d2f5"
+  sha256: "412bcb3aa5f736bac93a94fa266f3ec510e63dd4169c3292bfc83a7b2704cbbd"
+  modified: false
+  authority: NONE
+  invalidation: FULL_REGENERATION_ON_MATERIAL_INPUT_CHANGE
+  stale_due_to_task_0003_material_authority_location_change: true
+  disposition: >-
+    Preserved unchanged and non-authoritative. TASK-0003 is another material
+    synthesis-input change; full PROGRAM regeneration remains required in the
+    integration-closure successor task.
+
+publication:
+  candidate_published: true
+  candidate_remote_main: "ff35060ede0bae58924fe5a5df679256f52badd4"
+  candidate_remote_branches:
+    - main
+  candidate_ahead: 0
+  candidate_behind: 0
+  candidate_clean: true
+  report_expected_parent: "ff35060ede0bae58924fe5a5df679256f52badd4"
+  report_commit_binding: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  report_commit_note: >-
+    A Git commit cannot self-contain its own content-addressed commit SHA. Per
+    Task Protocol v3 report semantics, the exact report commit/tree, final
+    remote main, final ahead/behind, final clean state, and report-only
+    parent/diff proof are resolved immediately after report publication and
+    returned in the Executor terminal handoff.
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "The three support owners now resolve through agent-foundation at the exact unchanged selected revisions; agent-runtime remains phatnguyen03022001/agent-runtime@ac33afadccf2b222ddf48d6c6b45de82951046a2."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "GitHub legacy-repository and Foundation resolution returned identical commit SHA and tree SHA for all three moved authorities."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Remote validator PASS; every required routed path and exact Case Router bytes resolved from Foundation at locked revisions."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Focused tests prove distinct owner keys/capability ownership despite the three owners sharing one physical Foundation repository."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Legacy physical support repository identities and mutable revisions fail closed."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "bootstrap.json, PROGRAM, support subtrees, TASK-0001, TASK-0002, and imported-tip selection state are unchanged."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Validator PASS; remote validator PASS; 32/32 tests PASS; py_compile PASS; git diff --check PASS."
+  - criterion_id: AC-8
+    status: PARTIAL_POST_REPORT
+    evidence: "Candidate publication is proven non-force with remote {main}; exact report publication and final repository state are post-report evidence."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+  - check_id: CHECK-2
+    result: PASS
+  - check_id: CHECK-3
+    result: PASS
+  - check_id: CHECK-4
+    result: PASS
+  - check_id: CHECK-5
+    result: PASS
+  - check_id: CHECK-6
+    result: PARTIAL_POST_REPORT
+
+mutations:
+  legacy_source_repositories_mutated: false
+  agent_runtime_mutated: false
+  host_runtime_service_tcc_keychain_system_settings_mutated: false
+  state_created_outside_target_repository: false
+  branch_created: false
+  pr_created: false
+  tag_or_release_created: false
+  force_push_used: false
+
+remaining_successor_work:
+  - "Full PROGRAM regeneration remains required in the integration-closure successor because TASK-0003 is a material synthesis-input change."
+  - "Broader integration closure remains pending."
+  - "Legacy repository retirement/archive/delete work remains pending and is not implied by TASK-0003."
+  - "Future authority adoption from ordinary post-consolidation Foundation commits still requires an explicit owner-root/path-prefix contract if needed; TASK-0003 does not guess it."
+
+blockers: []
+deviations_from_task:
+  - >-
+    The exact SHA/tree of the commit containing this report cannot be embedded
+    inside the same report bytes because Git commit identity is content-addressed.
+    Task Protocol v3 therefore binds those values through immediate
+    post-publication external proof without weakening acceptance semantics.
+
+result: NEEDS_REVIEW
