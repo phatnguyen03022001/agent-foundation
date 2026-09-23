@@ -1,0 +1,125 @@
+protocol_version: 3
+
+task_id: TASK-0007
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0007/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "46bfa5d0691a9cae9f85fdda74bb73b99300307d"
+  final_execution_head: "ff10d721928496644c97fea356e2cb9a5000b7a6"
+  candidate_commit: "ff10d721928496644c97fea356e2cb9a5000b7a6"
+  candidate_tree: "d1dbe22e7df657dde6452fa4873a902f8d2925f4"
+  candidate_parent: "76867cdacbb5c124ff867129cda0f77addb5fb42"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "c999401369a09e30b9ea0ff8bcfa3ef207c19bd5"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_write
+    - local_test_execution
+    - bounded_network_resolution
+    - non_force_git_publication
+  available:
+    - Agent Runtime
+    - git
+    - gh
+    - python3
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0007 revision 1 designates no separate authoritative verifier."
+
+pushed: true
+
+publication_state:
+  implementation_candidate_published: true
+  implementation_remote_main: "ff10d721928496644c97fea356e2cb9a5000b7a6"
+  report_publication: PENDING_REPORT_ONLY_CHILD
+
+candidate_lineage:
+  authority_base: "46bfa5d0691a9cae9f85fdda74bb73b99300307d"
+  published_candidate: "cb2850466cbbffbd37f7c034b8e6432767d63bd9"
+  admitted_performance_continuation: "914dbb51b0fc452d983166e36ed486f914b98790"
+  sync_auth_correction: "76867cdacbb5c124ff867129cda0f77addb5fb42"
+  bootstrap_auth_correction: "ff10d721928496644c97fea356e2cb9a5000b7a6"
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "The committed source registry contains exactly ECC, Superpowers, Matt skills, and Awesome at the four task-authorized immutable baseline revisions with repository, ref, kind, license, and indexing-policy metadata; focused registry regression passes."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Four inert deterministic JSON snapshots plus one aggregate catalog are committed. Authenticated Sync --check returned EXTERNAL_CAPABILITY_SYNC = CURRENT, proving committed bytes are reproducible from the pinned revisions without executing upstream code."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "External-capability regression proves ECC capability entries come only from skills/**/SKILL.md and excludes representative agents, commands, hooks, scripts, and mirrored auto-discovery skill paths."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Superpowers regression proves ordinary skill metadata is indexed while plugin manifest and hook/bootstrap behavioral surfaces remain inert source metadata and are not exposed as Foundation capability authority."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Matt regression proves default capability entries equal the promoted .claude-plugin/plugin.json inventory and non-promoted repository skills are excluded."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Awesome entries are generated only with kind discovery; require_capability_entry rejects them as capability candidates and aggregate catalog authority remains NONE."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Sync workflow is explicit-task-gated for refresh, deterministic, stdlib-only, bounded to the six managed metadata paths, fail-closed on malformed/network failures, and now optionally uses GITHUB_TOKEN without persisting or printing credentials. Authenticated --check passes."
+  - criterion_id: AC-8
+    status: PASS
+    evidence: "Bootstrap exposes one repository-relative external capability catalog locator owned by skills. Local and authenticated remote bootstrap validation pass; 44 bootstrap regressions include malformed/missing locator failures and optional GitHub credential coverage."
+  - criterion_id: AC-9
+    status: PASS
+    evidence: "authority.lock.json has the exact same Git blob at authority base and final candidate; active capability_routes contain no external ecosystem route; skill-library validation confirms exactly 15 internal skills; candidate diff contains no agent-runtime mutation or full upstream vendoring."
+  - criterion_id: AC-10
+    status: PASS
+    evidence: "Canonical task validation, bootstrap local validation, authenticated bootstrap remote validation, 44 bootstrap tests, skill-library validation, 156 skill regressions, 15 external-capability tests, authenticated Sync --check, Python compilation, and git diff --check all pass on the final candidate or byte-identical committed inputs."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "python3 -B skills/scripts/validate_skill_library.py --artifact task .agent/tasks/TASK-0007/task.yaml returned OK for canonical TASK-0007 revision 1."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "python3 -B profile/.agent/bootstrap/validate.py returned OPM_BOOTSTRAP = TRUE on final candidate ff10d721928496644c97fea356e2cb9a5000b7a6."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Authenticated python3 -B profile/.agent/bootstrap/validate.py --remote returned OPM_BOOTSTRAP = TRUE after final candidate publication."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "python3 -B profile/.agent/bootstrap/test_bootstrap.py ran 44 tests with OK."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "python3 -B skills/scripts/validate_skill_library.py validated the curated 15-skill taxonomy and protocol v3; python3 -B skills/scripts/test_validate_skill_library.py ran 156 tests with OK."
+  - check_id: CHECK-6
+    result: PASS
+    evidence: "python3 -B skills/scripts/test_sync_external_capabilities.py ran 15 tests with OK, including source-specific indexing, deterministic generation, write boundaries, optional Authorization, fallback without credentials, and token redaction."
+  - check_id: CHECK-7
+    result: PASS
+    evidence: "With GITHUB_TOKEN supplied only in the child process environment from existing gh authentication, python3 -B skills/scripts/sync_external_capabilities.py --check returned EXTERNAL_CAPABILITY_SYNC = CURRENT and emitted no credential."
+  - check_id: CHECK-8
+    result: PASS
+    evidence: "Base/final authority.lock Git blob identity is d41f786928c040f5e4df79e6bb286c4ac95be279 in both revisions; active routes contain only Foundation internal domains plus independent agent-runtime transport; no external ecosystem route exists; skill taxonomy is exactly 15; no agent-runtime repository mutation or upstream activation path appears."
+  - check_id: CHECK-9
+    result: PASS
+    evidence: "Python compilation passed for all four modified/new Python files relative to the authority base, and git diff --check 46bfa5d0691a9cae9f85fdda74bb73b99300307d..ff10d721928496644c97fea356e2cb9a5000b7a6 passed."
+  - check_id: CHECK-10
+    result: POST_REPORT_PROOF_REQUIRED
+    evidence: "Immediately before report creation, HEAD = origin/main = remote main = ff10d721928496644c97fea356e2cb9a5000b7a6, ahead/behind = 0/0, and tracked worktree was clean. This report is the required direct report-only child; its exact publication SHA and final remote/local identity are proven after publication."
+
+result: NEEDS_REVIEW
