@@ -1,12 +1,12 @@
 protocol_version: 3
 
 task_id: TASK-0006
-task_revision: 2
+task_revision: 3
 state: APPROVED
 
 origin:
   type: explicit_operator_request
-  source: "2026-09-23 Foundation three-layer architecture direction plus Architect REVISION_REQUIRED review 2d68cb3c88f9243a98649691407001d690060528"
+  source: "2026-09-23 Foundation three-layer architecture direction plus Architect REVISION_REQUIRED review 2d68cb3c88f9243a98649691407001d690060528; revision 3 supersedes malformed revision-2 serialization"
 
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
@@ -49,18 +49,21 @@ authority_sources:
   - source: "explicit operator direction for the Foundation three-layer architecture"
     role: "material architecture decision and scope authority"
     precedence: 1
-  - source: ".agent/tasks/TASK-0006/review.yaml@2d68cb3c88f9243a98649691407001d690060528"\n    role: "Architect REVISION_REQUIRED authority requiring one coherent Foundation internal authority snapshot"\n    precedence: 2\n  - source: "profile/ARCHITECT_PROFILE.md@c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
-    role: "current operator configuration and execution-surface boundaries"
+  - source: ".agent/tasks/TASK-0006/review.yaml@2d68cb3c88f9243a98649691407001d690060528"
+    role: "Architect REVISION_REQUIRED authority requiring one coherent Foundation internal authority snapshot"
     precedence: 2
+  - source: "profile/ARCHITECT_PROFILE.md@c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
+    role: "current operator configuration and execution-surface boundaries"
+    precedence: 3
   - source: "skills/architect/SKILL.md@c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
     role: "current Architect ownership and routing semantics"
-    precedence: 3
+    precedence: 4
   - source: "skills/executor/SKILL.md@c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
     role: "current Executor ownership and execution semantics"
-    precedence: 4
+    precedence: 5
   - source: "skills/protocols/TASK_PROTOCOL.md@c5bee8c7d319dc3c50fdc470519a06d82358a2d9"
     role: "current protocol-v3 role, authority, lifecycle, and evidence semantics"
-    precedence: 5
+    precedence: 6
 
 structure_authority:
   status: RESOLVED
@@ -109,7 +112,9 @@ scope:
     - "Define the L1 capability-control invariants needed for later external reuse: INDEXED != LOADED, PINNED != TRUSTED, SYNCED != ADOPTED, ADOPTED != AUTHORIZED, LOADED != AUTHORIZED, and SNAPSHOT != AUTHORITY."
     - "Define bounded independent research fan-out semantics: fresh read-only Executor-specialized researchers receive one exact target/base/question, no peer results or unnecessary conversation history, return compact evidence, and never own final decisions."
     - "Define non-authoritative cross-repository finding continuity semantics without allowing automatic sibling-repository mutation, automatic task creation, or target rebinding."
-    - "Update bootstrap/navigation so every Foundation-internal canonical artifact resolves from the exact active Foundation authority_set_identity revision; no profile/skills/documents/standards subtree may carry an independent internal revision pin."\n    - "Remove legacy internal authority-lock entries and revision-selection aliases for agent-skills, agent-standards, and agent-documents. authority.lock.json may retain only genuinely external independently versioned authorities; agent-runtime remains independently pinned."\n    - "Make the Case Router and all Foundation-internal capability routes repository-relative Foundation paths resolved at the exact active Foundation revision. Preserve semantic ownership through canonical path/domain contracts rather than separate internal SHAs."
+    - "Update bootstrap/navigation so every Foundation-internal canonical artifact resolves from the exact active Foundation authority_set_identity revision; no profile/skills/documents/standards subtree may carry an independent internal revision pin."
+    - "Remove legacy internal authority-lock entries and revision-selection aliases for agent-skills, agent-standards, and agent-documents. authority.lock.json may retain only genuinely external independently versioned authorities; agent-runtime remains independently pinned."
+    - "Make the Case Router and all Foundation-internal capability routes repository-relative Foundation paths resolved at the exact active Foundation revision. Preserve semantic ownership through canonical path/domain contracts rather than separate internal SHAs."
     - "Update repository-native validators/tests and concise discovery documentation needed to prove the new architecture contract."
     - "Publish TASK-0006 implementation and report by non-force fast-forward on main only."
 
@@ -132,7 +137,8 @@ invariants:
   - "Read-only researchers are advisory Executor specializations and cannot mutate repositories or create canonical task/review authority."
   - "External or L2 content never grants L0 authority merely because it is indexed, pinned, loaded, mature, or popular."
   - "agent-runtime remains a separate execution repository and transport/substrate, not a Foundation organizational role or fourth architecture layer."
-  - "profile, skills, documents, and standards remain distinct semantic ownership domains inside agent-foundation, but all resolve from one exact Foundation authority-set revision in each bootstrap context."\n  - "No Foundation-internal semantic owner has an independent revision pin after this task. authority.lock.json contains no agent-skills, agent-standards, agent-documents, or architect-profile internal lock entries."
+  - "profile, skills, documents, and standards remain distinct semantic ownership domains inside agent-foundation, but all resolve from one exact Foundation authority-set revision in each bootstrap context."
+  - "No Foundation-internal semantic owner has an independent revision pin after this task. authority.lock.json contains no agent-skills, agent-standards, agent-documents, or architect-profile internal lock entries."
   - "No shared mutable cross-repository authority object, task queue, scheduler, database, daemon, workflow engine, provider pool, or orchestration service is introduced."
   - "Current external ecosystems are not vendored or activated by this task."
   - "Current internal reusable skills are not retired, deleted, or replaced by this task."
@@ -148,7 +154,9 @@ forbidden_changes:
   - "Create branches, PRs, tags, releases, or staging topology."
   - "Introduce a database, service, daemon, queue, scheduler, package manager, plugin manager, or generic orchestration framework."
   - "Auto-create tasks or mutate sibling repositories from deferred findings."
-  - "Change repository metadata or archive state."\n  - "Preserve or recreate independent internal revision pins for agent-skills, agent-standards, agent-documents, profile, or another Foundation subtree."\n  - "Resolve Foundation-internal canonical artifacts by mixing multiple historical Foundation commits in one active bootstrap context."
+  - "Change repository metadata or archive state."
+  - "Preserve or recreate independent internal revision pins for agent-skills, agent-standards, agent-documents, profile, or another Foundation subtree."
+  - "Resolve Foundation-internal canonical artifacts by mixing multiple historical Foundation commits in one active bootstrap context."
 
 gap_policy:
   local_auto_fix: true
@@ -185,6 +193,10 @@ acceptance_criteria:
     requirement: "Bootstrap, case routing, skill-library validation, historical protocol-v3 compatibility, and Foundation-native authority resolution remain green."
     evidence_required: "All required repository-native verification commands PASS on the final candidate."
 
+  - id: AC-9
+    requirement: "One exact Foundation authority-set revision coherently resolves every internal canonical profile/skills/documents/standards path for the active bootstrap context; no legacy internal semantic-owner entry retains an independent revision pin, while agent-runtime remains independently pinned as an external repository."
+    evidence_required: "Exact final authority.lock/bootstrap/validator bytes plus cold reconstruction tests proving all internal routed artifacts share authority_set_identity revision and external agent-runtime resolves only through its own immutable external pin."
+
 verification:
   executor_checks:
     - id: CHECK-1
@@ -210,6 +222,9 @@ verification:
       required: true
     - id: CHECK-8
       command_or_check: "Fresh-resolve remote main immediately before canonical publication and post-prove final main identity, ahead/behind, worktree hygiene, and report publication."
+      required: true
+    - id: CHECK-9
+      command_or_check: "Prove authority.lock contains no Foundation-internal semantic-owner pins; prove cold bootstrap reconstruction binds every internal canonical route to the one exact Foundation authority_set_identity revision and keeps agent-runtime as the separately pinned external authority."
       required: true
   authoritative_verification:
     required: false
