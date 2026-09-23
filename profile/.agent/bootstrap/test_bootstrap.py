@@ -212,20 +212,20 @@ class BootstrapContractTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "unauthorized execution routing"):
                     validate.validate_contract(bootstrap, self.lock)
 
-    def test_admitted_dev_lock_matches_task_authority_exactly(self) -> None:
+    def test_authority_lock_matches_selected_support_revisions_exactly(self) -> None:
         self.assertEqual(
             self.lock["repositories"],
             {
                 "agent-skills": {
-                    "repository": "phatnguyen03022001/agent-skills",
+                    "repository": "phatnguyen03022001/agent-foundation",
                     "revision": "87a37a72a4952b1da273d9af308642f4295fda6b",
                 },
                 "agent-standards": {
-                    "repository": "phatnguyen03022001/agent-standards",
+                    "repository": "phatnguyen03022001/agent-foundation",
                     "revision": "0da0d5864fe5e458af564f3c6ba9959cefd99639",
                 },
                 "agent-documents": {
-                    "repository": "phatnguyen03022001/agent-documents",
+                    "repository": "phatnguyen03022001/agent-foundation",
                     "revision": "c34d34d1842975fa895fc0e3d5273e5826b32205",
                 },
                 "agent-runtime": {
@@ -234,6 +234,36 @@ class BootstrapContractTests(unittest.TestCase):
                 },
             },
         )
+
+    def test_legacy_support_repository_identities_fail_closed(self) -> None:
+        legacy_repositories = {
+            "agent-skills": "phatnguyen03022001/agent-skills",
+            "agent-standards": "phatnguyen03022001/agent-standards",
+            "agent-documents": "phatnguyen03022001/agent-documents",
+        }
+        for owner, repository in legacy_repositories.items():
+            with self.subTest(owner=owner):
+                lock = copy.deepcopy(self.lock)
+                lock["repositories"][owner]["repository"] = repository
+                with self.assertRaisesRegex(ValueError, "incorrect support repository identity"):
+                    validate.validate_contract(self.bootstrap, lock)
+
+    def test_shared_foundation_repository_preserves_semantic_owners(self) -> None:
+        support_owners = ("agent-skills", "agent-standards", "agent-documents")
+        self.assertEqual(
+            {self.lock["repositories"][owner]["repository"] for owner in support_owners},
+            {"phatnguyen03022001/agent-foundation"},
+        )
+        self.assertEqual(
+            set(self.lock["repositories"]),
+            {"agent-skills", "agent-standards", "agent-documents", "agent-runtime"},
+        )
+        routes = {route["capability"]: route["owner"] for route in self.bootstrap["capability_routes"]}
+        self.assertEqual(routes["executor"], "agent-skills")
+        self.assertEqual(routes["engineering_assurance"], "agent-standards")
+        self.assertEqual(routes["documentation_closure"], "agent-documents")
+        self.assertEqual(routes["local_execution_transport"], "agent-runtime")
+        self.assertEqual(set(routes.values()), set(self.lock["repositories"]))
 
     def test_all_four_surfaces_normalize_uniquely(self) -> None:
         expected = {
@@ -398,7 +428,7 @@ class BootstrapContractTests(unittest.TestCase):
             [
                 {
                     "capability": "executor",
-                    "repository": "phatnguyen03022001/agent-skills",
+                    "repository": "phatnguyen03022001/agent-foundation",
                     "revision": self.lock["repositories"]["agent-skills"]["revision"],
                     "path": "executor/SKILL.md",
                 }

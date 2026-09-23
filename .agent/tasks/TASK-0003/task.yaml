@@ -1,0 +1,160 @@
+protocol_version: 3
+
+task_id: TASK-0003
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_handoff
+  source: "2026-09-23 TASK-0003 — Foundation-Native Support Authority Cutover"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: exact_commit
+  commit: "b474b9647d27e86f3862c699448a1d324761f4d0"
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "b474b9647d27e86f3862c699448a1d324761f4d0"
+  task_protocol_path: skills/protocols/TASK_PROTOCOL.md
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+    - github-workflow
+
+authority_sources:
+  - source: "explicit operator handoff for TASK-0003"
+    role: "exact execution authority and acceptance boundary"
+    precedence: 1
+  - source: "skills/protocols/TASK_PROTOCOL.md@b474b9647d27e86f3862c699448a1d324761f4d0"
+    role: "Task Protocol v3 execution/report semantics"
+    precedence: 2
+  - source: "profile/.agent/bootstrap/authority.lock.json@b474b9647d27e86f3862c699448a1d324761f4d0"
+    role: "selected support Authority Set before physical resolver cutover"
+    precedence: 3
+
+objective: >-
+  Move the physical repository resolver for the selected agent-skills,
+  agent-standards, and agent-documents authorities into agent-foundation while
+  preserving their exact immutable authority revisions, semantic owner keys,
+  owner-root-relative paths, and authority bytes. Keep agent-runtime external
+  and unchanged.
+
+scope:
+  required_changes:
+    - "Persist TASK-0003 task and truthful Executor report under .agent/tasks/TASK-0003/."
+    - "Change only the physical repository identity for agent-skills, agent-standards, and agent-documents in authority.lock.json to phatnguyen03022001/agent-foundation."
+    - "Keep the selected support revision SHAs byte-for-byte unchanged and keep agent-runtime repository/revision unchanged."
+    - "Update the bootstrap validator only enough to accept the new physical repository identities while preserving exact-SHA and owner-key validation."
+    - "Update focused bootstrap tests for Foundation-hosted support owners, fail-closed legacy repositories, immutable revisions, Case Router resolution, capability ownership, and shared-repository owner separation."
+    - "Update root README.md minimally to describe the completed support Authority Set location cutover and remaining successor work."
+
+invariants:
+  - "Semantic owner keys remain exactly agent-skills, agent-standards, agent-documents, and agent-runtime."
+  - "Selected revisions remain exactly 87a37a72a4952b1da273d9af308642f4295fda6b, 0da0d5864fe5e458af564f3c6ba9959cefd99639, c34d34d1842975fa895fc0e3d5273e5826b32205, and ac33afadccf2b222ddf48d6c6b45de82951046a2 respectively."
+  - "Imported development tips are not promoted into authority."
+  - "profile/.agent/bootstrap/bootstrap.json remains byte-identical unless exact execution evidence proves otherwise."
+  - "profile/.agent/program.generated.json remains byte-identical, authority NONE, and stale pending full regeneration."
+  - "skills/**, documents/**, standards/**, profile/ARCHITECT_PROFILE.md, profile/ARCHITECT_CALIBRATION.md, skills/protocols/TASK_PROTOCOL.md, and all historical task artifacts remain unchanged."
+  - "No subtree-prefix rewriting or owner-root/path-prefix architecture is introduced."
+  - "No local or remote branch other than main is created."
+
+forbidden_changes:
+  - "Do not promote imported dev tips or change support semantic content."
+  - "Do not collapse semantic owners, add a registry/resolver subsystem/plugin/database, or introduce mutable branch resolution."
+  - "Do not modify agent-runtime authority or Runtime/service/TCC/Keychain/System Settings."
+  - "Do not regenerate PROGRAM, Capability Index, snapshots, or Project Sources."
+  - "Do not retire, archive, delete, or mutate legacy source repositories."
+  - "Do not create branches, PRs, tags, releases, force pushes, worktrees, clones, or task state outside the target repository."
+
+capability_requirements:
+  EXECUTION:
+    - repository_content_read
+    - repository_content_write
+    - native_repository_execution
+    - git_history_read
+    - git_commit
+    - git_push
+    - remote_ref_read
+  REVIEW:
+    - repository_content_read
+    - exact_commit_report_resolution
+    - remote_ref_read
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The three selected support owner keys resolve from phatnguyen03022001/agent-foundation at their exact pre-cutover immutable revisions; agent-runtime remains external and unchanged."
+    evidence_required: "Authority-lock before/after proof, exact SHA proof, validator assertions, and focused tests."
+  - id: AC-2
+    requirement: "Each moved support authority preserves the exact commit object and tree across legacy-repository and Foundation resolution."
+    evidence_required: "GitHub commit/tree equality proof for all three exact revisions."
+  - id: AC-3
+    requirement: "All required routed paths and Case Router bytes resolve remotely from Foundation at the exact locked revisions."
+    evidence_required: "Remote validator PASS and exact path/router proof."
+  - id: AC-4
+    requirement: "Multiple semantic owners sharing agent-foundation remain distinct and all capability ownership remains unchanged."
+    evidence_required: "Focused tests and unchanged bootstrap capability routes."
+  - id: AC-5
+    requirement: "Legacy support repository identities and mutable lock revisions fail closed."
+    evidence_required: "Focused negative tests."
+  - id: AC-6
+    requirement: "bootstrap.json, PROGRAM, protected support subtrees, and historical task artifacts are unchanged; no imported dev tip becomes active authority."
+    evidence_required: "Exact hash/tree/base-to-candidate proof."
+  - id: AC-7
+    requirement: "Validator, remote validator, bootstrap tests, Python compile checks, and git diff --check all pass."
+    evidence_required: "Exact command results and focused test count."
+  - id: AC-8
+    requirement: "main is published only by non-force fast-forward with fresh expected-head CAS; final local/remote state is clean, 0/0, and remote branches are exactly {main}."
+    evidence_required: "Pre-publication and post-publication Git proof."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Run python3 -B profile/.agent/bootstrap/validate.py."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Run python3 -B profile/.agent/bootstrap/validate.py --remote."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run python3 -B profile/.agent/bootstrap/test_bootstrap.py."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run py_compile on changed Python files and git diff --check."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Prove commit/tree preservation, routed-path/Case Router resolution, protected surface identity, and imported-tip non-selection."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Fresh-resolve remote main immediately before each publication consequence and post-prove final refs/hygiene."
+      required: true
+
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true

@@ -18,9 +18,9 @@ ROOT = Path(__file__).resolve().parents[3]
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 
 EXPECTED_REPOSITORIES = {
-    "agent-skills": "phatnguyen03022001/agent-skills",
-    "agent-standards": "phatnguyen03022001/agent-standards",
-    "agent-documents": "phatnguyen03022001/agent-documents",
+    "agent-skills": "phatnguyen03022001/agent-foundation",
+    "agent-standards": "phatnguyen03022001/agent-foundation",
+    "agent-documents": "phatnguyen03022001/agent-foundation",
     "agent-runtime": "phatnguyen03022001/agent-runtime",
 }
 
