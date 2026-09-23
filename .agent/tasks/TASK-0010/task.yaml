@@ -1,0 +1,274 @@
+protocol_version: 3
+
+task_id: TASK-0010
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0010"
+  gap_id: "VISION-INTERNAL-SKILL-RATIONALIZATION"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "80a1d6fbd4f21ffaae1f9e0a12f65ab877387e92"
+
+architect_analysis_skills:
+  - architect
+  - reuse-first
+  - simplicity
+  - research
+  - verification
+
+execution_skills:
+  required:
+    - executor
+    - reuse-first
+    - simplicity
+    - verification
+  recommended:
+    - research
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator direction to finish Foundation simplification by reusing mature external capabilities instead of maintaining duplicated internal methodology"
+    role: "material objective and scope authority"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0009/review.yaml@80a1d6fbd4f21ffaae1f9e0a12f65ab877387e92"
+    role: "accepted current Foundation state and execution-continuity semantics"
+    precedence: 2
+  - source: ".agent/tasks/TASK-0007/review.yaml@80a1d6fbd4f21ffaae1f9e0a12f65ab877387e92"
+    role: "accepted external capability index/sync plane and pinned upstream provenance model"
+    precedence: 3
+  - source: "skills/.agent/external-capabilities/catalog.json@80a1d6fbd4f21ffaae1f9e0a12f65ab877387e92"
+    role: "current inert external capability/discovery inventory"
+    precedence: 4
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@80a1d6fbd4f21ffaae1f9e0a12f65ab877387e92"
+    role: "L0/L1/L2 ownership, capability-state distinctions, and external reuse boundary"
+    precedence: 5
+  - source: "documents/DOCUMENT_MODEL.md@80a1d6fbd4f21ffaae1f9e0a12f65ab877387e92"
+    role: "documentation semantic ownership boundary"
+    precedence: 6
+  - source: "standards/STANDARD_MODEL.md@80a1d6fbd4f21ffaae1f9e0a12f65ab877387e92"
+    role: "engineering assurance/evidence ownership boundary"
+    precedence: 7
+  - source: "skills/protocols/TASK_PROTOCOL.md@80a1d6fbd4f21ffaae1f9e0a12f65ab877387e92"
+    role: "L0 authority, task lifecycle, and capability-versus-authority semantics"
+    precedence: 8
+
+structure_authority:
+  status: RESOLVED
+  source: "accepted three-layer Foundation architecture with external capability plane"
+  rationale: "This task may reduce the internal L2 skill taxonomy and add one Foundation-owned adoption/rationalization map inside skills/.agent. It must not change L0 organizational roles, documents/ or standards/ ownership, or create a new package/plugin system."
+
+objective: "Audit all 15 current internal skills against current Foundation-specific responsibilities, documents/standards ownership, and exact pinned external capabilities; retain only genuine Foundation-specific capability, convert partial overlaps to thin Foundation deltas, adopt exact mature external capabilities for generic methodology where they fully fit, and retire duplicated internal skill implementations without weakening authority, evidence, compatibility, or deterministic routing."
+
+rationalization_model:
+  dispositions:
+    - KEEP_FOUNDATION_SPECIFIC
+    - THIN_DELTA
+    - REPLACE_BY_EXTERNAL
+    - RETIRE
+  mandatory_keep:
+    - architect
+    - executor
+  current_internal_skills:
+    - adversarial-audit
+    - architect
+    - cloud-run-basics
+    - debugging
+    - design-review
+    - executor
+    - gap-analysis
+    - github-workflow
+    - optimization
+    - reliability
+    - research
+    - reuse-first
+    - security-review
+    - simplicity
+    - verification
+
+scope:
+  required_changes:
+    - "Audit every current internal skill exactly once and persist one deterministic Foundation-owned rationalization/adoption map under skills/.agent/ with its disposition, rationale, exact current internal path, and exact external catalog entry/source identity where external replacement is used."
+    - "The rationalization map is capability-selection/adoption metadata only. It must preserve Foundation capability-state semantics: adoption makes a capability an approved reusable HOW source but never grants target mutation, task, review, acceptance, rebinding, promotion, or release authority."
+    - "Architect and Executor are mandatory KEEP_FOUNDATION_SPECIFIC and must remain canonical internal skills. Their organizational role authority must not be delegated to any external capability."
+    - "For each non-role skill, compare actual internal semantics against exact current external capability candidates from the pinned TASK-0007 catalog and, where necessary, read the exact upstream SKILL.md/reference bytes at the catalog revision. Do not judge equivalence from skill name or description alone."
+    - "Use KEEP_FOUNDATION_SPECIFIC when the internal skill owns material Foundation-specific semantics that do not belong in L0/L1 contracts, documents/, standards/, or a mature external capability."
+    - "Use THIN_DELTA when mature external capability supplies the generic methodology but a small Foundation-specific compatibility/authority/evidence delta remains. Rewrite the internal SKILL.md to contain only that delta plus an exact external capability reference; do not duplicate the upstream method."
+    - "Use REPLACE_BY_EXTERNAL only when one exact pinned external capability or an explicitly justified minimal exact set fully covers the reusable methodology and the internal skill has no remaining Foundation-specific semantic responsibility. Remove the internal skill implementation and route the semantic capability through the Foundation adoption map."
+    - "Use RETIRE only when the internal skill is no longer a distinct capability because its semantics are fully owned elsewhere in Foundation or are redundant after rationalization. RETIRE must identify the surviving canonical owner and must not silently delete behavior."
+    - "External adoption must use exact immutable repository/revision/path identity from the current external catalog. Mutable refs, popularity, ecosystem name, or discovery-only Awesome entries are invalid adoption identities."
+    - "Awesome entries remain discovery-only and cannot be adopted directly as skills."
+    - "ECC/Superpowers/Matt external instructions remain L2 HOW only. Upstream AGENTS.md, hooks, commands, installers, session bootstrap, role systems, task authority, or repository governance are never adopted."
+    - "Create or update deterministic routing/navigation so every semantic capability previously represented by the 15-skill taxonomy remains resolvable to exactly one canonical internal skill, one thin delta + exact external capability, or one exact external adopted capability. No semantic capability may become orphaned."
+    - "Update bootstrap capability routes only when a currently routed internal capability changes disposition. External adopted capability routes must resolve through the Foundation adoption map/catalog and exact source identity; external source content must not be copied into authority.lock.json."
+    - "Update the skill-library validator/tests so the final internal taxonomy is derived from the canonical rationalization map rather than hard-coded to the historical count of 15. The validator must reject missing dispositions, duplicate semantic owners, non-pinned external adoption, discovery-only adoption, missing thin-delta source references, and orphaned routed capabilities."
+    - "Remove retired/replaced internal skill directories only after deterministic routing/adoption evidence proves equivalent semantic coverage. Do not keep tombstone directories or duplicate wrappers solely for historical compatibility."
+    - "Preserve Git history as the historical source of removed skill content. Do not create archive/, legacy/, deprecated/, backup/, or copied-retirement directories."
+    - "Consult documents/DOCUMENT_MODEL.md and standards/STANDARD_MODEL.md plus materially relevant standards dimensions before classifying skills. A skill that merely duplicates canonical document-model or standards semantics should not survive as a separate methodology owner unless it adds a real reusable HOW delta."
+    - "Keep documents/ and standards/ byte-unchanged unless a direct canonical contradiction is discovered. Any required mutation of those domains is architecture/spec expansion and must stop for Architect revision."
+    - "Preserve TASK-0007 source registry/snapshots/catalog as inert provenance. This task may add adoption/rationalization metadata but must not rewrite upstream snapshots merely to rationalize internal skills."
+    - "Preserve TASK-0008 research/continuity and TASK-0009 execution-attempt continuity semantics."
+    - "Publish TASK-0010 implementation and report by non-force fast-forward on main only."
+
+  allowed_existing_files_or_components:
+    - "skills/**"
+    - "profile/.agent/bootstrap/bootstrap.json"
+    - "profile/.agent/bootstrap/validate.py"
+    - "profile/.agent/bootstrap/test_bootstrap.py"
+    - "README.md only for concise discovery/navigation correction if materially required"
+    - ".agent/tasks/TASK-0010/**"
+
+  expected_files_are_restrictive: false
+
+invariants:
+  - "Foundation remains MAIN_ONLY and all Foundation-internal canonical paths resolve from one exact authority_set_identity revision."
+  - "There remain exactly two organizational roles: Architect and Executor."
+  - "architect and executor remain internal Foundation skills and canonical organizational-role owners."
+  - "External adoption changes reusable HOW sourcing only; it never creates L0 authority."
+  - "INDEXED != LOADED, PINNED != TRUSTED, SYNCED != ADOPTED, ADOPTED != AUTHORIZED, LOADED != AUTHORIZED, and SNAPSHOT != AUTHORITY remain true."
+  - "Only capability entries from exact pinned external source identities may be adopted. Awesome discovery entries cannot be adopted as capabilities."
+  - "No external AGENTS.md, hook, command shim, installer, plugin bootstrap, role system, task system, or session-governance instruction becomes Foundation authority."
+  - "Every historical internal semantic capability remains either canonically owned, thin-delta routed, externally adopted, or explicitly retired into another canonical owner. No silent semantic loss is permitted."
+  - "No internal skill survives only because it already exists. No internal skill is removed only because an external skill has a similar name."
+  - "documents/ and standards/ remain the canonical owners of their existing domains and remain byte-unchanged unless Architect revises the task."
+  - "authority.lock.json remains external-authority-only and does not gain ECC, Superpowers, Matt, or Awesome entries."
+  - "TASK-0008 continuity findings and TASK-0009 local execution-attempt telemetry remain non-authoritative and unchanged."
+  - "agent-runtime remains an orthogonal execution substrate and is not mutated."
+  - "No package manager, plugin manager, daemon, service, queue, database, generic dependency solver, or fourth Foundation layer is introduced."
+
+forbidden_changes:
+  - "Remove or externalize architect or executor."
+  - "Adopt external capability based only on title, description, popularity, or repository reputation without exact pinned source inspection sufficient to prove semantic fit."
+  - "Adopt Awesome discovery entries directly as capabilities."
+  - "Vendor full external repositories or copy full external skill bodies into Foundation."
+  - "Activate upstream hooks, installers, scripts, command shims, AGENTS.md, session bootstrap, or plugin governance."
+  - "Add ECC, Superpowers, Matt skills, or Awesome to authority.lock.json."
+  - "Create archive, legacy, deprecated, backup, retired-copy, or duplicate compatibility directories for removed skills."
+  - "Create a new organizational role, fourth layer, plugin/package manager, registry service, daemon, scheduler, queue, database, provider pool, or workflow engine."
+  - "Modify documents/ or standards/ without Architect revision."
+  - "Modify agent-runtime repository, Runtime state/configuration, TCC, Keychain, System Settings, or host-global configuration."
+  - "Create branches, PRs, tags, releases, or staging topology."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: revised_contract_required
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "All 15 starting internal skills have exactly one evidence-backed disposition in one canonical deterministic rationalization/adoption map; architect and executor are KEEP_FOUNDATION_SPECIFIC."
+    evidence_required: "Exact committed map plus validator tests proving complete one-to-one coverage of the starting taxonomy, closed disposition vocabulary, mandatory role retention, and deterministic ordering."
+  - id: AC-2
+    requirement: "Every REPLACE_BY_EXTERNAL or THIN_DELTA disposition identifies exact pinned external repository/revision/path capability source and is supported by direct semantic comparison of internal and upstream content, not name-level similarity."
+    evidence_required: "Per-skill evidence locators in the rationalization map/report, exact catalog identities, and tests rejecting mutable/discovery-only/missing source identities."
+  - id: AC-3
+    requirement: "Every THIN_DELTA internal skill contains only a bounded Foundation-specific delta and exact external capability reference without duplicating generic upstream methodology."
+    evidence_required: "Before/after semantic diff and focused assertions that thin-delta skills preserve Foundation-specific constraints while removing duplicated methodology."
+  - id: AC-4
+    requirement: "Every REPLACE_BY_EXTERNAL/RETIRE removal has a surviving deterministic semantic route/owner and no capability previously represented by the starting taxonomy becomes orphaned."
+    evidence_required: "Machine-checkable route/owner closure proof and negative tests for orphaned, duplicate, or ambiguous semantic ownership."
+  - id: AC-5
+    requirement: "The final internal skill taxonomy contains only KEEP_FOUNDATION_SPECIFIC and THIN_DELTA skills and is derived from the canonical rationalization map rather than a historical hard-coded count."
+    evidence_required: "Final skill directory enumeration, validator output, and regression tests proving exact agreement between map and filesystem."
+  - id: AC-6
+    requirement: "External adopted capabilities remain L2 HOW only: no authority.lock entry, no upstream governance activation, no hook/installer/command/session bootstrap activation, and no target mutation authority is created by adoption."
+    evidence_required: "Exact authority.lock proof, bootstrap/routing inspection, source/adoption validator tests, and changed-path proof."
+  - id: AC-7
+    requirement: "Documents/ and standards/ are consulted as canonical ownership/evidence constraints and remain byte-identical to execution base; skills duplicating those domains are retained only when they provide a distinct reusable HOW delta."
+    evidence_required: "Exact unchanged blob proof plus rationalization evidence referencing relevant document/standards ownership for affected skills."
+  - id: AC-8
+    requirement: "TASK-0007 external source registry/snapshots/catalog remain provenance-stable; TASK-0008 and TASK-0009 continuity semantics remain intact; agent-runtime remains untouched."
+    evidence_required: "Exact blob/diff proof and focused regression PASS."
+  - id: AC-9
+    requirement: "Bootstrap and capability navigation resolve every retained/thin/external-adopted semantic capability deterministically at the active Foundation authority_set_identity while failing closed on missing, ambiguous, mutable, or discovery-only adoption metadata."
+    evidence_required: "Bootstrap/validator positive and negative tests including any route changed by rationalization."
+  - id: AC-10
+    requirement: "All existing Foundation bootstrap, protocol, continuity, external-capability, and skill-library regression suites remain green after taxonomy reduction."
+    evidence_required: "All required repository-native verification commands PASS on the final candidate."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0010 with the canonical task artifact validator before any implementation mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Generate and validate the complete 15-skill disposition matrix before deleting or rewriting any skill. Prove architect/executor mandatory KEEP and exact external identities for every proposed THIN_DELTA/REPLACE_BY_EXTERNAL."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run focused rationalization/adoption validator tests covering complete taxonomy coverage, mandatory roles, exact pinning, discovery-only rejection, thin-delta requirements, orphan/duplicate routing rejection, and deterministic serialization."
+      required: true
+    - id: CHECK-4
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py and authenticated python3 -B profile/.agent/bootstrap/validate.py --remote."
+      required: true
+    - id: CHECK-5
+      command_or_check: "python3 -B profile/.agent/bootstrap/test_bootstrap.py."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Run the updated skill-library validator and full skill regression suite; prove final filesystem taxonomy exactly equals KEEP_FOUNDATION_SPECIFIC plus THIN_DELTA entries in the rationalization map."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Run TASK-0007 external-capability sync/index tests, TASK-0008 research/continuity tests, and TASK-0009 execution-attempt tests."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Prove documents/ and standards/ blobs plus authority.lock are unchanged from execution base; prove external source snapshots/catalog are unchanged except an explicitly necessary adoption locator/reference surface."
+      required: true
+    - id: CHECK-9
+      command_or_check: "python3 -m py_compile for modified/new Python files and git diff --check; prove no archive/legacy/deprecated/backup copy directories and no agent-runtime mutation."
+      required: true
+    - id: CHECK-10
+      command_or_check: "Fresh-resolve remote main immediately before non-force publication, then post-prove final main identity, ahead/behind, tracked worktree hygiene, implementation candidate, and report publication."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files:
+    - "skills/.agent/rationalization.json"
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "No other new file is required; adoption/rationalization state must remain one small canonical map."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
