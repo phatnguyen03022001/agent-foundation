@@ -1,0 +1,206 @@
+protocol_version: 3
+
+task_id: TASK-0002
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0002/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "4b11fad1a3531825423c463b5982cc1d6a48b63b"
+  candidate_commit: "596e35a631f3cca8f99b42a36c617cdcf6d7908e"
+  candidate_tree: "b2d11e5d7f060b49d242dba2cc67cfb3c7e9f48a"
+
+candidate_changed_paths:
+  - .agent/tasks/TASK-0002/task.yaml
+  - README.md
+  - profile/README.md
+  - profile/.agent/bootstrap/bootstrap.json
+  - profile/.agent/bootstrap/validate.py
+  - profile/.agent/bootstrap/test_bootstrap.py
+
+self_repository_contract:
+  before:
+    repository: phatnguyen03022001/architect-profile
+    topology: DEV_MAIN
+    working_ref: dev
+    stable_ref: main
+    local_policy: MANAGED_MIRROR
+  after:
+    repository: phatnguyen03022001/agent-foundation
+    topology: MAIN_ONLY
+    working_ref: main
+    stable_ref: main
+    local_policy: MANAGED_MIRROR
+
+self_lifecycle:
+  before:
+    source: ARCHITECT_PROFILE_COMMIT
+    evolution_ref: dev
+    activation_ref: main
+  after:
+    source: AGENT_FOUNDATION_COMMIT
+    evolution_ref: main
+    activation_ref: main
+  self_pin: false
+  rollback: FORWARD_ACTIVATION_COMMIT
+
+repository_root_paths:
+  bootstrap_entrypoint: profile/.agent/bootstrap/bootstrap.json
+  authority_lock_locator: profile/.agent/bootstrap/authority.lock.json
+  validator_root: agent-foundation repository root
+
+generic_topology_policy:
+  bootstrap_default_topology_before: DEV_MAIN
+  bootstrap_default_topology_after: DEV_MAIN
+  changed: false
+
+authority_lock:
+  path: profile/.agent/bootstrap/authority.lock.json
+  sha256_before: "6f0dd9c22c2bde22efe61b615ff9388d84d183dcd58cb05f14c6d138166a81bd"
+  sha256_after: "6f0dd9c22c2bde22efe61b615ff9388d84d183dcd58cb05f14c6d138166a81bd"
+  byte_identical: true
+  selected_repositories_and_revisions_changed: false
+
+verification:
+  bootstrap_validator:
+    command: "python3 -B profile/.agent/bootstrap/validate.py"
+    result: PASS
+    signal: "OPM_BOOTSTRAP = TRUE"
+  bootstrap_remote_validator:
+    command: "python3 -B profile/.agent/bootstrap/validate.py --remote"
+    result: PASS
+    signal: "OPM_BOOTSTRAP = TRUE"
+  bootstrap_unit_tests:
+    command: "python3 -B profile/.agent/bootstrap/test_bootstrap.py"
+    result: PASS
+    tests_run: 30
+    failures: 0
+    errors: 0
+  python_compile:
+    command: "python3 -m py_compile profile/.agent/bootstrap/validate.py profile/.agent/bootstrap/test_bootstrap.py"
+    result: PASS
+    changed_python_files: 2
+    generated_cache_removed: true
+  git_diff_check:
+    command: "git diff --check"
+    result: PASS
+  stale_self_claim_search:
+    authoritative_bootstrap_repository_claim_matches: 0
+    foundation_evolution_ref_dev_matches: 0
+    result: PASS
+  case_router_semantics:
+    result: PASS
+    changed: false
+  capability_route_semantics:
+    result: PASS
+    changed: false
+
+protected_surfaces:
+  base_tree_ids:
+    skills: "3322c2bbabec89d77ac956701d680c36c80e0a7e"
+    documents: "c0bf2080ddee6e549a1605c13d4ff9041984c636"
+    standards: "1807ad6e7d1a8ddfe8987ebe937886d9fd85e268"
+    historical_profile_tasks: "ce019849a2251d34eb3e6c055f0fd3414e50efff"
+    task_0001: "4cb1f5f11acad9670028fd19632d532cac81ab4d"
+  candidate_tree_ids:
+    skills: "3322c2bbabec89d77ac956701d680c36c80e0a7e"
+    documents: "c0bf2080ddee6e549a1605c13d4ff9041984c636"
+    standards: "1807ad6e7d1a8ddfe8987ebe937886d9fd85e268"
+    historical_profile_tasks: "ce019849a2251d34eb3e6c055f0fd3414e50efff"
+    task_0001: "4cb1f5f11acad9670028fd19632d532cac81ab4d"
+  changed: false
+
+program_disposition:
+  path: profile/.agent/program.generated.json
+  candidate_blob: "b7fc20a3c2957bb454afd3e58666d66d74c7d2f5"
+  modified: false
+  authority: NONE
+  stale_due_to_material_self_identity_change: true
+  disposition: "Preserved unchanged as a non-authoritative stale projection; later full regeneration is follow-up work."
+
+publication:
+  candidate_published: true
+  candidate_remote_main: "596e35a631f3cca8f99b42a36c617cdcf6d7908e"
+  candidate_remote_branches:
+    - main
+  candidate_ahead: 0
+  candidate_behind: 0
+  candidate_clean: true
+  report_expected_parent: "596e35a631f3cca8f99b42a36c617cdcf6d7908e"
+  report_commit_binding: EXTERNAL_POST_PUBLICATION_RESOLUTION
+  report_commit_note: >-
+    A Git commit cannot self-contain its own content-addressed commit SHA. Per Task Protocol v3
+    report semantics, the exact report commit, final remote main, final ahead/behind, final clean
+    state, and report-only parent/diff proof are resolved immediately after report publication
+    and returned in the Executor terminal handoff rather than falsely self-attested here.
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Bootstrap contract and fail-closed validator/tests require agent-foundation / MAIN_ONLY with both refs main."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Authority-set self lifecycle now uses AGENT_FOUNDATION_COMMIT with evolution_ref=main and activation_ref=main."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Validator/tests resolve bootstrap and authority lock from the physical Foundation repository root."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "authority.lock SHA-256 is identical before/after and the exact selected support revisions remain unchanged."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "bootstrap_default_topology remains DEV_MAIN; Case Router and capability routes are unchanged and remote resolution passes."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Protected subtree/tree IDs are identical between authorized base and candidate."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Validator PASS; remote validator PASS; 30/30 focused tests PASS; py_compile PASS; git diff --check PASS."
+  - criterion_id: AC-8
+    status: PARTIAL_POST_REPORT
+    evidence: "Candidate publication is proven non-force with remote {main}; exact report publication/final state is post-report evidence."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+  - check_id: CHECK-2
+    result: PASS
+  - check_id: CHECK-3
+    result: PASS
+  - check_id: CHECK-4
+    result: PASS
+  - check_id: CHECK-5
+    result: PASS
+  - check_id: CHECK-6
+    result: PARTIAL_POST_REPORT
+
+mutations:
+  source_repositories_mutated: false
+  agent_runtime_mutated: false
+  host_runtime_service_tcc_keychain_system_settings_mutated: false
+  state_created_outside_target_repository: false
+  branch_created: false
+  pr_created: false
+  tag_or_release_created: false
+  force_push_used: false
+
+remaining_follow_up_work:
+  - "Explicit support Authority Set cutover remains pending."
+  - "Regenerate profile/.agent/program.generated.json only in a later explicitly authorized task."
+  - "Legacy repository retirement/archive/delete work remains pending and is not implied by this task."
+
+blockers: []
+deviations_from_task:
+  - >-
+    The exact SHA of the commit containing this report cannot be embedded inside the same report bytes
+    because Git commit identity is content-addressed. Task Protocol v3 therefore binds that SHA through
+    immediate post-publication external proof. No semantic acceptance predicate is weakened.
+
+result: NEEDS_REVIEW
