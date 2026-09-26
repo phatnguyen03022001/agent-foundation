@@ -19,7 +19,8 @@ from pathlib import Path
 from typing import Any
 
 LEGACY_SCHEMA_VERSION = 1
-SCHEMA_VERSION = 2
+SLICE_SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 ARTIFACT = "EXECUTION_ATTEMPT"
 AUTHORITY = "NONE"
 DEFAULT_LEASE_SECONDS = 900
@@ -27,6 +28,19 @@ MIN_LEASE_SECONDS = 30
 MAX_LEASE_SECONDS = 86400
 MAX_UNTRACKED_COUNT = 100
 MAX_LIST_RESULTS = 100
+MAX_COMPLETED_PERFORMANCE_SEGMENTS = 32
+
+PERFORMANCE_PHASES = (
+    "PREFLIGHT",
+    "IMPLEMENTATION",
+    "VERIFICATION",
+    "REPORTING",
+    "PUBLICATION",
+)
+PERFORMANCE_ACTIVITY_CLASSES = (
+    "CONTROLLER_OWNED",
+    "EXTERNAL_WAIT",
+)
 
 ATTEMPT_ID_RE = re.compile(r"^[0-9a-f]{32}$")
 SLICE_ID_RE = ATTEMPT_ID_RE
@@ -54,9 +68,22 @@ LEGACY_RECORD_KEYS = {
     "terminal_result",
     "terminal_at_utc",
 }
-RECORD_KEYS = LEGACY_RECORD_KEYS | {
+SLICE_RECORD_KEYS = LEGACY_RECORD_KEYS | {
     "next_slice_ordinal",
     "current_slice",
+}
+RECORD_KEYS = SLICE_RECORD_KEYS | {
+    "performance",
+}
+PERFORMANCE_KEYS = {
+    "completed_segments",
+    "open_segment",
+}
+PERFORMANCE_SEGMENT_KEYS = {
+    "phase",
+    "activity_class",
+    "started_at_utc",
+    "ended_at_utc",
 }
 SLICE_KEYS = {
     "authority",
@@ -370,6 +397,75 @@ def _validate_slice(slice_record: Any, *, started: datetime, last_seen: datetime
     return slice_record
 
 
+def _validate_performance_segment(
+    segment: Any,
+    *,
+    attempt_started: datetime,
+    last_seen: datetime,
+    completed: bool,
+) -> tuple[datetime, datetime | None]:
+    if not isinstance(segment, dict) or set(segment) != PERFORMANCE_SEGMENT_KEYS:
+        raise ValueError("performance segment fields are invalid")
+    if segment["phase"] not in PERFORMANCE_PHASES:
+        raise ValueError("performance phase is invalid")
+    if segment["activity_class"] not in PERFORMANCE_ACTIVITY_CLASSES:
+        raise ValueError("performance activity_class is invalid")
+    started = _parse_utc(segment["started_at_utc"])
+    if started < attempt_started or started > last_seen:
+        raise ValueError("performance segment start is outside attempt bounds")
+    ended_value = segment["ended_at_utc"]
+    if completed:
+        ended = _parse_utc(ended_value)
+        if ended < started or ended > last_seen:
+            raise ValueError("performance segment end is outside attempt bounds")
+    else:
+        if ended_value is not None:
+            raise ValueError("open performance segment cannot contain ended_at_utc")
+        ended = None
+    return started, ended
+
+
+def _validate_performance(
+    performance: Any,
+    *,
+    attempt_started: datetime,
+    last_seen: datetime,
+) -> None:
+    if performance is None:
+        return
+    if not isinstance(performance, dict) or set(performance) != PERFORMANCE_KEYS:
+        raise ValueError("performance telemetry fields are invalid")
+    completed_segments = performance["completed_segments"]
+    if not isinstance(completed_segments, list):
+        raise ValueError("completed performance segments must be a list")
+    if len(completed_segments) > MAX_COMPLETED_PERFORMANCE_SEGMENTS:
+        raise ValueError("completed performance segment history exceeds bound")
+
+    previous_end = attempt_started
+    for segment in completed_segments:
+        started, ended = _validate_performance_segment(
+            segment,
+            attempt_started=attempt_started,
+            last_seen=last_seen,
+            completed=True,
+        )
+        if started < previous_end:
+            raise ValueError("performance segments cannot overlap")
+        assert ended is not None
+        previous_end = ended
+
+    open_segment = performance["open_segment"]
+    if open_segment is not None:
+        started, _ = _validate_performance_segment(
+            open_segment,
+            attempt_started=attempt_started,
+            last_seen=last_seen,
+            completed=False,
+        )
+        if started < previous_end:
+            raise ValueError("open performance segment overlaps completed history")
+
+
 def validate_record(record: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(record, dict):
         raise ValueError("execution-attempt record must be an object")
@@ -378,6 +474,9 @@ def validate_record(record: dict[str, Any]) -> dict[str, Any]:
     if schema_version == LEGACY_SCHEMA_VERSION:
         if set(record) != LEGACY_RECORD_KEYS:
             raise ValueError("legacy execution-attempt record fields are invalid")
+    elif schema_version == SLICE_SCHEMA_VERSION:
+        if set(record) != SLICE_RECORD_KEYS:
+            raise ValueError("schema-v2 execution-attempt record fields are invalid")
     elif schema_version == SCHEMA_VERSION:
         if set(record) != RECORD_KEYS:
             raise ValueError("execution-attempt record fields are invalid")
@@ -400,7 +499,7 @@ def validate_record(record: dict[str, Any]) -> dict[str, Any]:
     if last_seen < started:
         raise ValueError("last_seen_at_utc precedes started_at_utc")
 
-    if schema_version == SCHEMA_VERSION:
+    if schema_version in {SLICE_SCHEMA_VERSION, SCHEMA_VERSION}:
         next_slice_ordinal = record["next_slice_ordinal"]
         if type(next_slice_ordinal) is not int or next_slice_ordinal < 1:
             raise ValueError("next_slice_ordinal is invalid")
@@ -409,6 +508,13 @@ def validate_record(record: dict[str, Any]) -> dict[str, Any]:
             _validate_slice(current_slice, started=started, last_seen=last_seen)
             if current_slice["ordinal"] >= next_slice_ordinal:
                 raise ValueError("current_slice ordinal must precede next_slice_ordinal")
+
+    if schema_version == SCHEMA_VERSION:
+        _validate_performance(
+            record["performance"],
+            attempt_started=started,
+            last_seen=last_seen,
+        )
 
     checkpoint = record["last_checkpoint"]
     if checkpoint is not None:
@@ -541,6 +647,7 @@ def start_attempt(
         "last_checkpoint": None,
         "next_slice_ordinal": 1,
         "current_slice": None,
+        "performance": None,
         "terminal_result": None,
         "terminal_at_utc": None,
     }
@@ -553,14 +660,16 @@ def upgrade_attempt(root: Path | str, attempt_id: str) -> dict[str, Any]:
     record = _read_record(root_path, attempt_id)
     if record["schema_version"] == SCHEMA_VERSION:
         return record
-    if record["schema_version"] != LEGACY_SCHEMA_VERSION:
+    if record["schema_version"] not in {LEGACY_SCHEMA_VERSION, SLICE_SCHEMA_VERSION}:
         raise ValueError("unsupported execution-attempt schema_version")
     if record["state"] != "RUNNING":
-        raise ValueError("only a RUNNING legacy attempt can be upgraded")
+        raise ValueError("only a RUNNING prior-schema attempt can be upgraded")
     upgraded = dict(record)
+    if record["schema_version"] == LEGACY_SCHEMA_VERSION:
+        upgraded["next_slice_ordinal"] = 1
+        upgraded["current_slice"] = None
     upgraded["schema_version"] = SCHEMA_VERSION
-    upgraded["next_slice_ordinal"] = 1
-    upgraded["current_slice"] = None
+    upgraded["performance"] = None
     _write_record(root_path, upgraded, create=False)
     return upgraded
 
@@ -583,7 +692,7 @@ def heartbeat_attempt(
 
 
 def _require_slice_capable_running(record: dict[str, Any]) -> None:
-    if record["schema_version"] != SCHEMA_VERSION:
+    if record["schema_version"] == LEGACY_SCHEMA_VERSION:
         raise ValueError("legacy execution-attempt record requires explicit upgrade")
     if record["state"] != "RUNNING":
         raise ValueError("TERMINAL attempt cannot accept execution slices")
@@ -848,6 +957,170 @@ def select_carrier(
     raise ValueError("CURRENT_PHASE_CAPABILITY_UNAVAILABLE")
 
 
+def _require_performance_capable_running(record: dict[str, Any]) -> dict[str, Any] | None:
+    if record["schema_version"] != SCHEMA_VERSION:
+        raise ValueError("performance attribution requires explicit schema upgrade")
+    if record["state"] != "RUNNING":
+        raise ValueError("TERMINAL attempt cannot accept performance segments")
+    return record["performance"]
+
+
+def _new_performance_segment(
+    phase: str,
+    activity_class: str,
+    timestamp: str,
+) -> dict[str, Any]:
+    if phase not in PERFORMANCE_PHASES:
+        raise ValueError("performance phase is invalid")
+    if activity_class not in PERFORMANCE_ACTIVITY_CLASSES:
+        raise ValueError("performance activity_class is invalid")
+    return {
+        "phase": phase,
+        "activity_class": activity_class,
+        "started_at_utc": timestamp,
+        "ended_at_utc": None,
+    }
+
+
+def start_performance_segment(
+    root: Path | str,
+    attempt_id: str,
+    phase: str,
+    activity_class: str,
+    *,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    root_path = _repository_root(root)
+    record = _read_record(root_path, attempt_id)
+    performance = _require_performance_capable_running(record)
+    if performance is None:
+        performance = {"completed_segments": [], "open_segment": None}
+        record["performance"] = performance
+    if performance["open_segment"] is not None:
+        raise ValueError("one performance segment is already open")
+    if len(performance["completed_segments"]) >= MAX_COMPLETED_PERFORMANCE_SEGMENTS:
+        raise ValueError("completed performance segment history is full")
+    current = now or _now_utc()
+    _assert_forward_time(record, current)
+    timestamp = _format_utc(current)
+    record["last_seen_at_utc"] = timestamp
+    performance["open_segment"] = _new_performance_segment(
+        phase, activity_class, timestamp
+    )
+    _write_record(root_path, record, create=False)
+    return record
+
+
+def transition_performance_segment(
+    root: Path | str,
+    attempt_id: str,
+    phase: str,
+    activity_class: str,
+    *,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    root_path = _repository_root(root)
+    record = _read_record(root_path, attempt_id)
+    performance = _require_performance_capable_running(record)
+    if performance is None or performance["open_segment"] is None:
+        raise ValueError("no open performance segment")
+    if len(performance["completed_segments"]) >= MAX_COMPLETED_PERFORMANCE_SEGMENTS - 1:
+        raise ValueError("performance segment history has no room for another transition")
+    current = now or _now_utc()
+    _assert_forward_time(record, current)
+    timestamp = _format_utc(current)
+    next_segment = _new_performance_segment(phase, activity_class, timestamp)
+    completed = dict(performance["open_segment"])
+    completed["ended_at_utc"] = timestamp
+    performance["completed_segments"].append(completed)
+    performance["open_segment"] = next_segment
+    record["last_seen_at_utc"] = timestamp
+    _write_record(root_path, record, create=False)
+    return record
+
+
+def stop_performance_segment(
+    root: Path | str,
+    attempt_id: str,
+    *,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    root_path = _repository_root(root)
+    record = _read_record(root_path, attempt_id)
+    performance = _require_performance_capable_running(record)
+    if performance is None or performance["open_segment"] is None:
+        raise ValueError("no open performance segment")
+    if len(performance["completed_segments"]) >= MAX_COMPLETED_PERFORMANCE_SEGMENTS:
+        raise ValueError("completed performance segment history is full")
+    current = now or _now_utc()
+    _assert_forward_time(record, current)
+    timestamp = _format_utc(current)
+    completed = dict(performance["open_segment"])
+    completed["ended_at_utc"] = timestamp
+    performance["completed_segments"].append(completed)
+    performance["open_segment"] = None
+    record["last_seen_at_utc"] = timestamp
+    _write_record(root_path, record, create=False)
+    return record
+
+
+def summarize_performance(record: dict[str, Any]) -> dict[str, Any]:
+    validate_record(record)
+    window_start = _parse_utc(record["started_at_utc"])
+    window_end_value = (
+        record["terminal_at_utc"]
+        if record["state"] == "TERMINAL"
+        else record["last_seen_at_utc"]
+    )
+    window_end = _parse_utc(window_end_value)
+    wall_seconds = (window_end - window_start).total_seconds()
+
+    phase_seconds = {phase: 0.0 for phase in PERFORMANCE_PHASES}
+    activity_seconds = {
+        activity_class: 0.0 for activity_class in PERFORMANCE_ACTIVITY_CLASSES
+    }
+    performance = record.get("performance") if record["schema_version"] == SCHEMA_VERSION else None
+    completed_segments = performance["completed_segments"] if performance is not None else []
+    for segment in completed_segments:
+        duration = (
+            _parse_utc(segment["ended_at_utc"]) - _parse_utc(segment["started_at_utc"])
+        ).total_seconds()
+        phase_seconds[segment["phase"]] += duration
+        activity_seconds[segment["activity_class"]] += duration
+
+    instrumented_seconds = sum(activity_seconds.values())
+    unattributed_seconds = max(0.0, wall_seconds - instrumented_seconds)
+    coverage_fraction = (
+        instrumented_seconds / wall_seconds if wall_seconds > 0 else 0.0
+    )
+    return {
+        "authority": AUTHORITY,
+        "attempt_id": record["attempt_id"],
+        "performance_enabled": performance is not None,
+        "attempt_window": {
+            "started_at_utc": record["started_at_utc"],
+            "ended_at_utc": window_end_value,
+            "terminal": record["state"] == "TERMINAL",
+        },
+        "task_attempt_wall_seconds": wall_seconds,
+        "phase_wall_seconds": phase_seconds,
+        "activity_wall_seconds": activity_seconds,
+        "instrumented_coverage_seconds": instrumented_seconds,
+        "instrumented_coverage_fraction": coverage_fraction,
+        "unattributed_seconds": unattributed_seconds,
+        "completed_segment_count": len(completed_segments),
+        "open_segment": performance["open_segment"] if performance is not None else None,
+    }
+
+
+def performance_summary(
+    root: Path | str,
+    attempt_id: str,
+) -> dict[str, Any]:
+    root_path = _repository_root(root)
+    return summarize_performance(_read_record(root_path, attempt_id))
+
+
 def terminal_attempt(
     root: Path | str,
     attempt_id: str,
@@ -889,7 +1162,11 @@ def inspect_record(record: dict[str, Any], *, now: datetime | None = None) -> di
             seconds=record["lease_seconds"]
         )
         classification = "ACTIVE_LEASE" if current <= expiry else "INTERRUPTED_UNKNOWN"
-    current_slice = record.get("current_slice") if record["schema_version"] == SCHEMA_VERSION else None
+    current_slice = (
+        record.get("current_slice")
+        if record["schema_version"] in {SLICE_SCHEMA_VERSION, SCHEMA_VERSION}
+        else None
+    )
     return {
         "authority": AUTHORITY,
         "schema_version": record["schema_version"],
@@ -904,6 +1181,7 @@ def inspect_record(record: dict[str, Any], *, now: datetime | None = None) -> di
         "last_checkpoint": record["last_checkpoint"],
         "current_slice": current_slice,
         "slice_recovery_classification": slice_recovery_classification(current_slice),
+        "performance": record.get("performance") if record["schema_version"] == SCHEMA_VERSION else None,
         "terminal_result": record["terminal_result"] if classification == "TERMINAL_CONFIRMED" else None,
         "terminal_at_utc": record["terminal_at_utc"] if classification == "TERMINAL_CONFIRMED" else None,
     }
@@ -971,9 +1249,22 @@ def _parser() -> argparse.ArgumentParser:
     start.add_argument("--execution-base", required=True)
     start.add_argument("--lease-seconds", type=int, default=DEFAULT_LEASE_SECONDS)
 
-    for name in ("heartbeat", "inspect", "upgrade"):
+    for name in ("heartbeat", "inspect", "upgrade", "performance-summary"):
         command = sub.add_parser(name)
         command.add_argument("--attempt-id", required=True)
+
+    for name in ("performance-start", "performance-transition"):
+        command = sub.add_parser(name)
+        command.add_argument("--attempt-id", required=True)
+        command.add_argument("--phase", required=True, choices=PERFORMANCE_PHASES)
+        command.add_argument(
+            "--activity-class",
+            required=True,
+            choices=PERFORMANCE_ACTIVITY_CLASSES,
+        )
+
+    performance_stop = sub.add_parser("performance-stop")
+    performance_stop.add_argument("--attempt-id", required=True)
 
     slice_intent = sub.add_parser("slice-intent")
     slice_intent.add_argument("--attempt-id", required=True)
@@ -1034,6 +1325,24 @@ def main(argv: list[str] | None = None) -> int:
             result = heartbeat_attempt(root, args.attempt_id)
         elif args.operation == "upgrade":
             result = upgrade_attempt(root, args.attempt_id)
+        elif args.operation == "performance-start":
+            result = start_performance_segment(
+                root,
+                args.attempt_id,
+                args.phase,
+                args.activity_class,
+            )
+        elif args.operation == "performance-transition":
+            result = transition_performance_segment(
+                root,
+                args.attempt_id,
+                args.phase,
+                args.activity_class,
+            )
+        elif args.operation == "performance-stop":
+            result = stop_performance_segment(root, args.attempt_id)
+        elif args.operation == "performance-summary":
+            result = performance_summary(root, args.attempt_id)
         elif args.operation == "slice-intent":
             result = record_slice_intent(
                 root,

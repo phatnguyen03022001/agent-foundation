@@ -109,6 +109,7 @@ class ExecutionAttemptTests(unittest.TestCase):
         self.assertEqual(record["schema_version"], attempts.SCHEMA_VERSION)
         self.assertEqual(record["next_slice_ordinal"], 1)
         self.assertIsNone(record["current_slice"])
+        self.assertIsNone(record["performance"])
 
         with self.assertRaisesRegex(ValueError, "repository binding"):
             self.start(
@@ -137,6 +138,195 @@ class ExecutionAttemptTests(unittest.TestCase):
         upgraded = attempts.upgrade_attempt(self.root, self.attempt_id)
         self.assertEqual(upgraded["schema_version"], attempts.SCHEMA_VERSION)
         self.assertIsNone(upgraded["current_slice"])
+
+    def test_schema_v2_record_remains_readable_and_upgrade_is_explicit(self) -> None:
+        record = self.start()
+        v2 = {key: value for key, value in record.items() if key in attempts.SLICE_RECORD_KEYS}
+        v2["schema_version"] = attempts.SLICE_SCHEMA_VERSION
+        attempts._write_record(self.root, v2, create=False)
+        inspected = attempts.inspect_attempt(self.root, self.attempt_id, now=self.t0)
+        self.assertFalse(inspected["legacy_schema"])
+        self.assertIsNone(inspected["performance"])
+        upgraded = attempts.upgrade_attempt(self.root, self.attempt_id)
+        self.assertEqual(upgraded["schema_version"], attempts.SCHEMA_VERSION)
+        self.assertIsNone(upgraded["performance"])
+
+    def test_performance_attribution_is_opt_in_and_default_summary_is_unattributed(self) -> None:
+        record = self.start()
+        self.assertIsNone(record["performance"])
+        summary = attempts.summarize_performance(record)
+        self.assertFalse(summary["performance_enabled"])
+        self.assertEqual(summary["authority"], "NONE")
+        self.assertEqual(summary["instrumented_coverage_seconds"], 0.0)
+        self.assertEqual(summary["unattributed_seconds"], 0.0)
+        self.assertEqual(
+            set(summary["phase_wall_seconds"]),
+            set(attempts.PERFORMANCE_PHASES),
+        )
+        self.assertEqual(
+            set(summary["activity_wall_seconds"]),
+            set(attempts.PERFORMANCE_ACTIVITY_CLASSES),
+        )
+
+    def test_performance_transition_uses_one_boundary_and_summary_preserves_unattributed(self) -> None:
+        self.start()
+        attempts.start_performance_segment(
+            self.root,
+            self.attempt_id,
+            "PREFLIGHT",
+            "CONTROLLER_OWNED",
+            now=self.t0 + timedelta(seconds=10),
+        )
+        first_transition = attempts.transition_performance_segment(
+            self.root,
+            self.attempt_id,
+            "IMPLEMENTATION",
+            "CONTROLLER_OWNED",
+            now=self.t0 + timedelta(seconds=20),
+        )
+        self.assertEqual(
+            first_transition["performance"]["completed_segments"][0]["ended_at_utc"],
+            first_transition["performance"]["open_segment"]["started_at_utc"],
+        )
+        attempts.transition_performance_segment(
+            self.root,
+            self.attempt_id,
+            "VERIFICATION",
+            "EXTERNAL_WAIT",
+            now=self.t0 + timedelta(seconds=30),
+        )
+        attempts.stop_performance_segment(
+            self.root,
+            self.attempt_id,
+            now=self.t0 + timedelta(seconds=50),
+        )
+        attempts.terminal_attempt(
+            self.root,
+            self.attempt_id,
+            "NEEDS_REVIEW",
+            now=self.t0 + timedelta(seconds=60),
+        )
+
+        summary = attempts.performance_summary(self.root, self.attempt_id)
+        self.assertEqual(summary["task_attempt_wall_seconds"], 60.0)
+        self.assertEqual(summary["phase_wall_seconds"]["PREFLIGHT"], 10.0)
+        self.assertEqual(summary["phase_wall_seconds"]["IMPLEMENTATION"], 10.0)
+        self.assertEqual(summary["phase_wall_seconds"]["VERIFICATION"], 20.0)
+        self.assertEqual(
+            summary["activity_wall_seconds"]["CONTROLLER_OWNED"], 20.0
+        )
+        self.assertEqual(summary["activity_wall_seconds"]["EXTERNAL_WAIT"], 20.0)
+        self.assertEqual(summary["instrumented_coverage_seconds"], 40.0)
+        self.assertAlmostEqual(summary["instrumented_coverage_fraction"], 2 / 3)
+        self.assertEqual(summary["unattributed_seconds"], 20.0)
+        self.assertEqual(summary["completed_segment_count"], 3)
+        self.assertIsNone(summary["open_segment"])
+
+    def test_open_performance_segment_is_incomplete_and_never_counted_as_activity(self) -> None:
+        self.start()
+        attempts.start_performance_segment(
+            self.root,
+            self.attempt_id,
+            "IMPLEMENTATION",
+            "CONTROLLER_OWNED",
+            now=self.t0 + timedelta(seconds=10),
+        )
+        attempts.heartbeat_attempt(
+            self.root,
+            self.attempt_id,
+            now=self.t0 + timedelta(seconds=20),
+        )
+        summary = attempts.performance_summary(self.root, self.attempt_id)
+        self.assertTrue(summary["performance_enabled"])
+        self.assertEqual(summary["task_attempt_wall_seconds"], 20.0)
+        self.assertEqual(summary["instrumented_coverage_seconds"], 0.0)
+        self.assertEqual(summary["unattributed_seconds"], 20.0)
+        self.assertEqual(summary["activity_wall_seconds"]["CONTROLLER_OWNED"], 0.0)
+        self.assertEqual(summary["open_segment"]["phase"], "IMPLEMENTATION")
+        self.assertIsNone(summary["open_segment"]["ended_at_utc"])
+
+    def test_performance_vocabulary_and_payload_are_fixed(self) -> None:
+        self.start()
+        with self.assertRaisesRegex(ValueError, "phase"):
+            attempts.start_performance_segment(
+                self.root,
+                self.attempt_id,
+                "MODEL_THINKING",
+                "CONTROLLER_OWNED",
+                now=self.t0 + timedelta(seconds=1),
+            )
+        with self.assertRaisesRegex(ValueError, "activity_class"):
+            attempts.start_performance_segment(
+                self.root,
+                self.attempt_id,
+                "PREFLIGHT",
+                "MODEL_ACTIVE",
+                now=self.t0 + timedelta(seconds=1),
+            )
+
+        bad = self.start(
+            attempt_id="1123456789abcdef0123456789abcdef",
+        )
+        bad["performance"] = {
+            "completed_segments": [],
+            "open_segment": {
+                "phase": "PREFLIGHT",
+                "activity_class": "CONTROLLER_OWNED",
+                "started_at_utc": self.t0.isoformat().replace("+00:00", "Z"),
+                "ended_at_utc": None,
+                "tool_name": "repo_publish",
+            },
+        }
+        with self.assertRaisesRegex(ValueError, "performance segment fields"):
+            attempts.validate_record(bad)
+
+    def test_performance_completed_history_is_bounded_to_32(self) -> None:
+        record = self.start()
+        segments = []
+        for index in range(attempts.MAX_COMPLETED_PERFORMANCE_SEGMENTS):
+            started = self.t0 + timedelta(seconds=index)
+            ended = started + timedelta(seconds=1)
+            segments.append(
+                {
+                    "phase": "IMPLEMENTATION",
+                    "activity_class": "CONTROLLER_OWNED",
+                    "started_at_utc": attempts._format_utc(started),
+                    "ended_at_utc": attempts._format_utc(ended),
+                }
+            )
+        record["last_seen_at_utc"] = attempts._format_utc(
+            self.t0 + timedelta(seconds=attempts.MAX_COMPLETED_PERFORMANCE_SEGMENTS)
+        )
+        record["performance"] = {
+            "completed_segments": segments,
+            "open_segment": None,
+        }
+        attempts.validate_record(record)
+
+        too_many = copy.deepcopy(record)
+        too_many["performance"]["completed_segments"].append(
+            {
+                "phase": "REPORTING",
+                "activity_class": "CONTROLLER_OWNED",
+                "started_at_utc": attempts._format_utc(
+                    self.t0 + timedelta(
+                        seconds=attempts.MAX_COMPLETED_PERFORMANCE_SEGMENTS
+                    )
+                ),
+                "ended_at_utc": attempts._format_utc(
+                    self.t0
+                    + timedelta(
+                        seconds=attempts.MAX_COMPLETED_PERFORMANCE_SEGMENTS + 1
+                    )
+                ),
+            }
+        )
+        too_many["last_seen_at_utc"] = attempts._format_utc(
+            self.t0
+            + timedelta(seconds=attempts.MAX_COMPLETED_PERFORMANCE_SEGMENTS + 1)
+        )
+        with self.assertRaisesRegex(ValueError, "exceeds bound"):
+            attempts.validate_record(too_many)
 
     def test_storage_is_inside_git_metadata_and_does_not_pollute_worktree(self) -> None:
         before = self.git("status", "--porcelain=v1")

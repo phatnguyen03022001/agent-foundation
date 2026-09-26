@@ -34,7 +34,23 @@ Before a consequence-bearing request whose caller-known identity or intent would
 
 Slice telemetry never stores raw argv, environment, credentials, secrets, prompts/transcripts, raw logs/tool output, full diffs, file bodies, or broad inventories. It remains in the same repository-local Git metadata record as the attempt; no second continuity store or unbounded slice history exists. Once a result/postcondition is established and a coherent checkpoint at or after that observation exists, the resolved slice may be cleared and Git/post-state becomes the durable consequence evidence.
 
-Schema-v1 attempt records remain readable explicitly as legacy records with no slice. A `RUNNING` legacy attempt must be explicitly upgraded before slice mutation; old bytes are never silently reinterpreted.
+Schema-v1 and schema-v2 attempt records remain readable with their original semantics. A `RUNNING` prior-schema attempt must be explicitly upgraded before using schema-v3 performance attribution; old bytes are never silently reinterpreted. Schema-v2 slices remain usable without upgrading solely for slice work.
+
+## Optional performance attribution
+
+Schema v3 adds one optional `performance` block to the same repository-local Git metadata record. It is `null` by default. Ordinary execution does not require phase markers, extra helper calls, report fields, a backend service, or any performance telemetry at all.
+
+When an operator, task, or performance audit explicitly requests attribution, the fixed phases are exactly `PREFLIGHT`, `IMPLEMENTATION`, `VERIFICATION`, `REPORTING`, and `PUBLICATION`. The fixed activity classes are exactly `CONTROLLER_OWNED` and `EXTERNAL_WAIT`.
+
+`CONTROLLER_OWNED` means wall time during which control remains with the Executor/controller, including reasoning and synchronous work. It is not model-active time, hidden thinking time, inference time, token-generation time, or another model-internal measurement. `EXTERNAL_WAIT` means an explicitly marked wait for a long-running process, remote consequence, or other external dependency.
+
+At most one performance segment is open. A segment stores only `phase`, `activity_class`, `started_at_utc`, and `ended_at_utc`; the open segment has `ended_at_utc: null`. Completed segment history is bounded to at most 32 entries per attempt. Phase/activity values are fixed by the helper and arbitrary labels, tool names, argv, paths, model identifiers, token counts, prompts, logs, repository content, or user text are not admitted.
+
+`performance-start` opens a segment, `performance-transition` closes the current segment and opens the next using one captured UTC boundary timestamp, and `performance-stop` closes the current segment. Mark only semantic phase/activity boundaries. One long recoverable verification/process wait is one `EXTERNAL_WAIT` interval rather than per-poll or per-tool markers.
+
+`performance-summary` is read-only and derives task-attempt wall time, per-phase wall time, `CONTROLLER_OWNED`, `EXTERNAL_WAIT`, instrumented coverage, and `UNATTRIBUTED` time. Derived durations are never persisted as canonical task/report/review authority. Completed segments alone contribute attributed duration. Gaps, missing markers, an open segment, interrupted work, or rejected malformed telemetry never get silently assigned to a phase/activity class. For a non-terminal attempt, the trustworthy attempt window ends at the stored `last_seen_at_utc`; for a terminal attempt it ends at `terminal_at_utc`.
+
+An interrupted `RUNNING` attempt may retain one open segment. Inspection/summary may expose it as open, but it does not fabricate an end time or classify its incomplete tail as completed controller/external-wait work. Performance attribution has authority `NONE` and cannot change Execution Slice semantics, retry legality, acceptance, mutation, continuation, publication, promotion, or release authority.
 
 ## Local Git metadata
 
@@ -55,6 +71,12 @@ Create one new opaque `RUNNING` attempt after exact repository/task/base verific
 ### heartbeat
 
 For a `RUNNING` attempt, refresh only `last_seen_at_utc`. This changes no authority and proves no liveness beyond lease freshness.
+
+### performance start / transition / stop / summary
+
+Performance attribution is explicit opt-in. `performance-start` opens the first or a later segment when none is open. `performance-transition` atomically closes the current segment and opens the next at the same captured helper timestamp so intervals cannot overlap. `performance-stop` closes the current segment. These mutation operations require a schema-v3 `RUNNING` attempt and enforce the fixed vocabulary and bounded history.
+
+`performance-summary` is read-only. It counts only completed stored segments as instrumented coverage and leaves every uncovered portion of the trustworthy attempt window as explicit `unattributed_seconds`. An open segment remains visible but contributes no completed activity duration.
 
 ### slice intent / observation / reconciliation / clear
 
