@@ -1,0 +1,72 @@
+protocol_version: 3
+
+task_id: TASK-0012
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0012/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "d19aa0b412faeffb95d5a9802f078a934da8ded3"
+  final_execution_head: "dea79f7fc5ec87e975e6f9c5cc2d4f876b2993f7"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "3157bb8062929a0bdcbda0f3a4cf7266ac9a0a09"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_write
+    - local_test_execution
+    - bounded_network_resolution
+    - non_force_git_publication
+  available:
+    - Agent Runtime expected-state repository mutation
+    - Agent Runtime bounded local command execution
+    - Agent Runtime bounded Git remote observation
+    - Agent Runtime non-force compare-and-swap publication
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0012 revision 1 designates no separate authoritative verifier."
+
+pushed: true
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Execution Attempt schema v3 keeps performance null by default, preserves schema-v1 and schema-v2 reads, requires explicit schema upgrade before prior-schema performance mutation, and adds no mandatory marker, report field, service, or backend to ordinary execution. Focused tests pass on the final candidate."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "The helper admits exactly PREFLIGHT/IMPLEMENTATION/VERIFICATION/REPORTING/PUBLICATION and exactly CONTROLLER_OWNED/EXTERNAL_WAIT; each segment has only phase, activity_class, started_at_utc, and ended_at_utc; one open segment and at most 32 completed segments are enforced. Strict record validation rejects arbitrary fields and invalid vocabularies while telemetry authority remains NONE."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Deterministic summary tests cover attempt wall time, per-phase attribution, both activity classes, instrumented coverage, and explicit UNATTRIBUTED. Open or incomplete segments are exposed without fabricated completion, and controller-owned time is explicitly not represented as hidden model thinking, model-active, inference, or token-generation time."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Executor and continuity guidance require markers only at semantic phase/activity boundaries and represent one long recoverable process or remote wait as one EXTERNAL_WAIT interval rather than per-poll or per-tool telemetry. Transition tests prove one captured boundary closes the previous segment and opens the next without overlap."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Final focused suite passes 33/33, including legacy/current records, slices, checkpoints, lease classification, OUTCOME_UNKNOWN/no-blind-retry behavior, and a direct regression proving performance markers do not refresh last_seen_at_utc, extend the lease, change observer classification, or change retry legality."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Executor and Architect operational_timing semantics remain optional, two-boundary RFC3339 UTC, non-authoritative, and duration-free; Task Protocol remains unchanged and skill-library regressions pass 169/169. This report intentionally omits operational_timing because a trustworthy Executor timing start was not captured immediately before capability preflight; no timestamp was reconstructed."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Base-to-final diff contains only six authorized skills paths and introduces no daemon, database, service, dependency, Runtime mutation, or cross-repository trace coupling. Object identities are unchanged for documents/ c0bf2080ddee6e549a1605c13d4ff9041984c636, standards/ 1807ad6e7d1a8ddfe8987ebe937886d9fd85e268, authority.lock.json be80e2308e18d662ce3748f5fb41c41619b346bc, bootstrap routing tree aa91ceada1860eb76589829a69dcc24f6d916592, and external-capability tree 78d92ce20833361ccc5e33ebea05baf02c75705b."
+  - criterion_id: AC-8
+    status: PASS
+    evidence: "On final candidate dea79f7fc5ec87e975e6f9c5cc2d4f876b2993f7: execution-attempt tests pass 33/33; skill-library validation passes; skill regressions pass 169/169; bootstrap validation returns OPM_BOOTSTRAP = TRUE; bootstrap regressions pass 49/49; Python compilation for both modified scripts passes; git diff --check passes; and authenticated remote bootstrap validation returns OPM_BOOTSTRAP = TRUE after publication."
+
+result: NEEDS_REVIEW
