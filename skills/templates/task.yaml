@@ -77,10 +77,6 @@ acceptance_criteria:
     evidence_required: ""
 
 verification:
-  executor_checks:
-    - id: CHECK-1
-      command_or_check: ""
-      required: true
   authoritative_verification:
     required: false
     mechanism: ""

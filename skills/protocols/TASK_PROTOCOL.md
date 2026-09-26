@@ -249,11 +249,11 @@ Lifecycle is derived per repository, not assigned by a multi-writer state servic
 Optional `continuation_policy.mode` is one of:
 
 - `MANUAL`: return control after the current bounded phase;
-- `AUTO_UNTIL_STOP`: an orchestration environment MAY dispatch the next required independent phase without returning to the user when existing exact authority already covers it.
+- `AUTO_UNTIL_STOP`: an orchestration environment dispatches the next required independent phase without returning to the user when existing exact authority already covers it and that environment can preserve the role and evidence boundaries.
 
 If `continuation_policy` is absent, behavior is `MANUAL`.
 
-`AUTO_UNTIL_STOP` does not merge roles, let Executor self-accept, manufacture verifier PASS, infer promotion/release authority, or treat absence of a human as approval. It stops on `BLOCKED`, `STALE_STATE`, `AUTHORITY_REQUIRED`, `CURRENT_PHASE_CAPABILITY_UNAVAILABLE`, `REVIEW_REQUIRED`, `REVERIFY_REQUIRED`, or `USER_STOP`.
+`AUTO_UNTIL_STOP` does not merge roles, let Executor self-accept, manufacture verifier PASS, infer promotion/release authority, or treat absence of a human as approval. It stops on `BLOCKED`, `STALE_STATE`, `AUTHORITY_REQUIRED`, `CURRENT_PHASE_CAPABILITY_UNAVAILABLE`, `REVIEW_REQUIRED`, `REVERIFY_REQUIRED`, or `USER_STOP`. A routine `NEEDS_REVIEW` report is a phase handoff, not `REVIEW_REQUIRED` by itself: dispatch an independent Architect review when existing authority and capability cover that phase. `REVIEW_REQUIRED` means the review cannot be completed under the existing autonomous authority or independent review context and needs operator judgment or renewed authority. If the environment cannot dispatch a separate Architect context, return the exact review locator and stop; do not have Executor review itself.
 
 For one bound continuation snapshot, `expected_state.lifecycle` and `prior_lifecycle_state` describe the same derived lifecycle identity and therefore must agree. `prior_result` remains a distinct operation result and is not mechanically equated with lifecycle. Phase and action are also relational: `REVIEW` allows `REQUEST_ARCHITECT_REVIEW` or `STOP`; `VERIFICATION` allows `RUN_AUTHORITATIVE_VERIFICATION` or `STOP`; `PROMOTION` allows canonical `PROMOTE_TARGET_REF`, legacy-compatible `PROMOTE_TO_MAIN`, or `STOP`; `RELEASE` allows `CREATE_VERSION_TAG`, `MUTATE_REPOSITORY_METADATA`, `PUBLISH_RELEASE`, `FINAL_VERIFY`, or `STOP`. An independently recognized action token does not become legal in an unrelated phase.
 

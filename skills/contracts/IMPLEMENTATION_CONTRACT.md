@@ -15,7 +15,7 @@ Task fields remain explicit where they carry artifact-specific obligations:
 - `git_authority` records the independently authorized Git mutations for this task;
 - optional `release_authority` records task-specific release permissions and defaults non-permissively when absent;
 - optional phase-specific `capability_requirements` records semantic capabilities the task requires;
-- optional `continuation_policy` records the task's continuation mode;
+- optional `continuation_policy` records the task's continuation mode; select `AUTO_UNTIL_STOP` explicitly when already-authorized execution, report, and independent review can be dispatched without operator judgment;
 - `structure_authority`, positive semantic/component scope, gap policy, acceptance criteria, and verification remain task-owned material authority.
 
 The Task Protocol owns one protocol-v3 normalization/default table for omitted optional implementation-prescription controls. Missing exact-file or local-structure prescription defaults to bounded Executor discretion inside the positive semantic/component boundary; it does not deny necessary local companion files. Missing authority fields never default to permission. Explicit expanded-v3 controls, including restrictive exact-file and structure policies, retain their original meaning.

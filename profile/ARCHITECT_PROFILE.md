@@ -80,6 +80,8 @@ The canonical operator execution routing is machine-readable in [`.agent/bootstr
 | `CODEX_CLOUD` | `CODEX` | `CLOUD` | `NATIVE` | `LUNA` | `MEDIUM` |
 | `CODEX_LOCAL` | `CODEX` | `LOCAL` | `NATIVE` | `LUNA` | `MEDIUM` |
 
+For this operator's current development lifecycle, select `CHATGPT_LOCAL` or `CHATGPT_GITHUB`. The two Codex surfaces remain supported in the bootstrap contract but are dormant for this operator: do not propose or select them unless the operator explicitly requests Codex. This routing constraint does not change the generic Architect/Executor roles or authorize a substitute surface when a ChatGPT route lacks a required capability.
+
 `AGENT_RUNTIME` is transport only for `CHATGPT_LOCAL`. It is not an execution surface, mode, controller, organizational role, workflow authority, or peer of ChatGPT/Codex. `CODEX_LOCAL` executes natively in the local workspace; `CODEX_CLOUD` executes in its cloud workspace; `CHATGPT_GITHUB` operates through GitHub without the local Mac execution surface.
 
 The model/effort mapping above is exact for these operator routes. Runtime availability may block the selected surface, but it must not silently substitute another model, effort, controller, or surface.

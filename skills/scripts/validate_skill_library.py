@@ -1332,6 +1332,8 @@ def validate_task_document(label: str, doc: dict[str, Any]) -> None:
     ]:
         require_field(label, doc, dotted, expected_type)
     for dotted, schema in TASK_SEQUENCE_SCHEMAS.items():
+        if dotted == "verification.executor_checks" and get_path(doc, dotted) is _MISSING:
+            continue
         require_mapping_sequence_schema(label, doc, dotted, schema)
     require_field(label, doc, "execution_base.mode", str, "handoff_snapshot")
     require_field(label, doc, "execution_base.require_exact_match", bool, True)
@@ -1451,7 +1453,7 @@ def validate_report_document(label: str, doc: dict[str, Any]) -> None:
             {"clean": bool, "summary": str},
         )
 
-    optional_sequences = {"changed_files", "commits_created", "discovered_gaps", "structural_observations"}
+    optional_sequences = {"changed_files", "commits_created", "discovered_gaps", "structural_observations", "executor_checks"}
     for dotted, schema in REPORT_SEQUENCE_SCHEMAS.items():
         if dotted in optional_sequences and get_path(doc, dotted) is _MISSING:
             continue

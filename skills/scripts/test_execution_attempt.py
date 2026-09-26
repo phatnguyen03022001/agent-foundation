@@ -428,7 +428,7 @@ class ExecutionAttemptTests(unittest.TestCase):
                 interactive=False,
                 survival_sensitive=False,
                 mutating=True,
-                recoverable_async_available=False,
+                durable_pipe_available=False,
                 independently_reconcilable=False,
             ),
             "terminal_exec",
@@ -440,10 +440,10 @@ class ExecutionAttemptTests(unittest.TestCase):
                 interactive=False,
                 survival_sensitive=True,
                 mutating=True,
-                recoverable_async_available=True,
+                durable_pipe_available=True,
                 independently_reconcilable=False,
             ),
-            "recoverable_async",
+            "terminal_start_durable_pipe",
         )
         self.assertEqual(
             attempts.select_carrier(
@@ -452,10 +452,10 @@ class ExecutionAttemptTests(unittest.TestCase):
                 interactive=False,
                 survival_sensitive=True,
                 mutating=False,
-                recoverable_async_available=False,
+                durable_pipe_available=False,
                 independently_reconcilable=False,
             ),
-            "terminal_start",
+            "terminal_start_process",
         )
         with self.assertRaisesRegex(ValueError, "CURRENT_PHASE_CAPABILITY_UNAVAILABLE"):
             attempts.select_carrier(
@@ -464,7 +464,41 @@ class ExecutionAttemptTests(unittest.TestCase):
                 interactive=False,
                 survival_sensitive=True,
                 mutating=True,
-                recoverable_async_available=False,
+                durable_pipe_available=False,
+                independently_reconcilable=False,
+            )
+
+    def test_survival_sensitive_work_requires_durable_pipe_or_proven_reconciliation(self) -> None:
+        self.assertEqual(
+            attempts.select_carrier(
+                bounded_sync_safe=True,
+                long_or_uncertain=False,
+                interactive=False,
+                survival_sensitive=True,
+                mutating=True,
+                durable_pipe_available=True,
+                independently_reconcilable=False,
+            ),
+            "terminal_start_durable_pipe",
+        )
+        with self.assertRaisesRegex(ValueError, "CURRENT_PHASE_CAPABILITY_UNAVAILABLE"):
+            attempts.select_carrier(
+                bounded_sync_safe=True,
+                long_or_uncertain=False,
+                interactive=False,
+                survival_sensitive=True,
+                mutating=True,
+                durable_pipe_available=False,
+                independently_reconcilable=False,
+            )
+        with self.assertRaisesRegex(ValueError, "CURRENT_PHASE_CAPABILITY_UNAVAILABLE"):
+            attempts.select_carrier(
+                bounded_sync_safe=False,
+                long_or_uncertain=True,
+                interactive=True,
+                survival_sensitive=True,
+                mutating=True,
+                durable_pipe_available=True,
                 independently_reconcilable=False,
             )
 

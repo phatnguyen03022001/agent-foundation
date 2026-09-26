@@ -827,17 +827,24 @@ def select_carrier(
     interactive: bool,
     survival_sensitive: bool,
     mutating: bool,
-    recoverable_async_available: bool,
+    durable_pipe_available: bool,
     independently_reconcilable: bool,
 ) -> str:
-    if bounded_sync_safe and not long_or_uncertain and not interactive:
+    """Select the concrete Runtime carrier without assuming PTY restart durability."""
+    if (
+        bounded_sync_safe
+        and not long_or_uncertain
+        and not interactive
+        and (
+            not survival_sensitive
+            or (not durable_pipe_available and independently_reconcilable)
+        )
+    ):
         return "terminal_exec"
-    if recoverable_async_available:
-        return "recoverable_async"
+    if durable_pipe_available and not interactive:
+        return "terminal_start_durable_pipe"
     if not mutating or independently_reconcilable:
-        return "terminal_start"
-    if long_or_uncertain or interactive or survival_sensitive:
-        raise ValueError("CURRENT_PHASE_CAPABILITY_UNAVAILABLE")
+        return "terminal_start_process"
     raise ValueError("CURRENT_PHASE_CAPABILITY_UNAVAILABLE")
 
 

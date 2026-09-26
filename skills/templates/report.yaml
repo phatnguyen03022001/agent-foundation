@@ -42,9 +42,4 @@ acceptance_evidence:
     status: NOT_PROVEN
     evidence: ""
 
-executor_checks:
-  - check_id: CHECK-1
-    result: ""
-    evidence: ""
-
 result: NEEDS_REVIEW

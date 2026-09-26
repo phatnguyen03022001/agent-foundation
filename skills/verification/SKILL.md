@@ -34,6 +34,10 @@ The JOIN must preserve per-job identity and result; one failed job cannot be hid
 
 When a mandatory full suite semantically subsumes a focused suite, run the mandatory full suite directly on the happy path. Do not spend an extra synchronization boundary on focused-before-full ceremony. The focused suite becomes a diagnostic after failure unless it has distinct acceptance authority or proves a predicate the full suite does not cover. Separately authoritative focused checks remain mandatory.
 
+For a repository-owned verifier with a selection plan, inspect the plan against the exact stable candidate and run the smallest set of broad profiles covering the required predicates: one when a single profile suffices. If the plan escalates a profile to a stronger one which subsumes it, do not run both for ceremony. A focused RED reproduction before the fix can establish the defect's cause; preserve that evidence and prove the corresponding GREEN behavior on the final candidate. Keep any focused check that proves a distinct predicate. Deduplicate evidence, not predicates.
+
+Bind a verification result to its candidate identity, selected command/profile, and material environment. A conversation turn ending is not a reason to rerun an unchanged candidate: when the selected carrier retains the original run, reattach to that run and collect its result. Replan or rerun when candidate, required predicates, verifier selection, or material environment changes, or when the prior result cannot be established. A runtime run locator is operational evidence only; the final report must preserve enough completed result and resolvable evidence for later review without relying on session retention.
+
 ## Evidence quality
 
 A check should have a clear failure meaning. Verify that new tests can fail for the defect they claim to detect; a permanently green test is decoration. Avoid assertions tied only to implementation details, mocks that prove their own setup, and broad suites used as a substitute for a targeted causal test.

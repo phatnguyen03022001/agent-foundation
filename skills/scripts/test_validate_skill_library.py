@@ -104,6 +104,11 @@ class ValidatorRegressionTests(unittest.TestCase):
         )
         text = text.replace(marker, evidence + marker + "promoted_to_main: false\n", 1)
         marker = "\nresult: NEEDS_REVIEW\n"
+        text = text.replace(
+            marker,
+            '\nexecutor_checks:\n  - check_id: CHECK-1\n    result: NOT_PROVEN\n    evidence: ""\n' + marker,
+            1,
+        )
         self.assertIn(marker, text)
         tail = (
             "\ndiscovered_gaps:\n"
@@ -2524,6 +2529,16 @@ class Task0029SparseSerializationTests(unittest.TestCase):
 
     def test_sparse_and_expanded_report_shapes_preserve_material_evidence(self) -> None:
         _, expanded_root = self.fixture()
+        expanded_path = expanded_root / "templates" / "report.yaml"
+        expanded_text = expanded_path.read_text(encoding="utf-8")
+        expanded_path.write_text(
+            expanded_text.replace(
+                "\nresult: NEEDS_REVIEW\n",
+                '\nexecutor_checks:\n  - check_id: CHECK-1\n    result: NOT_PROVEN\n    evidence: ""\n\nresult: NEEDS_REVIEW\n',
+                1,
+            ),
+            encoding="utf-8",
+        )
         expanded = self.load_document(expanded_root, "templates/report.yaml")
         self.assertEqual(self.validation_errors(expanded_root, "validate_report_template"), [])
 
@@ -2546,7 +2561,6 @@ class Task0029SparseSerializationTests(unittest.TestCase):
             "skill_library.authorized_revision",
             "pushed",
             "acceptance_evidence",
-            "executor_checks",
             "result",
         ):
             self.assertEqual(
@@ -2554,6 +2568,8 @@ class Task0029SparseSerializationTests(unittest.TestCase):
                 VALIDATOR_MODULE.get_path(sparse, dotted),
                 dotted,
             )
+        self.assertNotIn("executor_checks", sparse)
+        self.assertIn("executor_checks", expanded)
 
     def test_sparse_and_expanded_review_shapes_preserve_durable_binding_and_judgment(self) -> None:
         _, expanded_root = self.fixture()
@@ -2594,7 +2610,6 @@ class Task0029SparseSerializationTests(unittest.TestCase):
         mutations = (
             ('  final_execution_head: ""', '  final_execution_head_missing: ""', "execution.final_execution_head"),
             ("acceptance_evidence:", "acceptance_evidence_missing:", "acceptance_evidence"),
-            ("executor_checks:", "executor_checks_missing:", "executor_checks"),
             ("result: NEEDS_REVIEW", "result_missing: NEEDS_REVIEW", "result"),
         )
         for old, new, missing_path in mutations:
@@ -2606,6 +2621,26 @@ class Task0029SparseSerializationTests(unittest.TestCase):
                 path.write_text(text.replace(old, new, 1), encoding="utf-8")
                 errors = self.validation_errors(root, "validate_report_template")
                 self.assertTrue(any(f"missing required path '{missing_path}'" in item for item in errors), errors)
+
+    def test_distinct_executor_checks_are_optional_but_validated_when_present(self) -> None:
+        _, root = self.fixture()
+        task = self.load_document(root, "templates/task.yaml")
+        report = self.load_document(root, "templates/report.yaml")
+        self.assertNotIn("executor_checks", task["verification"])
+        self.assertNotIn("executor_checks", report)
+        self.assertEqual(self.validation_errors(root, "validate_task_template"), [])
+        self.assertEqual(self.validation_errors(root, "validate_report_template"), [])
+
+        path = root / "templates" / "report.yaml"
+        text = path.read_text(encoding="utf-8")
+        text = text.replace(
+            "\nresult: NEEDS_REVIEW\n",
+            '\nexecutor_checks:\n  - check_id: CHECK-1\n    result: NOT_PROVEN\n    evidence: ""\n\nresult: NEEDS_REVIEW\n',
+            1,
+        )
+        path.write_text(text.replace("check_id: CHECK-1", "wrong_key: CHECK-1", 1), encoding="utf-8")
+        errors = self.validation_errors(root, "validate_report_template")
+        self.assertTrue(any("executor_checks[0]" in item and "check_id" in item for item in errors), errors)
 
     def test_sparse_review_still_rejects_missing_exact_report_identity(self) -> None:
         _, root = self.fixture()

@@ -17,3 +17,9 @@ Refreshing tracking refs is mutation and requires an explicit approved Foundatio
 ```bash
 python3 -B skills/scripts/sync_external_capabilities.py --refresh --task .agent/tasks/TASK-XXXX/task.yaml
 ```
+
+## ECC CLI boundary
+
+The pinned ECC entry in `sources.json` and this catalog are Foundation's discovery path for ECC skills. Resolve the exact indexed source revision, check applicability, and load only the relevant skill content under current target and phase authority. The index and loaded skill remain non-authoritative.
+
+`ecc consult` is an optional heuristic for exploring ECC install components and profiles. Its recommendations are advisory only: they cannot route a Foundation task, select an execution surface, establish trust or authority, or become a required preflight. `ecc plan` and `ecc install` plan and apply installation into ECC-supported harnesses; they are outside the normal ChatGPT task flow. Do not infer a ChatGPT install target or install ECC hooks and commands as a side effect of loading a skill.
