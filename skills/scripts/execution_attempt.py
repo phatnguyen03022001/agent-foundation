@@ -401,7 +401,6 @@ def _validate_performance_segment(
     segment: Any,
     *,
     attempt_started: datetime,
-    last_seen: datetime,
     completed: bool,
 ) -> tuple[datetime, datetime | None]:
     if not isinstance(segment, dict) or set(segment) != PERFORMANCE_SEGMENT_KEYS:
@@ -411,13 +410,13 @@ def _validate_performance_segment(
     if segment["activity_class"] not in PERFORMANCE_ACTIVITY_CLASSES:
         raise ValueError("performance activity_class is invalid")
     started = _parse_utc(segment["started_at_utc"])
-    if started < attempt_started or started > last_seen:
-        raise ValueError("performance segment start is outside attempt bounds")
+    if started < attempt_started:
+        raise ValueError("performance segment start precedes attempt start")
     ended_value = segment["ended_at_utc"]
     if completed:
         ended = _parse_utc(ended_value)
-        if ended < started or ended > last_seen:
-            raise ValueError("performance segment end is outside attempt bounds")
+        if ended < started:
+            raise ValueError("performance segment end precedes start")
     else:
         if ended_value is not None:
             raise ValueError("open performance segment cannot contain ended_at_utc")
@@ -429,7 +428,6 @@ def _validate_performance(
     performance: Any,
     *,
     attempt_started: datetime,
-    last_seen: datetime,
 ) -> None:
     if performance is None:
         return
@@ -446,7 +444,6 @@ def _validate_performance(
         started, ended = _validate_performance_segment(
             segment,
             attempt_started=attempt_started,
-            last_seen=last_seen,
             completed=True,
         )
         if started < previous_end:
@@ -459,7 +456,6 @@ def _validate_performance(
         started, _ = _validate_performance_segment(
             open_segment,
             attempt_started=attempt_started,
-            last_seen=last_seen,
             completed=False,
         )
         if started < previous_end:
@@ -513,7 +509,6 @@ def validate_record(record: dict[str, Any]) -> dict[str, Any]:
         _validate_performance(
             record["performance"],
             attempt_started=started,
-            last_seen=last_seen,
         )
 
     checkpoint = record["last_checkpoint"]
@@ -562,6 +557,11 @@ def validate_record(record: dict[str, Any]) -> dict[str, Any]:
         terminal_at = _parse_utc(record["terminal_at_utc"])
         if terminal_at < last_seen:
             raise ValueError("terminal_at_utc precedes last_seen_at_utc")
+        if (
+            schema_version == SCHEMA_VERSION
+            and terminal_at < _latest_performance_boundary(record)
+        ):
+            raise ValueError("terminal_at_utc precedes performance boundary")
     return record
 
 
@@ -603,9 +603,31 @@ def _write_record(root: Path, record: dict[str, Any], *, create: bool) -> Path:
     return path
 
 
+def _latest_performance_boundary(record: dict[str, Any]) -> datetime:
+    latest = _parse_utc(record["started_at_utc"])
+    if record.get("schema_version") != SCHEMA_VERSION:
+        return latest
+    performance = record.get("performance")
+    if performance is None:
+        return latest
+    completed_segments = performance["completed_segments"]
+    if completed_segments:
+        latest = max(
+            latest,
+            _parse_utc(completed_segments[-1]["ended_at_utc"]),
+        )
+    open_segment = performance["open_segment"]
+    if open_segment is not None:
+        latest = max(latest, _parse_utc(open_segment["started_at_utc"]))
+    return latest
+
+
 def _assert_forward_time(record: dict[str, Any], now: datetime) -> None:
-    if now.astimezone(timezone.utc) < _parse_utc(record["last_seen_at_utc"]):
+    current = now.astimezone(timezone.utc)
+    if current < _parse_utc(record["last_seen_at_utc"]):
         raise ValueError("operation time precedes last_seen_at_utc")
+    if current < _latest_performance_boundary(record):
+        raise ValueError("operation time precedes performance boundary")
 
 
 def start_attempt(
@@ -1003,7 +1025,6 @@ def start_performance_segment(
     current = now or _now_utc()
     _assert_forward_time(record, current)
     timestamp = _format_utc(current)
-    record["last_seen_at_utc"] = timestamp
     performance["open_segment"] = _new_performance_segment(
         phase, activity_class, timestamp
     )
@@ -1034,7 +1055,6 @@ def transition_performance_segment(
     completed["ended_at_utc"] = timestamp
     performance["completed_segments"].append(completed)
     performance["open_segment"] = next_segment
-    record["last_seen_at_utc"] = timestamp
     _write_record(root_path, record, create=False)
     return record
 
@@ -1059,7 +1079,6 @@ def stop_performance_segment(
     completed["ended_at_utc"] = timestamp
     performance["completed_segments"].append(completed)
     performance["open_segment"] = None
-    record["last_seen_at_utc"] = timestamp
     _write_record(root_path, record, create=False)
     return record
 
@@ -1067,12 +1086,15 @@ def stop_performance_segment(
 def summarize_performance(record: dict[str, Any]) -> dict[str, Any]:
     validate_record(record)
     window_start = _parse_utc(record["started_at_utc"])
-    window_end_value = (
-        record["terminal_at_utc"]
-        if record["state"] == "TERMINAL"
-        else record["last_seen_at_utc"]
-    )
-    window_end = _parse_utc(window_end_value)
+    if record["state"] == "TERMINAL":
+        window_end_value = record["terminal_at_utc"]
+        window_end = _parse_utc(window_end_value)
+    else:
+        window_end = max(
+            _parse_utc(record["last_seen_at_utc"]),
+            _latest_performance_boundary(record),
+        )
+        window_end_value = _format_utc(window_end)
     wall_seconds = (window_end - window_start).total_seconds()
 
     phase_seconds = {phase: 0.0 for phase in PERFORMANCE_PHASES}

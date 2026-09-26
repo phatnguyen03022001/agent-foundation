@@ -245,6 +245,47 @@ class ExecutionAttemptTests(unittest.TestCase):
         self.assertEqual(summary["open_segment"]["phase"], "IMPLEMENTATION")
         self.assertIsNone(summary["open_segment"]["ended_at_utc"])
 
+    def test_performance_markers_do_not_refresh_lease_or_change_retry(self) -> None:
+        self.start()
+        self.start_slice(now=self.t0 + timedelta(seconds=5))
+        before = attempts.inspect_attempt(
+            self.root,
+            self.attempt_id,
+            now=self.t0 + timedelta(seconds=66),
+        )
+        self.assertEqual(before["classification"], "INTERRUPTED_UNKNOWN")
+        self.assertFalse(attempts.retry_is_legal(before["current_slice"]))
+
+        marked = attempts.start_performance_segment(
+            self.root,
+            self.attempt_id,
+            "VERIFICATION",
+            "EXTERNAL_WAIT",
+            now=self.t0 + timedelta(seconds=70),
+        )
+        self.assertEqual(marked["last_seen_at_utc"], "2026-09-23T12:00:05Z")
+        stopped = attempts.stop_performance_segment(
+            self.root,
+            self.attempt_id,
+            now=self.t0 + timedelta(seconds=80),
+        )
+        self.assertEqual(stopped["last_seen_at_utc"], "2026-09-23T12:00:05Z")
+
+        after = attempts.inspect_attempt(
+            self.root,
+            self.attempt_id,
+            now=self.t0 + timedelta(seconds=81),
+        )
+        self.assertEqual(after["classification"], "INTERRUPTED_UNKNOWN")
+        self.assertFalse(attempts.retry_is_legal(after["current_slice"]))
+        summary = attempts.performance_summary(self.root, self.attempt_id)
+        self.assertEqual(
+            summary["attempt_window"]["ended_at_utc"],
+            "2026-09-23T12:01:20Z",
+        )
+        self.assertEqual(summary["instrumented_coverage_seconds"], 10.0)
+        self.assertEqual(summary["unattributed_seconds"], 70.0)
+
     def test_performance_vocabulary_and_payload_are_fixed(self) -> None:
         self.start()
         with self.assertRaisesRegex(ValueError, "phase"):
