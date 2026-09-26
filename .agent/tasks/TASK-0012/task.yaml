@@ -1,0 +1,193 @@
+protocol_version: 3
+
+task_id: TASK-0012
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0012"
+  gap_id: "EXECUTION-PERFORMANCE-ATTRIBUTION"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "3157bb8062929a0bdcbda0f3a4cf7266ac9a0a09"
+
+architect_analysis_skills:
+  - architect
+  - reliability
+  - verification
+  - simplicity
+
+execution_skills:
+  required:
+    - executor
+    - reliability
+    - verification
+    - simplicity
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator request to determine why long Agent Runtime/Foundation tasks take excessive wall time and whether the cost produces useful quality"
+    role: "material objective"
+    precedence: 1
+  - source: "agent-runtime TASK-0168/TASK-0169 accepted evidence"
+    role: "proved lifecycle SHA-admission churn root cause is closed and Runtime core timing is not the dominant local execution bottleneck"
+    precedence: 2
+  - source: "3157bb8062929a0bdcbda0f3a4cf7266ac9a0a09"
+    role: "current Foundation main with keyed Runtime recovery, sparse evidence, execution-bundle streamlining, and optional operational timing"
+    precedence: 3
+  - source: "skills/contracts/EXECUTION_CONTINUITY.md@3157bb8062929a0bdcbda0f3a4cf7266ac9a0a09"
+    role: "existing local authority-NONE execution-attempt telemetry owner"
+    precedence: 4
+  - source: "skills/scripts/execution_attempt.py@3157bb8062929a0bdcbda0f3a4cf7266ac9a0a09"
+    role: "existing bounded local Git-metadata continuity implementation"
+    precedence: 5
+  - source: "skills/executor/SKILL.md and skills/architect/SKILL.md@3157bb8062929a0bdcbda0f3a4cf7266ac9a0a09"
+    role: "current opt-in operational timing and execution-bundle procedure"
+    precedence: 6
+
+structure_authority:
+  status: RESOLVED
+  source: "existing Execution Attempt local Git-metadata telemetry"
+  rationale: "Performance attribution is operational telemetry for execution continuity and belongs in the existing L1 execution-attempt store. It must not create a second telemetry database, daemon, service, collector, workflow engine, or authority source."
+
+objective: "Add a bounded opt-in performance-attribution mode to Foundation Execution Attempt telemetry so an explicitly requested performance audit can distinguish task phase wall time, controller-owned execution time, external-wait time, and unattributed time without pretending to measure hidden model thinking. Preserve default hot-path behavior, authority NONE, privacy, existing operational_timing semantics, current task/review authority, and all execution correctness gates."
+
+scope:
+  required_changes:
+    - "Evolve Execution Attempt compatibly so performance attribution is opt-in only. Ordinary attempts that are not explicitly performance-audited must not require phase markers, extra tool calls, report fields, or a backend service."
+    - "Reuse the existing repository-local Git metadata store. Do not create a second persistence location, tracked telemetry file, database, queue, daemon, background heartbeat, scheduler, collector, dashboard, or Runtime dependency."
+    - "Define a fixed performance phase vocabulary sufficient for current Foundation execution: PREFLIGHT, IMPLEMENTATION, VERIFICATION, REPORTING, and PUBLICATION. Architect REVIEW remains separately measured by the existing review operational_timing boundary and is not folded into the Executor attempt."
+    - "Define exactly two activity classes: CONTROLLER_OWNED and EXTERNAL_WAIT. CONTROLLER_OWNED means wall time during which control remains with the Executor/controller, including reasoning and synchronous work; it MUST NOT be named or interpreted as model-active or thinking time. EXTERNAL_WAIT means an explicitly marked interval waiting for a long-running process, remote consequence, or other external dependency."
+    - "Record only trustworthy current UTC boundary timestamps captured by the helper at transition time. Never reconstruct performance timing from Git commit timestamps, chat timestamps, tool-history timestamps, lease expiry, or report prose."
+    - "Allow at most one open performance segment and a bounded completed segment history. The implementation must use a small fixed maximum no greater than 32 completed segments per attempt."
+    - "Each stored segment may contain only fixed phase, fixed activity class, started_at_utc, and ended_at_utc. Do not store arbitrary labels, prompts, tool names, argv, paths, commands, model identifiers, token counts, user text, raw logs, tool output, secrets, repository content, or high-cardinality identifiers inside segment telemetry."
+    - "Provide deterministic local operations to start/transition/stop performance segments and a read-only summary operation. A transition closes the previous segment and opens the next at one captured boundary so intervals cannot overlap."
+    - "The derived summary must report task-attempt wall time, per-phase wall time, CONTROLLER_OWNED time, EXTERNAL_WAIT time, instrumented coverage, and UNATTRIBUTED time. Derived durations may be returned by the helper but must not be persisted as canonical report authority."
+    - "UNATTRIBUTED must remain explicit whenever stored segments do not cover the complete attempt window. Missing markers, interruption, malformed telemetry, or incomplete coverage must never be silently assigned to controller or external wait."
+    - "Interrupted RUNNING attempts may retain one open performance segment. Inspection may show it as open/incomplete but must not invent an end time beyond trustworthy last-seen/terminal evidence or classify the missing interval as completed work."
+    - "Preserve Execution Slice semantics unchanged. Performance segments are observational only and never create mutation, retry, continuation, publication, task, review, acceptance, promotion, or release authority."
+    - "Preserve current report/review operational_timing semantics: when explicitly requested, Executor and Architect still capture only the existing trustworthy two RFC3339 UTC boundary timestamps in their canonical artifacts. Do not replace them with derived durations."
+    - "Update Executor guidance so performance-audit tasks mark only semantic phase/activity transitions, not every tool call. Long recoverable verification/process waits should use one EXTERNAL_WAIT interval rather than repeated poll markers. The goal is measurement with low observer overhead."
+    - "Update Architect guidance so performance audits distinguish Executor processing, external wait, review processing, and queue gap only from trustworthy captured boundaries; no hidden model time, platform scheduler time, or transport internals are inferred without evidence."
+    - "Preserve Runtime telemetry as an independent substrate signal. This task does not change agent-runtime, does not require OTLP to be enabled, and does not invent cross-repository trace correlation."
+    - "Add deterministic tests for schema compatibility, opt-in behavior, exact transition semantics, bounds, privacy rejection, interruption, unattributed coverage, derived summaries, and authority NONE."
+    - "Keep documents/, standards/, profile operator routing, external capability catalog, authority.lock.json, and agent-runtime byte-unchanged."
+    - "Publish TASK-0012 implementation and report by non-force fast-forward on main only."
+
+  allowed_existing_files_or_components:
+    - "skills/contracts/EXECUTION_CONTINUITY.md"
+    - "skills/scripts/execution_attempt.py"
+    - "skills/scripts/test_execution_attempt.py"
+    - "skills/templates/execution-attempt.yaml"
+    - "skills/executor/SKILL.md"
+    - "skills/architect/SKILL.md"
+    - "skills/protocols/TASK_PROTOCOL.md only if required to preserve/clarify optional operational-timing semantics"
+    - "skills/scripts/validate_skill_library.py only if required for the evolved attempt schema or explicit performance-audit report/review validation"
+    - "skills/scripts/test_validate_skill_library.py only if required by validator changes"
+    - ".agent/tasks/TASK-0012/**"
+
+invariants:
+  - "Foundation remains MAIN_ONLY with exactly two organizational roles: Architect and Executor."
+  - "Performance attribution has authority NONE and cannot affect correctness, PASS/FAIL, acceptance, retry legality, task authority, capability authority, publication, promotion, or release."
+  - "Default non-audit Executor/Architect hot paths remain free of mandatory performance markers."
+  - "No claim of hidden model thinking time or model-active duration is introduced."
+  - "UNATTRIBUTED time remains explicit when coverage is incomplete."
+  - "Existing Execution Attempt RUNNING/TERMINAL lifecycle, lease semantics, current_slice semantics, and no-blind-retry rules remain unchanged."
+  - "Existing canonical report/review operational_timing remains opt-in and stores only trustworthy start/terminal RFC3339 UTC timestamps, never elapsed seconds."
+  - "No telemetry payload contains secrets, prompts, transcripts, argv, environment, repository content, raw logs, diffs, file bodies, or broad inventories."
+  - "No new daemon, service, database, queue, scheduler, background process, collector, dashboard, third-party dependency, organizational role, or Foundation layer."
+  - "agent-runtime, documents/, standards/, profile/.agent/bootstrap/authority.lock.json, and external capability source identities remain unchanged."
+
+forbidden_changes:
+  - "Make performance telemetry mandatory for ordinary tasks."
+  - "Call CONTROLLER_OWNED model-active, thinking time, inference time, or another unobservable model-internal duration."
+  - "Infer timing from Git commit timestamps, conversation timestamps, lease expiry, or missing telemetry."
+  - "Record per-tool transcripts or unbounded event history."
+  - "Add arbitrary phase/activity labels supplied by users or tasks."
+  - "Persist derived performance durations as correctness evidence or use them to gate acceptance."
+  - "Merge Architect review timing into Executor attempt telemetry."
+  - "Modify agent-runtime, Runtime telemetry, tunnel-client, host services, Runtime configuration, or installed software."
+  - "Modify documents/, standards/, authority.lock.json, bootstrap routing, ECC catalog/source pins, branches, tags, releases, or repository topology."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Performance attribution is opt-in and default execution behavior remains unchanged."
+    evidence_required: "Tests prove an ordinary attempt requires no performance markers/backend and current task/report/review semantics remain valid; explicit performance-audit operations alone create timing segments."
+
+  - id: AC-2
+    requirement: "Phase/activity timing is bounded, deterministic, and privacy-safe."
+    evidence_required: "Schema/tool tests prove only fixed phases, fixed activity classes, captured UTC boundaries, one open segment, <=32 completed segments, authority NONE, and rejection of arbitrary/high-risk payload fields."
+
+  - id: AC-3
+    requirement: "Derived attribution is truthful rather than overclaimed."
+    evidence_required: "Deterministic fixture proves wall-time, per-phase, CONTROLLER_OWNED, EXTERNAL_WAIT, instrumented coverage, and UNATTRIBUTED calculations; incomplete/interrupted telemetry leaves explicit unattributed/open state and never fabricates hidden-model timing."
+
+  - id: AC-4
+    requirement: "Instrumentation overhead is proportional to semantic boundaries."
+    evidence_required: "Executor contract/tests or fixtures demonstrate phase/activity transitions occur at semantic boundaries and one long external wait is represented as one interval rather than per-poll/per-tool telemetry."
+
+  - id: AC-5
+    requirement: "Existing continuity and retry safety are unchanged."
+    evidence_required: "Execution-attempt legacy/current records, slices, checkpoints, lease classification, keyed recovery, OUTCOME_UNKNOWN and no-blind-retry regressions remain green; performance data cannot change retry_is_legal or observer lifecycle classification."
+
+  - id: AC-6
+    requirement: "Canonical operational timing semantics remain compatible."
+    evidence_required: "Executor/Architect/Task Protocol checks prove canonical operational_timing is still optional, boundary-captured, two-timestamp, non-authoritative, and no elapsed duration is serialized into canonical report/review timing."
+
+  - id: AC-7
+    requirement: "No new observability infrastructure or cross-repository coupling is introduced."
+    evidence_required: "Diff/tree proof shows no new daemon/database/service/dependency, no Runtime mutation, and documents/, standards/, authority.lock.json, external capability identities, and bootstrap routing remain unchanged."
+
+  - id: AC-8
+    requirement: "Foundation verification is green on one coherent final candidate."
+    evidence_required: "Focused execution-attempt/performance tests, validator regressions if touched, bootstrap validation/tests, skill-library validation/regression, Python compilation for modified scripts, and git diff --check all PASS."
+
+verification:
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
