@@ -1,0 +1,181 @@
+protocol_version: 3
+
+task_id: TASK-0013
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: architect_continuation
+  task_id: "TASK-0013"
+  gap_id: "MEASURED-CLOSURE-ROUNDTRIP-SIMPLIFICATION"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "4ecf170940ebd7f3aae0be5b2ec7147a4a00e0df"
+
+architect_analysis_skills:
+  - architect
+  - reliability
+  - verification
+  - simplicity
+
+execution_skills:
+  required:
+    - executor
+    - reliability
+    - verification
+    - simplicity
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: ".agent/tasks/TASK-0012/review.yaml at 4ecf170940ebd7f3aae0be5b2ec7147a4a00e0df"
+    role: "accepted bounded execution performance attribution"
+    precedence: 1
+  - source: "TASK-0012 dogfood attempt 70a46a9fe7c14ebd8c03480be154baf5"
+    role: "measured baseline showing non-trivial publication/reporting wall time and 17 semantic segments"
+    precedence: 2
+  - source: "skills/contracts/IMPLEMENTATION_REPORT.md@4ecf170940ebd7f3aae0be5b2ec7147a4a00e0df"
+    role: "current report identity/publication semantics"
+    precedence: 3
+  - source: "skills/executor/SKILL.md@4ecf170940ebd7f3aae0be5b2ec7147a4a00e0df"
+    role: "current execution bundle, publication, report, and performance-audit semantics"
+    precedence: 4
+  - source: "skills/protocols/TASK_PROTOCOL.md@4ecf170940ebd7f3aae0be5b2ec7147a4a00e0df"
+    role: "current lifecycle/consequence-boundary authority"
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "existing protocol-v3 candidate/report lineage and repo_publish CAS semantics"
+  rationale: "The optimization changes closure procedure only. It requires no new artifact type, lifecycle state, daemon, cache, registry, workflow engine, or Runtime capability."
+
+objective: "Reduce happy-path Executor closure synchronization without weakening proof by making one-shot candidate-plus-report publication the preferred protocol-v3 path when all candidate acceptance evidence is already locally/resolvably complete and no external verifier or other authority requires the implementation candidate to be remotely visible before report authorship. Preserve the candidate as the report's exact sole parent, publish the report commit by one non-force CAS fast-forward from the unchanged remote base so both commits become remote atomically, and retain the existing two-publication path only when a real remote-candidate dependency requires it. Dogfood the optimized closure in TASK-0013 under the accepted TASK-0012 performance attribution."
+
+scope:
+  required_changes:
+    - "Clarify that protocol-v3 does not inherently require the implementation candidate to be published before report authorship. The immutable local candidate may remain unpublished while the Executor authors/validates its report-only direct child."
+    - "Define the preferred single-publication closure eligibility gate: exact remote ref still equals the authorized execution base; candidate is immutable and fully verified; all evidence required before report authorship is already available without remote candidate visibility; task grants both report commit and push authority; report can truthfully record candidate/pre-publication facts; and no CI, external verifier, cross-checkout consumer, promotion prerequisite, or other authority requires the candidate SHA to be remote before the report exists."
+    - "On the eligible path, create the candidate commit locally, create/validate the report-only direct child locally, then perform exactly one ordinary non-force CAS publication from expected remote base to the report commit. This publication makes both the candidate and report reachable without a separate candidate push."
+    - "After that one publication, perform the normal fresh remote consequence-boundary proof: remote main equals exact report commit, report has exact candidate sole parent, report diff is report-only, candidate remains the exact final_execution_head, and topology/invariants required by the task remain satisfied."
+    - "The report must not self-claim its own publication. On the single-publication path, any field meaning 'implementation candidate was already pushed before report authorship' must remain false/omitted as allowed by the canonical schema. Remote reachability of candidate/report is proven after publication and again by Architect review."
+    - "Preserve the existing two-publication path when remote candidate visibility is materially required before report authorship, including an external/CI verifier that consumes remote SHA, a separate checkout/session that must resolve candidate evidence before report construction, explicit task authority requiring candidate publication, or another concrete consequence boundary."
+    - "Do not split publication merely for ceremony, confidence, or historical habit. Conversely, do not use one-shot publication to skip a required remote-candidate verifier or fresh consequence-boundary check."
+    - "Preserve failure semantics. If the single CAS publication fails or is ambiguous, reconcile remote ref truth before retry; never create a second publication attempt from unknown effect. A local candidate/report pair remains immutable evidence but is not canonical remote evidence until publication is proven."
+    - "Preserve candidate/report identity semantics: final_execution_head remains the implementation candidate; reviewed_report.commit remains the report commit; report remains a sole direct child and separate artifact."
+    - "Preserve current sparse report/evidence-dedup semantics and current verification selection/dedup rules. This task must not weaken or remove any acceptance predicate."
+    - "Use TASK-0012 schema-v3 performance attribution from the start of TASK-0013 preflight. Mark only semantic boundaries. Dogfood the optimized path and record publication invocation count plus the read-only performance summary as non-authoritative evidence."
+    - "TASK-0013 itself is eligible for the single-publication closure only if all its required candidate verification is local/resolvable without remote candidate visibility. If execution discovers a real remote-candidate dependency, use the existing two-publication path and report the reason rather than weakening proof."
+    - "Keep execution-attempt telemetry semantics, Runtime, documents/, standards/, bootstrap routing/authority lock, external capability identities, repository topology, and organizational roles unchanged."
+    - "Publish implementation/report on main only by non-force fast-forward."
+
+  allowed_existing_files_or_components:
+    - "skills/contracts/IMPLEMENTATION_REPORT.md"
+    - "skills/executor/SKILL.md"
+    - "skills/protocols/TASK_PROTOCOL.md"
+    - "skills/verification/SKILL.md only if needed to state the remote-verifier exception without duplicating existing verification semantics"
+    - "skills/scripts/test_validate_skill_library.py only if a validator regression is needed for existing report pushed=false/omitted compatibility"
+    - "skills/scripts/validate_skill_library.py only if existing validation incorrectly forces pre-report candidate publication"
+    - ".agent/tasks/TASK-0013/**"
+
+invariants:
+  - "Foundation remains MAIN_ONLY with exactly Architect and Executor roles."
+  - "No acceptance, verification, remote freshness, report identity, review independence, retry, or consequence-boundary predicate is removed."
+  - "final_execution_head remains the exact implementation candidate and reviewed_report.commit remains the exact report commit."
+  - "Report remains a sole direct child of the candidate and report content cannot self-attest its own publication."
+  - "One-shot publication is permitted only when the remote ref still equals the authorized base and no required evidence depends on candidate remote visibility before report authorship."
+  - "Two-publication closure remains available and required whenever a real remote-candidate dependency exists."
+  - "Publication ambiguity never authorizes blind retry."
+  - "TASK-0012 performance telemetry remains authority NONE and cannot determine PASS/FAIL."
+  - "No new artifact schema version, lifecycle state, daemon, database, queue, scheduler, cache, service, dependency, organizational role, or Runtime feature is introduced."
+  - "agent-runtime, documents/, standards/, profile/.agent/bootstrap/authority.lock.json, profile operator routing, and external-capability identities remain unchanged."
+
+forbidden_changes:
+  - "Skip a remote/CI verifier that requires candidate publication."
+  - "Claim a local-only candidate is already canonical remote evidence."
+  - "Set report publication fields to predict the report commit's own future push."
+  - "Collapse candidate and report into one commit."
+  - "Rewrite/amend/squash the candidate to add report evidence."
+  - "Remove post-publication remote proof or Architect independent review."
+  - "Introduce a new compact protocol/task/report dialect."
+  - "Modify Execution Attempt schema/semantics, agent-runtime, host services, tunnel-client, documents/, standards/, authority.lock.json, external capability pins, branches, tags, or releases."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Protocol-v3 explicitly permits one-shot candidate+report publication only when candidate remote visibility is not an evidence prerequisite."
+    evidence_required: "Contract/Executor text defines the positive eligibility predicates and concrete two-publication fallback triggers without weakening existing consequence-boundary or verification rules."
+
+  - id: AC-2
+    requirement: "The optimized path preserves exact candidate/report identities and remote proof."
+    evidence_required: "Deterministic TASK-0013 dogfood or fixture evidence proves local candidate -> local report-only child -> one CAS fast-forward to report commit -> fresh remote report/candidate lineage, with final_execution_head still candidate and report still separate child."
+
+  - id: AC-3
+    requirement: "Self-referential report publication remains impossible."
+    evidence_required: "Report contract/validator behavior permits truthful candidate-not-prepublished state and still forbids a report from claiming its own same-commit remote publication."
+
+  - id: AC-4
+    requirement: "External verifier and cross-checkout cases retain the two-publication path."
+    evidence_required: "Positive/negative contract fixtures or regression assertions demonstrate remote-candidate-required cases do not use the optimized path."
+
+  - id: AC-5
+    requirement: "Publication failure remains fail-closed and retry-safe."
+    evidence_required: "Existing CAS/reconciliation semantics remain normative; contract/tests show ambiguous or failed one-shot publication requires fresh remote reconciliation and never blind retry."
+
+  - id: AC-6
+    requirement: "The change reduces synchronization structurally rather than by weakening proof."
+    evidence_required: "TASK-0013 performance audit records exactly one candidate/report publication invocation on the eligible happy path, while all required verification predicates and one post-publication remote refresh remain present. No absolute wall-time target is required."
+
+  - id: AC-7
+    requirement: "Unrelated Foundation/Runtime authority remains unchanged."
+    evidence_required: "Diff/object identity proves execution-attempt telemetry, agent-runtime, documents/, standards/, authority.lock.json, bootstrap routing, external-capability identities, repository topology, and role model are unchanged."
+
+  - id: AC-8
+    requirement: "Foundation verification remains green on one coherent final candidate."
+    evidence_required: "Relevant protocol/validator regressions, skill-library validation/regressions, bootstrap validation/tests as applicable to changed surfaces, Python compilation for modified scripts, and git diff --check PASS before report authorship."
+
+verification:
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+blocking_decisions: []
+execution_ready: true
