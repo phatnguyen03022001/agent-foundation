@@ -1,0 +1,70 @@
+protocol_version: 3
+
+task_id: TASK-0012
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0012/report.yaml
+  commit: "68503ca3418ab067ff1665e233fd2162423434c2"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+acceptance_basis:
+  - "Exact report 68503ca3418ab067ff1665e233fd2162423434c2 is the sole report-only child of final implementation candidate dea79f7fc5ec87e975e6f9c5cc2d4f876b2993f7."
+  - "Base-to-final candidate diff modifies exactly six authorized Foundation surfaces: architect/executor guidance, execution continuity contract, execution_attempt implementation/tests, and the execution-attempt template."
+  - "Performance attribution is opt-in under schema v3, with exactly five fixed phases, exactly two fixed activity classes, one open segment, and at most 32 completed segments."
+  - "Performance segments remain authority NONE, local Git-metadata-only, and contain only fixed phase/activity plus captured UTC boundaries; no backend service, daemon, database, collector, Runtime mutation, or cross-repository trace coupling was introduced."
+  - "Final focused execution-attempt regression independently passes 33/33 and proves performance markers remain lease-neutral and do not change observer classification, slice semantics, or retry legality."
+  - "Schema-v1 and schema-v2 records remain readable with explicit schema-v3 upgrade required before performance mutation; schema-v2 slice work remains usable without upgrade."
+  - "Performance summary derives attempt wall time, per-phase time, CONTROLLER_OWNED, EXTERNAL_WAIT, coverage, and explicit UNATTRIBUTED without persisting derived durations as canonical authority or claiming hidden model thinking/inference time."
+  - "Fresh local dogfood summary for attempt 70a46a9fe7c14ebd8c03480be154baf5 matches the report: wall 1363.623634s, CONTROLLER_OWNED 883.840800s, EXTERNAL_WAIT 320.571391s, UNATTRIBUTED 159.211443s, coverage 0.8832438519, 17 completed segments and no open segment."
+  - "Protected documents/, standards/, authority.lock.json and external-capability identities remain byte/object-identical from base; skill-library validation independently passes."
+  - "Canonical report correctly omits operational_timing because the exact Executor start boundary was not captured; it does not reconstruct timing from Git/chat/tool history."
+
+final_candidate:
+  commit: "dea79f7fc5ec87e975e6f9c5cc2d4f876b2993f7"
+  tree: "004c5ac31637fc48a84517df70f4c48fdaa12a5a"
+  execution_attempt_schema: 3
+  focused_execution_attempt_tests: "33/33 PASS"
+  skill_library_validation: PASS
+  result: PASS
+
+performance_audit_observation:
+  attempt_id: "70a46a9fe7c14ebd8c03480be154baf5"
+  authority: NONE
+  task_attempt_wall_seconds: 1363.623634
+  controller_owned_seconds: 883.8408000000001
+  external_wait_seconds: 320.571391
+  unattributed_seconds: 159.21144299999992
+  coverage_fraction: 0.8832438518735736
+  completed_segments: 17
+  phase_wall_seconds:
+    PREFLIGHT: 0.0
+    IMPLEMENTATION: 442.41173100000003
+    VERIFICATION: 332.1962190000001
+    REPORTING: 221.120099
+    PUBLICATION: 208.684142
+  interpretation: "This is trustworthy wall-time attribution only. CONTROLLER_OWNED is not model-active or hidden thinking time. UNATTRIBUTED remains unresolved."
+
+notes:
+  - "TASK-0012 is terminally ACCEPTED for exact report 68503ca3418ab067ff1665e233fd2162423434c2."
+  - "Review operational_timing is omitted because its required start boundary was not captured before review-specific inspection; no timing is reconstructed."
+  - "The accepted telemetry is sufficient to support a separate measured workflow-simplification task without weakening correctness predicates."
