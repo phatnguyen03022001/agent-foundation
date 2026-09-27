@@ -1,0 +1,76 @@
+protocol_version: 3
+
+task_id: TASK-0013
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0013/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "41d85139f9a64fe16ee84ae331d34c20dae31a55"
+  final_execution_head: "b3dbf32f8c7b1b3a78a9145028bff98a0711cf38"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "4ecf170940ebd7f3aae0be5b2ec7147a4a00e0df"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_write
+    - local_test_execution
+    - bounded_network_resolution
+    - non_force_git_publication
+  available:
+    - Agent Runtime expected-state repository mutation
+    - Agent Runtime bounded local command execution
+    - Agent Runtime bounded Git remote resolution
+    - bounded exact-lease fast-forward Git publication
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0013 revision 1 designates no separate authoritative verifier."
+
+pushed: false
+
+operational_timing:
+  started_at_utc: "2026-09-27T10:46:10Z"
+  terminal_decision_at_utc: "2026-09-27T10:55:07Z"
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Protocol, Executor, and report contracts now make single-publication candidate-plus-report closure preferred only when the exact remote ref still equals the authorized base, the candidate is immutable and fully verified, all pre-report evidence is complete without remote candidate visibility, commit/push authority is present, and no remote-SHA consumer or authority requires candidate prepublication. The same text preserves concrete two-publication fallback triggers."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Final candidate b3dbf32f8c7b1b3a78a9145028bff98a0711cf38 preserves final_execution_head as the implementation identity and defines the report as its sole direct child. Focused regressions prove the one-CAS flow and mandatory fresh remote lineage proof. This report intentionally does not self-claim its own later publication; exact post-publication remote consequence evidence is resolved outside this commit."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "The existing report schema remains unchanged and validates pushed: false. New contract/regression coverage defines that value as the truthful candidate-prepublication state for one-shot closure while preserving the prohibition on same-commit publication self-attestation."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Regression assertions and canonical text retain the two-publication path for CI/external verifiers consuming a remote candidate SHA, separate checkout/session consumers, promotion prerequisites, explicit candidate-publication rules, and other concrete remote-candidate dependencies."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Protocol and Executor guidance require failed or ambiguous one-shot publication to stop, reconcile fresh remote truth, and never blind retry from OUTCOME_UNKNOWN. Existing retry-safety semantics are preserved rather than replaced."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "All candidate verification was local/resolvable without candidate remote visibility, remote main still equaled the authorized base immediately before report authorship, and the candidate remained unpublished through this report's authorship. The actual candidate-plus-report publication invocation count and final read-only performance summary are post-commit consequence evidence and therefore are intentionally not predicted by this report."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Base-to-candidate diff is exactly four authorized skills paths. Git object identities are unchanged for documents/ c0bf2080ddee6e549a1605c13d4ff9041984c636, standards/ 1807ad6e7d1a8ddfe8987ebe937886d9fd85e268, authority.lock.json be80e2308e18d662ce3748f5fb41c41619b346bc, bootstrap routing tree aa91ceada1860eb76589829a69dcc24f6d916592, external-capability tree 78d92ce20833361ccc5e33ebea05baf02c75705b, and all four Execution Attempt telemetry owner files. Agent Runtime remained 0.5.0 at revision b1879b5c185e93457bb634a7ab0508f7220416af and was not mutated."
+  - criterion_id: AC-8
+    status: PASS
+    evidence: "On immutable candidate b3dbf32f8c7b1b3a78a9145028bff98a0711cf38: focused closure regressions pass 4/4; skill-library validation passes; full skill regressions pass 173/173; bootstrap validation returns OPM_BOOTSTRAP = TRUE; bootstrap regressions pass 49/49; Python source compilation for the modified test script passes; git diff --check passes; exact scope is four authorized paths; and protected object identities match the authorized base."
+
+result: NEEDS_REVIEW
