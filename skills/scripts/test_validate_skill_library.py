@@ -3037,6 +3037,57 @@ class Task0054PlatformCompliantExecutionPublicationTests(unittest.TestCase):
         ):
             self.assertIn(marker, combined)
 
+    def test_protocol_v3_single_publication_closure_preserves_candidate_report_identity(self) -> None:
+        combined = self.doctrine(
+            "protocols/TASK_PROTOCOL.md",
+            "contracts/IMPLEMENTATION_REPORT.md",
+            "executor/SKILL.md",
+        )
+        for marker in (
+            "single-publication",
+            "exact remote target ref still equals the authorized execution base",
+            "immutable and fully verified",
+            "report-only sole direct child",
+            "one ordinary non-force cas",
+            "fresh remote",
+            "final_execution_head",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_protocol_v3_remote_candidate_dependencies_require_two_publications(self) -> None:
+        combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
+        for marker in (
+            "two-publication",
+            "ci/external verifier",
+            "cross-checkout",
+            "promotion prerequisite",
+            "explicit",
+            "candidate publication",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_report_pushed_false_is_truthful_candidate_prepublication_state(self) -> None:
+        template = (ROOT / "templates/report.yaml").read_text(encoding="utf-8")
+        self.assertIn("\npushed: false\n", template)
+        contract = self.doctrine("contracts/IMPLEMENTATION_REPORT.md", "executor/SKILL.md")
+        for marker in (
+            "pushed: false",
+            "candidate-prepublication state",
+            "not remotely visible before report authorship",
+            "never predicts",
+        ):
+            self.assertIn(marker, contract)
+
+    def test_single_publication_unknown_effect_requires_reconciliation_before_retry(self) -> None:
+        combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
+        for marker in (
+            "failed or ambiguous",
+            "fresh remote reconciliation",
+            "never blind retry",
+            "outcome_unknown",
+        ):
+            self.assertIn(marker, combined)
+
     def test_scenario_i_report_and_review_publication_are_externally_proven(self) -> None:
         combined = self.doctrine(
             "protocols/TASK_PROTOCOL.md",
