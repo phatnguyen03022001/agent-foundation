@@ -1,0 +1,74 @@
+protocol_version: 3
+
+task_id: TASK-0013
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0013/report.yaml
+  commit: "c2a41acb32ce505cb873c0f24a138248881ed817"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+acceptance_basis:
+  - "Exact report c2a41acb32ce505cb873c0f24a138248881ed817 is the sole report-only child of implementation candidate b3dbf32f8c7b1b3a78a9145028bff98a0711cf38; the candidate has sole parent exact authorized base 41d85139f9a64fe16ee84ae331d34c20dae31a55."
+  - "Fresh remote/local proof shows main == origin/main == c2a41ac..., ahead/behind 0/0, one remote branch main, and a clean worktree/index."
+  - "Base-to-candidate diff is exactly four authorized paths: IMPLEMENTATION_REPORT.md, executor/SKILL.md, TASK_PROTOCOL.md, and test_validate_skill_library.py."
+  - "The implementation preserves distinct final_execution_head and reviewed_report.commit identities while allowing one-shot candidate-plus-report publication only under explicit no-remote-candidate-dependency predicates."
+  - "The two-publication path remains required for CI/external verifier, cross-checkout consumer, promotion prerequisite, explicit candidate-publication requirement, or another concrete remote-candidate dependency."
+  - "The report truthfully uses pushed=false to represent candidate prepublication state and does not self-attest the report commit's later remote visibility."
+  - "Failed or ambiguous one-shot publication remains fail-closed: fresh remote reconciliation is required and blind retry from OUTCOME_UNKNOWN remains forbidden."
+  - "Fresh Architect regression execution passes 173/173 and the exact report validates successfully."
+  - "TASK-0013 dogfood performance summary independently resolves attempt cf3b3f3fb0f044f6817f1812a5ccae7d with wall 963.189752s, CONTROLLER_OWNED 875.613333s, EXTERNAL_WAIT 67.280691s, UNATTRIBUTED 20.295728s, coverage 0.9789286296, ten completed segments, and no open segment."
+  - "Compared with TASK-0012 dogfood wall 1363.623634s, TASK-0013 wall is 400.433882s lower (about 29.4%). This is useful measured evidence but not treated as a controlled causal benchmark because the tasks differ."
+  - "Current Git graph and report semantics are consistent with the claimed one-shot closure. Historical tool-call retention was not available to independently recount the exact publication invocation, so acceptance does not overstate that unavailable log evidence."
+
+final_candidate:
+  commit: "b3dbf32f8c7b1b3a78a9145028bff98a0711cf38"
+  tree: "5add5ecc7eeedfd146ec8712e42a27bf9bfaec72"
+  focused_closure_tests: "4/4 PASS (executor report evidence)"
+  skill_regressions: "173/173 PASS independently rerun"
+  report_validation: PASS
+  result: PASS
+
+performance_observation:
+  attempt_id: "cf3b3f3fb0f044f6817f1812a5ccae7d"
+  authority: NONE
+  task_attempt_wall_seconds: 963.189752
+  controller_owned_seconds: 875.6133329999999
+  external_wait_seconds: 67.280691
+  unattributed_seconds: 20.295728000000054
+  coverage_fraction: 0.9789286296310179
+  completed_segments: 10
+  phase_wall_seconds:
+    PREFLIGHT: 84.765564
+    IMPLEMENTATION: 156.863406
+    VERIFICATION: 274.391055
+    REPORTING: 309.459404
+    PUBLICATION: 117.41459499999999
+  baseline_task_0012_wall_seconds: 1363.623634
+  observed_wall_reduction_seconds: 400.433882
+  observed_wall_reduction_percent: 29.36
+  interpretation: "Observed dogfood comparison only; not a controlled causal benchmark. CONTROLLER_OWNED remains controller wall time, not hidden model thinking/inference time."
+
+notes:
+  - "TASK-0013 is terminally ACCEPTED for exact report c2a41acb32ce505cb873c0f24a138248881ed817."
+  - "Single-publication closure is now an accepted preferred happy path only when its eligibility predicates hold; it does not weaken proof or replace the two-publication path where remote candidate visibility is required."
+  - "Review operational_timing is omitted because the required review start boundary was not captured before review-specific inspection; no timing is reconstructed."
