@@ -3466,7 +3466,7 @@ class Task0019ProductStateTests(unittest.TestCase):
     def test_current_product_state_is_exact_frozen_four_feature_inventory(self) -> None:
         state = self.load_state()
         self.assertEqual(self.validate_state(state), [])
-        self.assertEqual(state["schema_version"], 2)
+        self.assertEqual(state["schema_version"], 3)
         self.assertEqual(state["target"]["repository"], "phatnguyen03022001/agent-foundation")
         scope = state["product_scope"]
         self.assertEqual(scope["revision"], 1)
@@ -3583,6 +3583,292 @@ class Task0019ProductStateTests(unittest.TestCase):
         self.assertTrue(self.validate_state(changed))
 
 
+class Task0021GlobalProgressionTests(unittest.TestCase):
+    def load_state(self) -> dict:
+        return json.loads((ROOT.parent / "product-state.json").read_text(encoding="utf-8"))
+
+    def validate_state(self, document: dict) -> list[str]:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "product-state.json"
+        path.write_text(json.dumps(document, indent=2) + "\n", encoding="utf-8")
+        VALIDATOR_MODULE.errors.clear()
+        VALIDATOR_MODULE.validate_agent_foundation_product_state(path, evidence_root=ROOT.parent)
+        messages = list(VALIDATOR_MODULE.errors)
+        VALIDATOR_MODULE.errors.clear()
+        return messages
+
+    def leaf(self, state: dict, group: str, name: str) -> dict:
+        return next(leaf for leaf in state["system_gates"][group]["leaves"] if leaf["name"] == name)
+
+    def set_system_leaf(
+        self,
+        state: dict,
+        group: str,
+        name: str,
+        status: str,
+        *,
+        reason: str | None = None,
+    ) -> None:
+        leaf = self.leaf(state, group, name)
+        leaf["status"] = status
+        leaf["evidence_refs"] = (
+            ["skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md"]
+            if status in {"PASS", "FAIL"}
+            else []
+        )
+        leaf["reason"] = None if status == "PASS" else (reason or f"{name} is {status}.")
+        key = "acceptance_status" if group == "production" else "status"
+        state["system_gates"][group][key] = VALIDATOR_MODULE._derive_agent_foundation_group_status(state, group)
+
+    def set_feature_prefix(self, state: dict, feature_id: str, pass_count: int) -> None:
+        feature = next(
+            feature
+            for feature in state["product_scope"]["features"]["registered"]
+            if feature["id"] == feature_id
+        )
+        for index, gate in enumerate(feature["lifecycle"]["gates"]):
+            if index < pass_count:
+                gate["status"] = "PASS"
+                gate["evidence_refs"] = ["skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md"]
+                gate["reason"] = None
+            else:
+                gate["status"] = "UNKNOWN"
+                gate["evidence_refs"] = []
+                gate["reason"] = "Synthetic progression fixture."
+        feature["lifecycle"]["derived_state"] = VALIDATOR_MODULE._derive_agent_foundation_feature_state(
+            feature["lifecycle"]["gates"]
+        )
+        feature["lifecycle"]["regression"] = None
+
+    def future_state(self) -> dict:
+        state = self.load_state()
+        state["release"] = {
+            "status": "FROZEN",
+            "id": "R-TEST",
+            "id_resolution": "KNOWN",
+            "required_feature_ids": ["F004", "F002", "F001", "F003"],
+            "required_feature_ids_resolution": "KNOWN",
+        }
+        for group, names in VALIDATOR_MODULE.AGENT_FOUNDATION_SYSTEM_GATE_LEAVES:
+            for name in names:
+                self.set_system_leaf(state, group, name, "PASS")
+        for feature_id, _, _ in VALIDATOR_MODULE.AGENT_FOUNDATION_PRODUCT_FEATURES:
+            self.set_feature_prefix(state, feature_id, 7)
+        state["derived_project"]["phase"] = "P7_LIVE"
+        return state
+
+    def test_canonical_state_is_schema3_with_current_p0_projection_and_blocker(self) -> None:
+        state = self.load_state()
+        self.assertEqual(self.validate_state(state), [])
+        self.assertEqual(state["schema_version"], 3)
+        self.assertEqual(state["derived_project"], {"phase": "P0_SCOPE"})
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(state), "P0_SCOPE")
+        self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "release.status")
+        self.assertEqual(
+            {feature["id"]: feature["lifecycle"]["derived_state"] for feature in state["product_scope"]["features"]["registered"]},
+            {"F001": "VERIFIED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
+        )
+
+    def test_exact_global_leaf_inventory_and_current_aggregate_truth(self) -> None:
+        state = self.load_state()
+        self.assertEqual(list(state["system_gates"]), [name for name, _ in VALIDATOR_MODULE.AGENT_FOUNDATION_SYSTEM_GATE_LEAVES])
+        for group, names in VALIDATOR_MODULE.AGENT_FOUNDATION_SYSTEM_GATE_LEAVES:
+            self.assertEqual([leaf["name"] for leaf in state["system_gates"][group]["leaves"]], list(names))
+            key = "acceptance_status" if group == "production" else "status"
+            self.assertEqual(state["system_gates"][group][key], VALIDATOR_MODULE._derive_agent_foundation_group_status(state, group))
+        self.assertEqual(
+            [
+                state["system_gates"]["foundation"]["status"],
+                state["system_gates"]["integration"]["status"],
+                state["system_gates"]["verification"]["status"],
+                state["system_gates"]["hardening"]["status"],
+                state["system_gates"]["production"]["acceptance_status"],
+            ],
+            ["UNKNOWN"] * 5,
+        )
+
+    def test_aggregate_precedence_na_exclusion_unknown_not_pass_and_all_na_rejected(self) -> None:
+        names = ("a", "b", "c")
+
+        def leaves(statuses: tuple[str, ...]) -> list[dict]:
+            return [{"name": name, "status": status} for name, status in zip(names, statuses)]
+
+        cases = (
+            (("PASS", "PASS", "PASS"), "PASS"),
+            (("PASS", "N/A", "PASS"), "PASS"),
+            (("PASS", "PENDING", "N/A"), "PENDING"),
+            (("PENDING", "UNKNOWN", "PASS"), "UNKNOWN"),
+            (("FAIL", "UNKNOWN", "PENDING"), "FAIL"),
+            (("N/A", "N/A", "N/A"), "N/A"),
+        )
+        for statuses, expected in cases:
+            with self.subTest(statuses=statuses):
+                self.assertEqual(
+                    VALIDATOR_MODULE._derive_agent_foundation_gate_aggregate(leaves(statuses), names),
+                    expected,
+                )
+
+        state = self.load_state()
+        for name in VALIDATOR_MODULE.AGENT_FOUNDATION_SYSTEM_GATE_MAP["foundation"]:
+            self.set_system_leaf(state, "foundation", name, "N/A", reason="Explicit synthetic inapplicability.")
+        errors = self.validate_state(state)
+        self.assertTrue(any("all-N/A aggregate is invalid" in message for message in errors))
+
+        state = self.load_state()
+        leaf = self.leaf(state, "foundation", "architecture")
+        leaf["status"] = "N/A"
+        leaf["evidence_refs"] = []
+        leaf["reason"] = ""
+        errors = self.validate_state(state)
+        self.assertTrue(any("N/A requires a non-empty reason" in message for message in errors))
+
+        state = self.load_state()
+        state["system_gates"]["foundation"]["status"] = "PASS"
+        errors = self.validate_state(state)
+        self.assertTrue(any("expected recomputed status UNKNOWN" in message for message in errors))
+
+    def test_all_p0_through_p7_phase_branches(self) -> None:
+        state = self.future_state()
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(state), "P7_LIVE")
+
+        changed = deepcopy(state)
+        changed["release"]["status"] = "OPEN"
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(changed), "P0_SCOPE")
+
+        changed = deepcopy(state)
+        self.set_system_leaf(changed, "foundation", "telemetry", "UNKNOWN")
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(changed), "P1_FOUNDATION")
+
+        changed = deepcopy(state)
+        self.set_feature_prefix(changed, "F001", 3)
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(changed), "P2_FEATURE_BUILD")
+
+        changed = deepcopy(state)
+        self.set_system_leaf(changed, "integration", "cross_feature_flows", "UNKNOWN")
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(changed), "P3_INTEGRATION")
+
+        changed = deepcopy(state)
+        self.set_feature_prefix(changed, "F001", 4)
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(changed), "P4_VERIFICATION")
+
+        changed = deepcopy(state)
+        self.set_feature_prefix(changed, "F001", 5)
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(changed), "P5_HARDENING")
+
+        changed = deepcopy(state)
+        self.set_feature_prefix(changed, "F001", 6)
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(changed), "P6_RELEASE_READY")
+
+    def test_system_phase_branches_and_production_readiness_are_separate(self) -> None:
+        state = self.future_state()
+        self.set_system_leaf(state, "verification", "contract", "UNKNOWN")
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(state), "P4_VERIFICATION")
+
+        state = self.future_state()
+        self.set_system_leaf(state, "hardening", "security", "UNKNOWN")
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(state), "P5_HARDENING")
+
+        state = self.future_state()
+        self.set_system_leaf(state, "production", "operational_readiness", "UNKNOWN")
+        self.assertEqual(state["system_gates"]["production"]["acceptance_status"], "PASS")
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(state), "P6_RELEASE_READY")
+
+        state = self.future_state()
+        self.set_system_leaf(state, "production", "deployment", "UNKNOWN")
+        self.assertEqual(state["system_gates"]["production"]["acceptance_status"], "UNKNOWN")
+        self.assertEqual(self.leaf(state, "production", "operational_readiness")["status"], "PASS")
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(state), "P6_RELEASE_READY")
+
+    def test_registry_and_leaf_order_deterministically_choose_earliest_blocker(self) -> None:
+        state = self.load_state()
+        state["release"]["status"] = "FROZEN"
+        self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "required_feature_ids_resolution")
+
+        state = self.future_state()
+        self.set_system_leaf(state, "foundation", "dependency_rules", "UNKNOWN")
+        self.set_system_leaf(state, "foundation", "telemetry", "UNKNOWN")
+        self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "system_gates.foundation.dependency_rules")
+
+        state = self.future_state()
+        self.set_feature_prefix(state, "F004", 2)
+        self.set_feature_prefix(state, "F001", 2)
+        self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "features.F001.implementation")
+
+        state = self.future_state()
+        self.set_system_leaf(state, "integration", "contracts", "UNKNOWN")
+        self.set_system_leaf(state, "integration", "data_consistency", "UNKNOWN")
+        self.assertEqual(
+            VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state),
+            "system_gates.integration.contracts",
+        )
+
+        state = self.future_state()
+        self.set_feature_prefix(state, "F004", 4)
+        self.set_feature_prefix(state, "F002", 4)
+        self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "features.F002.verification")
+
+        state = self.future_state()
+        self.set_system_leaf(state, "verification", "integration", "UNKNOWN")
+        self.set_system_leaf(state, "verification", "security", "UNKNOWN")
+        self.assertEqual(
+            VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state),
+            "system_gates.verification.integration",
+        )
+
+        state = self.future_state()
+        self.set_feature_prefix(state, "F004", 5)
+        self.set_feature_prefix(state, "F001", 5)
+        self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "features.F001.release_readiness")
+
+        state = self.future_state()
+        self.set_system_leaf(state, "hardening", "capacity", "UNKNOWN")
+        self.set_system_leaf(state, "hardening", "security", "UNKNOWN")
+        self.assertEqual(
+            VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state),
+            "system_gates.hardening.capacity",
+        )
+
+        state = self.future_state()
+        self.set_feature_prefix(state, "F004", 6)
+        self.set_feature_prefix(state, "F001", 6)
+        self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "features.F001.production_acceptance")
+
+        state = self.future_state()
+        self.set_system_leaf(state, "production", "smoke_test", "UNKNOWN")
+        self.set_system_leaf(state, "production", "deployment", "UNKNOWN")
+        self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "system_gates.production.deployment")
+
+        state = self.future_state()
+        self.set_system_leaf(state, "production", "operational_readiness", "UNKNOWN")
+        self.assertEqual(
+            VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state),
+            "system_gates.production.operational_readiness",
+        )
+
+    def test_foreign_required_feature_ids_fail_closed_and_input_order_is_normalized(self) -> None:
+        state = self.future_state()
+        self.assertEqual(
+            VALIDATOR_MODULE._normalize_agent_foundation_required_feature_ids(state),
+            ["F001", "F002", "F003", "F004"],
+        )
+        state["release"]["required_feature_ids"] = ["F004", "F999", "F001"]
+        with self.assertRaisesRegex(ValueError, "foreign IDs"):
+            VALIDATOR_MODULE._derive_agent_foundation_project_phase(state)
+        errors = self.validate_state(state)
+        self.assertTrue(any("foreign IDs" in message for message in errors))
+
+    def test_stored_phase_mismatch_and_task0021_self_evidence_are_rejected(self) -> None:
+        state = self.load_state()
+        state["derived_project"]["phase"] = "P1_FOUNDATION"
+        errors = self.validate_state(state)
+        self.assertTrue(any("expected recomputed phase P0_SCOPE" in message for message in errors))
+
+        state = self.load_state()
+        leaf = self.leaf(state, "foundation", "architecture")
+        leaf["evidence_refs"] = [".agent/tasks/TASK-0021/task.yaml"]
+        errors = self.validate_state(state)
+        self.assertTrue(any("cannot evidence their own implementation candidate" in message for message in errors))
 
 
 class Task0020FeatureLifecycleTests(unittest.TestCase):
@@ -3635,10 +3921,10 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
         gate["evidence_refs"] = [] if refs is None else refs
         gate["reason"] = reason
 
-    def test_canonical_schema2_has_exact_gates_conservative_states_and_null_regression(self) -> None:
+    def test_canonical_schema3_preserves_exact_t3_gates_conservative_states_and_null_regression(self) -> None:
         state = self.load_state()
         self.assertEqual(self.validate_state(state), [])
-        self.assertEqual(state["schema_version"], 2)
+        self.assertEqual(state["schema_version"], 3)
         expected_states = {
             "F001": "VERIFIED",
             "F002": "INTEGRATED",

@@ -108,6 +108,68 @@ AGENT_FOUNDATION_LIFECYCLE_STATES = (
 )
 AGENT_FOUNDATION_GATE_STATUSES = frozenset({"PASS", "FAIL", "PENDING", "N/A", "UNKNOWN"})
 AGENT_FOUNDATION_MAX_EVIDENCE_REFS = 8
+AGENT_FOUNDATION_SYSTEM_GATE_LEAVES = (
+    ("foundation", (
+        "architecture",
+        "dependency_rules",
+        "test_infrastructure",
+        "telemetry",
+        "security",
+        "ci",
+    )),
+    ("integration", (
+        "cross_feature_flows",
+        "contracts",
+        "data_consistency",
+        "authorization",
+        "external_dependencies",
+    )),
+    ("verification", (
+        "unit",
+        "integration",
+        "contract",
+        "e2e",
+        "security",
+        "failure_paths",
+    )),
+    ("hardening", (
+        "performance",
+        "capacity",
+        "security",
+        "privacy",
+        "observability",
+        "slo",
+        "alerts",
+        "rollback",
+        "backup_restore",
+        "disaster_recovery",
+        "cost",
+    )),
+    ("production", (
+        "deployment",
+        "smoke_test",
+        "critical_journeys",
+        "telemetry",
+        "operational_readiness",
+    )),
+)
+AGENT_FOUNDATION_SYSTEM_GATE_MAP = dict(AGENT_FOUNDATION_SYSTEM_GATE_LEAVES)
+AGENT_FOUNDATION_PRODUCTION_ACCEPTANCE_LEAVES = (
+    "deployment",
+    "smoke_test",
+    "critical_journeys",
+    "telemetry",
+)
+AGENT_FOUNDATION_PROJECT_PHASES = (
+    "P0_SCOPE",
+    "P1_FOUNDATION",
+    "P2_FEATURE_BUILD",
+    "P3_INTEGRATION",
+    "P4_VERIFICATION",
+    "P5_HARDENING",
+    "P6_RELEASE_READY",
+    "P7_LIVE",
+)
 
 # One normalized semantic model serves both sparse protocol-v3 serialization and
 # explicit expanded-v3 task artifacts.  -1 means that no exact-file count cap is
@@ -1884,6 +1946,258 @@ def _derive_agent_foundation_feature_state(gates: list[dict[str, Any]]) -> str |
     return AGENT_FOUNDATION_LIFECYCLE_STATES[consecutive_passes - 1]
 
 
+def _derive_agent_foundation_gate_aggregate(
+    leaves: list[dict[str, Any]],
+    expected_names: tuple[str, ...],
+) -> str:
+    if type(leaves) is not list or len(leaves) != len(expected_names):
+        raise ValueError("malformed system-gate leaf inventory")
+    statuses: list[str] = []
+    for expected_name, leaf in zip(expected_names, leaves):
+        if not isinstance(leaf, dict) or leaf.get("name") != expected_name:
+            raise ValueError("malformed or non-canonical system-gate leaf order")
+        status = leaf.get("status")
+        if status not in AGENT_FOUNDATION_GATE_STATUSES:
+            raise ValueError("unsupported system-gate leaf status")
+        statuses.append(status)
+    if "FAIL" in statuses:
+        return "FAIL"
+    if "UNKNOWN" in statuses:
+        return "UNKNOWN"
+    if "PENDING" in statuses:
+        return "PENDING"
+    if all(status == "N/A" for status in statuses):
+        return "N/A"
+    if all(status in {"PASS", "N/A"} for status in statuses) and any(status == "PASS" for status in statuses):
+        return "PASS"
+    raise ValueError("system-gate aggregate is not derivable")
+
+
+def _agent_foundation_group_leaves(document: dict[str, Any], group_name: str) -> list[dict[str, Any]]:
+    system_gates = document.get("system_gates")
+    if not isinstance(system_gates, dict):
+        raise ValueError("missing system_gates")
+    group = system_gates.get(group_name)
+    if not isinstance(group, dict):
+        raise ValueError(f"missing system gate group {group_name}")
+    leaves = group.get("leaves")
+    if type(leaves) is not list:
+        raise ValueError(f"malformed system gate group {group_name}")
+    return leaves
+
+
+def _derive_agent_foundation_group_status(document: dict[str, Any], group_name: str) -> str:
+    leaves = _agent_foundation_group_leaves(document, group_name)
+    expected_names = AGENT_FOUNDATION_SYSTEM_GATE_MAP[group_name]
+    if group_name == "production":
+        acceptance = [
+            leaf for leaf in leaves
+            if isinstance(leaf, dict) and leaf.get("name") in AGENT_FOUNDATION_PRODUCTION_ACCEPTANCE_LEAVES
+        ]
+        return _derive_agent_foundation_gate_aggregate(
+            acceptance,
+            AGENT_FOUNDATION_PRODUCTION_ACCEPTANCE_LEAVES,
+        )
+    return _derive_agent_foundation_gate_aggregate(leaves, expected_names)
+
+
+def _normalize_agent_foundation_required_feature_ids(document: dict[str, Any]) -> list[str] | None:
+    release = document.get("release")
+    if not isinstance(release, dict):
+        return None
+    if release.get("required_feature_ids_resolution") != "KNOWN":
+        return None
+    required = release.get("required_feature_ids")
+    if type(required) is not list:
+        return None
+    if any(type(feature_id) is not str for feature_id in required):
+        raise ValueError("required_feature_ids must contain only feature IDs")
+    if len(required) != len(set(required)):
+        raise ValueError("required_feature_ids contains duplicates")
+    canonical = [feature_id for feature_id, _, _ in AGENT_FOUNDATION_PRODUCT_FEATURES]
+    foreign = sorted(set(required) - set(canonical))
+    if foreign:
+        raise ValueError(f"required_feature_ids contains foreign IDs {foreign}")
+    selected = set(required)
+    return [feature_id for feature_id in canonical if feature_id in selected]
+
+
+def _agent_foundation_feature_by_id(document: dict[str, Any], feature_id: str) -> dict[str, Any]:
+    registered = (
+        document.get("product_scope", {})
+        .get("features", {})
+        .get("registered", [])
+    )
+    if type(registered) is not list:
+        raise ValueError("malformed feature registry")
+    for feature in registered:
+        if isinstance(feature, dict) and feature.get("id") == feature_id:
+            return feature
+    raise ValueError(f"required feature is not registered: {feature_id}")
+
+
+def _agent_foundation_feature_state(document: dict[str, Any], feature_id: str) -> str | None:
+    feature = _agent_foundation_feature_by_id(document, feature_id)
+    lifecycle = feature.get("lifecycle")
+    if not isinstance(lifecycle, dict) or type(lifecycle.get("gates")) is not list:
+        raise ValueError(f"malformed lifecycle for {feature_id}")
+    return _derive_agent_foundation_feature_state(lifecycle["gates"])
+
+
+def _agent_foundation_feature_below(
+    document: dict[str, Any],
+    feature_id: str,
+    threshold: str,
+) -> bool:
+    state = _agent_foundation_feature_state(document, feature_id)
+    if state is None:
+        return True
+    return AGENT_FOUNDATION_LIFECYCLE_STATES.index(state) < AGENT_FOUNDATION_LIFECYCLE_STATES.index(threshold)
+
+
+def _derive_agent_foundation_project_phase(document: dict[str, Any]) -> str:
+    release = document.get("release")
+    if not isinstance(release, dict):
+        return "P0_SCOPE"
+    required_raw = release.get("required_feature_ids")
+    if (
+        release.get("status") != "FROZEN"
+        or release.get("required_feature_ids_resolution") != "KNOWN"
+        or type(required_raw) is not list
+    ):
+        return "P0_SCOPE"
+
+    required = _normalize_agent_foundation_required_feature_ids(document)
+    assert required is not None
+
+    if _derive_agent_foundation_group_status(document, "foundation") != "PASS":
+        return "P1_FOUNDATION"
+    if any(_agent_foundation_feature_below(document, feature_id, "INTEGRATED") for feature_id in required):
+        return "P2_FEATURE_BUILD"
+    if _derive_agent_foundation_group_status(document, "integration") != "PASS":
+        return "P3_INTEGRATION"
+    if (
+        any(_agent_foundation_feature_below(document, feature_id, "VERIFIED") for feature_id in required)
+        or _derive_agent_foundation_group_status(document, "verification") != "PASS"
+    ):
+        return "P4_VERIFICATION"
+    if (
+        any(_agent_foundation_feature_below(document, feature_id, "RELEASE_READY") for feature_id in required)
+        or _derive_agent_foundation_group_status(document, "hardening") != "PASS"
+    ):
+        return "P5_HARDENING"
+
+    production_leaves = _agent_foundation_group_leaves(document, "production")
+    operational = next(
+        (
+            leaf for leaf in production_leaves
+            if isinstance(leaf, dict) and leaf.get("name") == "operational_readiness"
+        ),
+        None,
+    )
+    operational_status = operational.get("status") if isinstance(operational, dict) else None
+    if (
+        any(_agent_foundation_feature_below(document, feature_id, "LIVE") for feature_id in required)
+        or _derive_agent_foundation_group_status(document, "production") != "PASS"
+        or operational_status != "PASS"
+    ):
+        return "P6_RELEASE_READY"
+    return "P7_LIVE"
+
+
+def _first_unmet_agent_foundation_feature_gate(
+    document: dict[str, Any],
+    feature_id: str,
+    final_gate: str,
+) -> str:
+    feature = _agent_foundation_feature_by_id(document, feature_id)
+    gates = feature.get("lifecycle", {}).get("gates", [])
+    limit = AGENT_FOUNDATION_LIFECYCLE_GATES.index(final_gate)
+    for gate in gates[: limit + 1]:
+        if gate.get("status") != "PASS":
+            return f"features.{feature_id}.{gate.get('name')}"
+    return f"features.{feature_id}.{final_gate}"
+
+
+def _first_unmet_agent_foundation_system_leaf(
+    document: dict[str, Any],
+    group_name: str,
+    names: tuple[str, ...],
+) -> str:
+    leaves = _agent_foundation_group_leaves(document, group_name)
+    by_name = {
+        leaf.get("name"): leaf
+        for leaf in leaves
+        if isinstance(leaf, dict) and isinstance(leaf.get("name"), str)
+    }
+    for name in names:
+        leaf = by_name.get(name)
+        if not isinstance(leaf, dict) or leaf.get("status") != "PASS":
+            return f"system_gates.{group_name}.{name}"
+    raise ValueError(f"no unmet {group_name} leaf")
+
+
+def _resolve_agent_foundation_earliest_blocker(document: dict[str, Any]) -> str | None:
+    phase = _derive_agent_foundation_project_phase(document)
+    release = document.get("release", {})
+    if phase == "P0_SCOPE":
+        if not isinstance(release, dict) or release.get("status") != "FROZEN":
+            return "release.status"
+        return "required_feature_ids_resolution"
+
+    required = _normalize_agent_foundation_required_feature_ids(document)
+    if required is None:
+        raise ValueError("resolved project phase requires resolved required_feature_ids")
+
+    if phase == "P1_FOUNDATION":
+        return _first_unmet_agent_foundation_system_leaf(
+            document,
+            "foundation",
+            AGENT_FOUNDATION_SYSTEM_GATE_MAP["foundation"],
+        )
+    if phase == "P2_FEATURE_BUILD":
+        for feature_id in required:
+            if _agent_foundation_feature_below(document, feature_id, "INTEGRATED"):
+                return _first_unmet_agent_foundation_feature_gate(document, feature_id, "integration")
+    if phase == "P3_INTEGRATION":
+        return _first_unmet_agent_foundation_system_leaf(
+            document,
+            "integration",
+            AGENT_FOUNDATION_SYSTEM_GATE_MAP["integration"],
+        )
+    if phase == "P4_VERIFICATION":
+        for feature_id in required:
+            if _agent_foundation_feature_below(document, feature_id, "VERIFIED"):
+                return _first_unmet_agent_foundation_feature_gate(document, feature_id, "verification")
+        return _first_unmet_agent_foundation_system_leaf(
+            document,
+            "verification",
+            AGENT_FOUNDATION_SYSTEM_GATE_MAP["verification"],
+        )
+    if phase == "P5_HARDENING":
+        for feature_id in required:
+            if _agent_foundation_feature_below(document, feature_id, "RELEASE_READY"):
+                return _first_unmet_agent_foundation_feature_gate(document, feature_id, "release_readiness")
+        return _first_unmet_agent_foundation_system_leaf(
+            document,
+            "hardening",
+            AGENT_FOUNDATION_SYSTEM_GATE_MAP["hardening"],
+        )
+    if phase == "P6_RELEASE_READY":
+        for feature_id in required:
+            if _agent_foundation_feature_below(document, feature_id, "LIVE"):
+                return _first_unmet_agent_foundation_feature_gate(document, feature_id, "production_acceptance")
+        production_blocker = _first_unmet_agent_foundation_system_leaf(
+            document,
+            "production",
+            AGENT_FOUNDATION_PRODUCTION_ACCEPTANCE_LEAVES,
+        ) if _derive_agent_foundation_group_status(document, "production") != "PASS" else None
+        if production_blocker is not None:
+            return production_blocker
+        return "system_gates.production.operational_readiness"
+    return None
+
+
 def _validate_product_evidence_ref(
     ref: Any,
     *,
@@ -2213,12 +2527,183 @@ def _validate_agent_foundation_lifecycle(
                     )
 
 
+def _validate_system_evidence_ref(
+    ref: Any,
+    *,
+    evidence_root: Path,
+    label: str,
+) -> bool:
+    if type(ref) is not str or not ref.strip() or len(ref) > 256:
+        error(f"{label}: evidence reference must be a non-empty bounded string")
+        return False
+    if ref != ref.strip() or "\\" in ref or ref.startswith(("/", "./")):
+        error(f"{label}: evidence reference must be canonical repository-relative POSIX path")
+        return False
+    relative = Path(ref)
+    if any(part in {"", ".", ".."} for part in relative.parts):
+        error(f"{label}: evidence reference contains non-canonical path traversal")
+        return False
+    if ref == "product-state.json":
+        error(f"{label}: product-state.json cannot self-attest system-gate state")
+        return False
+    if ref.startswith(".agent/tasks/TASK-0021/"):
+        error(f"{label}: TASK-0021 task/report/review artifacts cannot evidence their own implementation candidate")
+        return False
+    resolved = (evidence_root / relative).resolve()
+    try:
+        resolved.relative_to(evidence_root.resolve())
+    except ValueError:
+        error(f"{label}: evidence reference escapes repository")
+        return False
+    if not resolved.is_file():
+        error(f"{label}: evidence reference is missing or inaccessible: {ref}")
+        return False
+    return True
+
+
+def _validate_agent_foundation_system_leaf(
+    leaf: Any,
+    *,
+    expected_name: str,
+    evidence_root: Path,
+    label: str,
+) -> None:
+    if not _require_exact_object_keys(
+        label,
+        leaf,
+        {"name", "status", "evidence_refs", "reason"},
+    ):
+        return
+    if leaf.get("name") != expected_name:
+        error(f"{label}.name: expected {expected_name!r}")
+    status = leaf.get("status")
+    if status not in AGENT_FOUNDATION_GATE_STATUSES:
+        error(f"{label}.status: unsupported gate status {status!r}")
+        status = None
+
+    refs = leaf.get("evidence_refs")
+    if type(refs) is not list:
+        error(f"{label}.evidence_refs: expected array")
+        refs = []
+    else:
+        if len(refs) > AGENT_FOUNDATION_MAX_EVIDENCE_REFS:
+            error(f"{label}.evidence_refs: exceeds bounded evidence reference limit")
+        if all(type(ref) is str for ref in refs) and len(refs) != len(set(refs)):
+            error(f"{label}.evidence_refs: duplicate evidence references")
+        for ref_index, ref in enumerate(refs):
+            _validate_system_evidence_ref(
+                ref,
+                evidence_root=evidence_root,
+                label=f"{label}.evidence_refs[{ref_index}]",
+            )
+
+    reason = leaf.get("reason")
+    if status == "PASS":
+        if not refs:
+            error(f"{label}: PASS requires inspectable persisted evidence")
+        if reason is not None:
+            error(f"{label}.reason: PASS requires null reason")
+    elif status == "FAIL":
+        if not refs:
+            error(f"{label}: FAIL requires attributable evidence")
+        if type(reason) is not str or not reason.strip():
+            error(f"{label}.reason: FAIL requires a non-empty reason")
+    elif status in {"PENDING", "N/A", "UNKNOWN"}:
+        if type(reason) is not str or not reason.strip():
+            error(f"{label}.reason: {status} requires a non-empty reason")
+
+
+def _validate_agent_foundation_system_gates(
+    document: dict[str, Any],
+    *,
+    evidence_root: Path,
+    label: str,
+) -> None:
+    system_gates = document.get("system_gates")
+    expected_groups = {name for name, _ in AGENT_FOUNDATION_SYSTEM_GATE_LEAVES}
+    if not _require_exact_object_keys(f"{label}.system_gates", system_gates, expected_groups):
+        if not isinstance(system_gates, dict):
+            return
+
+    for group_name, expected_names in AGENT_FOUNDATION_SYSTEM_GATE_LEAVES:
+        group = system_gates.get(group_name) if isinstance(system_gates, dict) else None
+        aggregate_key = "acceptance_status" if group_name == "production" else "status"
+        if not _require_exact_object_keys(
+            f"{label}.system_gates.{group_name}",
+            group,
+            {"leaves", aggregate_key},
+        ):
+            continue
+        leaves = group.get("leaves")
+        if type(leaves) is not list:
+            error(f"{label}.system_gates.{group_name}.leaves: expected array")
+            continue
+        if len(leaves) != len(expected_names):
+            error(
+                f"{label}.system_gates.{group_name}.leaves: "
+                f"expected exactly {len(expected_names)} canonical leaves"
+            )
+        for index, expected_name in enumerate(expected_names):
+            if index >= len(leaves):
+                break
+            _validate_agent_foundation_system_leaf(
+                leaves[index],
+                expected_name=expected_name,
+                evidence_root=evidence_root,
+                label=f"{label}.system_gates.{group_name}.leaves[{index}]",
+            )
+
+        aggregate_leaves = leaves
+        aggregate_names = expected_names
+        if group_name == "production":
+            aggregate_names = AGENT_FOUNDATION_PRODUCTION_ACCEPTANCE_LEAVES
+            aggregate_leaves = [
+                leaf for leaf in leaves
+                if isinstance(leaf, dict) and leaf.get("name") in aggregate_names
+            ]
+
+        aggregate_statuses = [
+            leaf.get("status")
+            for leaf in aggregate_leaves
+            if isinstance(leaf, dict)
+        ]
+        if (
+            len(aggregate_statuses) == len(aggregate_names)
+            and aggregate_statuses
+            and all(status == "N/A" for status in aggregate_statuses)
+        ):
+            error(
+                f"{label}.system_gates.{group_name}: "
+                "all-N/A aggregate is invalid; at least one applicable leaf is required"
+            )
+
+        authored = group.get(aggregate_key)
+        if authored not in AGENT_FOUNDATION_GATE_STATUSES:
+            error(
+                f"{label}.system_gates.{group_name}.{aggregate_key}: "
+                f"unsupported aggregate status {authored!r}"
+            )
+        try:
+            derived = _derive_agent_foundation_gate_aggregate(
+                aggregate_leaves,
+                aggregate_names,
+            )
+        except ValueError as exc:
+            error(f"{label}.system_gates.{group_name}: {exc}")
+            continue
+        if authored != derived:
+            error(
+                f"{label}.system_gates.{group_name}.{aggregate_key}: "
+                f"expected recomputed status {derived}, got {authored!r}"
+            )
+
+
 def validate_agent_foundation_product_state(
     path: Path,
     *,
     evidence_root: Path | None = None,
 ) -> None:
-    """Validate agent-foundation's target-specific T2+T3 product-state object."""
+    """Validate agent-foundation's target-specific T2+T3+T4 product-state object."""
     label = str(path)
     if evidence_root is None:
         evidence_root = path.parent
@@ -2234,13 +2719,13 @@ def validate_agent_foundation_product_state(
     if not _require_exact_object_keys(
         label,
         document,
-        {"schema_version", "target", "product_scope", "release"},
+        {"schema_version", "target", "product_scope", "release", "system_gates", "derived_project"},
     ):
         if not isinstance(document, dict):
             return
 
-    if document.get("schema_version") != 2 or type(document.get("schema_version")) is not int:
-        error(f"{label}.schema_version: expected integer 2")
+    if document.get("schema_version") != 3 or type(document.get("schema_version")) is not int:
+        error(f"{label}.schema_version: expected integer 3")
 
     target = document.get("target")
     if _require_exact_object_keys(f"{label}.target", target, {"repository"}):
@@ -2348,6 +2833,33 @@ def validate_agent_foundation_product_state(
                     )
 
 
+    _validate_agent_foundation_system_gates(
+        document,
+        evidence_root=evidence_root,
+        label=label,
+    )
+
+    derived_project = document.get("derived_project")
+    if _require_exact_object_keys(
+        f"{label}.derived_project",
+        derived_project,
+        {"phase"},
+    ):
+        authored_phase = derived_project.get("phase")
+        if authored_phase not in AGENT_FOUNDATION_PROJECT_PHASES:
+            error(f"{label}.derived_project.phase: unsupported project phase {authored_phase!r}")
+        try:
+            derived_phase = _derive_agent_foundation_project_phase(document)
+        except ValueError as exc:
+            error(f"{label}.derived_project.phase: {exc}")
+        else:
+            if authored_phase != derived_phase:
+                error(
+                    f"{label}.derived_project.phase: "
+                    f"expected recomputed phase {derived_phase}, got {authored_phase!r}"
+                )
+
+
 def validate_agent_foundation_product_state_transition(
     previous: dict[str, Any],
     current: dict[str, Any],
@@ -2371,8 +2883,8 @@ def validate_agent_foundation_product_state_transition(
                 error(f"{label}: initial schema-1 to schema-2 adoption requires regression null")
         return
 
-    if previous.get("schema_version") != 2:
-        error(f"{label}: previous state must be valid schema 1 or schema 2")
+    if previous.get("schema_version") not in {2, 3}:
+        error(f"{label}: previous state must be valid schema 1, schema 2, or schema 3")
         return
 
     previous_features = (

@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "target": {
     "repository": "phatnguyen03022001/agent-foundation"
   },
@@ -298,5 +298,250 @@
     "id_resolution": "UNKNOWN",
     "required_feature_ids": null,
     "required_feature_ids_resolution": "UNKNOWN"
+  },
+  "system_gates": {
+    "foundation": {
+      "status": "UNKNOWN",
+      "leaves": [
+        {
+          "name": "architecture",
+          "status": "PASS",
+          "evidence_refs": [
+            "skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md",
+            ".agent/tasks/TASK-0018/review.yaml"
+          ],
+          "reason": null
+        },
+        {
+          "name": "dependency_rules",
+          "status": "PASS",
+          "evidence_refs": [
+            "skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md",
+            ".agent/tasks/TASK-0018/review.yaml"
+          ],
+          "reason": null
+        },
+        {
+          "name": "test_infrastructure",
+          "status": "PASS",
+          "evidence_refs": [
+            "skills/scripts/test_validate_skill_library.py",
+            "profile/.agent/bootstrap/test_bootstrap.py",
+            "documents/tests/test_validate.py",
+            "standards/tests/test_validate.py"
+          ],
+          "reason": null
+        },
+        {
+          "name": "telemetry",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "T1 defines telemetry ownership boundaries, but no attributable persisted target telemetry implementation or current result establishes this gate."
+        },
+        {
+          "name": "security",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "Security ownership and review methodology exist, but no attributable persisted target-wide security result covers the current product state."
+        },
+        {
+          "name": "ci",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted target CI contract and current CI qualification result establishes this gate."
+        }
+      ]
+    },
+    "integration": {
+      "status": "UNKNOWN",
+      "leaves": [
+        {
+          "name": "cross_feature_flows",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted target-wide cross-feature flow result establishes this gate."
+        },
+        {
+          "name": "contracts",
+          "status": "PASS",
+          "evidence_refs": [
+            "skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md",
+            "skills/contracts/FOUNDATION_ARCHITECTURE.md"
+          ],
+          "reason": null
+        },
+        {
+          "name": "data_consistency",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted target-wide data-consistency result establishes this gate."
+        },
+        {
+          "name": "authorization",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "Governance authority contracts exist, but no persisted target-wide integration result establishes authorization across the complete current product state."
+        },
+        {
+          "name": "external_dependencies",
+          "status": "PASS",
+          "evidence_refs": [
+            "skills/.agent/external-capabilities/sources.json",
+            ".agent/tasks/TASK-0020/review.yaml"
+          ],
+          "reason": null
+        }
+      ]
+    },
+    "verification": {
+      "status": "UNKNOWN",
+      "leaves": [
+        {
+          "name": "unit",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "TASK-0021 changes current skills-owned validation bytes; no pre-existing persisted unit result independently covers the schema-3 candidate."
+        },
+        {
+          "name": "integration",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No pre-existing persisted integration result independently covers the complete schema-3 candidate."
+        },
+        {
+          "name": "contract",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No pre-existing persisted contract-verification result independently covers the complete schema-3 candidate."
+        },
+        {
+          "name": "e2e",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted end-to-end result establishes the complete current product state."
+        },
+        {
+          "name": "security",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted security-verification result establishes the complete current product state."
+        },
+        {
+          "name": "failure_paths",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "Existing negative regressions do not provide persisted result evidence for the schema-3 candidate's exact current bytes."
+        }
+      ]
+    },
+    "hardening": {
+      "status": "UNKNOWN",
+      "leaves": [
+        {
+          "name": "performance",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current performance qualification exists."
+        },
+        {
+          "name": "capacity",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current capacity qualification exists."
+        },
+        {
+          "name": "security",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current hardening security qualification exists."
+        },
+        {
+          "name": "privacy",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current privacy qualification exists."
+        },
+        {
+          "name": "observability",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current observability qualification exists."
+        },
+        {
+          "name": "slo",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current SLO definition and qualification establishes this gate."
+        },
+        {
+          "name": "alerts",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current alerting qualification exists."
+        },
+        {
+          "name": "rollback",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current product rollback qualification exists."
+        },
+        {
+          "name": "backup_restore",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current backup/restore qualification exists."
+        },
+        {
+          "name": "disaster_recovery",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current disaster-recovery qualification exists."
+        },
+        {
+          "name": "cost",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "No attributable persisted current cost qualification exists."
+        }
+      ]
+    },
+    "production": {
+      "acceptance_status": "UNKNOWN",
+      "leaves": [
+        {
+          "name": "deployment",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "Release scope is OPEN and no attributable persisted production deployment acceptance exists."
+        },
+        {
+          "name": "smoke_test",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "Release scope is OPEN and no attributable persisted production smoke-test result exists."
+        },
+        {
+          "name": "critical_journeys",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "Release scope is OPEN and no attributable persisted production critical-journey result exists."
+        },
+        {
+          "name": "telemetry",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "Release scope is OPEN and no attributable persisted production telemetry acceptance exists."
+        },
+        {
+          "name": "operational_readiness",
+          "status": "UNKNOWN",
+          "evidence_refs": [],
+          "reason": "Operational readiness has not been independently established for a frozen release."
+        }
+      ]
+    }
+  },
+  "derived_project": {
+    "phase": "P0_SCOPE"
   }
 }
