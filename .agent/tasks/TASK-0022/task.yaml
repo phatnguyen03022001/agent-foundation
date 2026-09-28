@@ -1,0 +1,211 @@
+protocol_version: 3
+
+task_id: TASK-0022
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_continuation
+  task_id: "TASK-0022"
+  gap_id: "AGENT-FOUNDATION-ARCHITECT-PROGRESSION-CONSUMPTION"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "9dc49b0a81a7594083aa676b8923eb59a7918b9f"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+  - verification
+  - adversarial-audit
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+  recommended:
+    - adversarial-audit
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "operator-supplied AGENT_FOUNDATION_PLAN.md version 2, SHA-256 27f6ae194e1ebc60aa031361b3105337c6f866ab2a127cd8afa81ae10d457b80"
+    role: "canonical Architect Read Protocol, progression rule, bounded task rule, Foundation boundary, and adoption step 8"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0021/review.yaml@9dc49b0a81a7594083aa676b8923eb59a7918b9f"
+    role: "accepted T4 global gates, deterministic phase, and earliest-blocker semantics"
+    precedence: 2
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@9dc49b0a81a7594083aa676b8923eb59a7918b9f"
+    role: "Foundation ownership boundary and target-truth discovery contract"
+    precedence: 3
+  - source: "skills/architect/SKILL.md@9dc49b0a81a7594083aa676b8923eb59a7918b9f"
+    role: "Architect role-local planning/task-authoring procedure"
+    precedence: 4
+  - source: "skills/protocols/TASK_PROTOCOL.md@9dc49b0a81a7594083aa676b8923eb59a7918b9f"
+    role: "existing bounded WHAT/BOUNDARY/PROOF and task lifecycle authority; must remain semantically unchanged"
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "AGENT_FOUNDATION_PLAN.md sections 24-28, 32-39, 44-48 plus accepted T4"
+  rationale: "T5 integrates target-owned product-state progression into Foundation/Architect planning procedure. It does not create another state model, planner service, task schema, runtime mechanism, or execution-recovery layer."
+
+objective: "Make Foundation and Architect consume canonical target-owned product state before material planning: resolve the exact release/scope/required feature set/registry/feature evidence/system gates/derived phase/earliest blocker in the canonical order, then authorize work against the earliest materially blocking condition unless explicit higher-priority current authority overrides it. Preserve target ownership, filename-neutral discovery, existing Task Protocol semantics, and accepted T1-T4 product truth. Do not implement execution/UI recovery or dogfood closure."
+
+scope:
+  required_changes:
+    - "Add a bounded generic product-progression consumption contract to skills/contracts/FOUNDATION_ARCHITECTURE.md under existing Foundation governance ownership. Foundation may discover and consume target-owned product state, verify/derive target-defined phase when applicable, select the target-defined earliest blocker, and create bounded task authority; it must never become the owner of product state."
+    - "The generic Foundation contract must remain filename-neutral. Do not require product-state.json, a universal manifest, one schema version, one language, or one validator implementation for arbitrary targets. Agent-foundation's product-state.json is only this target's current implementation."
+    - "Update skills/architect/SKILL.md with an explicit pre-planning product progression read protocol. Before material task selection, Architect must resolve in order: exact target repository; exact canonical release identity when one exists; release scope status; required release feature set; canonical feature registry; feature states and evidence; global system gates; derived project phase; earliest materially blocking condition; applicable target-native architecture/tooling/verifier contracts."
+    - "Architect must use fresh target-owned evidence, not memory, prior chat, task status, report/review status, Runtime state, or generic framework assumptions to fill missing product facts."
+    - "If a material product-state fact is missing, contradictory, stale, or inaccessible, Architect must preserve UNKNOWN or surface the actual authority/specification blocker; it must not invent feature state, release scope, gate PASS, phase, or blocker to enable task creation."
+    - "Where the target stores a derived phase or blocker and also exposes deterministic derivation semantics, Architect must verify consistency before using the projection. Contradiction is stale/invalid target truth and blocks material planning until reconciled; do not silently choose whichever representation is convenient."
+    - "Architect progression selection must target the earliest materially blocking condition for the bound release/target state. Later feature verification, hardening, production, technical debt, cleanup, or generic useful work must not bypass an earlier phase blocker."
+    - "An explicit higher-priority override is permitted only when it is current, exact, and authoritative for the requested work. Architect must keep the override distinguishable from the default progression result in the task authority/evidence instead of silently rewriting product state."
+    - "After selecting a progression condition, Architect must apply the existing Executor-fit and bounded-task rules: one coherent progression objective, bounded mutation scope, explicit terminal proof boundary, and split independent outcomes when required. T5 must not add a task schema field merely for phase/blocker metadata."
+    - "Task acceptance/review does not update product state by implication. After task completion, fresh target-owned evidence remains required before any feature gate/state/system gate/project phase changes."
+    - "For the current agent-foundation canonical state, fresh regression proof must show the Architect consumption result is phase P0_SCOPE and earliest blocker release.status. F002/F004 verification and later global gates must not be selected ahead of this blocker."
+    - "Current P0 planning semantics must not authorize inventing/finalizing release truth without evidence. A bounded follow-on task for release scope may resolve missing release identity/required features only from target-owned authority and must preserve UNKNOWN when unresolved."
+    - "Add deterministic regressions that bind Architect/FOUNDATION text semantics to the accepted T4 resolver: current P0/release.status case; later-phase blocker cases; no-later-work-bypass marker; explicit-override distinction; UNKNOWN preservation; task/product-state separation; filename-neutral target discovery."
+    - "Prefer semantic contract tests over adding a planner service. Reuse accepted T4 pure derivation/blocker helpers for target-specific regression fixtures rather than implementing a second progression engine."
+    - "Keep TASK_PROTOCOL.md byte-for-byte unchanged unless execution proves a direct contradiction that cannot be resolved within Foundation Architecture + Architect role-local procedure; if such a contradiction exists, stop BLOCKED rather than widening scope."
+    - "Keep product-state.json and AGENT_FOUNDATION_PRODUCT_STATE.md byte-for-byte unchanged. T5 consumes T4 truth; it does not mutate product state."
+    - "Keep Executor skill bodies, seven-skill taxonomy, rationalization/external metadata, documents/, standards/, profile authority.lock, TASK-0014..0021 historical artifacts, agent-runtime, Runtime/host state, credentials, branches, tags, releases, and repository metadata unchanged."
+    - "Publish implementation/report on main only by ordinary non-force fast-forward."
+
+  allowed_existing_files_or_components:
+    - "skills/contracts/FOUNDATION_ARCHITECTURE.md"
+    - "skills/architect/SKILL.md"
+    - "skills/scripts/validate_skill_library.py"
+    - "skills/scripts/test_validate_skill_library.py"
+    - ".agent/tasks/TASK-0022/**"
+
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Target repository remains the semantic owner of product truth."
+  - "Foundation consumes product state; it never becomes product-state authority."
+  - "Architect planning follows target phase + earliest materially blocking condition by default."
+  - "UNKNOWN remains UNKNOWN; missing evidence never becomes progress."
+  - "Current agent-foundation planning result is P0_SCOPE / release.status."
+  - "Task lifecycle remains distinct from feature/system/project state."
+  - "No universal target manifest or filename requirement is introduced."
+  - "No second phase/blocker engine, planner service, scheduler, daemon, queue, workflow engine, central state database, or cross-repository mutable state is introduced."
+  - "No execution/UI recovery semantics are added in T5."
+  - "No T6 adoption-closure artifact is created."
+
+forbidden_changes:
+  - "Modify product-state.json or AGENT_FOUNDATION_PRODUCT_STATE.md."
+  - "Make Foundation the owner of release scope, feature registry, feature state, system gates, or project phase."
+  - "Require every target to expose product-state.json or agent-foundation schema 3."
+  - "Use task/report/review/chat/Runtime status as product-state evidence by implication."
+  - "Permit Architect to choose later-phase work while an earlier canonical blocker remains unresolved, absent exact higher-priority authority."
+  - "Silently overwrite or bypass UNKNOWN."
+  - "Add phase/blocker fields to task protocol or task schema merely for convenience."
+  - "Create a new planner/orchestrator/runtime service or persistent planning database."
+  - "Modify TASK_PROTOCOL.md, Executor semantics, execution continuity/recovery, agent-runtime, host state, dependencies, credentials, branches, tags, releases, or repository metadata."
+  - "Create TASK-0023/T6 artifacts."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: revised_contract_required
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Foundation has an explicit filename-neutral target-product progression consumption boundary without taking product ownership."
+    evidence_required: "FOUNDATION_ARCHITECTURE.md states target-owned progression inputs, consumption/verification/selection permissions, UNKNOWN behavior, and anti-ownership constraints; no universal manifest/schema requirement is introduced."
+
+  - id: AC-2
+    requirement: "Architect has an exact pre-planning read protocol and progression rule."
+    evidence_required: "Architect skill resolves the ten canonical read steps in order, uses fresh target evidence, preserves UNKNOWN, and defaults to earliest materially blocking work rather than generic useful work."
+
+  - id: AC-3
+    requirement: "Architect task generation remains bounded and authority-aware."
+    evidence_required: "Role-local procedure binds selected blocker to existing Executor-fit + WHAT/BOUNDARY/PROOF task rules, distinguishes explicit higher-priority override, and does not add schema/lifecycle fields or merge product/task state."
+
+  - id: AC-4
+    requirement: "Accepted T4 semantics are actually consumed, not duplicated or weakened."
+    evidence_required: "Focused regressions reuse T4 derivation/blocker semantics and prove current canonical state selects P0_SCOPE/release.status, later-phase fixtures select their target-defined earliest blockers, and no second progression engine is added."
+
+  - id: AC-5
+    requirement: "T5 preserves all existing ownership and product-state boundaries."
+    evidence_required: "product-state.json, AGENT_FOUNDATION_PRODUCT_STATE.md, TASK_PROTOCOL.md, Executor skill, T1-T4 product contracts/state, protected domains, historical tasks, external pins, and Runtime/host state remain unchanged."
+
+  - id: AC-6
+    requirement: "All affected qualification is green on one coherent final candidate."
+    evidence_required: "Task validation, focused T5 plus existing T2-T4 regressions, full skills/protocol validator/regressions, external sync/regressions, profile bootstrap local/remote/regressions, documents tests, standards verifier with existing qualified interpreter, modified Python compile, internal links, protected/history checks, exact scope proof, and git diff --check PASS."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0022 and prove exact local/remote execution-base identity plus clean worktree before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Inspect accepted T4 current product state and Architect/Foundation current contracts before editing; prove current planning result P0_SCOPE / release.status from target-owned state."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Add focused T5 contract/regression coverage for the ten-step read order, UNKNOWN preservation, earliest-blocker default, override distinction, bounded-task handoff, task/product-state separation, filename-neutral discovery, and current P0/release.status."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Rerun existing T2/T3/T4 product-state/phase/blocker regressions to prove consumption did not change target semantics."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run full skills/protocol validator/regressions; external sync/regressions; profile bootstrap local/remote/regressions; documents tests; standards verifier with an already-installed qualified interpreter."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Compile modified Python, validate affected Markdown links, prove product-state/product-state contract/TASK_PROTOCOL/Executor/protected/history identities unchanged, exact implementation scope, no T6/recovery/planner infrastructure, and git diff --check."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Fresh-resolve remote before publication; publish candidate then report only; prove direct-child lineage, final HEAD/origin/remote identity, ahead/behind 0/0, clean worktree, main-only remote, unchanged tags/releases."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files: []
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "T5 evolves existing Foundation/Architect governance text and regression enforcement only."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
