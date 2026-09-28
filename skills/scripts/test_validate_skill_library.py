@@ -3780,6 +3780,78 @@ class Task0021GlobalProgressionTests(unittest.TestCase):
         self.assertEqual(self.leaf(state, "production", "operational_readiness")["status"], "PASS")
         self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(state), "P6_RELEASE_READY")
 
+    def test_system_leaf_blocker_skips_na_before_actual_blockers(self) -> None:
+        for blocking_status in ("UNKNOWN", "PENDING", "FAIL"):
+            with self.subTest(blocking_status=blocking_status):
+                state = self.future_state()
+                self.set_system_leaf(
+                    state,
+                    "foundation",
+                    "architecture",
+                    "N/A",
+                    reason="Synthetic inapplicable architecture gate.",
+                )
+                self.set_system_leaf(
+                    state,
+                    "foundation",
+                    "dependency_rules",
+                    blocking_status,
+                )
+                self.assertEqual(
+                    state["system_gates"]["foundation"]["status"],
+                    blocking_status,
+                )
+                self.assertEqual(
+                    VALIDATOR_MODULE._derive_agent_foundation_project_phase(state),
+                    "P1_FOUNDATION",
+                )
+                self.assertEqual(
+                    VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state),
+                    "system_gates.foundation.dependency_rules",
+                )
+
+    def test_system_leaf_blocker_preserves_canonical_order_among_actual_blockers(self) -> None:
+        state = self.future_state()
+        self.set_system_leaf(
+            state,
+            "foundation",
+            "architecture",
+            "N/A",
+            reason="Synthetic inapplicable architecture gate.",
+        )
+        self.set_system_leaf(state, "foundation", "dependency_rules", "PENDING")
+        self.set_system_leaf(state, "foundation", "test_infrastructure", "FAIL")
+        self.assertEqual(
+            VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state),
+            "system_gates.foundation.dependency_rules",
+        )
+
+    def test_production_acceptance_blocker_skips_na_before_actual_blocker(self) -> None:
+        for blocking_status in ("UNKNOWN", "PENDING", "FAIL"):
+            with self.subTest(blocking_status=blocking_status):
+                state = self.future_state()
+                self.set_system_leaf(
+                    state,
+                    "production",
+                    "deployment",
+                    "N/A",
+                    reason="Synthetic inapplicable deployment gate.",
+                )
+                self.set_system_leaf(
+                    state,
+                    "production",
+                    "smoke_test",
+                    blocking_status,
+                )
+                self.assertEqual(
+                    VALIDATOR_MODULE._derive_agent_foundation_project_phase(state),
+                    "P6_RELEASE_READY",
+                )
+                self.assertEqual(
+                    VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state),
+                    "system_gates.production.smoke_test",
+                )
+
     def test_registry_and_leaf_order_deterministically_choose_earliest_blocker(self) -> None:
         state = self.load_state()
         state["release"]["status"] = "FROZEN"

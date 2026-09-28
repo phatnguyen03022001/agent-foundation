@@ -2132,8 +2132,14 @@ def _first_unmet_agent_foundation_system_leaf(
     }
     for name in names:
         leaf = by_name.get(name)
-        if not isinstance(leaf, dict) or leaf.get("status") != "PASS":
+        if not isinstance(leaf, dict):
+            raise ValueError(f"malformed {group_name} leaf {name}")
+        status = leaf.get("status")
+        if status in {"PASS", "N/A"}:
+            continue
+        if status in {"FAIL", "UNKNOWN", "PENDING"}:
             return f"system_gates.{group_name}.{name}"
+        raise ValueError(f"unsupported {group_name} leaf status for {name}: {status!r}")
     raise ValueError(f"no unmet {group_name} leaf")
 
 
