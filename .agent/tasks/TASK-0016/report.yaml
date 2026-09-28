@@ -1,0 +1,72 @@
+protocol_version: 3
+
+task_id: TASK-0016
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0016/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "3da27c4aa523352c2b3b95ce1ed0e4fcfdd62649"
+  final_execution_head: "dff7c61d7151e186d47cb8a39d497e013778a566"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "c86d28c076526b54461b1e910675e48e1fb7b6b4"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_write
+    - local_test_execution
+    - bounded_network_resolution
+    - non_force_git_publication
+  available:
+    - Remote Desktop Commander bounded repository mutation
+    - Remote Desktop Commander bounded local test execution
+    - bounded exact Git remote resolution
+    - ordinary non-force Git publication
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0016 revision 1 designates no separate authoritative verifier."
+
+pushed: true
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Foundation Architecture now defines the target repository as canonical owner of product truth and repo-native engineering contracts while explicitly separating Foundation governance/control, exact-pinned ECC generic HOW, and Agent Runtime execution transport. Task Protocol preserves task-scoped WHAT/BOUNDARY/PROOF without transferring enduring product ownership."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "The canonical contract defines bounded filename-neutral precedence by authority class: exact bound task/review/continuation authority, explicit target product/architecture/instruction contracts, applicable repo-native manifests/toolchain/scripts/CI/source/tests/deployment evidence, then external generic HOW. AGENTS.md and CLAUDE.md are optional examples rather than required authority filenames."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Architect, Executor, and Engineering HOW now resolve target-native toolchain/dependency/build/test/lint/typecheck/codegen/verifier/runtime contracts before generic HOW. Repository-owned commands and verifier profiles remain primary; ECC examples must adapt to target-native commands and architecture."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Doctrine and focused regressions distinguish optional convention absence from real authority/spec gaps: missing AGENTS.md, CLAUDE.md, or a standard command name is not blocking when equivalent target truth is discoverable; unresolved contradictory or missing product truth blocks only when safe implementation or required proof depends on it. Existing LOCAL/FOLLOW_UP/BLOCKING semantics remain unchanged."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Candidate diff contains only six existing authorized skills/doctrine/test paths and creates no target manifest, instruction file, bootstrap route, architecture layer, service, daemon, registry, package/plugin manager, or harness-install dependency. The existing Foundation Architecture bootstrap locator remains byte-identical."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Object proof matches base exactly for skills/.agent/rationalization.json (1ac4fd4ce05b60ebbe494a4849da14a2695badda) and skills/.agent/external-capabilities/** (tree 5cf61d82987ffc1d11fc6778e78c427a58d35afe). The seven internal SKILL.md paths are unchanged; skill validator reports the rationalized seven-skill taxonomy, external sync reports CURRENT, and external regressions pass 19/19."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Base-to-candidate object proof is identical for documents/ (c0bf2080ddee6e549a1605c13d4ff9041984c636), standards/ (1807ad6e7d1a8ddfe8987ebe937886d9fd85e268), and authority.lock.json (be80e2308e18d662ce3748f5fb41c41619b346bc). Candidate modifies only the six authorized skills/doctrine/test paths; no agent-runtime, Runtime/host, credential, branch, tag, release, repository-metadata, or external-repository mutation was performed."
+  - criterion_id: AC-8
+    status: PASS
+    evidence: "On exact candidate dff7c61d7151e186d47cb8a39d497e013778a566: task artifact validation PASS; focused TASK-0016 regressions 3/3 PASS; skill validator PASS; full skill/protocol regressions 181/181 PASS; external sync CURRENT and regressions 19/19 PASS; bootstrap local OPM_BOOTSTRAP=TRUE and 49/49 regressions PASS; py_compile and git diff --check PASS. Remote bootstrap initially returned 404 before candidate publication, establishing a real remote-visibility prerequisite; after ordinary non-force candidate publication, bootstrap --remote on the exact candidate returns OPM_BOOTSTRAP=TRUE."
+
+result: NEEDS_REVIEW
