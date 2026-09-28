@@ -1,0 +1,220 @@
+protocol_version: 3
+
+task_id: TASK-0018
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0018"
+  gap_id: "AGENT-FOUNDATION-PRODUCT-ARCHITECTURE-BOUNDARIES"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "3be0b8e7c22a31c6b15f04668e445e1db7edf04e"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+  - verification
+  - adversarial-audit
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+  recommended:
+    - adversarial-audit
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "operator-supplied AGENT_FOUNDATION_PLAN.md version 2, SHA-256 27f6ae194e1ebc60aa031361b3105337c6f866ab2a127cd8afa81ae10d457b80"
+    role: "approved target-product architecture/state program specification; TASK-0018 implements only the T1 architecture-boundary subset"
+    precedence: 1
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@3be0b8e7c22a31c6b15f04668e445e1db7edf04e"
+    role: "existing Foundation governance/control-plane architecture that must remain distinct from target-product architecture"
+    precedence: 2
+  - source: ".agent/tasks/TASK-0016/review.yaml@3be0b8e7c22a31c6b15f04668e445e1db7edf04e"
+    role: "accepted filename-neutral target-repository product authority contract"
+    precedence: 3
+  - source: ".agent/tasks/TASK-0015/review.yaml@3be0b8e7c22a31c6b15f04668e445e1db7edf04e"
+    role: "accepted seven-skill taxonomy and external-HOW seam"
+    precedence: 4
+
+structure_authority:
+  status: RESOLVED
+  source: "AGENT_FOUNDATION_PLAN.md sections 2-12 and 39-40, reconciled with existing agent-foundation structure"
+  rationale: "T1 establishes semantic product architecture boundaries only. Literal directory names are not required. Existing Foundation governance architecture remains a separate owner; this task must not absorb T2-T6 product-state/progression/governance-integration work."
+
+objective: "Adopt the T1 product-architecture boundary model for agent-foundation as its own target repository without forcing reference directory names or prematurely implementing release scope, feature registry, feature-state derivation, project-phase progression, Foundation consumption integration, or dogfood closure. Establish one canonical target-owned product architecture contract that defines semantic ownership for product capabilities, reusable shared capabilities, platform/runtime-operational capabilities, composition/bootstrap concerns, dependency direction, cross-capability contracts, cross-cutting ownership, telemetry ownership, and evidence-based extraction/no-premature-infrastructure rules. Reconcile those semantics with the repository's existing profile/, skills/, documents/, standards/ domains rather than inventing business features or restructuring merely to resemble the reference tree."
+
+scope:
+  required_changes:
+    - "Inspect current agent-foundation product/repository structure and classify existing durable product capabilities by semantics before editing. Do not derive ownership from directory names alone."
+    - "Create at most one canonical target-product architecture contract under skills/contracts/ if the existing FOUNDATION_ARCHITECTURE.md cannot remain a clean governance/control-plane owner while also expressing target-product architecture. Prefer separation over turning FOUNDATION_ARCHITECTURE.md into a mega-document."
+    - "Define the target-specific equivalent of the plan's modular-monolith + vertical-slice + shared-capability + platform-capability + composition-root model. Literal features/shared/platform/app directories are not required; existing repo-native names may remain."
+    - "Define feature/product-capability ownership: capability-local product/business/governance semantics remain with the owning product capability and do not migrate to shared merely because multiple files in one capability reuse them."
+    - "Define shared-capability admission exactly as reusable by at least two independent product capabilities, no capability-specific product semantics, and a stable reusable contract. Reject dumping grounds such as common/utils/everything semantics."
+    - "Define platform/runtime-operational capability ownership as execution/infrastructure/operational mechanics only; platform must not own product/governance behavior merely because it executes or hosts it."
+    - "Define composition/bootstrap ownership as wiring, registration, navigation/entrypoints, and configuration composition only; product/governance behavior must not accumulate in composition roots."
+    - "Define dependency direction and cross-capability contracts so one product capability does not depend on another capability's private internals by default; interaction uses explicit public contracts, application interfaces, events, or explicit orchestration."
+    - "Define cross-cutting ownership for security, reliability, telemetry, testing, configuration, delivery/operations in a way that separates target-specific semantics from reusable mechanics and operational infrastructure."
+    - "Define telemetry ownership at three semantic levels when applicable: product-capability semantic events, shared instrumentation mechanics, and platform observability infrastructure."
+    - "Preserve the plan's no-premature-infrastructure and extraction rules: no microservices/distributed orchestration/infrastructure expansion without demonstrated independent operational boundaries; extraction requires concrete evidence such as independent scaling, failure isolation, deployment, security, storage, latency, or organizational ownership."
+    - "Add deterministic regression coverage proving semantic ownership is filename-neutral, literal reference directories are optional, shared admission is restrictive, platform/composition cannot absorb product behavior, private cross-capability imports are rejected by doctrine, and premature extraction is not a default."
+    - "Explicitly encode that TASK-0018 does NOT implement release scope/feature registry, feature lifecycle/gates/state derivation, global system gates/project phases, Architect progression integration, execution/UI recovery changes, or adoption closure. Those remain separate future acceptance boundaries."
+    - "Keep TASK-0014 through TASK-0017 historical task/report/review artifacts unchanged. Keep ECC/external-capability metadata, seven-skill taxonomy, documents/, standards/, bootstrap authority lock, agent-runtime, Runtime/host state, credentials, branches, tags, and releases unchanged."
+    - "Publish implementation/report on main only by ordinary non-force fast-forward."
+
+  allowed_existing_files_or_components:
+    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md"
+    - "skills/contracts/FOUNDATION_ARCHITECTURE.md only for a concise ownership/navigation link if needed"
+    - "skills/README.md only for concise contract navigation"
+    - "README.md only for concise target-product architecture navigation"
+    - "skills/scripts/validate_skill_library.py only if deterministic doctrine validation requires it"
+    - "skills/scripts/test_validate_skill_library.py"
+    - ".agent/tasks/TASK-0018/**"
+
+  expected_files_are_restrictive: false
+
+invariants:
+  - "agent-foundation is the exact target repository and therefore owns its product truth."
+  - "Foundation governance/control-plane architecture remains distinct from agent-foundation target-product architecture; target-product adoption must not collapse product state, task/governance state, execution state, or UI state."
+  - "Existing profile/, skills/, documents/, standards/ physical domains are not renamed/reorganized merely to resemble the reference tree."
+  - "Filename-based authority remains forbidden."
+  - "No feature/product capability is invented only to satisfy the reference architecture."
+  - "No release scope, feature registry, persisted feature state, project phase engine, central state database, workflow engine, scheduler, daemon, queue, or new orchestration framework is introduced."
+  - "TASK-0015 seven-skill taxonomy remains unchanged."
+  - "skills/.agent/external-capabilities/** remains byte-identical to the execution base."
+  - "documents/, standards/, profile/.agent/bootstrap/authority.lock.json, agent-runtime, Runtime/host state, credentials, branches, tags, and releases remain unchanged."
+  - "One initiating chat/session is never treated as durable product, task, execution, or architecture truth; T1 artifacts and proof must remain reconstructible from repository state."
+
+forbidden_changes:
+  - "Create T2-T6 task artifacts or partially implement their state/progression/integration/closure semantics."
+  - "Force literal src/features, src/shared, src/platform, or src/app directories merely because the reference plan shows them."
+  - "Invent fake business features for profile/, skills/, documents/, or standards/."
+  - "Turn shared into a misc/common/utils dumping ground or move capability-specific semantics there for convenience."
+  - "Move product/governance semantics into Agent Runtime, platform/execution substrate, bootstrap composition, ECC, or generic external methodology."
+  - "Introduce microservices, event sourcing, CQRS, Kafka, Kubernetes, service mesh, workflow engine, central state service, scheduler, daemon, queue, orchestration database, or custom agent framework without a demonstrated current requirement."
+  - "Modify Architect/Executor progression behavior, task/product-state derivation, execution recovery, or UI failure semantics in this task."
+  - "Modify ECC/external pins, rationalization, documents/, standards/, authority.lock.json, agent-runtime, Runtime/tunnel state, credentials, host security state, branches, tags, releases, or repository metadata."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: revised_contract_required
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "agent-foundation has one canonical target-owned product architecture boundary contract distinct from the existing Foundation governance/control-plane contract."
+    evidence_required: "Contract/navigation diff and doctrine tests prove the separation and identify the target-owned semantic architecture without creating a mega-document or duplicate authority."
+
+  - id: AC-2
+    requirement: "Product-capability, shared, platform, and composition ownership are explicit and filename-neutral."
+    evidence_required: "Tests and contract examples prove semantics survive alternate directory names, prohibit invented feature ownership from filenames, and preserve existing repo-native physical domains."
+
+  - id: AC-3
+    requirement: "Shared and cross-capability boundaries prevent semantic leakage."
+    evidence_required: "Regression cases prove shared admission requires at least two independent consumers, no capability-specific semantics, stable reusable contract, and cross-capability interaction through explicit public contracts/interfaces/events/orchestration rather than private internals."
+
+  - id: AC-4
+    requirement: "Cross-cutting and telemetry ownership separate target semantics, reusable mechanics, and operational infrastructure."
+    evidence_required: "Contract/test matrix covers security, reliability, telemetry, testing, configuration, delivery/operations and the semantic-event/instrumentation/observability split without transferring product truth to platform/runtime."
+
+  - id: AC-5
+    requirement: "No-premature-infrastructure and extraction rules remain evidence-based."
+    evidence_required: "Negative doctrine tests reject distributed/extracted architecture as a default and require a demonstrated independent operational boundary before extraction."
+
+  - id: AC-6
+    requirement: "T1 remains one bounded acceptance boundary and does not pre-implement T2-T6."
+    evidence_required: "Base-to-candidate diff and negative tests show no release registry/state machine/project phase/progression integration/recovery/closure implementation and no future task artifacts."
+
+  - id: AC-7
+    requirement: "Existing accepted Foundation governance, ECC seam, taxonomy, protected domains, and execution substrate remain unchanged except for the narrow product-architecture navigation needed by T1."
+    evidence_required: "Exact object/diff proof for external-capability metadata, rationalization, documents/, standards/, authority.lock.json and repository scope; existing full Foundation regressions remain green."
+
+  - id: AC-8
+    requirement: "All affected deterministic verification is green on one coherent final candidate."
+    evidence_required: "Task artifact validation, focused T1 doctrine tests, full skill/protocol validator and regressions, external seam checks, bootstrap validation/regressions including remote when supported, Python compilation for modified scripts, internal-link validation, and git diff --check PASS."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0018 and prove exact local/remote execution-base identity plus clean worktree before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Inspect current Foundation architecture, README/navigation, four physical domains, dependency references, and relevant validators before choosing the smallest target-specific product-architecture representation."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run focused T1 doctrine regressions covering filename-neutral ownership, shared admission, cross-capability privacy, platform/composition boundaries, telemetry/cross-cutting ownership, and extraction/no-premature-infrastructure rules."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run python3 -B skills/scripts/validate_skill_library.py and python3 -B skills/scripts/test_validate_skill_library.py."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run python3 -B skills/scripts/sync_external_capabilities.py --check and python3 -B skills/scripts/test_sync_external_capabilities.py."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Run python3 -B profile/.agent/bootstrap/validate.py and python3 -B profile/.agent/bootstrap/test_bootstrap.py; run --remote when already supported without new credentials."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Prove seven-skill inventory, rationalization, external-capability tree, documents/, standards/, authority.lock.json, TASK-0014..0017 historical artifacts, and agent-runtime remain unchanged."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Run Python compilation for modified Python files, internal Markdown link checks if affected, git diff --check, and prove no T2-T6 artifact/state machinery/distributed infrastructure was introduced."
+      required: true
+    - id: CHECK-9
+      command_or_check: "Fresh-resolve remote main before non-force publication and post-prove exact candidate/report lineage, final main identity, ahead/behind 0/0, and clean worktree."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files:
+    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md"
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "T1 requires at most one new canonical target-product architecture contract; all tests/navigation edits use existing files."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
