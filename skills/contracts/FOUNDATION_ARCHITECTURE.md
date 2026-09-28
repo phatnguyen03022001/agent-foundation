@@ -2,6 +2,8 @@
 
 This contract is the single canonical generic owner for the Foundation three-layer model and the L1 control-and-continuity semantics that connect governance to reusable capability. It does not replace target-repository authority, the Task Protocol, individual skills, standards, document models, or operator configuration.
 
+When `agent-foundation` itself is the bound target, its distinct target-owned T1 product architecture boundaries are defined by [Agent Foundation Product Architecture Boundaries](AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md). That target contract does not redefine this governance/control-plane architecture.
+
 The Foundation has exactly three conceptual layers. A repository subtree is not automatically a layer, and an execution transport is not a layer.
 
 ## L0 — Governance Kernel

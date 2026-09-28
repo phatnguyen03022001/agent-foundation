@@ -3349,6 +3349,86 @@ class Task0016TargetRepositoryAuthorityTests(unittest.TestCase):
             self.assertIn(marker, combined)
 
 
+class Task0018ProductArchitectureBoundaryTests(unittest.TestCase):
+    def read(self, relative_path: str) -> str:
+        return (ROOT / relative_path).read_text(encoding="utf-8")
+
+    def test_target_product_architecture_is_distinct_and_filename_neutral(self) -> None:
+        product = self.read("contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md")
+        foundation = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
+        readme = self.read("README.md")
+        for marker in (
+            "canonical target-owned T1 product-architecture boundary",
+            "distinct from [Foundation Architecture](FOUNDATION_ARCHITECTURE.md)",
+            "features/",
+            "shared/",
+            "platform/",
+            "app/",
+            "They are not required physical directories",
+            "does not invent fake business features",
+            "profile/",
+            "skills/",
+            "documents/",
+            "standards/",
+        ):
+            self.assertIn(marker, product)
+        self.assertIn("AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md", foundation)
+        self.assertIn("AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md", readme)
+
+    def test_shared_platform_composition_and_private_dependency_boundaries(self) -> None:
+        product = self.read("contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md")
+        for marker in (
+            "at least two independent product capabilities",
+            "no capability-specific product semantics",
+            "stable reusable contract",
+            "Two files inside one capability are not two independent consumers",
+            "must not own product or governance behavior",
+            "Product/governance behavior must not accumulate in the composition root",
+            "private internals is rejected by doctrine",
+            "explicit public contract",
+            "application interface",
+            "event",
+            "explicit orchestration boundary",
+        ):
+            self.assertIn(marker, product)
+
+    def test_cross_cutting_and_telemetry_ownership_stays_separated(self) -> None:
+        product = self.read("contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md")
+        for marker in (
+            "## Cross-cutting ownership",
+            "Security",
+            "Reliability",
+            "Testing",
+            "Configuration",
+            "Delivery / operations",
+            "Product-capability semantic events",
+            "Shared instrumentation mechanics",
+            "Platform observability infrastructure",
+            "never becomes the owner of capability event meaning",
+        ):
+            self.assertIn(marker, product)
+
+    def test_extraction_requires_evidence_and_t1_does_not_preimplement_later_state(self) -> None:
+        product = self.read("contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md")
+        for marker in (
+            "independent scaling",
+            "independent failure isolation",
+            "independent deployment",
+            "distinct security boundary",
+            "distinct storage requirements",
+            "distinct latency profile",
+            "distinct organizational ownership",
+            "The default remains a modular monolith",
+            "release scope or a feature registry",
+            "feature lifecycle, gates, or feature-state derivation",
+            "global gates or project-phase derivation",
+            "Architect progression integration",
+            "execution or UI recovery redesign",
+            "future task artifacts",
+        ):
+            self.assertIn(marker, product)
+
+
 class Task0010RationalizationTests(unittest.TestCase):
     def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
         temp = tempfile.TemporaryDirectory()
