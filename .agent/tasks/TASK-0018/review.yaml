@@ -1,0 +1,61 @@
+protocol_version: 3
+
+task_id: TASK-0018
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0018/report.yaml
+  commit: "35bdd08455cf617e5962876bd80724749de997cd"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+acceptance_basis:
+  - "Fresh review resolution proved HEAD == origin/main == exact reviewed report commit 35bdd08455cf617e5962876bd80724749de997cd, ahead/behind 0/0, clean index/worktree, and canonical main-only lineage."
+  - "The reviewed report is the sole direct child of implementation candidate a3ac3f3d3bdd27ea6cd0d7fb060e3c9ae38ab389 and changes only .agent/tasks/TASK-0018/report.yaml. The candidate is the sole direct child of exact authorized base 61c217094cfcd0162707e55a92fe95835e55931a."
+  - "The operator-supplied AGENT_FOUNDATION_PLAN.md authority pin is exact: SHA-256 27f6ae194e1ebc60aa031361b3105337c6f866ab2a127cd8afa81ae10d457b80 matches the uploaded version-2 plan bytes used by TASK-0018."
+  - "Base-to-candidate scope contains exactly five authorized T1 paths: README.md, skills/README.md, skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md, skills/contracts/FOUNDATION_ARCHITECTURE.md, and skills/scripts/test_validate_skill_library.py. The only new implementation file is the authorized target-product architecture contract."
+  - "Independent semantic inspection confirms the new contract remains distinct from FOUNDATION_ARCHITECTURE.md: the former owns agent-foundation target-product capability/dependency boundaries while the latter retains generic L0/L1/L2 governance/control-plane ownership."
+  - "The classification of profile/, skills/, documents/, and standards/ as durable target product capabilities is supported by their existing repository-owned contracts and behavior, not directory spelling: profile owns durable operator/Architect configuration, skills owns governance/control and reusable HOW, documents owns documentation model/closure semantics, and standards owns assurance/maturity/evidence semantics. The contract explicitly rejects filename-manufactured ownership and fake features."
+  - "Shared admission is restrictive and preserves semantic locality: at least two independent consuming capabilities, no capability-specific semantics, and a stable reusable contract are all required. The contract rejects generic dumping grounds and private cross-capability dependency."
+  - "Platform/runtime-operational and composition/bootstrap boundaries remain narrow: execution/infrastructure mechanics do not own product/governance semantics, and bootstrap/composition is limited to wiring/locators rather than lifecycle or product behavior."
+  - "Cross-cutting and telemetry ownership preserve three-way separation between capability semantics, admitted reusable mechanics, and operational infrastructure; telemetry meaning, instrumentation mechanics, and observability infrastructure remain distinct."
+  - "Extraction remains evidence-based and the modular monolith remains the default. No distributed architecture, workflow engine, central state service, scheduler, daemon, queue, orchestration database, or custom agent framework was introduced."
+  - "T1 remains bounded: no release scope/feature registry, feature lifecycle/gates/state derivation, global gates/project-phase engine, Architect progression integration, execution/UI recovery redesign, adoption closure, or T2-T6 task artifact was introduced."
+  - "Fresh independent verification passed: focused TASK-0018 doctrine 4/4; full skill/protocol regressions 185/185; external capability regressions 19/19 with sync CURRENT; bootstrap regressions 49/49 with local and remote OPM_BOOTSTRAP = TRUE; task/report validation, Python compilation, protected-object checks, historical TASK-0014..0017 identity checks, all SKILL.md blob checks, new-file scope proof, and git diff --check all pass."
+  - "The Executor's platform-blocked aggregate python -c bundle did not weaken evidence: the blocked aggregate wrapper produced no inner effect and all required proofs were completed through narrower repository-native commands. Independent Architect verification also completed the same required proof classes successfully."
+
+final_candidate:
+  commit: "a3ac3f3d3bdd27ea6cd0d7fb060e3c9ae38ab389"
+  focused_t1_doctrine: "4/4 PASS independently rerun"
+  skill_protocol_regressions: "185/185 PASS independently rerun"
+  external_capability_regressions: "19/19 PASS independently rerun"
+  bootstrap_regressions: "49/49 PASS independently rerun"
+  bootstrap_local_remote: PASS
+  protected_objects: PASS
+  historical_tasks_0014_0017: PASS
+  skill_blobs: PASS
+  report_validation: PASS
+  result: PASS
+
+notes:
+  - "TASK-0018 revision 1 is terminally ACCEPTED for exact report 35bdd08455cf617e5962876bd80724749de997cd."
+  - "Acceptance is T1-only. It grants no authority to materialize or partially implement T2-T6 except through a separately authored future task."
+  - "The focused tests are doctrine regressions by design; acceptance additionally relies on independent semantic inspection of the contract against the repository's existing domain ownership documents rather than marker presence alone."
