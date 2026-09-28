@@ -3442,7 +3442,7 @@ class Task0019ProductStateTests(unittest.TestCase):
         path = Path(temp.name) / "product-state.json"
         path.write_text(json.dumps(document, indent=2) + "\n", encoding="utf-8")
         VALIDATOR_MODULE.errors.clear()
-        VALIDATOR_MODULE.validate_agent_foundation_product_state(path)
+        VALIDATOR_MODULE.validate_agent_foundation_product_state(path, evidence_root=ROOT.parent)
         messages = list(VALIDATOR_MODULE.errors)
         VALIDATOR_MODULE.errors.clear()
         return messages
@@ -3466,14 +3466,17 @@ class Task0019ProductStateTests(unittest.TestCase):
     def test_current_product_state_is_exact_frozen_four_feature_inventory(self) -> None:
         state = self.load_state()
         self.assertEqual(self.validate_state(state), [])
-        self.assertEqual(state["schema_version"], 1)
+        self.assertEqual(state["schema_version"], 2)
         self.assertEqual(state["target"]["repository"], "phatnguyen03022001/agent-foundation")
         scope = state["product_scope"]
         self.assertEqual(scope["revision"], 1)
         self.assertEqual(scope["scope_status"], "FROZEN")
         self.assertEqual(scope["features"]["total"], 4)
         self.assertEqual(
-            scope["features"]["registered"],
+            [
+                {key: feature[key] for key in ("id", "semantic_name", "owner")}
+                for feature in scope["features"]["registered"]
+            ],
             [
                 {"id": "F001", "semantic_name": "operator-and-architect-configuration", "owner": "profile/"},
                 {"id": "F002", "semantic_name": "governance-control-and-capability", "owner": "skills/"},
@@ -3578,6 +3581,286 @@ class Task0019ProductStateTests(unittest.TestCase):
         changed = deepcopy(state)
         changed["release"]["required_feature_ids"] = {}
         self.assertTrue(self.validate_state(changed))
+
+
+
+
+class Task0020FeatureLifecycleTests(unittest.TestCase):
+    def load_state(self) -> dict:
+        return json.loads((ROOT.parent / "product-state.json").read_text(encoding="utf-8"))
+
+    def feature(self, state: dict, feature_id: str) -> dict:
+        return next(
+            feature
+            for feature in state["product_scope"]["features"]["registered"]
+            if feature["id"] == feature_id
+        )
+
+    def validate_state(self, document: dict) -> list[str]:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "product-state.json"
+        path.write_text(json.dumps(document, indent=2) + "\n", encoding="utf-8")
+        VALIDATOR_MODULE.errors.clear()
+        VALIDATOR_MODULE.validate_agent_foundation_product_state(
+            path,
+            evidence_root=ROOT.parent,
+        )
+        messages = list(VALIDATOR_MODULE.errors)
+        VALIDATOR_MODULE.errors.clear()
+        return messages
+
+    def transition_errors(self, previous: dict, current: dict) -> list[str]:
+        VALIDATOR_MODULE.errors.clear()
+        VALIDATOR_MODULE.validate_agent_foundation_product_state_transition(
+            previous,
+            current,
+            evidence_root=ROOT.parent,
+        )
+        messages = list(VALIDATOR_MODULE.errors)
+        VALIDATOR_MODULE.errors.clear()
+        return messages
+
+    def set_gate(
+        self,
+        feature: dict,
+        gate_name: str,
+        status: str,
+        *,
+        refs: list[str] | None = None,
+        reason: str | None = None,
+    ) -> None:
+        gate = next(gate for gate in feature["lifecycle"]["gates"] if gate["name"] == gate_name)
+        gate["status"] = status
+        gate["evidence_refs"] = [] if refs is None else refs
+        gate["reason"] = reason
+
+    def test_canonical_schema2_has_exact_gates_conservative_states_and_null_regression(self) -> None:
+        state = self.load_state()
+        self.assertEqual(self.validate_state(state), [])
+        self.assertEqual(state["schema_version"], 2)
+        expected_states = {
+            "F001": "VERIFIED",
+            "F002": "INTEGRATED",
+            "F003": "VERIFIED",
+            "F004": "INTEGRATED",
+        }
+        for feature in state["product_scope"]["features"]["registered"]:
+            self.assertEqual(
+                [gate["name"] for gate in feature["lifecycle"]["gates"]],
+                list(VALIDATOR_MODULE.AGENT_FOUNDATION_LIFECYCLE_GATES),
+            )
+            self.assertEqual(feature["lifecycle"]["derived_state"], expected_states[feature["id"]])
+            self.assertIsNone(feature["lifecycle"]["regression"])
+            self.assertNotIn(feature["lifecycle"]["derived_state"], {"RELEASE_READY", "LIVE"})
+
+    def test_all_seven_lifecycle_thresholds_are_derived_from_ordered_pass_prefix(self) -> None:
+        for pass_count, expected in enumerate(
+            VALIDATOR_MODULE.AGENT_FOUNDATION_LIFECYCLE_STATES,
+            start=1,
+        ):
+            gates = []
+            for index, name in enumerate(VALIDATOR_MODULE.AGENT_FOUNDATION_LIFECYCLE_GATES):
+                gates.append(
+                    {
+                        "name": name,
+                        "status": "PASS" if index < pass_count else "UNKNOWN",
+                    }
+                )
+            self.assertEqual(
+                VALIDATOR_MODULE._derive_agent_foundation_feature_state(gates),
+                expected,
+            )
+
+    def test_unknown_pending_fail_and_na_never_advance(self) -> None:
+        for status in ("UNKNOWN", "PENDING", "FAIL", "N/A"):
+            gates = [
+                {"name": name, "status": "PASS"}
+                for name in VALIDATOR_MODULE.AGENT_FOUNDATION_LIFECYCLE_GATES
+            ]
+            gates[4]["status"] = status
+            self.assertEqual(
+                VALIDATOR_MODULE._derive_agent_foundation_feature_state(gates),
+                "INTEGRATED",
+            )
+
+    def test_na_requires_justification_and_does_not_advance(self) -> None:
+        state = self.load_state()
+        feature = self.feature(state, "F002")
+        self.set_gate(feature, "verification", "N/A", reason="")
+        errors = self.validate_state(state)
+        self.assertTrue(any("N/A requires a non-empty reason" in message for message in errors))
+
+        self.set_gate(feature, "verification", "N/A", reason="Verification is demonstrably inapplicable.")
+        feature["lifecycle"]["derived_state"] = "INTEGRATED"
+        self.assertEqual(self.validate_state(state), [])
+
+    def test_pass_requires_persisted_evidence_and_verification_result_not_definition(self) -> None:
+        state = self.load_state()
+        feature = self.feature(state, "F002")
+        self.set_gate(feature, "verification", "PASS", refs=[], reason=None)
+        feature["lifecycle"]["derived_state"] = "VERIFIED"
+        errors = self.validate_state(state)
+        self.assertTrue(any("PASS requires inspectable persisted evidence" in message for message in errors))
+
+        self.set_gate(
+            feature,
+            "verification",
+            "PASS",
+            refs=["skills/scripts/test_validate_skill_library.py"],
+            reason=None,
+        )
+        errors = self.validate_state(state)
+        self.assertTrue(any("verification PASS requires persisted result evidence" in message for message in errors))
+
+    def test_later_pass_without_prerequisite_and_derived_state_mismatch_are_rejected(self) -> None:
+        state = self.load_state()
+        feature = self.feature(state, "F002")
+        self.set_gate(
+            feature,
+            "release_readiness",
+            "PASS",
+            refs=["skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"],
+            reason=None,
+        )
+        errors = self.validate_state(state)
+        self.assertTrue(any("later gate cannot PASS" in message for message in errors))
+        self.assertTrue(any("unresolved OPEN release forbids PASS" in message for message in errors))
+
+        state = self.load_state()
+        self.feature(state, "F002")["lifecycle"]["derived_state"] = "VERIFIED"
+        errors = self.validate_state(state)
+        self.assertTrue(any("expected recomputed state INTEGRATED" in message for message in errors))
+
+    def test_release_open_caps_every_feature_at_verified(self) -> None:
+        state = self.load_state()
+        feature = self.feature(state, "F001")
+        self.set_gate(
+            feature,
+            "release_readiness",
+            "PASS",
+            refs=["skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"],
+            reason=None,
+        )
+        feature["lifecycle"]["derived_state"] = "RELEASE_READY"
+        errors = self.validate_state(state)
+        self.assertTrue(any("unresolved OPEN release forbids PASS" in message for message in errors))
+        self.assertTrue(any("caps state at VERIFIED" in message for message in errors))
+
+    def test_self_future_missing_and_stale_evidence_are_rejected(self) -> None:
+        state = self.load_state()
+        feature = self.feature(state, "F001")
+        scope = feature["lifecycle"]["gates"][0]
+        scope["evidence_refs"] = ["product-state.json"]
+        errors = self.validate_state(state)
+        self.assertTrue(any("cannot self-attest" in message for message in errors))
+
+        scope["evidence_refs"] = [".agent/tasks/TASK-0020/report.yaml"]
+        errors = self.validate_state(state)
+        self.assertTrue(any("cannot evidence their own implementation candidate" in message for message in errors))
+
+        scope["evidence_refs"] = ["profile/does-not-exist.md"]
+        errors = self.validate_state(state)
+        self.assertTrue(any("missing or inaccessible" in message for message in errors))
+
+        state = self.load_state()
+        feature = self.feature(state, "F001")
+        verification = feature["lifecycle"]["gates"][4]
+        verification["evidence_refs"] = [
+            ".agent/tasks/TASK-0004/report.yaml",
+            "profile/.agent/bootstrap/validate.py",
+        ]
+        errors = self.validate_state(state)
+        self.assertTrue(any("attributable to exact current owner bytes" in message for message in errors))
+
+    def test_release_truth_and_exact_t2_feature_identity_remain_unchanged(self) -> None:
+        state = self.load_state()
+        self.assertEqual(
+            state["release"],
+            {
+                "status": "OPEN",
+                "id": None,
+                "id_resolution": "UNKNOWN",
+                "required_feature_ids": None,
+                "required_feature_ids_resolution": "UNKNOWN",
+            },
+        )
+        self.assertEqual(
+            [
+                (feature["id"], feature["semantic_name"], feature["owner"])
+                for feature in state["product_scope"]["features"]["registered"]
+            ],
+            list(VALIDATOR_MODULE.AGENT_FOUNDATION_PRODUCT_FEATURES),
+        )
+
+    def test_downgrade_requires_exact_evidence_backed_regression_record(self) -> None:
+        previous = self.load_state()
+        current = deepcopy(previous)
+        feature = self.feature(current, "F001")
+        self.set_gate(
+            feature,
+            "verification",
+            "UNKNOWN",
+            reason="Previously verified evidence is no longer sufficient.",
+        )
+        feature["lifecycle"]["derived_state"] = "INTEGRATED"
+        self.assertTrue(
+            any("downgrade requires explicit regression record" in message for message in self.transition_errors(previous, current))
+        )
+
+        feature["lifecycle"]["regression"] = {
+            "from_state": "VERIFIED",
+            "to_state": "INTEGRATED",
+            "reason": "Previously verified evidence is no longer sufficient.",
+            "evidence_refs": ["profile/.agent/bootstrap/validate.py"],
+        }
+        self.assertEqual(self.validate_state(current), [])
+        self.assertEqual(self.transition_errors(previous, current), [])
+
+        feature["lifecycle"]["regression"]["from_state"] = "INTEGRATED"
+        self.assertTrue(
+            any("must exactly match prior/current derived states" in message for message in self.transition_errors(previous, current))
+        )
+
+    def test_non_regression_transition_rejects_stale_regression_record(self) -> None:
+        previous = self.load_state()
+        current = deepcopy(previous)
+        feature = self.feature(current, "F002")
+        feature["lifecycle"]["regression"] = {
+            "from_state": "VERIFIED",
+            "to_state": "INTEGRATED",
+            "reason": "stale record",
+            "evidence_refs": ["skills/contracts/FOUNDATION_ARCHITECTURE.md"],
+        }
+        errors = self.transition_errors(previous, current)
+        self.assertTrue(any("non-regression transition must keep regression null" in message for message in errors))
+
+    def test_initial_schema1_to_schema2_adoption_requires_null_regression(self) -> None:
+        previous = self.load_state()
+        previous["schema_version"] = 1
+        for feature in previous["product_scope"]["features"]["registered"]:
+            feature.pop("lifecycle")
+        current = self.load_state()
+        self.assertEqual(self.transition_errors(previous, current), [])
+
+        feature = self.feature(current, "F002")
+        feature["lifecycle"]["regression"] = {
+            "from_state": "VERIFIED",
+            "to_state": "INTEGRATED",
+            "reason": "fabricated migration regression",
+            "evidence_refs": ["skills/contracts/FOUNDATION_ARCHITECTURE.md"],
+        }
+        errors = self.transition_errors(previous, current)
+        self.assertTrue(any("initial schema-1 to schema-2 adoption requires regression null" in message for message in errors))
+
+    def test_f004_persisted_blocked_verifier_is_unknown_not_pass(self) -> None:
+        state = self.load_state()
+        feature = self.feature(state, "F004")
+        verification = feature["lifecycle"]["gates"][4]
+        self.assertEqual(verification["status"], "UNKNOWN")
+        self.assertEqual(verification["evidence_refs"], [".agent/tasks/TASK-0004/report.yaml"])
+        self.assertIn("capability-blocked", verification["reason"])
+        self.assertEqual(feature["lifecycle"]["derived_state"], "INTEGRATED")
 
 
 class Task0010RationalizationTests(unittest.TestCase):

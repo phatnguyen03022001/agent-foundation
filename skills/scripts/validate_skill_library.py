@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from copy import deepcopy
 from datetime import datetime
@@ -87,6 +88,26 @@ AGENT_FOUNDATION_PRODUCT_FEATURES = (
     ("F003", "documentation-model-and-closure", "documents/"),
     ("F004", "engineering-assurance", "standards/"),
 )
+AGENT_FOUNDATION_LIFECYCLE_GATES = (
+    "scope",
+    "specification",
+    "implementation",
+    "integration",
+    "verification",
+    "release_readiness",
+    "production_acceptance",
+)
+AGENT_FOUNDATION_LIFECYCLE_STATES = (
+    "PLANNED",
+    "SPEC_READY",
+    "IMPLEMENTING",
+    "INTEGRATED",
+    "VERIFIED",
+    "RELEASE_READY",
+    "LIVE",
+)
+AGENT_FOUNDATION_GATE_STATUSES = frozenset({"PASS", "FAIL", "PENDING", "N/A", "UNKNOWN"})
+AGENT_FOUNDATION_MAX_EVIDENCE_REFS = 8
 
 # One normalized semantic model serves both sparse protocol-v3 serialization and
 # explicit expanded-v3 task artifacts.  -1 means that no exact-file count cap is
@@ -1852,9 +1873,245 @@ def _require_exact_object_keys(label: str, value: Any, expected: set[str]) -> bo
     return not missing and not unexpected
 
 
-def validate_agent_foundation_product_state(path: Path) -> None:
-    """Validate agent-foundation's target-specific T2 product-state object."""
+def _derive_agent_foundation_feature_state(gates: list[dict[str, Any]]) -> str | None:
+    consecutive_passes = 0
+    for gate in gates:
+        if gate.get("status") != "PASS":
+            break
+        consecutive_passes += 1
+    if consecutive_passes == 0:
+        return None
+    return AGENT_FOUNDATION_LIFECYCLE_STATES[consecutive_passes - 1]
+
+
+def _validate_product_evidence_ref(
+    ref: Any,
+    *,
+    evidence_root: Path,
+    label: str,
+) -> bool:
+    if type(ref) is not str or not ref.strip() or len(ref) > 256:
+        error(f"{label}: evidence reference must be a non-empty bounded string")
+        return False
+    if ref != ref.strip() or "\\" in ref or ref.startswith(("/", "./")):
+        error(f"{label}: evidence reference must be canonical repository-relative POSIX path")
+        return False
+    relative = Path(ref)
+    if any(part in {"", ".", ".."} for part in relative.parts):
+        error(f"{label}: evidence reference contains non-canonical path traversal")
+        return False
+    if ref == "product-state.json":
+        error(f"{label}: product-state.json cannot self-attest feature state")
+        return False
+    if ref.startswith(".agent/tasks/TASK-0020/"):
+        error(f"{label}: TASK-0020 task/report/review artifacts cannot evidence their own implementation candidate")
+        return False
+    resolved = (evidence_root / relative).resolve()
+    try:
+        resolved.relative_to(evidence_root.resolve())
+    except ValueError:
+        error(f"{label}: evidence reference escapes repository")
+        return False
+    if not resolved.is_file():
+        error(f"{label}: evidence reference is missing or inaccessible: {ref}")
+        return False
+    return True
+
+
+def _verification_report_covers_owner(
+    report_ref: str,
+    *,
+    owner: str,
+    evidence_root: Path,
+) -> bool:
+    if not re.fullmatch(r"\.agent/tasks/TASK-\d{4}/report(?:-r\d+)?\.yaml", report_ref):
+        return False
+    path = evidence_root / report_ref
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        return False
+    match = re.search(
+        r'^\s*final_execution_head:\s*["\']?([0-9a-f]{40})["\']?\s*$',
+        text,
+        flags=re.MULTILINE,
+    )
+    if match is None:
+        return False
+
+    owner_markers = {
+        "profile/": ("bootstrap", "OPM_BOOTSTRAP"),
+        "skills/": ("skills", "PASS"),
+        "documents/": ("documents_tests:", "result: PASS"),
+        "standards/": ("standards_verifier:", "result: PASS"),
+    }
+    markers = owner_markers.get(owner)
+    if markers is None or any(marker not in text for marker in markers):
+        return False
+
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(evidence_root), "diff", "--quiet", match.group(1), "--", owner],
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except OSError:
+        return False
+    return result.returncode == 0
+
+
+def _validate_agent_foundation_lifecycle(
+    feature: dict[str, Any],
+    *,
+    evidence_root: Path,
+    label: str,
+    release_unresolved: bool,
+) -> None:
+    owner = feature.get("owner")
+    lifecycle = feature.get("lifecycle")
+    if not _require_exact_object_keys(label, lifecycle, {"gates", "derived_state", "regression"}):
+        return
+
+    gates = lifecycle.get("gates")
+    if type(gates) is not list:
+        error(f"{label}.gates: expected array")
+        return
+    if len(gates) != len(AGENT_FOUNDATION_LIFECYCLE_GATES):
+        error(f"{label}.gates: expected exactly seven ordered lifecycle gates")
+        return
+
+    saw_blocker = False
+    verification_reports: list[str] = []
+    for index, expected_name in enumerate(AGENT_FOUNDATION_LIFECYCLE_GATES):
+        gate = gates[index]
+        gate_label = f"{label}.gates[{index}]"
+        if not _require_exact_object_keys(gate_label, gate, {"name", "status", "evidence_refs", "reason"}):
+            continue
+        if gate.get("name") != expected_name:
+            error(f"{gate_label}.name: expected {expected_name!r}")
+
+        status = gate.get("status")
+        if status not in AGENT_FOUNDATION_GATE_STATUSES:
+            error(f"{gate_label}.status: unsupported gate status {status!r}")
+            status = None
+
+        refs = gate.get("evidence_refs")
+        valid_refs: list[str] = []
+        if type(refs) is not list:
+            error(f"{gate_label}.evidence_refs: expected array")
+        else:
+            if len(refs) > AGENT_FOUNDATION_MAX_EVIDENCE_REFS:
+                error(f"{gate_label}.evidence_refs: exceeds bounded evidence reference limit")
+            if all(type(ref) is str for ref in refs) and len(refs) != len(set(refs)):
+                error(f"{gate_label}.evidence_refs: duplicate evidence references")
+            for ref_index, ref in enumerate(refs):
+                if _validate_product_evidence_ref(
+                    ref,
+                    evidence_root=evidence_root,
+                    label=f"{gate_label}.evidence_refs[{ref_index}]",
+                ):
+                    valid_refs.append(ref)
+
+        reason = gate.get("reason")
+        if status == "PASS":
+            if not refs:
+                error(f"{gate_label}: PASS requires inspectable persisted evidence")
+            if reason is not None:
+                error(f"{gate_label}.reason: PASS requires null reason")
+            if saw_blocker:
+                error(f"{gate_label}: later gate cannot PASS while an earlier prerequisite is not PASS")
+            if expected_name not in {"scope", "release_readiness", "production_acceptance"} and isinstance(owner, str):
+                if not any(ref.startswith(owner) for ref in valid_refs):
+                    error(f"{gate_label}: PASS requires current evidence from owning domain {owner}")
+            if expected_name == "verification" and isinstance(owner, str):
+                verification_reports = [
+                    ref for ref in valid_refs
+                    if _verification_report_covers_owner(
+                        ref,
+                        owner=owner,
+                        evidence_root=evidence_root,
+                    )
+                ]
+                if not verification_reports:
+                    error(
+                        f"{gate_label}: verification PASS requires persisted result evidence "
+                        "attributable to exact current owner bytes"
+                    )
+        elif status in {"FAIL", "PENDING", "N/A", "UNKNOWN"}:
+            if type(reason) is not str or not reason.strip():
+                error(f"{gate_label}.reason: {status} requires a non-empty reason")
+            if status == "FAIL" and not refs:
+                error(f"{gate_label}: FAIL requires attributable evidence")
+            saw_blocker = True
+
+        if release_unresolved and expected_name in {"release_readiness", "production_acceptance"}:
+            if status == "PASS":
+                error(f"{gate_label}: unresolved OPEN release forbids PASS")
+
+    if gates and gates[0].get("status") != "PASS":
+        error(f"{label}.gates[0]: frozen registered feature scope gate must PASS")
+
+    derived = _derive_agent_foundation_feature_state(gates)
+    authored = lifecycle.get("derived_state")
+    if authored not in AGENT_FOUNDATION_LIFECYCLE_STATES:
+        error(f"{label}.derived_state: unsupported lifecycle state {authored!r}")
+    if derived is None:
+        error(f"{label}.derived_state: scope must PASS before lifecycle state is derivable")
+    elif authored != derived:
+        error(f"{label}.derived_state: expected recomputed state {derived}, got {authored!r}")
+    if release_unresolved and authored in {"RELEASE_READY", "LIVE"}:
+        error(f"{label}.derived_state: unresolved OPEN release caps state at VERIFIED")
+
+    regression = lifecycle.get("regression")
+    if regression is not None:
+        regression_label = f"{label}.regression"
+        if _require_exact_object_keys(
+            regression_label,
+            regression,
+            {"from_state", "to_state", "reason", "evidence_refs"},
+        ):
+            from_state = regression.get("from_state")
+            to_state = regression.get("to_state")
+            if from_state not in AGENT_FOUNDATION_LIFECYCLE_STATES:
+                error(f"{regression_label}.from_state: unsupported lifecycle state")
+            if to_state not in AGENT_FOUNDATION_LIFECYCLE_STATES:
+                error(f"{regression_label}.to_state: unsupported lifecycle state")
+            if (
+                from_state in AGENT_FOUNDATION_LIFECYCLE_STATES
+                and to_state in AGENT_FOUNDATION_LIFECYCLE_STATES
+                and AGENT_FOUNDATION_LIFECYCLE_STATES.index(from_state)
+                <= AGENT_FOUNDATION_LIFECYCLE_STATES.index(to_state)
+            ):
+                error(f"{regression_label}: regression must describe a strict backward transition")
+            if to_state != authored:
+                error(f"{regression_label}.to_state: must equal current derived_state")
+            reason = regression.get("reason")
+            if type(reason) is not str or not reason.strip():
+                error(f"{regression_label}.reason: regression requires non-empty reason")
+            refs = regression.get("evidence_refs")
+            if type(refs) is not list or not refs:
+                error(f"{regression_label}.evidence_refs: regression requires evidence")
+            elif len(refs) > AGENT_FOUNDATION_MAX_EVIDENCE_REFS:
+                error(f"{regression_label}.evidence_refs: exceeds bounded evidence reference limit")
+            else:
+                for ref_index, ref in enumerate(refs):
+                    _validate_product_evidence_ref(
+                        ref,
+                        evidence_root=evidence_root,
+                        label=f"{regression_label}.evidence_refs[{ref_index}]",
+                    )
+
+
+def validate_agent_foundation_product_state(
+    path: Path,
+    *,
+    evidence_root: Path | None = None,
+) -> None:
+    """Validate agent-foundation's target-specific T2+T3 product-state object."""
     label = str(path)
+    if evidence_root is None:
+        evidence_root = path.parent
     if not path.is_file():
         error(f"{label}: missing canonical target product-state.json")
         return
@@ -1872,70 +2129,16 @@ def validate_agent_foundation_product_state(path: Path) -> None:
         if not isinstance(document, dict):
             return
 
-    if document.get("schema_version") != 1 or type(document.get("schema_version")) is not int:
-        error(f"{label}.schema_version: expected integer 1")
+    if document.get("schema_version") != 2 or type(document.get("schema_version")) is not int:
+        error(f"{label}.schema_version: expected integer 2")
 
     target = document.get("target")
     if _require_exact_object_keys(f"{label}.target", target, {"repository"}):
         if target.get("repository") != "phatnguyen03022001/agent-foundation":
             error(f"{label}.target.repository: unexpected target repository")
 
-    product_scope = document.get("product_scope")
-    if _require_exact_object_keys(
-        f"{label}.product_scope",
-        product_scope,
-        {"revision", "scope_status", "features"},
-    ):
-        if product_scope.get("revision") != 1 or type(product_scope.get("revision")) is not int:
-            error(f"{label}.product_scope.revision: expected frozen revision 1")
-        if product_scope.get("scope_status") != "FROZEN":
-            error(f"{label}.product_scope.scope_status: expected FROZEN")
-
-        features = product_scope.get("features")
-        if _require_exact_object_keys(
-            f"{label}.product_scope.features",
-            features,
-            {"total", "registered"},
-        ):
-            if features.get("total") != 4 or type(features.get("total")) is not int:
-                error(f"{label}.product_scope.features.total: expected integer 4")
-            registered = features.get("registered")
-            if not isinstance(registered, list):
-                error(f"{label}.product_scope.features.registered: expected array")
-            else:
-                expected_registered = [
-                    {"id": feature_id, "semantic_name": semantic_name, "owner": owner}
-                    for feature_id, semantic_name, owner in AGENT_FOUNDATION_PRODUCT_FEATURES
-                ]
-                ids: list[str] = []
-                names: list[str] = []
-                for index, feature in enumerate(registered):
-                    feature_label = f"{label}.product_scope.features.registered[{index}]"
-                    if not _require_exact_object_keys(
-                        feature_label,
-                        feature,
-                        {"id", "semantic_name", "owner"},
-                    ):
-                        continue
-                    feature_id = feature.get("id")
-                    semantic_name = feature.get("semantic_name")
-                    if isinstance(feature_id, str):
-                        ids.append(feature_id)
-                    if isinstance(semantic_name, str):
-                        names.append(semantic_name)
-                if len(ids) != len(set(ids)):
-                    error(f"{label}.product_scope.features.registered: duplicate feature IDs")
-                if len(names) != len(set(names)):
-                    error(f"{label}.product_scope.features.registered: duplicate semantic names")
-                if len(registered) != features.get("total"):
-                    error(f"{label}.product_scope.features: total does not match registered count")
-                if registered != expected_registered:
-                    error(
-                        f"{label}.product_scope.features.registered: "
-                        "revision 1 must exactly match F001-F004 semantic identities and owners"
-                    )
-
     release = document.get("release")
+    release_unresolved = True
     if _require_exact_object_keys(
         f"{label}.release",
         release,
@@ -1960,6 +2163,162 @@ def validate_agent_foundation_product_state(path: Path) -> None:
             )
         if release.get("required_feature_ids_resolution") != "UNKNOWN":
             error(f"{label}.release.required_feature_ids_resolution: expected UNKNOWN")
+        release_unresolved = (
+            release.get("status") == "OPEN"
+            or release.get("id") is None
+            or release.get("id_resolution") == "UNKNOWN"
+            or release.get("required_feature_ids") is None
+            or release.get("required_feature_ids_resolution") == "UNKNOWN"
+        )
+
+    product_scope = document.get("product_scope")
+    if _require_exact_object_keys(
+        f"{label}.product_scope",
+        product_scope,
+        {"revision", "scope_status", "features"},
+    ):
+        if product_scope.get("revision") != 1 or type(product_scope.get("revision")) is not int:
+            error(f"{label}.product_scope.revision: expected frozen revision 1")
+        if product_scope.get("scope_status") != "FROZEN":
+            error(f"{label}.product_scope.scope_status: expected FROZEN")
+
+        features = product_scope.get("features")
+        if _require_exact_object_keys(
+            f"{label}.product_scope.features",
+            features,
+            {"total", "registered"},
+        ):
+            if features.get("total") != 4 or type(features.get("total")) is not int:
+                error(f"{label}.product_scope.features.total: expected integer 4")
+            registered = features.get("registered")
+            if not isinstance(registered, list):
+                error(f"{label}.product_scope.features.registered: expected array")
+            else:
+                expected_identity = [
+                    {"id": feature_id, "semantic_name": semantic_name, "owner": owner}
+                    for feature_id, semantic_name, owner in AGENT_FOUNDATION_PRODUCT_FEATURES
+                ]
+                actual_identity: list[dict[str, Any]] = []
+                ids: list[str] = []
+                names: list[str] = []
+                for index, feature in enumerate(registered):
+                    feature_label = f"{label}.product_scope.features.registered[{index}]"
+                    if not _require_exact_object_keys(
+                        feature_label,
+                        feature,
+                        {"id", "semantic_name", "owner", "lifecycle"},
+                    ):
+                        continue
+                    identity = {
+                        "id": feature.get("id"),
+                        "semantic_name": feature.get("semantic_name"),
+                        "owner": feature.get("owner"),
+                    }
+                    actual_identity.append(identity)
+                    if isinstance(identity["id"], str):
+                        ids.append(identity["id"])
+                    if isinstance(identity["semantic_name"], str):
+                        names.append(identity["semantic_name"])
+                    _validate_agent_foundation_lifecycle(
+                        feature,
+                        evidence_root=evidence_root,
+                        label=f"{feature_label}.lifecycle",
+                        release_unresolved=release_unresolved,
+                    )
+                if len(ids) != len(set(ids)):
+                    error(f"{label}.product_scope.features.registered: duplicate feature IDs")
+                if len(names) != len(set(names)):
+                    error(f"{label}.product_scope.features.registered: duplicate semantic names")
+                if len(registered) != features.get("total"):
+                    error(f"{label}.product_scope.features: total does not match registered count")
+                if actual_identity != expected_identity:
+                    error(
+                        f"{label}.product_scope.features.registered: "
+                        "revision 1 must exactly preserve F001-F004 semantic identities and owners"
+                    )
+
+
+def validate_agent_foundation_product_state_transition(
+    previous: dict[str, Any],
+    current: dict[str, Any],
+    *,
+    evidence_root: Path,
+    label: str = "product-state transition",
+) -> None:
+    current_features = (
+        current.get("product_scope", {})
+        .get("features", {})
+        .get("registered", [])
+    )
+    if type(current_features) is not list:
+        error(f"{label}: current feature registry is malformed")
+        return
+
+    if previous.get("schema_version") == 1:
+        for feature in current_features:
+            lifecycle = feature.get("lifecycle", {}) if isinstance(feature, dict) else {}
+            if lifecycle.get("regression") is not None:
+                error(f"{label}: initial schema-1 to schema-2 adoption requires regression null")
+        return
+
+    if previous.get("schema_version") != 2:
+        error(f"{label}: previous state must be valid schema 1 or schema 2")
+        return
+
+    previous_features = (
+        previous.get("product_scope", {})
+        .get("features", {})
+        .get("registered", [])
+    )
+    if type(previous_features) is not list:
+        error(f"{label}: previous feature registry is malformed")
+        return
+    previous_by_id = {
+        feature.get("id"): feature
+        for feature in previous_features
+        if isinstance(feature, dict) and isinstance(feature.get("id"), str)
+    }
+
+    for feature in current_features:
+        if not isinstance(feature, dict):
+            continue
+        feature_id = feature.get("id")
+        prior = previous_by_id.get(feature_id)
+        if prior is None:
+            error(f"{label}: missing prior feature identity {feature_id!r}")
+            continue
+        prior_state = prior.get("lifecycle", {}).get("derived_state")
+        current_lifecycle = feature.get("lifecycle", {})
+        current_state = current_lifecycle.get("derived_state")
+        if prior_state not in AGENT_FOUNDATION_LIFECYCLE_STATES or current_state not in AGENT_FOUNDATION_LIFECYCLE_STATES:
+            error(f"{label}: invalid lifecycle state for {feature_id}")
+            continue
+        reg = current_lifecycle.get("regression")
+        moved_backward = (
+            AGENT_FOUNDATION_LIFECYCLE_STATES.index(current_state)
+            < AGENT_FOUNDATION_LIFECYCLE_STATES.index(prior_state)
+        )
+        if moved_backward:
+            if not isinstance(reg, dict):
+                error(f"{label}: {feature_id} downgrade requires explicit regression record")
+                continue
+            if reg.get("from_state") != prior_state or reg.get("to_state") != current_state:
+                error(f"{label}: {feature_id} regression must exactly match prior/current derived states")
+            reason = reg.get("reason")
+            if type(reason) is not str or not reason.strip():
+                error(f"{label}: {feature_id} regression requires non-empty reason")
+            refs = reg.get("evidence_refs")
+            if type(refs) is not list or not refs:
+                error(f"{label}: {feature_id} regression requires inspectable evidence")
+            else:
+                for ref_index, ref in enumerate(refs):
+                    _validate_product_evidence_ref(
+                        ref,
+                        evidence_root=evidence_root,
+                        label=f"{label}.{feature_id}.regression.evidence_refs[{ref_index}]",
+                    )
+        elif reg is not None:
+            error(f"{label}: {feature_id} non-regression transition must keep regression null")
 
 
 ARTIFACT_VALIDATORS = {

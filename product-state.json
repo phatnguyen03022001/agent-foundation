@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "target": {
     "repository": "phatnguyen03022001/agent-foundation"
   },
@@ -12,22 +12,282 @@
         {
           "id": "F001",
           "semantic_name": "operator-and-architect-configuration",
-          "owner": "profile/"
+          "owner": "profile/",
+          "lifecycle": {
+            "gates": [
+              {
+                "name": "scope",
+                "status": "PASS",
+                "evidence_refs": [
+                  "skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md",
+                  "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"
+                ],
+                "reason": null
+              },
+              {
+                "name": "specification",
+                "status": "PASS",
+                "evidence_refs": [
+                  "profile/ARCHITECT_PROFILE.md",
+                  "profile/.agent/bootstrap/bootstrap.json"
+                ],
+                "reason": null
+              },
+              {
+                "name": "implementation",
+                "status": "PASS",
+                "evidence_refs": [
+                  "profile/ARCHITECT_PROFILE.md",
+                  "profile/.agent/bootstrap/validate.py"
+                ],
+                "reason": null
+              },
+              {
+                "name": "integration",
+                "status": "PASS",
+                "evidence_refs": [
+                  "profile/README.md",
+                  "profile/.agent/bootstrap/bootstrap.json",
+                  "profile/.agent/bootstrap/validate.py"
+                ],
+                "reason": null
+              },
+              {
+                "name": "verification",
+                "status": "PASS",
+                "evidence_refs": [
+                  ".agent/tasks/TASK-0015/report.yaml",
+                  "profile/.agent/bootstrap/bootstrap.json",
+                  "profile/.agent/bootstrap/test_bootstrap.py",
+                  "profile/.agent/bootstrap/validate.py"
+                ],
+                "reason": null
+              },
+              {
+                "name": "release_readiness",
+                "status": "UNKNOWN",
+                "evidence_refs": [],
+                "reason": "Release is OPEN; release identity and required feature set are unresolved."
+              },
+              {
+                "name": "production_acceptance",
+                "status": "UNKNOWN",
+                "evidence_refs": [],
+                "reason": "Release is OPEN; production acceptance cannot be established before release readiness."
+              }
+            ],
+            "derived_state": "VERIFIED",
+            "regression": null
+          }
         },
         {
           "id": "F002",
           "semantic_name": "governance-control-and-capability",
-          "owner": "skills/"
+          "owner": "skills/",
+          "lifecycle": {
+            "gates": [
+              {
+                "name": "scope",
+                "status": "PASS",
+                "evidence_refs": [
+                  "skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md",
+                  "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"
+                ],
+                "reason": null
+              },
+              {
+                "name": "specification",
+                "status": "PASS",
+                "evidence_refs": [
+                  "skills/contracts/FOUNDATION_ARCHITECTURE.md",
+                  "skills/protocols/TASK_PROTOCOL.md",
+                  "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"
+                ],
+                "reason": null
+              },
+              {
+                "name": "implementation",
+                "status": "PASS",
+                "evidence_refs": [
+                  "skills/architect/SKILL.md",
+                  "skills/executor/SKILL.md",
+                  "skills/scripts/validate_skill_library.py"
+                ],
+                "reason": null
+              },
+              {
+                "name": "integration",
+                "status": "PASS",
+                "evidence_refs": [
+                  "skills/protocols/TASK_PROTOCOL.md",
+                  "skills/.agent/rationalization.json",
+                  "skills/scripts/validate_skill_library.py"
+                ],
+                "reason": null
+              },
+              {
+                "name": "verification",
+                "status": "UNKNOWN",
+                "evidence_refs": [],
+                "reason": "TASK-0020 changes skills-owned final bytes, and no pre-existing persisted evidence independently verifies those exact final bytes."
+              },
+              {
+                "name": "release_readiness",
+                "status": "UNKNOWN",
+                "evidence_refs": [],
+                "reason": "Release is OPEN; release identity and required feature set are unresolved."
+              },
+              {
+                "name": "production_acceptance",
+                "status": "UNKNOWN",
+                "evidence_refs": [],
+                "reason": "Release is OPEN; production acceptance cannot be established before release readiness."
+              }
+            ],
+            "derived_state": "INTEGRATED",
+            "regression": null
+          }
         },
         {
           "id": "F003",
           "semantic_name": "documentation-model-and-closure",
-          "owner": "documents/"
+          "owner": "documents/",
+          "lifecycle": {
+            "gates": [
+              {
+                "name": "scope",
+                "status": "PASS",
+                "evidence_refs": [
+                  "skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md",
+                  "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"
+                ],
+                "reason": null
+              },
+              {
+                "name": "specification",
+                "status": "PASS",
+                "evidence_refs": [
+                  "documents/DOCUMENT_MODEL.md",
+                  "documents/model/project.schema.v1.json",
+                  "documents/model/coverage.v1.json"
+                ],
+                "reason": null
+              },
+              {
+                "name": "implementation",
+                "status": "PASS",
+                "evidence_refs": [
+                  "documents/tools/validate.py",
+                  "documents/templates/docs/PRODUCT.md",
+                  "documents/model/project.schema.v1.json"
+                ],
+                "reason": null
+              },
+              {
+                "name": "integration",
+                "status": "PASS",
+                "evidence_refs": [
+                  "documents/README.md",
+                  "documents/DOCUMENT_MODEL.md",
+                  "documents/tools/validate.py"
+                ],
+                "reason": null
+              },
+              {
+                "name": "verification",
+                "status": "PASS",
+                "evidence_refs": [
+                  ".agent/tasks/TASK-0004/report.yaml",
+                  "documents/tools/validate.py",
+                  "documents/tests/test_validate.py"
+                ],
+                "reason": null
+              },
+              {
+                "name": "release_readiness",
+                "status": "UNKNOWN",
+                "evidence_refs": [],
+                "reason": "Release is OPEN; release identity and required feature set are unresolved."
+              },
+              {
+                "name": "production_acceptance",
+                "status": "UNKNOWN",
+                "evidence_refs": [],
+                "reason": "Release is OPEN; production acceptance cannot be established before release readiness."
+              }
+            ],
+            "derived_state": "VERIFIED",
+            "regression": null
+          }
         },
         {
           "id": "F004",
           "semantic_name": "engineering-assurance",
-          "owner": "standards/"
+          "owner": "standards/",
+          "lifecycle": {
+            "gates": [
+              {
+                "name": "scope",
+                "status": "PASS",
+                "evidence_refs": [
+                  "skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md",
+                  "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"
+                ],
+                "reason": null
+              },
+              {
+                "name": "specification",
+                "status": "PASS",
+                "evidence_refs": [
+                  "standards/STANDARD_MODEL.md",
+                  "standards/standards/manifest.yaml"
+                ],
+                "reason": null
+              },
+              {
+                "name": "implementation",
+                "status": "PASS",
+                "evidence_refs": [
+                  "standards/standards/manifest.yaml",
+                  "standards/standards/correctness.yaml",
+                  "standards/tools/validate.py"
+                ],
+                "reason": null
+              },
+              {
+                "name": "integration",
+                "status": "PASS",
+                "evidence_refs": [
+                  "standards/README.md",
+                  "standards/STANDARD_MODEL.md",
+                  "standards/tools/verify.py"
+                ],
+                "reason": null
+              },
+              {
+                "name": "verification",
+                "status": "UNKNOWN",
+                "evidence_refs": [
+                  ".agent/tasks/TASK-0004/report.yaml"
+                ],
+                "reason": "Persisted exact-tree evidence records the standards verifier as capability-blocked, so no verification PASS is established."
+              },
+              {
+                "name": "release_readiness",
+                "status": "UNKNOWN",
+                "evidence_refs": [],
+                "reason": "Release is OPEN; release identity and required feature set are unresolved."
+              },
+              {
+                "name": "production_acceptance",
+                "status": "UNKNOWN",
+                "evidence_refs": [],
+                "reason": "Release is OPEN; production acceptance cannot be established before release readiness."
+              }
+            ],
+            "derived_state": "INTEGRATED",
+            "regression": null
+          }
         }
       ]
     }
