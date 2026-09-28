@@ -28,10 +28,18 @@ class FakeClient:
         if repository == "affaan-m/ECC":
             return [
                 ".agents/skills/mirror/SKILL.md",
+                ".claude-plugin/plugin.json",
+                "AGENTS.md",
+                "CLAUDE.md",
                 "agents/reviewer.md",
                 "commands/run.md",
+                "docs/COMMAND-REGISTRY.json",
                 "hooks/session-start.sh",
-                "scripts/install.sh",
+                "install.sh",
+                "manifests/install-components.json",
+                "manifests/install-modules.json",
+                "manifests/install-profiles.json",
+                "scripts/install.js",
                 "skills/good/SKILL.md",
             ]
         if repository == "obra/superpowers":
@@ -54,6 +62,67 @@ class FakeClient:
     def text(self, repository: str, revision: str, path: str) -> str:
         if repository == "affaan-m/ECC" and path == "skills/good/SKILL.md":
             return "---\nname: good\ndescription: Good ECC capability.\nmetadata:\n  origin: ECC\n---\nbody\n"
+        if repository == "affaan-m/ECC" and path == "agents/reviewer.md":
+            return "---\nname: reviewer\ndescription: Review implementation evidence.\ntools: Read\n---\nbody\n"
+        if repository == "affaan-m/ECC" and path == ".claude-plugin/plugin.json":
+            return json.dumps({
+                "name": "ecc",
+                "version": "2.2.2",
+                "description": "fixture",
+                "license": "MIT",
+                "skills": ["./skills/"],
+                "commands": ["./commands/"],
+                "userConfig": {"hooks_enabled": {"default": True}},
+            })
+        if repository == "affaan-m/ECC" and path == "docs/COMMAND-REGISTRY.json":
+            return json.dumps({
+                "schemaVersion": 1,
+                "totalCommands": 1,
+                "commands": [{
+                    "command": "run",
+                    "description": "Run the bounded fixture workflow.",
+                    "type": "testing",
+                    "primaryAgents": ["reviewer"],
+                    "allAgents": ["reviewer"],
+                    "skills": ["good"],
+                    "path": "commands/run.md",
+                }],
+            })
+        if repository == "affaan-m/ECC" and path == "manifests/install-components.json":
+            return json.dumps({
+                "version": 1,
+                "components": [{
+                    "id": "baseline:agents",
+                    "family": "baseline",
+                    "description": "fixture",
+                    "modules": ["agents-core"],
+                }],
+            })
+        if repository == "affaan-m/ECC" and path == "manifests/install-modules.json":
+            return json.dumps({
+                "version": 1,
+                "modules": [{
+                    "id": "agents-core",
+                    "kind": "agents",
+                    "description": "fixture",
+                    "paths": ["agents"],
+                    "targets": ["codex"],
+                    "dependencies": [],
+                    "defaultInstall": True,
+                    "cost": "light",
+                    "stability": "stable",
+                }],
+            })
+        if repository == "affaan-m/ECC" and path == "manifests/install-profiles.json":
+            return json.dumps({
+                "version": 1,
+                "profiles": {
+                    "minimal": {
+                        "description": "fixture",
+                        "modules": ["agents-core"],
+                    }
+                },
+            })
         if repository == "obra/superpowers" and path == ".claude-plugin/plugin.json":
             return json.dumps({
                 "name": "superpowers",
@@ -116,6 +185,41 @@ class ExternalCapabilitySyncTests(unittest.TestCase):
                 return source
         self.fail(source_id)
 
+    def test_foundation_routes_generic_how_target_then_ecc_without_authority_transfer(self) -> None:
+        architecture = (
+            ROOT / "skills" / "contracts" / "FOUNDATION_ARCHITECTURE.md"
+        ).read_text(encoding="utf-8")
+        architect = (ROOT / "skills" / "architect" / "SKILL.md").read_text(encoding="utf-8")
+        executor = (ROOT / "skills" / "executor" / "SKILL.md").read_text(encoding="utf-8")
+
+        ordered = [
+            "exact target-repository truth and repo-native conventions;",
+            "the exact-pinned ECC harness source",
+            "another independently admitted exact external capability",
+            "Foundation-internal generic implementation",
+        ]
+        positions = [architecture.index(token) for token in ordered]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn("ECC is a reusable L2 harness source, never L0 authority", architecture)
+        self.assertIn("The ECC CLI is an optional resolution convenience", architecture)
+        self.assertIn("Matt skills, Superpowers, and Awesome retain", architecture)
+
+        self.assertIn(
+            "generic engineering HOW defaults to the minimum relevant surface from the exact-pinned ECC harness",
+            architect,
+        )
+        self.assertIn("never gain Architect authority", architect)
+        self.assertIn(
+            "Apply exact target-repository truth and repo-native conventions first",
+            executor,
+        )
+        self.assertIn(
+            "load only the minimum relevant skill, command, or agent surface from the exact-pinned ECC harness",
+            executor,
+        )
+        self.assertIn("never overrides current task authority", executor)
+        self.assertIn("The ECC CLI is optional", executor)
+
     def test_github_client_adds_authorization_when_environment_token_exists(self) -> None:
         token = "test-token-value"
         requests = []
@@ -167,6 +271,8 @@ class ExternalCapabilitySyncTests(unittest.TestCase):
             sources["ecc"]["snapshot_revision"],
             "bf70150eb2df8070024e5bdf08e4aa08959e2735",
         )
+        self.assertEqual(sources["ecc"]["kind"], "harness_source")
+        self.assertEqual(sources["ecc"]["indexing_policy"], sync.ECC_INDEXING_POLICY)
         self.assertEqual(
             sources["superpowers"]["snapshot_revision"],
             "5bf4e78011075bcfc0dc295f0724994cd123ee71",
@@ -180,22 +286,110 @@ class ExternalCapabilitySyncTests(unittest.TestCase):
             "bc98e517ddca672f55f9857d714fc3ea3c3540b2",
         )
 
-    def test_ecc_indexes_only_skills_tree_skill_metadata(self) -> None:
+    def test_ecc_indexes_deterministic_harness_surfaces_without_activation(self) -> None:
         snapshot = sync.build_snapshot(self.source("ecc"), FakeClient())
+        entries = {item["id"]: item for item in snapshot["entries"]}
         self.assertEqual(
-            [item["source_path"] for item in snapshot["entries"]],
-            ["skills/good/SKILL.md"],
+            {
+                entry["surface"]
+                for entry in entries.values()
+            },
+            {"skill", "command", "agent"},
         )
-        self.assertEqual(snapshot["entries"][0]["kind"], "capability")
-        serialized = sync.canonical_json(snapshot)
+        self.assertEqual(entries["ecc:good"]["source_path"], "skills/good/SKILL.md")
+        self.assertEqual(entries["ecc:good"]["surface"], "skill")
+        self.assertEqual(entries["ecc:command:run"]["source_path"], "commands/run.md")
+        self.assertEqual(entries["ecc:command:run"]["surface"], "command")
+        self.assertEqual(
+            entries["ecc:command:run"]["invocation"]["declared_by"],
+            "docs/COMMAND-REGISTRY.json",
+        )
+        self.assertEqual(entries["ecc:agent:reviewer"]["source_path"], "agents/reviewer.md")
+        self.assertEqual(entries["ecc:agent:reviewer"]["surface"], "agent")
+
+        harness = snapshot["source_metadata"]["harness"]
+        self.assertEqual(
+            harness["surface_counts"],
+            {"agents": 1, "commands": 1, "skills": 1},
+        )
+        self.assertFalse(harness["cli_required"])
+        self.assertEqual(harness["activation"], "inert_metadata_only")
+        self.assertEqual(
+            harness["plugin_manifest"]["declared_surfaces"],
+            {"commands": ["./commands/"], "skills": ["./skills/"]},
+        )
+        self.assertEqual(harness["command_registry"]["total_commands"], 1)
+        self.assertEqual(
+            set(harness["install_metadata"]),
+            {"components", "modules", "profiles"},
+        )
+
+        serialized_entries = sync.canonical_json(snapshot["entries"])
         for forbidden in (
             ".agents/skills/mirror/SKILL.md",
-            "agents/reviewer.md",
-            "commands/run.md",
+            "AGENTS.md",
+            "CLAUDE.md",
             "hooks/session-start.sh",
-            "scripts/install.sh",
+            "install.sh",
+            "scripts/install.js",
         ):
-            self.assertNotIn(forbidden, serialized)
+            self.assertNotIn(forbidden, serialized_entries)
+
+    def test_ecc_registry_rejects_mutable_incomplete_or_activation_policy(self) -> None:
+        mutable = copy.deepcopy(self.registry)
+        ecc = next(item for item in mutable["sources"] if item["id"] == "ecc")
+        ecc["snapshot_revision"] = "main"
+        with self.assertRaisesRegex(sync.SourceError, "immutable 40-hex"):
+            sync.validate_registry(mutable)
+
+        incomplete = copy.deepcopy(self.registry)
+        ecc = next(item for item in incomplete["sources"] if item["id"] == "ecc")
+        ecc["indexing_policy"]["metadata"] = ecc["indexing_policy"]["metadata"][:-1]
+        with self.assertRaisesRegex(sync.SourceError, "unauthorized indexing policy"):
+            sync.validate_registry(incomplete)
+
+        activating = copy.deepcopy(self.registry)
+        ecc = next(item for item in activating["sources"] if item["id"] == "ecc")
+        ecc["indexing_policy"]["activate_hooks"] = True
+        with self.assertRaisesRegex(sync.SourceError, "unauthorized indexing policy"):
+            sync.validate_registry(activating)
+
+    def test_ecc_resolution_uses_exact_pinned_metadata_without_cli(self) -> None:
+        outputs = sync.build_outputs(self.registry, FakeClient())
+        catalog = json.loads(outputs["skills/.agent/external-capabilities/catalog.json"])
+        with mock.patch.dict(os.environ, {"PATH": ""}, clear=False):
+            resolved = sync.resolve_harness_entry(
+                self.registry,
+                catalog,
+                source_id="ecc",
+                surface="command",
+                title="run",
+            )
+        self.assertEqual(resolved["id"], "ecc:command:run")
+        self.assertEqual(
+            resolved["revision"],
+            "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+        )
+
+    def test_ecc_resolution_fails_closed_for_missing_or_wrong_surface(self) -> None:
+        outputs = sync.build_outputs(self.registry, FakeClient())
+        catalog = json.loads(outputs["skills/.agent/external-capabilities/catalog.json"])
+        with self.assertRaisesRegex(sync.SourceError, "exactly one pinned harness entry"):
+            sync.resolve_harness_entry(
+                self.registry,
+                catalog,
+                source_id="ecc",
+                surface="skill",
+                title="missing",
+            )
+        with self.assertRaisesRegex(sync.SourceError, "exactly one pinned harness entry"):
+            sync.resolve_harness_entry(
+                self.registry,
+                catalog,
+                source_id="ecc",
+                surface="agent",
+                title="run",
+            )
 
     def test_superpowers_preserves_plugin_and_behavioral_surface_facts_without_indexing_them(self) -> None:
         snapshot = sync.build_snapshot(self.source("superpowers"), FakeClient())

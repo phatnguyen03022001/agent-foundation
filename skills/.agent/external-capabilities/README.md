@@ -18,8 +18,10 @@ Refreshing tracking refs is mutation and requires an explicit approved Foundatio
 python3 -B skills/scripts/sync_external_capabilities.py --refresh --task .agent/tasks/TASK-XXXX/task.yaml
 ```
 
-## ECC CLI boundary
+## ECC harness boundary
 
-The pinned ECC entry in `sources.json` and this catalog are Foundation's discovery path for ECC skills. Resolve the exact indexed source revision, check applicability, and load only the relevant skill content under current target and phase authority. The index and loaded skill remain non-authoritative.
+The pinned ECC entry in `sources.json` is Foundation's default generic engineering harness source after exact target-repository truth and repo-native conventions. Its deterministic snapshot distinguishes skills, commands, agents, the ECC command registry, plugin manifest, and install component/module/profile metadata at one immutable upstream commit. These bytes are indexed as inert L2 resolution metadata with authority `NONE`; selecting an entry does not activate it.
 
-`ecc consult` is an optional heuristic for exploring ECC install components and profiles. Its recommendations are advisory only: they cannot route a Foundation task, select an execution surface, establish trust or authority, or become a required preflight. `ecc plan` and `ecc install` plan and apply installation into ECC-supported harnesses; they are outside the normal ChatGPT task flow. Do not infer a ChatGPT install target or install ECC hooks and commands as a side effect of loading a skill.
+Resolve only the minimum relevant ECC surface under current target/task authority. Upstream `AGENTS.md`/`CLAUDE.md`, hooks, rules, installers, global configuration, and role/task/session/memory systems do not become Foundation governance or target authority. Another independently admitted exact external capability is a fallback only for a material ECC gap; Foundation-internal generic HOW is reserved for Foundation-specific deltas or genuinely uncovered capability.
+
+The ECC CLI is optional. Its absence does not block generic HOW resolution when the exact pinned Foundation source/snapshot/catalog metadata resolves one entry uniquely; do not install, update, repair, or configure ECC merely to make the CLI available. Any ECC install/plan/apply operation remains outside this inert discovery seam unless separately and explicitly authorized.

@@ -40,10 +40,10 @@ EXPECTED_SOURCES = {
     "ecc": {
         "repository": "affaan-m/ECC",
         "tracking_ref": "main",
-        "kind": "capability_source",
+        "kind": "harness_source",
         "license": "MIT",
         "snapshot": "ecc.json",
-        "mode": "skill_frontmatter",
+        "mode": "harness_surfaces",
     },
     "matt-skills": {
         "repository": "mattpocock/skills",
@@ -61,6 +61,21 @@ EXPECTED_SOURCES = {
         "snapshot": "superpowers.json",
         "mode": "skill_frontmatter",
     },
+}
+ECC_INDEXING_POLICY = {
+    "mode": "harness_surfaces",
+    "surfaces": {
+        "skills": "skills/**/SKILL.md",
+        "commands": "commands/*.md",
+        "agents": "agents/*.md",
+    },
+    "metadata": [
+        ".claude-plugin/plugin.json",
+        "docs/COMMAND-REGISTRY.json",
+        "manifests/install-components.json",
+        "manifests/install-modules.json",
+        "manifests/install-profiles.json",
+    ],
 }
 MANAGED_RELATIVE_PATHS = (
     "skills/.agent/external-capabilities/sources.json",
@@ -122,6 +137,8 @@ def validate_registry(registry: dict[str, Any]) -> list[dict[str, Any]]:
         policy = source.get("indexing_policy")
         if not isinstance(policy, dict) or policy.get("mode") != expected["mode"]:
             raise SourceError(f"{source_id}: unauthorized indexing policy")
+        if source_id == "ecc" and policy != ECC_INDEXING_POLICY:
+            raise SourceError("ecc: unauthorized indexing policy")
         normalized.append(deepcopy(source))
     return normalized
 
@@ -222,11 +239,13 @@ def capability_entry(
     name: str,
     description: str,
     *,
+    id_name: str | None = None,
+    surface: str | None = None,
     status: str | None = None,
     invocation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     entry: dict[str, Any] = {
-        "id": f"{source['id']}:{name}",
+        "id": f"{source['id']}:{id_name or name}",
         "source": source["id"],
         "revision": source["snapshot_revision"],
         "source_path": path,
@@ -235,6 +254,8 @@ def capability_entry(
         "description": description,
         "license": source["license"],
     }
+    if surface is not None:
+        entry["surface"] = surface
     if status is not None:
         entry["status"] = status
     if invocation is not None:
@@ -246,6 +267,8 @@ def skill_entries(
     source: dict[str, Any],
     client: GitHubClient,
     paths: list[str],
+    *,
+    surface: str | None = None,
 ) -> list[dict[str, Any]]:
     selected = [
         path for path in paths
@@ -262,7 +285,13 @@ def skill_entries(
         ))
     for path, text in zip(selected, texts):
         name, description = parse_frontmatter(text, path)
-        entry = capability_entry(source, path, name, description)
+        entry = capability_entry(
+            source,
+            path,
+            name,
+            description,
+            surface=surface,
+        )
         if entry["id"] in seen_ids:
             raise SourceError(f"duplicate capability id: {entry['id']}")
         seen_ids.add(entry["id"])
@@ -282,18 +311,277 @@ def summarize_plugin_manifest(value: Any, path: str) -> dict[str, Any]:
     return summary
 
 
+def upstream_json(
+    source: dict[str, Any],
+    client: GitHubClient,
+    path: str,
+) -> dict[str, Any]:
+    try:
+        value = json.loads(
+            client.text(source["repository"], source["snapshot_revision"], path)
+        )
+    except json.JSONDecodeError as exc:
+        raise SourceError(f"upstream JSON is malformed: {path}") from exc
+    if not isinstance(value, dict):
+        raise SourceError(f"upstream JSON must be an object: {path}")
+    return value
+
+
+def string_list(value: Any, label: str, *, allow_empty: bool = True) -> list[str]:
+    if (
+        not isinstance(value, list)
+        or (not allow_empty and not value)
+        or any(not isinstance(item, str) or not item for item in value)
+    ):
+        raise SourceError(f"{label} must be a string list")
+    return list(value)
+
+
+def build_ecc_agents(
+    source: dict[str, Any],
+    client: GitHubClient,
+    paths: list[str],
+) -> list[dict[str, Any]]:
+    selected = sorted(
+        path for path in paths
+        if path.startswith("agents/") and path.endswith(".md")
+    )
+    with ThreadPoolExecutor(max_workers=min(16, max(1, len(selected)))) as pool:
+        texts = list(pool.map(
+            lambda path: client.text(
+                source["repository"], source["snapshot_revision"], path
+            ),
+            selected,
+        ))
+    entries: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for path, text in zip(selected, texts):
+        name, description = parse_frontmatter(text, path)
+        entry = capability_entry(
+            source,
+            path,
+            name,
+            description,
+            id_name=f"agent:{name}",
+            surface="agent",
+        )
+        if entry["id"] in seen_ids:
+            raise SourceError(f"duplicate ECC agent id: {entry['id']}")
+        seen_ids.add(entry["id"])
+        entries.append(entry)
+    return sorted(entries, key=lambda item: item["id"])
+
+
+def build_ecc_commands(
+    source: dict[str, Any],
+    command_registry: dict[str, Any],
+    paths: list[str],
+) -> list[dict[str, Any]]:
+    if command_registry.get("schemaVersion") != 1:
+        raise SourceError("ECC command registry must use schemaVersion 1")
+    commands = command_registry.get("commands")
+    total = command_registry.get("totalCommands")
+    if not isinstance(commands, list) or not isinstance(total, int) or total != len(commands):
+        raise SourceError("ECC command registry count is inconsistent")
+
+    entries: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for item in commands:
+        if not isinstance(item, dict):
+            raise SourceError("ECC command registry entries must be objects")
+        name = item.get("command")
+        description = item.get("description")
+        path = item.get("path")
+        if not all(isinstance(value, str) and value for value in (name, description, path)):
+            raise SourceError("ECC command registry requires command, description, and path")
+        if (
+            not path.startswith("commands/")
+            or not path.endswith(".md")
+            or path not in paths
+            or Path(path).stem != name
+        ):
+            raise SourceError(f"ECC command path is invalid or missing: {path}")
+        primary_agents = string_list(
+            item.get("primaryAgents", []),
+            f"ECC command primaryAgents: {name}",
+        )
+        skills = string_list(
+            item.get("skills", []),
+            f"ECC command skills: {name}",
+        )
+        entry = capability_entry(
+            source,
+            path,
+            name,
+            description,
+            id_name=f"command:{name}",
+            surface="command",
+            invocation={
+                "declared_by": "docs/COMMAND-REGISTRY.json",
+                "primary_agents": primary_agents,
+                "skills": skills,
+            },
+        )
+        if entry["id"] in seen_ids:
+            raise SourceError(f"duplicate ECC command id: {entry['id']}")
+        seen_ids.add(entry["id"])
+        entries.append(entry)
+    return sorted(entries, key=lambda item: item["id"])
+
+
+def summarize_ecc_plugin_manifest(value: dict[str, Any], path: str) -> dict[str, Any]:
+    summary = summarize_plugin_manifest(value, path)
+    if value.get("name") != "ecc" or value.get("license") != "MIT":
+        raise SourceError("ECC plugin manifest identity is invalid")
+    summary["declared_surfaces"] = {
+        "commands": string_list(
+            value.get("commands"),
+            "ECC plugin commands",
+            allow_empty=False,
+        ),
+        "skills": string_list(
+            value.get("skills"),
+            "ECC plugin skills",
+            allow_empty=False,
+        ),
+    }
+    return summary
+
+
+def summarize_ecc_components(value: dict[str, Any], path: str) -> dict[str, Any]:
+    components = value.get("components")
+    if not isinstance(value.get("version"), int) or not isinstance(components, list):
+        raise SourceError("ECC install components manifest is malformed")
+    summarized = []
+    for item in components:
+        if not isinstance(item, dict):
+            raise SourceError("ECC install component must be an object")
+        component_id = item.get("id")
+        family = item.get("family")
+        if not isinstance(component_id, str) or not component_id or not isinstance(family, str):
+            raise SourceError("ECC install component identity is malformed")
+        summarized.append({
+            "id": component_id,
+            "family": family,
+            "modules": string_list(item.get("modules"), f"ECC component modules: {component_id}"),
+        })
+    return {
+        "path": path,
+        "version": value["version"],
+        "components": sorted(summarized, key=lambda item: item["id"]),
+    }
+
+
+def summarize_ecc_modules(value: dict[str, Any], path: str) -> dict[str, Any]:
+    modules = value.get("modules")
+    if not isinstance(value.get("version"), int) or not isinstance(modules, list):
+        raise SourceError("ECC install modules manifest is malformed")
+    summarized = []
+    for item in modules:
+        if not isinstance(item, dict):
+            raise SourceError("ECC install module must be an object")
+        module_id = item.get("id")
+        kind = item.get("kind")
+        if not isinstance(module_id, str) or not module_id or not isinstance(kind, str):
+            raise SourceError("ECC install module identity is malformed")
+        summarized.append({
+            "id": module_id,
+            "kind": kind,
+            "paths": string_list(item.get("paths"), f"ECC module paths: {module_id}"),
+        })
+    return {
+        "path": path,
+        "version": value["version"],
+        "modules": sorted(summarized, key=lambda item: item["id"]),
+    }
+
+
+def summarize_ecc_profiles(value: dict[str, Any], path: str) -> dict[str, Any]:
+    profiles = value.get("profiles")
+    if not isinstance(value.get("version"), int) or not isinstance(profiles, dict):
+        raise SourceError("ECC install profiles manifest is malformed")
+    summarized: dict[str, list[str]] = {}
+    for name, item in profiles.items():
+        if not isinstance(name, str) or not name or not isinstance(item, dict):
+            raise SourceError("ECC install profile identity is malformed")
+        summarized[name] = string_list(
+            item.get("modules"),
+            f"ECC profile modules: {name}",
+        )
+    return {
+        "path": path,
+        "version": value["version"],
+        "profiles": summarized,
+    }
+
+
 def build_ecc(source: dict[str, Any], client: GitHubClient, paths: list[str]) -> dict[str, Any]:
+    metadata_paths = source["indexing_policy"]["metadata"]
+    missing = [path for path in metadata_paths if path not in paths]
+    if missing:
+        raise SourceError(f"ECC harness metadata is missing: {missing}")
+
+    plugin_path = ".claude-plugin/plugin.json"
+    registry_path = "docs/COMMAND-REGISTRY.json"
+    components_path = "manifests/install-components.json"
+    modules_path = "manifests/install-modules.json"
+    profiles_path = "manifests/install-profiles.json"
+
+    plugin = upstream_json(source, client, plugin_path)
+    command_registry = upstream_json(source, client, registry_path)
+    components = upstream_json(source, client, components_path)
+    modules = upstream_json(source, client, modules_path)
+    profiles = upstream_json(source, client, profiles_path)
+
+    skills = skill_entries(source, client, paths, surface="skill")
+    commands = build_ecc_commands(source, command_registry, paths)
+    agents = build_ecc_agents(source, client, paths)
+    entries = sorted(skills + commands + agents, key=lambda item: item["id"])
+
     return {
         "schema_version": 1,
         "source": provenance(source),
         "indexing": {
-            "include": "skills/**/SKILL.md",
-            "excluded_surfaces": [
-                ".agents/", ".claude/", ".cursor/", ".kiro/", "agents/",
-                "commands/", "docs/", "hooks/", "rules/", "scripts/",
+            "mode": "harness_surfaces",
+            "surfaces": deepcopy(source["indexing_policy"]["surfaces"]),
+            "metadata": list(metadata_paths),
+            "excluded_activation_surfaces": [
+                ".agents/",
+                ".claude/",
+                ".cursor/",
+                ".kiro/",
+                "AGENTS.md",
+                "CLAUDE.md",
+                "hooks/",
+                "install.sh",
+                "install.ps1",
+                "rules/",
+                "scripts/install*",
             ],
         },
-        "entries": skill_entries(source, client, paths),
+        "source_metadata": {
+            "harness": {
+                "activation": "inert_metadata_only",
+                "cli_required": False,
+                "surface_counts": {
+                    "agents": len(agents),
+                    "commands": len(commands),
+                    "skills": len(skills),
+                },
+                "plugin_manifest": summarize_ecc_plugin_manifest(plugin, plugin_path),
+                "command_registry": {
+                    "path": registry_path,
+                    "schema_version": command_registry["schemaVersion"],
+                    "total_commands": command_registry["totalCommands"],
+                },
+                "install_metadata": {
+                    "components": summarize_ecc_components(components, components_path),
+                    "modules": summarize_ecc_modules(modules, modules_path),
+                    "profiles": summarize_ecc_profiles(profiles, profiles_path),
+                },
+            },
+        },
+        "entries": entries,
     }
 
 
@@ -422,6 +710,39 @@ def require_capability_entry(entry: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(entry, dict) or entry.get("kind") != "capability":
         raise SourceError("catalog entry is not an admitted capability candidate")
     return entry
+
+
+def resolve_harness_entry(
+    registry: dict[str, Any],
+    catalog: dict[str, Any],
+    *,
+    source_id: str,
+    surface: str,
+    title: str,
+) -> dict[str, Any]:
+    sources = {source["id"]: source for source in validate_registry(registry)}
+    source = sources.get(source_id)
+    if not isinstance(source, dict) or source.get("kind") != "harness_source":
+        raise SourceError(f"{source_id}: source is not an admitted harness source")
+    if catalog.get("authority") != "NONE" or not isinstance(catalog.get("entries"), list):
+        raise SourceError("external catalog must remain inert authority NONE metadata")
+
+    matches = [
+        entry for entry in catalog["entries"]
+        if isinstance(entry, dict)
+        and entry.get("kind") == "capability"
+        and entry.get("source") == source_id
+        and entry.get("surface") == surface
+        and entry.get("title") == title
+        and entry.get("revision") == source["snapshot_revision"]
+        and isinstance(entry.get("source_path"), str)
+        and entry["source_path"]
+    ]
+    if len(matches) != 1:
+        raise SourceError(
+            f"{source_id}: expected exactly one pinned harness entry for {surface}:{title}"
+        )
+    return deepcopy(matches[0])
 
 
 def provenance(source: dict[str, Any]) -> dict[str, Any]:

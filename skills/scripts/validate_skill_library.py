@@ -349,7 +349,11 @@ def validate_rationalization() -> frozenset[str]:
                 continue
             source_id = entry.get("source")
             source = source_entries.get(source_id)
-            if entry.get("kind") != "capability" or type(source) is not dict or source.get("kind") != "capability_source":
+            if (
+                entry.get("kind") != "capability"
+                or type(source) is not dict
+                or source.get("kind") not in {"capability_source", "harness_source"}
+            ):
                 error(f"{prefix}: discovery-only/Awesome entries cannot be adopted")
                 continue
             if source_id == "awesome":

@@ -36,6 +36,19 @@ No capability state transition manufactures L0 authority. External or internal c
 
 Routing is deterministic and bounded: resolve the required semantic capability, resolve the immutable source identity when source identity matters, apply compatibility/admission evidence, then load only the minimum capability content required for the current decision. Mutable popularity, installation, provider identity, or availability is never a substitute for authority.
 
+### Generic engineering harness seam
+
+After exact target binding and current authority are resolved, generic engineering HOW uses this order:
+
+1. exact target-repository truth and repo-native conventions;
+2. the exact-pinned ECC harness source in `skills/.agent/external-capabilities/sources.json` as the default generic engineering harness;
+3. another independently admitted exact external capability only when ECC is materially insufficient or inapplicable;
+4. Foundation-internal generic implementation only for Foundation-specific compatibility/governance deltas or a real uncovered capability.
+
+ECC is a reusable L2 harness source, never L0 authority. Its deterministic Foundation view distinguishes skills, commands, agents, and the manifest/catalog/install metadata needed to resolve those surfaces at the pinned upstream commit. Load only the minimum relevant surface for the current task. ECC `AGENTS.md`/`CLAUDE.md`, hooks, rules, installers, global configuration, session/memory/task systems, role systems, and other behavioral surfaces do not replace Foundation governance, target authority, repository-native conventions, or execution-surface constraints and are never activated merely because ECC is indexed or selected.
+
+The ECC CLI is an optional resolution convenience, not a governance or availability dependency. When it is unavailable, the exact pinned Foundation source/snapshot/catalog metadata is the fail-closed resolution path; no global install, update, repair, or configuration is required. Matt skills, Superpowers, and Awesome retain their existing independent semantics and do not become ECC fallbacks by implication.
+
 ### Execution surface and publication control
 
 Routing order is required semantic capability → current authority → authorized available surface. Provider-specific handoff wording binds execution only when the canonical task, proof, or consequence materially requires that surface identity.
@@ -97,15 +110,18 @@ Carrier routing preserves Execution Bundle while prioritizing correctness, then 
 
 ## L2 — Capability and Knowledge
 
-L2 owns reusable HOW and domain knowledge:
+L2 owns reusable HOW and domain knowledge, but Foundation does not default to owning a broad generic engineering corpus. Exact-pinned ECC is the default generic engineering harness after target-repository truth; independently admitted external capability may cover a real ECC gap. Foundation-maintained L2 survives where the responsibility is Foundation-specific, is a compatibility/governance delta, or remains genuinely uncovered.
 
-- the existing internal and later-admitted external skills;
+L2 includes:
+
+- the existing internal taxonomy without implying that every internal generic skill is the permanent preferred source;
+- exact-pinned ECC skills, commands, agents, and deterministic resolution metadata as reusable harness input;
+- other independently admitted external skills and discovery catalogs under their existing state semantics;
 - standards and evidence models;
 - document models and references;
-- catalogs and repository-local reusable capabilities;
-- engineering methodology such as research, debugging, verification, security review, optimization, reuse analysis, and domain guidance.
+- repository-local reusable capabilities and domain-specific knowledge.
 
-The active internal skill taxonomy is derived from `skills/.agent/rationalization.json`. External adoption changes only the source of reusable L2 HOW; L2 content can inform work only through L0 authority and L1 routing, and maturity, popularity, loading, synchronization, or adoption does not grant permission.
+The active internal skill taxonomy remains derived from `skills/.agent/rationalization.json`; this seam does not rationalize, remove, rename, or broadly rewrite it. External source selection changes only reusable HOW. L2 content can inform work only through L0 authority and L1 routing, and maturity, popularity, loading, synchronization, adoption, harness availability, or CLI installation does not grant permission.
 
 ## Orthogonal substrates
 

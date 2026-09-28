@@ -67,9 +67,9 @@ There is one task model, not task-lite/task-compact variants. Navigation:
 
 ## External capability discovery
 
-[External capability plane](.agent/external-capabilities/README.md) provides the Foundation-owned registry, immutable metadata snapshots, and aggregate discovery catalog for approved external ecosystems. The catalog is inert navigation data with authority `NONE`; it does not add active capability routes, trust, adoption, installation, or authorization.
+[External capability plane](.agent/external-capabilities/README.md) provides the Foundation-owned registry, immutable metadata snapshots, and aggregate discovery catalog for approved external ecosystems. The catalog is inert navigation data with authority `NONE`; it does not add trust, installation, authorization, or behavioral activation. After exact target-repository truth and repo-native conventions, the exact-pinned ECC harness is the default source for generic engineering HOW; its indexed skills, commands, agents, and deterministic manifest/catalog/install metadata remain subordinate to Foundation governance and current target authority.
 
-Use `python3 -B scripts/sync_external_capabilities.py --check` to regenerate the pinned metadata in memory and verify byte-identical committed output. Advancing tracking refs requires an explicit approved Foundation task and the script's `--refresh --task <path>` gate.
+Use `python3 -B scripts/sync_external_capabilities.py --check` to regenerate the pinned metadata in memory and verify byte-identical committed output. The ECC CLI is optional because exact pinned source/snapshot/catalog metadata is the fail-closed resolution path when the CLI is absent. Advancing tracking refs requires an explicit approved Foundation task and the script's `--refresh --task <path>` gate.
 
 ## Validation
 

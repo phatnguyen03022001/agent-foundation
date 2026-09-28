@@ -18,11 +18,22 @@
       "repository": "affaan-m/ECC",
       "tracking_ref": "main",
       "snapshot_revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
-      "kind": "capability_source",
+      "kind": "harness_source",
       "license": "MIT",
       "indexing_policy": {
-        "mode": "skill_frontmatter",
-        "include": "skills/**/SKILL.md"
+        "mode": "harness_surfaces",
+        "surfaces": {
+          "skills": "skills/**/SKILL.md",
+          "commands": "commands/*.md",
+          "agents": "agents/*.md"
+        },
+        "metadata": [
+          ".claude-plugin/plugin.json",
+          "docs/COMMAND-REGISTRY.json",
+          "manifests/install-components.json",
+          "manifests/install-modules.json",
+          "manifests/install-profiles.json"
+        ]
       }
     },
     {

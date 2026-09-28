@@ -3415,6 +3415,21 @@ class Task0010RationalizationTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("external revision must be an exact immutable 40-hex SHA", result.stdout + result.stderr)
 
+    def test_ecc_harness_source_is_admissible_but_discovery_source_is_not(self) -> None:
+        canonical = self.run_validator(ROOT)
+        self.assertEqual(canonical.returncode, 0, canonical.stdout + canonical.stderr)
+
+        _, root = self.fixture()
+        path = root / ".agent" / "external-capabilities" / "sources.json"
+        sources = json.loads(path.read_text(encoding="utf-8"))
+        ecc = next(item for item in sources["sources"] if item["id"] == "ecc")
+        self.assertEqual(ecc["kind"], "harness_source")
+        ecc["kind"] = "discovery_source"
+        path.write_text(json.dumps(sources, indent=2) + "\n", encoding="utf-8")
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("discovery-only/Awesome entries cannot be adopted", result.stdout + result.stderr)
+
     def test_discovery_only_awesome_adoption_is_rejected(self) -> None:
         _, root = self.fixture()
         document = self.read_map(root)
