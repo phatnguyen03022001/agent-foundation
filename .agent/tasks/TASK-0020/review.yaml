@@ -1,15 +1,15 @@
 protocol_version: 3
 
 task_id: TASK-0020
-task_revision: 2
-review_revision: 2
-state: REVISION_REQUIRED
+task_revision: 3
+review_revision: 3
+state: ACCEPTED
 
 reviewed_report:
   repository: phatnguyen03022001/agent-foundation
-  path: .agent/tasks/TASK-0020/report-r2.yaml
-  commit: "27b8d65fddf5d0198ba6c7f2e29b5e2299bf2283"
-  report_revision: 2
+  path: .agent/tasks/TASK-0020/report-r3.yaml
+  commit: "4feba4a1c11eb191257021a53db72b4ef5117f27"
+  report_revision: 3
 
 independence:
   reviewer_role: ARCHITECT
@@ -24,38 +24,34 @@ contract_compliance:
   scope: PASS
   structure_policy: PASS
   git_authority: PASS
-  acceptance_criteria: FAIL
-  verifier_evidence: FAIL
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
 
 acceptance_basis:
-  - "Fresh review resolution proved HEAD == origin/main == exact reviewed report commit 27b8d65fddf5d0198ba6c7f2e29b5e2299bf2283, ahead/behind 0/0, clean index/worktree, and canonical main-only lineage."
-  - "Implementation candidate 5e9d26808b6423d2945670675ce772a357c75c60 is the sole direct child of exact authorized revision-2 base 66f72800707a50c5235b7703873a07f026052207. Reviewed report-r2 27b8d65fddf5d0198ba6c7f2e29b5e2299bf2283 is the sole direct child of that candidate and adds only .agent/tasks/TASK-0020/report-r2.yaml."
-  - "Base-to-candidate scope is exactly the two authorized parser/test paths: skills/scripts/validate_skill_library.py and skills/scripts/test_validate_skill_library.py. product-state.json and skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md are byte-identical to the revision-2 base."
-  - "Revision 2 correctly closes the two exact revision-1 exploits: profile FALSE/FAIL and documents_tests FAIL plus unrelated PASS are rejected by the new owner-specific parser. Focused T2+T3+revision-2 regressions pass 30/30, and the full skills/protocol suite passes 215/215 on the reviewed candidate."
-  - "The canonical product-state projection remains unchanged and conservative by inspection: F001 VERIFIED, F002 INTEGRATED, F003 VERIFIED, F004 INTEGRATED; release remains OPEN/null/UNKNOWN and no feature exceeds VERIFIED."
-  - "However, independent red-team review reproduced a same-class profile evidence bypass not covered by revision-2 tests: a synthetic exact-owner report with no bootstrap verification block, but with an unrelated acceptance-evidence string containing 'OPM_BOOTSTRAP = TRUE', is accepted as profile verification PASS (MISSCOPED_PROFILE_TRUE_ACCEPTED=True)."
-  - "The cause is _profile_verification_is_positive(): it scans every scalar in the entire report for OPM_BOOTSTRAP tokens. If all found tokens are TRUE and there is no negative bootstrap mapping block, it returns true even when the TRUE string is unrelated narration rather than an owner-specific bootstrap verification result."
-  - "This violates revision-2 authority requiring an explicit positive bootstrap verification signal attributable to profile bootstrap and rejecting generic or mis-scoped evidence. Exact owner-tree equality does not cure the semantic misbinding."
-  - "Therefore AC-1/AC-2 remain incomplete as a fail-closed owner-specific evidence contract, and AC-3 cannot be accepted as mechanically proven even though the current real F001 evidence may still be factually valid."
-  - "No defect was reproduced in documents/standards/skills named-block parsing, derived-state recomputation, release cap, prerequisite ordering, UNKNOWN/N/A behavior, or transition regression semantics. Revision should remain narrowly scoped to profile bootstrap evidence binding and one corresponding adversarial regression."
-
-gap_disposition:
-  - gap_id: "T3-PROFILE-BOOTSTRAP-MISSCOPED-TRUE"
-    decision: "REVISE_TASK"
-    rationale: "Bind profile verification PASS to a recognized bootstrap verification block or other explicit canonical profile-bootstrap result structure. Do not scan arbitrary report scalars for OPM_BOOTSTRAP=TRUE. A TRUE token in unrelated narration must not qualify, even with exact owner-tree attribution."
+  - "Fresh review resolution proved HEAD == origin/main == exact reviewed report commit 4feba4a1c11eb191257021a53db72b4ef5117f27, ahead/behind 0/0, clean index/worktree, main-only remote branch surface, and empty tag/release surface."
+  - "Implementation candidate 35b0f8a2db41410679b7444261a0df7096e54125 is the sole direct child of exact authorized revision-3 base 62fe34616dad8b7c5eae5d6bb2bd873f04fed46b. Reviewed report-r3 is the sole direct child of that candidate and adds only .agent/tasks/TASK-0020/report-r3.yaml."
+  - "Base-to-candidate scope is exactly skills/scripts/validate_skill_library.py and skills/scripts/test_validate_skill_library.py. product-state.json and skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md are byte-identical to the revision-3 base."
+  - "Revision 3 removes the global scalar scan for profile verification evidence and scopes positive profile recognition to explicit recognized bootstrap result structures or structured PASS acceptance evidence that semantically binds local/remote bootstrap validation to OPM_BOOTSTRAP."
+  - "Independent adversarial replay proves the revision-2 bypass is closed: unrelated narration containing OPM_BOOTSTRAP = TRUE is rejected; scoped UNKNOWN is rejected; scoped bootstrap validation OPM_BOOTSTRAP = TRUE is accepted."
+  - "Real TASK-0015 profile evidence still qualifies through persisted structured acceptance evidence stating local and remote bootstrap validation returned OPM_BOOTSTRAP=TRUE, with current profile/ byte-equivalent to its final_execution_head. Real TASK-0004 documents evidence qualifies; its standards CAPABILITY_BLOCKED evidence does not."
+  - "Canonical feature projection therefore remains F001 VERIFIED, F002 INTEGRATED, F003 VERIFIED, F004 INTEGRATED. Release remains OPEN with unresolved identity and required feature set, so no feature exceeds VERIFIED."
+  - "Fresh independent qualification passes: focused T2+T3+rev2+rev3 regressions 33/33; full skills/protocol regressions 218/218; external capability regressions 19/19 with sync CURRENT; profile regressions 49/49 with local and authenticated remote OPM_BOOTSTRAP=TRUE; documents regressions 94/94; standards regressions 57/57 with VALID standards definition under the existing qualified system interpreter; JSON parse, modified Python compile, exact scope/protected-history proof, and git diff --check all pass."
+  - "No T4-T6, global phase, progression, recovery, scheduler, daemon, queue, workflow engine, central state service, new product-state authority, dependency installation, host mutation, tag, or release mutation was introduced."
 
 final_candidate:
-  commit: "5e9d26808b6423d2945670675ce772a357c75c60"
-  report_commit: "27b8d65fddf5d0198ba6c7f2e29b5e2299bf2283"
-  focused_t2_t3_rev2: "30/30 PASS independently rerun"
-  skill_protocol_regressions: "215/215 PASS independently rerun"
-  evidence_parser_original_exploits: PASS
-  evidence_parser_profile_misscoped_true_probe: FAIL
+  commit: "35b0f8a2db41410679b7444261a0df7096e54125"
+  report_commit: "4feba4a1c11eb191257021a53db72b4ef5117f27"
+  focused_t2_t3_rev2_rev3: "33/33 PASS independently rerun"
+  skill_protocol_regressions: "218/218 PASS independently rerun"
+  external_capability_regressions: "19/19 PASS independently rerun"
+  bootstrap_regressions: "49/49 PASS independently rerun"
+  documents_regressions: "94/94 PASS independently rerun"
+  standards_regressions: "57/57 PASS independently rerun"
+  profile_misscoped_true_probe: PASS
   product_state_unchanged: PASS
   contract_unchanged: PASS
-  result: REVISION_REQUIRED
+  result: PASS
 
 notes:
-  - "TASK-0020 revision 2 is terminally REVISION_REQUIRED for exact report-r2 27b8d65fddf5d0198ba6c7f2e29b5e2299bf2283."
-  - "This review does not reopen T3 architecture or change the current product-state projection by itself; it rejects the parser's claimed owner-specific fail-closed proof semantics."
-  - "Revision 3 should fix only profile bootstrap evidence scoping, add the exact mis-scoped TRUE regression, preserve documents/standards/skills parsing unless independently disproven, and preserve product-state/contract bytes unless corrected parsing changes truth."
+  - "TASK-0020 revision 3 is terminally ACCEPTED for exact report-r3 commit 4feba4a1c11eb191257021a53db72b4ef5117f27."
+  - "This acceptance closes T3 only. It grants no authority to implement T4-T6 except through a separately authored future task."
