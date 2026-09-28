@@ -1,0 +1,244 @@
+protocol_version: 3
+
+task_id: TASK-0017
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0017"
+  gap_id: "FOUNDATION-ECC-TARGET-VISION-DOGFOOD-CLOSURE"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "c7307a7a0e5f3f8c20e5347a28b9a0ab1f4fe1f7"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+  - verification
+  - adversarial-audit
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+  recommended:
+    - adversarial-audit
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator direction on 2026-09-28 to finish the current Foundation/ECC/target vision with one final dogfood and closure qualification"
+    role: "closure objective"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0016/review.yaml@c7307a7a0e5f3f8c20e5347a28b9a0ab1f4fe1f7"
+    role: "accepted target-repository product authority contract"
+    precedence: 2
+  - source: ".agent/tasks/TASK-0015/review.yaml@c7307a7a0e5f3f8c20e5347a28b9a0ab1f4fe1f7"
+    role: "accepted reduced seven-skill Foundation taxonomy"
+    precedence: 3
+  - source: ".agent/tasks/TASK-0014/review.yaml@c7307a7a0e5f3f8c20e5347a28b9a0ab1f4fe1f7"
+    role: "accepted exact-pinned ECC default generic engineering harness seam"
+    precedence: 4
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@c7307a7a0e5f3f8c20e5347a28b9a0ab1f4fe1f7"
+    role: "canonical Foundation/target/ECC/Runtime ownership and routing contract"
+    precedence: 5
+  - source: "skills/protocols/TASK_PROTOCOL.md@c7307a7a0e5f3f8c20e5347a28b9a0ab1f4fe1f7"
+    role: "canonical task/report/review, authority, evidence, closure, and fail-closed semantics"
+    precedence: 6
+  - source: "phatnguyen03022001/agent-runtime@a3a7a32c2b7bf75568e2162a615d2e5493c104c6:.agent/tasks/TASK-0174/review.yaml"
+    role: "immutable accepted real feature/security-sensitive onboarding replay case"
+    precedence: 7
+  - source: "phatnguyen03022001/agent-runtime@10c3810729683c6440aa1d86ae22366a04baae39:.agent/tasks/TASK-0175/review.yaml"
+    role: "immutable accepted verifier-carrier/source-preservation replay case"
+    precedence: 8
+  - source: "phatnguyen03022001/agent-runtime@ab8cbfedbc1ff54b05f770b66bea2627697da0df:.agent/tasks/TASK-0180/review.yaml"
+    role: "immutable accepted disposable runtime/platform qualification replay case"
+    precedence: 9
+  - source: "phatnguyen03022001/agent-runtime@ef8c624f1de78b69d61cd9580b0d8d118601cb4f:.agent/tasks/TASK-0176/review.yaml"
+    role: "immutable BLOCKED zero-cost distribution fail-closed replay case"
+    precedence: 10
+
+structure_authority:
+  status: RESOLVED
+  source: "TASK-0014 through TASK-0016 accepted architecture plus existing protocol-v3 evidence model"
+  rationale: "This is a qualification/closure task, not a new product feature. It needs no new Foundation subsystem, schema, skill, manifest, benchmark harness, or cross-repository mutation mechanism. The durable output is the existing report/review lifecycle only."
+
+objective: "Independently dogfood and close the current Foundation vision without changing governance or target product bytes. Replay four immutable real agent-runtime cases under the accepted TASK-0014/TASK-0015/TASK-0016 contracts, then perform one fresh read-only reconstruction against current agent-runtime/main. Prove that target-repository product truth and repo-native commands remain primary, Foundation supplies governance/control, exact-pinned ECC supplies generic engineering HOW only after target truth, Agent Runtime or another carrier remains execution transport rather than semantic authority, GitHub remote remains durable canonical repository state, and blocked conditions fail closed without weakening product/security constraints. If every predicate passes, produce a report-only NEEDS_REVIEW closure candidate for independent Architect acceptance. If any material architecture/ownership/evidence defect is found, stop BLOCKED and record the exact follow-up need; do not patch Foundation or agent-runtime inside TASK-0017."
+
+dogfood_cases:
+  replay_intent: "Read-only immutable evidence replay; these cases are evidence inputs, not target authority for agent-foundation."
+  cases:
+    - "agent-runtime TASK-0174 revision 2 ACCEPTED: native onboarding feature with secret-handling, UI, lifecycle, repo-native verification, and zero live consequence constraints."
+    - "agent-runtime TASK-0175 revision 2 ACCEPTED: unchanged product candidate requalified after verifier-carrier contamination; proves source preservation and repo-native verifier authority."
+    - "agent-runtime TASK-0180 revision 2 ACCEPTED: disposable host/runtime architecture qualification with process ownership, exact teardown, and report-only repository closure."
+    - "agent-runtime TASK-0176 revision 1 BLOCKED: zero-cost distribution viability gate where unchanged product/security constraints could not be proven and execution stopped before weakening semantics."
+
+scope:
+  required_changes:
+    - "Before any closure judgment, validate TASK-0017 and prove agent-foundation local HEAD/origin/main still match the exact authorized execution base with a clean worktree."
+    - "Resolve each immutable replay source by exact agent-runtime commit listed in authority_sources. Read the exact task revision, report revision, review state, candidate/base identities, acceptance evidence, and materially relevant source/verification facts. Do not substitute current mutable main or chat memory for those immutable case bytes."
+    - "For TASK-0174, prove the current Foundation model correctly assigns product/UI/runtime_config/cutover/doctor semantics and repo-native tests/verify to agent-runtime; Foundation task/review authority to governance; generic engineering methodology only to L2 external HOW; and the selected execution carrier no product authority."
+    - "For TASK-0175, prove the model preserves the exact unchanged source candidate when failure belongs to verifier-carrier contamination, treats the target-owned ./verify contract as primary, permits a separately authorized clean carrier, and does not prescribe source mutation merely to make a generic harness happy."
+    - "For TASK-0180, prove the model can distinguish agent-runtime as the product being qualified from the execution carrier used to inspect/run the qualification. Product process ownership, payload/substrate contracts, and teardown semantics remain target-owned; carrier identity supplies capability only."
+    - "For TASK-0176, prove fail-closed governance: when the target's existing ServiceManagement/provenance/security invariants conflict with the requested zero-cost distribution constraint, Foundation does not weaken product truth, invent a fake authority, silently replace lifecycle semantics, or treat generic HOW as permission to proceed."
+    - "For every replay, explicitly classify which evidence is target product truth, exact task authority, repo-native verification/tooling, Foundation governance, generic external HOW, execution transport, and remote canonical truth. Any ambiguous dual owner or authority transfer is a material closure defect."
+    - "Perform one fresh read-only pilot against phatnguyen03022001/agent-runtime main at execution time. Fresh-fetch main, record the exact remote SHA in report evidence, and inspect only the minimum applicable target-native surfaces needed to reconstruct product/toolchain/verifier/task authority from repository bytes without relying on prior chat memory."
+    - "The fresh pilot must demonstrate filename-neutral discovery: identify actual applicable task/product/architecture/toolchain/dependency/build/test/verify/runtime/deployment surfaces present at that exact SHA, distinguish conventional filenames from authority classes, and show that missing conventional files would not itself be blocking if equivalent repo-native truth is available."
+    - "For the fresh pilot, identify at least one currently relevant generic engineering methodology need and resolve its exact-pinned ECC capability through the accepted external-capability metadata without installing/configuring/updating ECC and without allowing that capability to override target-native commands or current task authority."
+    - "The fresh pilot is read-only with respect to agent-runtime product/repository truth. git fetch and other bounded observation are permitted; commits, worktree edits, Runtime/service/config/tunnel mutation, process lifecycle mutation, dependency installation, credentials, Apple authority, tags, releases, and target-ref mutation are forbidden."
+    - "Evaluate the current Foundation itself for closure only from immutable accepted TASK-0014/0015/0016 evidence plus fresh local canonical validators. Do not re-rationalize skills, update pins, redesign ownership, or make cleanup edits."
+    - "Happy-path execution must leave all pre-existing agent-foundation product/governance files byte-identical to the execution base. final_execution_head may equal the exact TASK-0017 planning/base commit; the only canonical execution output should be .agent/tasks/TASK-0017/report.yaml as its report-only child."
+    - "If a material mismatch, semantic loss, authority ambiguity, weaker safety/proof path, or target/ECC/Foundation/Runtime ownership defect is discovered, do not repair it in this task. Produce a truthful BLOCKED report with exact evidence and the smallest follow-up boundary."
+    - "If all closure predicates pass, produce NEEDS_REVIEW. Executor must not declare the vision ACCEPTED or maintenance-complete; only the independent Architect review may make that terminal governance judgment."
+    - "Publication remains main-only, ordinary non-force fast-forward, after fresh remote reconciliation."
+
+  allowed_existing_files_or_components:
+    - ".agent/tasks/TASK-0017/**"
+
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Foundation remains MAIN_ONLY with exactly two organizational roles: Architect and Executor."
+  - "The accepted seven-skill internal taxonomy remains unchanged."
+  - "Exact-pinned ECC remains bf70150eb2df8070024e5bdf08e4aa08959e2735 with existing inert authority-NONE semantics; no external pin or snapshot changes."
+  - "The target repository remains canonical owner of product truth and repo-native engineering contracts."
+  - "Foundation remains governance/control and never becomes target product/toolchain/runtime authority."
+  - "ECC remains generic engineering HOW after target truth and never becomes L0 or target authority."
+  - "Agent Runtime and other carriers remain execution transports/capabilities; carrying an operation never grants semantic product authority."
+  - "GitHub remote remains canonical durable repository state; local observations remain subordinate under existing drift/evidence rules."
+  - "Accepted and BLOCKED historical outcomes are replayed as facts, not re-litigated or rewritten."
+  - "No closure result may be manufactured by weakening a historical target invariant, ignoring a blocker, changing case selection after failure, or patching governance during qualification."
+  - "agent-foundation source/governance bytes remain unchanged from the TASK-0017 execution base on the happy path except for the new report artifact."
+  - "agent-runtime repository/product bytes and live Runtime/host state remain unchanged by TASK-0017."
+  - "documents/, standards/, authority.lock.json, bootstrap, rationalization, external-capability metadata, skills, protocols, templates, validators, Agent Runtime, credentials, host security state, branches, tags, releases, and external repositories are not mutated."
+
+forbidden_changes:
+  - "Modify any Foundation governance/source file to make closure pass."
+  - "Modify agent-runtime source, tests, docs, task artifacts, reports/reviews, local worktree/index, branches, tags, releases, Runtime/service/config/tunnel state, or host security/credential state."
+  - "Create a synthetic replacement corpus after a real replay fails."
+  - "Drop the BLOCKED TASK-0176 case because it is inconvenient."
+  - "Treat old chat summaries or memory as case evidence when immutable repository artifacts exist."
+  - "Update ECC, Superpowers, Matt, Awesome, external pins, snapshots, or install/configure any harness."
+  - "Run destructive, paid, production, release, Apple signing/notary, ServiceManagement mutation, or live cutover actions."
+  - "Create a benchmark score, architecture rating, numeric vision score, new lifecycle state, maintenance flag file, closure manifest, registry, service, daemon, database, queue, or workflow engine."
+  - "Declare final ACCEPTED/maintenance closure from Executor report."
+
+gap_policy:
+  local_auto_fix: false
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "The four immutable agent-runtime replay cases are resolved exactly and preserve their canonical ACCEPTED/BLOCKED outcomes, identities, and evidence boundaries."
+    evidence_required: "Exact commit/path resolution for all four review artifacts, exact task/report/review revisions and states, relevant candidate/base/report identities, and Git proof that replay used immutable case bytes rather than mutable substitutes."
+
+  - id: AC-2
+    requirement: "Historical replay demonstrates correct ownership separation across real feature implementation, verifier correction, runtime/platform qualification, and a fail-closed product/platform conflict."
+    evidence_required: "Per-case ownership matrix in report acceptance evidence identifies target product truth, task authority, repo-native tooling/verifier, Foundation governance, external generic HOW, execution carrier, and remote truth with no ambiguous dual owner or authority transfer."
+
+  - id: AC-3
+    requirement: "The current target-repository contract works from a fresh read-only bind against current agent-runtime/main without relying on chat memory or conventional filenames as authority."
+    evidence_required: "Report records fresh exact agent-runtime remote SHA, bounded discovered repo-native authority/toolchain/verifier/runtime surfaces, filename-neutral precedence, and the exact evidence used to decide what is target truth versus generic HOW."
+
+  - id: AC-4
+    requirement: "Exact-pinned ECC can supply a relevant generic engineering capability in the fresh pilot without replacing target commands, requiring ECC CLI installation/configuration, or gaining authority."
+    evidence_required: "Exact external-capability catalog/source identity and selected skill/command/agent surface at bf70150... plus a concrete mapping showing target-native commands/architecture remain primary and no harness mutation occurred."
+
+  - id: AC-5
+    requirement: "Fail-closed behavior remains materially correct."
+    evidence_required: "TASK-0176 replay and at least one adversarial ownership check prove Foundation does not weaken product/security invariants, invent authority, retry unknown effects, or convert capability availability into permission when proof is missing or contradictory."
+
+  - id: AC-6
+    requirement: "TASK-0014, TASK-0015, and TASK-0016 accepted contracts remain internally coherent and fully green with no closure-time source edits."
+    evidence_required: "Fresh Foundation task/report-capable validator, full skill/protocol regressions, external sync/check regressions, bootstrap local/remote validation/regressions, and object proof for seven-skill taxonomy, target contract, ECC seam, and protected domains."
+
+  - id: AC-7
+    requirement: "Closure qualification causes zero product/governance/live-runtime side effects."
+    evidence_required: "Base-to-final_execution_head identity/diff proves no Foundation source/governance mutation; agent-runtime pre/post remote/local identity and worktree proof shows read-only use only; no Runtime/service/config/tunnel/dependency/credential/Apple/tag/release effect."
+
+  - id: AC-8
+    requirement: "The terminal Executor result is truthful and reviewable."
+    evidence_required: "If AC-1 through AC-7 all PASS, report result is NEEDS_REVIEW and the sole report-only child of the unchanged execution base/candidate. Any material failed predicate instead produces BLOCKED with exact follow-up boundary; no self-acceptance or maintenance declaration."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0017 before any case replay and prove exact Foundation execution-base/local/remote identity plus clean worktree."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Resolve all four immutable agent-runtime case commits/paths and verify their task/report/review states and relevant Git lineage directly from repository objects."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Fresh-fetch agent-runtime/main once for the read-only pilot, bind and record the exact remote SHA, inspect minimum repo-native authority/tooling/verifier/runtime surfaces, and prove no product/worktree/index mutation."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Resolve the selected fresh-pilot ECC capability through skills/.agent/external-capabilities/catalog.json and exact source metadata at bf70150eb2df8070024e5bdf08e4aa08959e2735; do not install/update/configure ECC."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run python3 -B skills/scripts/validate_skill_library.py and python3 -B skills/scripts/test_validate_skill_library.py."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Run python3 -B skills/scripts/sync_external_capabilities.py --check and python3 -B skills/scripts/test_sync_external_capabilities.py."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Run python3 -B profile/.agent/bootstrap/validate.py, python3 -B profile/.agent/bootstrap/test_bootstrap.py, and --remote when already supported without new credentials."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Prove final_execution_head equals the authorized TASK-0017 execution base on the PASS path; prove all Foundation paths outside .agent/tasks/TASK-0017/** are byte-identical, agent-runtime remains read-only/clean/synced, and git diff --check passes."
+      required: true
+    - id: CHECK-9
+      command_or_check: "Fresh-resolve Foundation remote main immediately before non-force report publication; after publication prove exact report-only parentage, final main identity, ahead/behind 0/0, and clean worktree."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files: []
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "Closure qualification reuses existing task/report/review evidence and validators. No implementation, closure manifest, benchmark harness, or new subsystem is authorized."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
