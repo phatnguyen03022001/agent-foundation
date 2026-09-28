@@ -1,0 +1,95 @@
+protocol_version: 3
+
+task_id: TASK-0020
+task_revision: 2
+report_revision: 2
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0020/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "66f72800707a50c5235b7703873a07f026052207"
+  final_execution_head: "5e9d26808b6423d2945670675ce772a357c75c60"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "53b2a60110836ece8f3ab80f4fe078581389ef48"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact local and remote Git identity observation
+    - bounded repository mutation
+    - deterministic Python and JSON verification
+    - owner-native profile, skills, documents, and standards qualification
+    - ordinary non-force Git publication
+  available:
+    - exact local and origin/main observation
+    - bounded local repository read/write and terminal execution
+    - repository-native validators and regression suites
+    - existing /usr/bin/python3 with PyYAML for the standards verifier
+    - authenticated remote bootstrap validation
+    - ordinary non-force Git publication
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0020 revision 2 designates no separate authoritative verifier; independent Architect review is the next lifecycle boundary."
+
+pushed: true
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Before implementation, both exact Architect exploits reproduced against the revision-2 base parser: synthetic profile OPM_BOOTSTRAP = FALSE plus result FAIL returned ACCEPTED=True; synthetic documents_tests result FAIL plus unrelated result PASS returned ACCEPTED=True. After correction, adversarial regressions reject both cases."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Historical verification recognition now parses the report structurally, binds profile to explicit OPM_BOOTSTRAP semantics and bootstrap result fields, documents to documents_tests.result, standards to standards_verifier.result, and skills to recognized skills validator/test result blocks. Negative, blocked, unknown, contradictory, ambiguous, generic, and mis-scoped PASS evidence fails closed. Exact current owner-tree equivalence to execution.final_execution_head remains mandatory."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Corrected parsing requalified the canonical projection without state changes: F001 profile TASK-0015 evidence qualifies and remains VERIFIED; F003 documents TASK-0004 documents_tests PASS qualifies and remains VERIFIED; F004 TASK-0004 standards_verifier CAPABILITY_BLOCKED does not qualify and remains INTEGRATED; F002 has no persisted exact-final-byte qualifying report and remains INTEGRATED. product-state.json and AGENT_FOUNDATION_PRODUCT_STATE.md are byte-identical to the revision-2 base."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Focused T2+T3+revision-2 regressions pass 30/30, preserving derived-state recomputation, ordered prerequisites, UNKNOWN/PENDING/FAIL/N/A non-advancement, release OPEN cap, self/future/missing/stale evidence rejection, and forward-only regression semantics."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "Base-to-candidate diff changes exactly skills/scripts/validate_skill_library.py and skills/scripts/test_validate_skill_library.py. product-state.json and its human contract are unchanged; T1 architecture, seven-skill bodies, rationalization/external metadata, documents/, standards/, authority.lock.json, and TASK-0014 through TASK-0019 are unchanged. No T4-T6 or progression/recovery machinery was introduced."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "On candidate 5e9d26808b6423d2945670675ce772a357c75c60: focused regressions 30/30 PASS; full skills/protocol regressions 215/215 PASS; skill validator PASS; external sync CURRENT and regressions 19/19 PASS; profile local/remote OPM_BOOTSTRAP=TRUE and regressions 49/49 PASS; documents 94/94 PASS; standards 57/57 PASS using the already-installed /usr/bin/python3 environment with PyYAML; JSON parse, Python compile, protected/history checks, exact scope proof, and git diff --check PASS."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Before mutation, local HEAD and fresh remote main both resolved exactly to 66f72800707a50c5235b7703873a07f026052207 with clean index/worktree; TASK-0020 revision 2 was APPROVED and execution_ready."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Mandatory RED reproduced before parser changes: profile FALSE/FAIL exploit returned ACCEPTED=True and documents FAIL plus unrelated PASS exploit returned ACCEPTED=True. Transient fixtures were removed immediately."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Owner-specific parsing GREEN regressions reject the two exact exploits, profile UNKNOWN/failed/contradictory evidence, contradictory documents blocks, standards CAPABILITY_BLOCKED plus unrelated PASS, and generic or negative skills evidence; recognized scoped positive synthetic evidence remains accepted."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "Canonical reevaluation returned F001 accepted report TASK-0015/report.yaml, F002 no accepted report, F003 accepted report TASK-0004/report.yaml, and F004 no accepted report. Derived projection therefore remains F001 VERIFIED, F002 INTEGRATED, F003 VERIFIED, F004 INTEGRATED with no product-state or contract mutation."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "Task0019ProductStateTests, Task0020FeatureLifecycleTests, and Task0020Revision2EvidenceParserTests pass 30/30."
+  - check_id: CHECK-6
+    result: PASS
+    evidence: "skills validator PASS; full skills/protocol tests 215/215 PASS; external sync CURRENT and tests 19/19 PASS; profile local/remote validation TRUE and tests 49/49 PASS; documents tests 94/94 PASS; standards verifier 57/57 PASS using the already-installed qualified system interpreter. No dependency or host mutation was performed."
+  - check_id: CHECK-7
+    result: PASS
+    evidence: "product-state.json parses; modified Python compiles; exact base-to-candidate protected/history diff is empty outside the two authorized parser/test files; product-state.json and AGENT_FOUNDATION_PRODUCT_STATE.md are unchanged; no future/global-phase/progression/recovery artifact exists; git diff --check PASS."
+  - check_id: CHECK-8
+    result: EVIDENCE_INDEXED
+    evidence: "Candidate 5e9d26808b6423d2945670675ce772a357c75c60 is the direct child of the authorized base and was published by ordinary non-force fast-forward before report authorship. Post-candidate proof established HEAD == origin/main == remote main, ahead/behind 0/0, clean worktree, and unchanged empty tags/releases. Report-r2 direct-child lineage and final post-report publication identity are consequence-boundary proofs performed after this report is authored."
+
+result: NEEDS_REVIEW
