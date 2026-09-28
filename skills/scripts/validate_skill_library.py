@@ -1918,6 +1918,98 @@ def _validate_product_evidence_ref(
     return True
 
 
+def _iter_protocol_scalars(value: Any):
+    if isinstance(value, dict):
+        for child in value.values():
+            yield from _iter_protocol_scalars(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _iter_protocol_scalars(child)
+    else:
+        yield value
+
+
+def _collect_named_mapping_blocks(value: Any, names: frozenset[str]) -> list[dict[str, Any]]:
+    blocks: list[dict[str, Any]] = []
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if key in names and isinstance(child, dict):
+                blocks.append(child)
+            blocks.extend(_collect_named_mapping_blocks(child, names))
+    elif isinstance(value, list):
+        for child in value:
+            blocks.extend(_collect_named_mapping_blocks(child, names))
+    return blocks
+
+
+def _collect_bootstrap_mapping_blocks(value: Any) -> list[dict[str, Any]]:
+    blocks: list[dict[str, Any]] = []
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if "bootstrap" in key.lower() and isinstance(child, dict):
+                blocks.append(child)
+            blocks.extend(_collect_bootstrap_mapping_blocks(child))
+    elif isinstance(value, list):
+        for child in value:
+            blocks.extend(_collect_bootstrap_mapping_blocks(child))
+    return blocks
+
+
+def _profile_verification_is_positive(document: dict[str, Any]) -> bool:
+    signals: list[str] = []
+    for scalar in _iter_protocol_scalars(document):
+        if not isinstance(scalar, str):
+            continue
+        signals.extend(
+            match.upper()
+            for match in re.findall(
+                r"OPM_BOOTSTRAP\s*=\s*([A-Z_]+)",
+                scalar,
+                flags=re.IGNORECASE,
+            )
+        )
+    if not signals or any(signal != "TRUE" for signal in signals):
+        return False
+
+    for block in _collect_bootstrap_mapping_blocks(document):
+        for key in ("result", "required_run_result"):
+            if key in block and block.get(key) != "PASS":
+                return False
+    return True
+
+
+def _named_result_blocks_are_positive(
+    document: dict[str, Any],
+    names: frozenset[str],
+) -> bool:
+    blocks = _collect_named_mapping_blocks(document, names)
+    if not blocks:
+        return False
+    results = [block.get("result") for block in blocks]
+    return all(result == "PASS" for result in results)
+
+
+def _owner_verification_is_positive(document: dict[str, Any], owner: str) -> bool:
+    if owner == "profile/":
+        return _profile_verification_is_positive(document)
+    if owner == "documents/":
+        return _named_result_blocks_are_positive(
+            document,
+            frozenset({"documents_tests"}),
+        )
+    if owner == "standards/":
+        return _named_result_blocks_are_positive(
+            document,
+            frozenset({"standards_verifier"}),
+        )
+    if owner == "skills/":
+        return _named_result_blocks_are_positive(
+            document,
+            frozenset({"skills_validator", "skills_validator_tests", "skills_tests"}),
+        )
+    return False
+
+
 def _verification_report_covers_owner(
     report_ref: str,
     *,
@@ -1927,31 +2019,24 @@ def _verification_report_covers_owner(
     if not re.fullmatch(r"\.agent/tasks/TASK-\d{4}/report(?:-r\d+)?\.yaml", report_ref):
         return False
     path = evidence_root / report_ref
-    try:
-        text = path.read_text(encoding="utf-8")
-    except (OSError, UnicodeError):
-        return False
-    match = re.search(
-        r'^\s*final_execution_head:\s*["\']?([0-9a-f]{40})["\']?\s*$',
-        text,
-        flags=re.MULTILINE,
-    )
-    if match is None:
+    if not path.is_file():
         return False
 
-    owner_markers = {
-        "profile/": ("bootstrap", "OPM_BOOTSTRAP"),
-        "skills/": ("skills", "PASS"),
-        "documents/": ("documents_tests:", "result: PASS"),
-        "standards/": ("standards_verifier:", "result: PASS"),
-    }
-    markers = owner_markers.get(owner)
-    if markers is None or any(marker not in text for marker in markers):
+    document = load_protocol_path(path, report_ref)
+    if document is None:
+        return False
+    execution = document.get("execution")
+    if not isinstance(execution, dict):
+        return False
+    final_execution_head = execution.get("final_execution_head")
+    if not isinstance(final_execution_head, str) or not SHA40_RE.fullmatch(final_execution_head):
+        return False
+    if not _owner_verification_is_positive(document, owner):
         return False
 
     try:
         result = subprocess.run(
-            ["git", "-C", str(evidence_root), "diff", "--quiet", match.group(1), "--", owner],
+            ["git", "-C", str(evidence_root), "diff", "--quiet", final_execution_head, "--", owner],
             check=False,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,

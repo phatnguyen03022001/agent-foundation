@@ -3863,6 +3863,220 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
         self.assertEqual(feature["lifecycle"]["derived_state"], "INTEGRATED")
 
 
+
+
+class Task0020Revision2EvidenceParserTests(unittest.TestCase):
+    def synthetic_repo(self, owner: str, report_body: str) -> tuple[tempfile.TemporaryDirectory[str], Path, str]:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = Path(temp.name) / "repo"
+        root.mkdir()
+        subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+        subprocess.run(["git", "config", "user.email", "test@example.invalid"], cwd=root, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=root, check=True)
+        owner_path = root / owner
+        owner_path.mkdir(parents=True)
+        (owner_path / "owner.txt").write_text("current owner bytes\n", encoding="utf-8")
+        subprocess.run(["git", "add", owner], cwd=root, check=True)
+        subprocess.run(["git", "commit", "-q", "-m", "owner"], cwd=root, check=True)
+        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+        report = root / ".agent" / "tasks" / "TASK-9998" / "report.yaml"
+        report.parent.mkdir(parents=True)
+        report.write_text(report_body.replace("__HEAD__", head), encoding="utf-8")
+        return temp, root, ".agent/tasks/TASK-9998/report.yaml"
+
+    def covers(self, report_ref: str, owner: str, root: Path) -> bool:
+        VALIDATOR_MODULE.errors.clear()
+        try:
+            return VALIDATOR_MODULE._verification_report_covers_owner(
+                report_ref,
+                owner=owner,
+                evidence_root=root,
+            )
+        finally:
+            VALIDATOR_MODULE.errors.clear()
+
+    def test_architect_profile_false_fail_exploit_is_rejected(self) -> None:
+        _, root, report_ref = self.synthetic_repo(
+            "profile",
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  bootstrap_validator:
+    signal: "OPM_BOOTSTRAP = FALSE"
+    result: FAIL
+""",
+        )
+        self.assertFalse(self.covers(report_ref, "profile/", root))
+
+    def test_architect_documents_fail_plus_unrelated_pass_exploit_is_rejected(self) -> None:
+        _, root, report_ref = self.synthetic_repo(
+            "documents",
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  documents_tests:
+    result: FAIL
+  unrelated_check:
+    result: PASS
+""",
+        )
+        self.assertFalse(self.covers(report_ref, "documents/", root))
+
+    def test_profile_contradictory_true_and_false_is_rejected(self) -> None:
+        _, root, report_ref = self.synthetic_repo(
+            "profile",
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  bootstrap_local:
+    signal: "OPM_BOOTSTRAP = TRUE"
+    result: PASS
+  bootstrap_remote:
+    signal: "OPM_BOOTSTRAP = FALSE"
+    result: FAIL
+""",
+        )
+        self.assertFalse(self.covers(report_ref, "profile/", root))
+
+    def test_profile_unknown_or_failed_bootstrap_evidence_is_rejected(self) -> None:
+        cases = (
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  bootstrap_validator:
+    signal: "OPM_BOOTSTRAP = UNKNOWN"
+    result: PASS
+""",
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  bootstrap_validator:
+    signal: "OPM_BOOTSTRAP = TRUE"
+    result: PASS
+  bootstrap_unit_tests:
+    result: FAIL
+""",
+        )
+        for body in cases:
+            with self.subTest(body=body):
+                _, root, report_ref = self.synthetic_repo("profile", body)
+                self.assertFalse(self.covers(report_ref, "profile/", root))
+
+    def test_documents_contradictory_owner_blocks_are_rejected(self) -> None:
+        _, root, report_ref = self.synthetic_repo(
+            "documents",
+            """execution:
+  final_execution_head: "__HEAD__"
+first:
+  documents_tests:
+    result: PASS
+second:
+  documents_tests:
+    result: FAIL
+""",
+        )
+        self.assertFalse(self.covers(report_ref, "documents/", root))
+
+    def test_standards_blocked_plus_unrelated_pass_is_rejected(self) -> None:
+        _, root, report_ref = self.synthetic_repo(
+            "standards",
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  standards_verifier:
+    result: CAPABILITY_BLOCKED
+  unrelated_check:
+    result: PASS
+""",
+        )
+        self.assertFalse(self.covers(report_ref, "standards/", root))
+
+    def test_skills_generic_or_misscoped_pass_is_rejected(self) -> None:
+        _, root, report_ref = self.synthetic_repo(
+            "skills",
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  unrelated_check:
+    result: PASS
+summary: "skills checks mentioned here and something passed"
+""",
+        )
+        self.assertFalse(self.covers(report_ref, "skills/", root))
+
+    def test_skills_negative_owner_result_plus_unrelated_pass_is_rejected(self) -> None:
+        _, root, report_ref = self.synthetic_repo(
+            "skills",
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  skills_validator:
+    result: FAIL
+  unrelated_check:
+    result: PASS
+""",
+        )
+        self.assertFalse(self.covers(report_ref, "skills/", root))
+
+    def test_scoped_positive_synthetic_owner_results_are_accepted(self) -> None:
+        cases = (
+            (
+                "profile",
+                "profile/",
+                """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  bootstrap_validator:
+    signal: "OPM_BOOTSTRAP = TRUE"
+    result: PASS
+""",
+            ),
+            (
+                "documents",
+                "documents/",
+                """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  documents_tests:
+    result: PASS
+""",
+            ),
+            (
+                "standards",
+                "standards/",
+                """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  standards_verifier:
+    result: PASS
+""",
+            ),
+            (
+                "skills",
+                "skills/",
+                """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  skills_validator:
+    result: PASS
+  skills_validator_tests:
+    result: PASS
+""",
+            ),
+        )
+        for owner_dir, owner, body in cases:
+            with self.subTest(owner=owner):
+                _, root, report_ref = self.synthetic_repo(owner_dir, body)
+                self.assertTrue(self.covers(report_ref, owner, root))
+
+    def test_real_f001_and_f003_evidence_remain_scoped_and_exact_byte_attributable(self) -> None:
+        root = ROOT.parent
+        self.assertTrue(self.covers(".agent/tasks/TASK-0015/report.yaml", "profile/", root))
+        self.assertTrue(self.covers(".agent/tasks/TASK-0004/report.yaml", "documents/", root))
+        self.assertFalse(self.covers(".agent/tasks/TASK-0004/report.yaml", "standards/", root))
+
+
 class Task0010RationalizationTests(unittest.TestCase):
     def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
         temp = tempfile.TemporaryDirectory()
