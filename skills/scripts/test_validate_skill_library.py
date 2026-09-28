@@ -3957,6 +3957,12 @@ verification:
   bootstrap_unit_tests:
     result: FAIL
 """,
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  bootstrap_validator:
+    signal: "OPM_BOOTSTRAP = TRUE"
+""",
         )
         for body in cases:
             with self.subTest(body=body):
@@ -4069,6 +4075,46 @@ verification:
             with self.subTest(owner=owner):
                 _, root, report_ref = self.synthetic_repo(owner_dir, body)
                 self.assertTrue(self.covers(report_ref, owner, root))
+
+    def test_profile_misscoped_true_narration_without_bootstrap_structure_is_rejected(self) -> None:
+        _, root, report_ref = self.synthetic_repo(
+            "profile",
+            """execution:
+  final_execution_head: "__HEAD__"
+acceptance_evidence:
+  - criterion_id: AC-X
+    status: PASS
+    evidence: "Unrelated narration mentions OPM_BOOTSTRAP = TRUE but is not bootstrap verification evidence."
+""",
+        )
+        self.assertFalse(self.covers(report_ref, "profile/", root))
+
+    def test_profile_scoped_bootstrap_true_block_is_accepted(self) -> None:
+        _, root, report_ref = self.synthetic_repo(
+            "profile",
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  bootstrap_validator:
+    signal: "OPM_BOOTSTRAP = TRUE"
+    result: PASS
+""",
+        )
+        self.assertTrue(self.covers(report_ref, "profile/", root))
+
+    def test_profile_scoped_positive_requires_exact_owner_bytes(self) -> None:
+        _, root, report_ref = self.synthetic_repo(
+            "profile",
+            """execution:
+  final_execution_head: "__HEAD__"
+verification:
+  bootstrap_validator:
+    signal: "OPM_BOOTSTRAP = TRUE"
+    result: PASS
+""",
+        )
+        (root / "profile" / "owner.txt").write_text("changed profile bytes\n", encoding="utf-8")
+        self.assertFalse(self.covers(report_ref, "profile/", root))
 
     def test_real_f001_and_f003_evidence_remain_scoped_and_exact_byte_attributable(self) -> None:
         root = ROOT.parent

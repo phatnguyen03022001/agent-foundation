@@ -1942,40 +1942,65 @@ def _collect_named_mapping_blocks(value: Any, names: frozenset[str]) -> list[dic
     return blocks
 
 
-def _collect_bootstrap_mapping_blocks(value: Any) -> list[dict[str, Any]]:
-    blocks: list[dict[str, Any]] = []
-    if isinstance(value, dict):
-        for key, child in value.items():
-            if "bootstrap" in key.lower() and isinstance(child, dict):
-                blocks.append(child)
-            blocks.extend(_collect_bootstrap_mapping_blocks(child))
-    elif isinstance(value, list):
-        for child in value:
-            blocks.extend(_collect_bootstrap_mapping_blocks(child))
-    return blocks
+PROFILE_BOOTSTRAP_RESULT_BLOCKS = frozenset({
+    "bootstrap_validator",
+    "bootstrap_remote_validator",
+    "bootstrap_local",
+    "bootstrap_remote",
+    "bootstrap_unit_tests",
+})
 
 
-def _profile_verification_is_positive(document: dict[str, Any]) -> bool:
+def _profile_acceptance_evidence_signals(document: dict[str, Any]) -> list[str]:
     signals: list[str] = []
-    for scalar in _iter_protocol_scalars(document):
-        if not isinstance(scalar, str):
+    items = document.get("acceptance_evidence")
+    if not isinstance(items, list):
+        return signals
+    for item in items:
+        if not isinstance(item, dict) or item.get("status") != "PASS":
+            continue
+        evidence = item.get("evidence")
+        if not isinstance(evidence, str):
             continue
         signals.extend(
             match.upper()
             for match in re.findall(
-                r"OPM_BOOTSTRAP\s*=\s*([A-Z_]+)",
-                scalar,
+                r"\bbootstrap\s+(?:local\s+and\s+remote|local|remote)\s+validation\s+returns?\s+"
+                r"OPM_BOOTSTRAP\s*=\s*([A-Z_]+)\b",
+                evidence,
                 flags=re.IGNORECASE,
             )
         )
-    if not signals or any(signal != "TRUE" for signal in signals):
-        return False
+    return signals
 
-    for block in _collect_bootstrap_mapping_blocks(document):
-        for key in ("result", "required_run_result"):
-            if key in block and block.get(key) != "PASS":
+
+def _profile_verification_is_positive(document: dict[str, Any]) -> bool:
+    signals: list[str] = []
+    blocks = _collect_named_mapping_blocks(document, PROFILE_BOOTSTRAP_RESULT_BLOCKS)
+    for block in blocks:
+        signal = block.get("signal")
+        result_values = [
+            block.get(key)
+            for key in ("result", "required_run_result")
+            if key in block
+        ]
+        if any(result != "PASS" for result in result_values):
+            return False
+        if isinstance(signal, str):
+            scoped_signals = [
+                match.upper()
+                for match in re.findall(
+                    r"^\s*OPM_BOOTSTRAP\s*=\s*([A-Z_]+)\s*$",
+                    signal,
+                    flags=re.IGNORECASE,
+                )
+            ]
+            if scoped_signals and not result_values:
                 return False
-    return True
+            signals.extend(scoped_signals)
+
+    signals.extend(_profile_acceptance_evidence_signals(document))
+    return bool(signals) and all(signal == "TRUE" for signal in signals)
 
 
 def _named_result_blocks_are_positive(
