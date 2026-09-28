@@ -1,0 +1,62 @@
+protocol_version: 3
+
+task_id: TASK-0020
+task_revision: 1
+review_revision: 1
+state: REVISION_REQUIRED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0020/report.yaml
+  commit: "c2d28aaef3c18e9f5e2f07926d9bbb7f36c55dbc"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: FAIL
+  verifier_evidence: FAIL
+
+acceptance_basis:
+  - "Fresh review resolution proved HEAD == origin/main == exact reviewed report commit c2d28aaef3c18e9f5e2f07926d9bbb7f36c55dbc, ahead/behind 0/0, clean index/worktree, and canonical main-only lineage."
+  - "Implementation candidate 499082ce8f36df5beed4ab6c181c3e54496b5f8f is the direct child of exact authorized base 47138ad4dade516af7b7f9e05766bb679a872345. Reviewed report c2d28aaef3c18e9f5e2f07926d9bbb7f36c55dbc is the direct child of that candidate and changes only .agent/tasks/TASK-0020/report.yaml."
+  - "Base-to-candidate scope is exactly the four authorized T3 paths: product-state.json, skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md, skills/scripts/validate_skill_library.py, and skills/scripts/test_validate_skill_library.py. No T4-T6 artifact or protected owner changed."
+  - "The canonical schema-2 state is conservative on its face: F001 and F003 are VERIFIED, F002 and F004 are INTEGRATED, all release_readiness and production_acceptance gates are not-PASS, and the OPEN/null/UNKNOWN T2 release truth is preserved."
+  - "Fresh independent qualification passes on the reviewed bytes: focused T2+T3 regressions 20/20; full skills regressions 205/205; external regressions 19/19 with sync CURRENT; profile regressions 49/49 with local/remote OPM_BOOTSTRAP = TRUE; documents regressions 94/94; standards verifier 57/57 plus VALID standards definition under the existing system Python with PyYAML; JSON parse, Python compile, protected-object checks, remote tag/release checks, and git diff --check all pass."
+  - "Independent evidence attribution confirms the concrete current F001/F003 historical references are plausible: current profile/ is byte-equivalent to TASK-0015 final_execution_head f09c2df5e1affdd843af91d3dc70375269d255ab, whose report records bootstrap OPM_BOOTSTRAP=TRUE and 49/49; current documents/ is byte-equivalent to TASK-0004 final_execution_head 04ea2ecb179487365250fbf0cdb7a11ab5ba5c18, whose report records documents_tests result PASS. Current standards/ is also byte-equivalent to that TASK-0004 candidate, whose standards_verifier is CAPABILITY_BLOCKED, so F004 remaining UNKNOWN is correct. F002 final skills/ bytes changed in T3, so verification remaining UNKNOWN is also conservative."
+  - "However, the generic verification-evidence acceptance function _verification_report_covers_owner does not structurally bind the positive result to the intended owner-specific verification block. It accepts broad token co-occurrence in an immutable report plus owner-tree equality."
+  - "A fresh bounded adversarial reproduction proved the defect: a synthetic exact-owner report containing 'OPM_BOOTSTRAP = FALSE' and 'result: FAIL' was accepted for profile verification (FALSE_REPORT_ACCEPTED=True). A documents report with documents_tests result FAIL but an unrelated result PASS elsewhere was accepted for documents verification (MISSCOPED_PASS_ACCEPTED=True)."
+  - "Therefore AC-3 and AC-4 are not satisfied as a deterministic fail-closed evidence model. The current canonical F001/F003 values may be factually supported, but the validator can also authorize false verification PASS from negative or mis-scoped persisted evidence, violating the task requirement that verification PASS require attributable persisted result evidence."
+  - "The transition helper is independently present and exercised, and no defect was reproduced in derived-state recomputation, release cap, prerequisite ordering, UNKNOWN/N/A handling, or regression-transition semantics. Revision should remain narrowly scoped to historical verification-evidence parsing and adversarial tests."
+
+gap_disposition:
+  - gap_id: "T3-HISTORICAL-VERIFICATION-EVIDENCE-MISSCOPED-PASS"
+    decision: "REVISE_TASK"
+    rationale: "Replace token-presence qualification with deterministic owner-specific positive-result parsing. A negative result for the intended owner must fail even if PASS appears elsewhere; profile evidence must prove OPM_BOOTSTRAP = TRUE rather than merely contain the OPM_BOOTSTRAP token. Preserve exact-owner-tree attribution and all accepted T1/T2/T3 boundaries."
+
+final_candidate:
+  commit: "499082ce8f36df5beed4ab6c181c3e54496b5f8f"
+  report_commit: "c2d28aaef3c18e9f5e2f07926d9bbb7f36c55dbc"
+  focused_t2_t3: "20/20 PASS independently rerun"
+  skill_protocol_regressions: "205/205 PASS independently rerun"
+  external_capability_regressions: "19/19 PASS independently rerun"
+  bootstrap_regressions: "49/49 PASS independently rerun"
+  documents_regressions: "94/94 PASS independently rerun"
+  standards_regressions: "57/57 PASS independently rerun"
+  evidence_parser_adversarial_probe: FAIL
+  result: REVISION_REQUIRED
+
+notes:
+  - "TASK-0020 revision 1 is terminally REVISION_REQUIRED for exact report c2d28aaef3c18e9f5e2f07926d9bbb7f36c55dbc."
+  - "Do not reinterpret this review as rejecting the four current feature states by inspection; it rejects the validator's claimed fail-closed proof contract because false historical PASS can be manufactured."
+  - "Revision 2 should preserve product-state.json and T3 semantics unless a corrected parser independently proves a current canonical state change is required."
