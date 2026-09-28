@@ -1,15 +1,15 @@
 protocol_version: 3
 
 task_id: TASK-0017
-task_revision: 1
-review_revision: 1
+task_revision: 2
+review_revision: 2
 state: BLOCKED
 
 reviewed_report:
   repository: phatnguyen03022001/agent-foundation
-  path: .agent/tasks/TASK-0017/report.yaml
-  commit: "f7e054082a2c08ed27c948502f941cc4fca896c4"
-  report_revision: 1
+  path: .agent/tasks/TASK-0017/report-r2.yaml
+  commit: "888d16660a0397235e29027c76c4b707515993df"
+  report_revision: 2
 
 independence:
   reviewer_role: ARCHITECT
@@ -28,26 +28,27 @@ contract_compliance:
   verifier_evidence: PASS
 
 acceptance_basis:
-  - "Exact report f7e054082a2c08ed27c948502f941cc4fca896c4 is the sole report-only child of exact authorized base 672d67cae791fa72f98f1cd0235032596362b830; final_execution_head truthfully remains that unchanged base."
-  - "The report validates under protocol v3, base-to-report diff contains only .agent/tasks/TASK-0017/report.yaml, and git diff --check passes."
-  - "AC-1 through AC-6 replay/ownership/target-discovery/ECC/fail-closed/Foundation-regression predicates are supported by immutable case evidence and fresh qualification evidence recorded in the report."
-  - "AC-7/CHECK-8 are materially blocked because the fresh agent-runtime pilot overlapped an independent TASK-0181 writer that advanced local main while canonical remote main remained unchanged. TASK-0017 correctly refused to reset, clean, publish, or otherwise reconcile that sibling execution."
-  - "The blocker is evidence-state interference, not a demonstrated Foundation architecture defect or agent-runtime product defect. Later convergence cannot retroactively make the exact revision-1 qualification interval stable."
-  - "Fresh Architect observation after the Executor terminalized shows agent-runtime HEAD == origin/main == 35297f08eaca80a5d6b16390c4d5ae64a209f3c8, ahead/behind 0/0, and a clean worktree; therefore the specific interference precondition is no longer present and a new exact qualification attempt may be authorized."
+  - "Exact report 888d16660a0397235e29027c76c4b707515993df is the sole report-only child of revision-2 execution base 05fe6afa2498ead3a5e7aba6d13de8da9c09acf5; final_execution_head truthfully remains that unchanged base."
+  - "The report validates under protocol v3, base-to-report diff contains only .agent/tasks/TASK-0017/report-r2.yaml, and git diff --check passes."
+  - "Revision-1 immutable replay/ownership evidence remains exactly reusable and revision-2 Foundation validation evidence is green; no Foundation architecture or source defect is established by this report."
+  - "Revision-2 correctly blocks because agent-runtime was not stable for the required qualification interval: the pre-pilot state was dirty at a7ae50b513ba9f78dd3514b654466a19e549c192 and the repository advanced to c01869062c02d4a98f8136cb1da448aed35624a0 during the interval."
+  - "Fresh Architect observation after the revision-2 report confirms the interference is still active rather than merely historical: agent-runtime HEAD/origin/main currently equal c01869062c02d4a98f8136cb1da448aed35624a0, but the worktree is dirty at macos/package_app.sh and tests/test_package_provenance.py under TASK-0181 revision 8, and an active focused-verification process is running."
+  - "Because TASK-0181 revision 8 remains in-progress, creating TASK-0017 revision 3 now would knowingly violate the same stability precondition that blocked revisions 1 and 2. Retry authority must wait for the sibling writer to reach terminal durable state and for agent-runtime to be freshly proven clean/synced with no active TASK-0181 executor."
 
 gap_disposition:
   - gap_id: "AGENT-RUNTIME-CONCURRENT-EXECUTION-NOT-SYNCED"
-    decision: "RETRY_WITH_REVISED_TASK"
-    rationale: "Revision 1 cannot be accepted because its exact qualification interval lacked stable clean/synced target evidence. A fresh read-only qualification after the independent writer reached terminal durable state can re-establish AC-7 without changing Foundation or agent-runtime product bytes."
+    decision: "WAIT_FOR_SIBLING_TERMINAL_THEN_REQUALIFY"
+    rationale: "The blocker is still live. Do not issue another qualification revision while TASK-0181 revision 8 is mutating or verifying agent-runtime. Requalification becomes eligible only after fresh proof of terminal sibling state, clean index/worktree, HEAD == origin/main == remote main, ahead/behind 0/0, and no active TASK-0181 process."
 
 final_candidate:
-  commit: "672d67cae791fa72f98f1cd0235032596362b830"
-  report_commit: "f7e054082a2c08ed27c948502f941cc4fca896c4"
+  commit: "05fe6afa2498ead3a5e7aba6d13de8da9c09acf5"
+  report_commit: "888d16660a0397235e29027c76c4b707515993df"
   report_validation: PASS
   report_only_diff: PASS
   result: BLOCKED
 
 notes:
-  - "TASK-0017 revision 1 is terminally BLOCKED for exact report f7e054082a2c08ed27c948502f941cc4fca896c4."
+  - "TASK-0017 revision 2 is terminally BLOCKED for exact report 888d16660a0397235e29027c76c4b707515993df."
   - "No Foundation or agent-runtime repair is implied by this review."
-  - "A revised TASK-0017 may reuse immutable replay evidence but must freshly bind agent-runtime only after proving clean/synced/terminal sibling state before the read-only pilot begins."
+  - "No TASK-0017 revision 3 is authorized by this review while TASK-0181 revision 8 remains active."
+  - "Once the sibling writer terminalizes and agent-runtime is freshly stable, Architect may issue a narrow requalification revision that reuses immutable replay evidence and proves only the current-target stability/ownership closure."
