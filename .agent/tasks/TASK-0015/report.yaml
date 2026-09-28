@@ -1,0 +1,75 @@
+protocol_version: 3
+
+task_id: TASK-0015
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0015/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "5a0e7893bb0b888a734fd8ac74ff1028c246316c"
+  final_execution_head: "f09c2df5e1affdd843af91d3dc70375269d255ab"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "5922fc44278a6bc6950bbf0988e460b2114a82ac"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_write
+    - local_test_execution
+    - bounded_network_resolution
+    - non_force_git_publication
+  available:
+    - Remote Desktop Commander bounded repository mutation
+    - Remote Desktop Commander bounded local test execution
+    - bounded exact Git remote resolution
+    - ordinary non-force Git publication
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0015 revision 1 designates no separate authoritative verifier."
+
+pushed: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "The revised rationalization map covers all 15 starting skills exactly once: 5 KEEP_FOUNDATION_SPECIFIC, 2 THIN_DELTA, 6 REPLACE_BY_EXTERNAL, and 2 RETIRE. Architect and Executor remain Foundation-owned mandatory roles; the validator rejects externalizing or retiring them."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Fresh semantic audit compared every current internal skill with exact-pinned ECC and admitted external content before mutation. Surviving non-role owners are adversarial-audit, reliability, and simplicity; security-review and verification retain only Foundation-specific deltas over exact ECC bindings."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "debugging, design-review, gap-analysis, optimization, research, and reuse-first were removed and bound to exact external owners. security-review and verification were reduced to exact-source-bound deltas; no generic upstream body was copied into Foundation."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "github-workflow retires to skills/protocols/TASK_PROTOCOL.md while generic Git/GitHub HOW routes through the TASK-0014 ECC seam; cloud-run-basics retires to target-repository ownership. Live-route grep, bootstrap routing, internal-link validation, and owner-resolution regressions find no retired-skill dependency."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "The physical SKILL.md inventory is exactly seven directories: adversarial-audit, architect, executor, reliability, security-review, simplicity, verification. The validator derives this set from KEEP plus THIN records and regressions reject removed-skill reappearance; no tombstone, alias, archive, legacy, deprecated, or backup skill directory exists."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Foundation authority and publication remain in Task Protocol/roles; security retains threat-path/trust-authority-boundary semantics; verification retains acceptance/evidence, exact-candidate, authoritative-verifier, and execution-bundle semantics. The final full skill/protocol regression suite passes 178/178 and bootstrap regressions pass 49/49."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "skills/.agent/external-capabilities/** is byte-identical to the execution base. ECC remains affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735; sync --check reports CURRENT and external-capability seam regressions pass 19/19 without refreshing any pin."
+  - criterion_id: AC-8
+    status: PASS
+    evidence: "Base-to-candidate protected-path diff is empty for documents/, standards/, skills/.agent/external-capabilities/**, and profile/.agent/bootstrap/authority.lock.json; the authority-lock blob remains be80e2308e18d662ce3748f5fb41c41619b346bc. No Agent Runtime, host state, credential, branch, tag, release, or external-repository mutation was performed."
+  - criterion_id: AC-9
+    status: PASS
+    evidence: "On candidate f09c2df5e1affdd843af91d3dc70375269d255ab: canonical task and skill validators pass; focused rationalization regressions pass; full skill tests pass 178/178; external seam tests pass 19/19; bootstrap local and remote validation return OPM_BOOTSTRAP=TRUE and bootstrap tests pass 49/49; py_compile for every modified Python file and git diff --check pass."
+
+result: NEEDS_REVIEW
