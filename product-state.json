@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "target": {
+    "repository": "phatnguyen03022001/agent-foundation"
+  },
+  "product_scope": {
+    "revision": 1,
+    "scope_status": "FROZEN",
+    "features": {
+      "total": 4,
+      "registered": [
+        {
+          "id": "F001",
+          "semantic_name": "operator-and-architect-configuration",
+          "owner": "profile/"
+        },
+        {
+          "id": "F002",
+          "semantic_name": "governance-control-and-capability",
+          "owner": "skills/"
+        },
+        {
+          "id": "F003",
+          "semantic_name": "documentation-model-and-closure",
+          "owner": "documents/"
+        },
+        {
+          "id": "F004",
+          "semantic_name": "engineering-assurance",
+          "owner": "standards/"
+        }
+      ]
+    }
+  },
+  "release": {
+    "status": "OPEN",
+    "id": null,
+    "id_resolution": "UNKNOWN",
+    "required_feature_ids": null,
+    "required_feature_ids_resolution": "UNKNOWN"
+  }
+}

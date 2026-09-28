@@ -3429,6 +3429,157 @@ class Task0018ProductArchitectureBoundaryTests(unittest.TestCase):
             self.assertIn(marker, product)
 
 
+class Task0019ProductStateTests(unittest.TestCase):
+    def read(self, relative_path: str) -> str:
+        return (ROOT / relative_path).read_text(encoding="utf-8")
+
+    def load_state(self) -> dict:
+        return json.loads((ROOT.parent / "product-state.json").read_text(encoding="utf-8"))
+
+    def validate_state(self, document: dict) -> list[str]:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        path = Path(temp.name) / "product-state.json"
+        path.write_text(json.dumps(document, indent=2) + "\n", encoding="utf-8")
+        VALIDATOR_MODULE.errors.clear()
+        VALIDATOR_MODULE.validate_agent_foundation_product_state(path)
+        messages = list(VALIDATOR_MODULE.errors)
+        VALIDATOR_MODULE.errors.clear()
+        return messages
+
+    def test_canonical_t2_contract_and_product_state_are_distinct_owners(self) -> None:
+        contract = self.read("contracts/AGENT_FOUNDATION_PRODUCT_STATE.md")
+        architecture = self.read("contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md")
+        foundation = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
+        for marker in (
+            "canonical target-owned T2 product-state contract",
+            "product-state.json",
+            "Product scope and release scope are separate",
+            "PROGRAM remains derived planning data with authority `NONE`",
+            "task lifecycle cannot manufacture product state",
+            "not a universal Foundation manifest",
+        ):
+            self.assertIn(marker, contract)
+        self.assertIn("canonical target-owned T1 product-architecture boundary", architecture)
+        self.assertIn("single canonical generic owner", foundation)
+
+    def test_current_product_state_is_exact_frozen_four_feature_inventory(self) -> None:
+        state = self.load_state()
+        self.assertEqual(self.validate_state(state), [])
+        self.assertEqual(state["schema_version"], 1)
+        self.assertEqual(state["target"]["repository"], "phatnguyen03022001/agent-foundation")
+        scope = state["product_scope"]
+        self.assertEqual(scope["revision"], 1)
+        self.assertEqual(scope["scope_status"], "FROZEN")
+        self.assertEqual(scope["features"]["total"], 4)
+        self.assertEqual(
+            scope["features"]["registered"],
+            [
+                {"id": "F001", "semantic_name": "operator-and-architect-configuration", "owner": "profile/"},
+                {"id": "F002", "semantic_name": "governance-control-and-capability", "owner": "skills/"},
+                {"id": "F003", "semantic_name": "documentation-model-and-closure", "owner": "documents/"},
+                {"id": "F004", "semantic_name": "engineering-assurance", "owner": "standards/"},
+            ],
+        )
+
+    def test_revision_one_rejects_count_duplicate_identity_name_and_owner_drift(self) -> None:
+        cases = []
+        state = self.load_state()
+        changed = deepcopy(state)
+        changed["product_scope"]["features"]["total"] = 3
+        cases.append(changed)
+        changed = deepcopy(state)
+        changed["product_scope"]["features"]["registered"][1]["id"] = "F001"
+        cases.append(changed)
+        changed = deepcopy(state)
+        changed["product_scope"]["features"]["registered"][1]["semantic_name"] = "operator-and-architect-configuration"
+        cases.append(changed)
+        changed = deepcopy(state)
+        changed["product_scope"]["features"]["registered"][2]["owner"] = "skills/"
+        cases.append(changed)
+        changed = deepcopy(state)
+        changed["product_scope"]["features"]["registered"].pop()
+        cases.append(changed)
+        for changed in cases:
+            with self.subTest(changed=changed):
+                self.assertTrue(self.validate_state(changed))
+
+    def test_release_scope_is_open_and_unresolved_not_empty_or_invented(self) -> None:
+        state = self.load_state()
+        self.assertEqual(
+            state["release"],
+            {
+                "status": "OPEN",
+                "id": None,
+                "id_resolution": "UNKNOWN",
+                "required_feature_ids": None,
+                "required_feature_ids_resolution": "UNKNOWN",
+            },
+        )
+        mutations = (
+            ("id", "R1"),
+            ("id", "v1"),
+            ("id_resolution", "KNOWN"),
+            ("required_feature_ids", []),
+            ("required_feature_ids", ["F001", "F002", "F003", "F004"]),
+            ("required_feature_ids_resolution", "KNOWN"),
+            ("status", "FROZEN"),
+        )
+        for key, value in mutations:
+            with self.subTest(key=key, value=value):
+                changed = deepcopy(state)
+                changed["release"][key] = value
+                self.assertTrue(self.validate_state(changed))
+
+    def test_feature_lifecycle_and_gate_fields_are_rejected(self) -> None:
+        state = self.load_state()
+        for key in ("state", "lifecycle_state", "gates", "gate_applicability", "verification_state"):
+            with self.subTest(key=key):
+                changed = deepcopy(state)
+                changed["product_scope"]["features"]["registered"][0][key] = "FORBIDDEN"
+                self.assertTrue(self.validate_state(changed))
+        for key in ("global_gates", "project_phase", "completion_percentage", "release_readiness", "earliest_blocker"):
+            with self.subTest(key=key):
+                changed = deepcopy(state)
+                changed[key] = "FORBIDDEN"
+                self.assertTrue(self.validate_state(changed))
+
+    def test_task_execution_chat_program_and_diary_fields_are_rejected(self) -> None:
+        state = self.load_state()
+        forbidden = (
+            "task_refs",
+            "report_refs",
+            "review_refs",
+            "execution_attempts",
+            "process_ids",
+            "raw_tool_output",
+            "terminal_logs",
+            "prompts",
+            "chat_ids",
+            "model_ids",
+            "todos",
+            "implementation_diary",
+            "program",
+        )
+        for key in forbidden:
+            with self.subTest(key=key):
+                changed = deepcopy(state)
+                changed[key] = []
+                self.assertTrue(self.validate_state(changed))
+
+    def test_unknown_fields_and_malformed_unresolved_representation_are_rejected(self) -> None:
+        state = self.load_state()
+        changed = deepcopy(state)
+        changed["target"]["extra"] = True
+        self.assertTrue(self.validate_state(changed))
+        changed = deepcopy(state)
+        changed["release"].pop("required_feature_ids_resolution")
+        self.assertTrue(self.validate_state(changed))
+        changed = deepcopy(state)
+        changed["release"]["required_feature_ids"] = {}
+        self.assertTrue(self.validate_state(changed))
+
+
 class Task0010RationalizationTests(unittest.TestCase):
     def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
         temp = tempfile.TemporaryDirectory()

@@ -11,7 +11,7 @@ Semantic ownership remains separated across those subtrees. `agent-runtime` rema
 
 Foundation governance is organized by the canonical [three-layer architecture](skills/contracts/FOUNDATION_ARCHITECTURE.md): L0 Governance Kernel, L1 Control and Continuity, and L2 Capability and Knowledge. `agent-runtime`, GitHub, MCP, and native tools are orthogonal substrates rather than additional layers.
 
-When this repository is itself the target product, its semantic capability, shared/platform/composition, dependency, cross-cutting, telemetry, and extraction boundaries are owned separately by [Agent Foundation Product Architecture Boundaries](skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md). The reference architecture is filename-neutral and does not require reorganizing the four physical domains.
+When this repository is itself the target product, its semantic capability, shared/platform/composition, dependency, cross-cutting, telemetry, and extraction boundaries are owned separately by [Agent Foundation Product Architecture Boundaries](skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md). The reference architecture is filename-neutral and does not require reorganizing the four physical domains. Current target-owned product scope, feature identity/registry, and release-scope truth are owned separately by [Agent Foundation Product State](skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md) and [`product-state.json`](product-state.json).
 
 GitHub `main` is canonical and this repository is `MAIN_ONLY`. Historical source commits are intentionally retained in the ancestry of `main`.
 

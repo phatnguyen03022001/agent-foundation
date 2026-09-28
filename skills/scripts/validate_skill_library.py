@@ -81,6 +81,12 @@ PROGRAM_AUTHORITY = "NONE"
 PROGRAM_INVALIDATION = "FULL_REGENERATION_ON_MATERIAL_INPUT_CHANGE"
 CASE_ROUTER_PATH = ".agent/case-router.yaml"
 ADMITTED_CASE_ID = "EXECUTE"
+AGENT_FOUNDATION_PRODUCT_FEATURES = (
+    ("F001", "operator-and-architect-configuration", "profile/"),
+    ("F002", "governance-control-and-capability", "skills/"),
+    ("F003", "documentation-model-and-closure", "documents/"),
+    ("F004", "engineering-assurance", "standards/"),
+)
 
 # One normalized semantic model serves both sparse protocol-v3 serialization and
 # explicit expanded-v3 task artifacts.  -1 means that no exact-file count cap is
@@ -1832,6 +1838,130 @@ def validate_protocol_docs() -> None:
     ])
 
 
+def _require_exact_object_keys(label: str, value: Any, expected: set[str]) -> bool:
+    if not isinstance(value, dict):
+        error(f"{label}: expected object")
+        return False
+    actual = set(value)
+    missing = sorted(expected - actual)
+    unexpected = sorted(actual - expected)
+    if missing:
+        error(f"{label}: missing keys {missing}")
+    if unexpected:
+        error(f"{label}: unexpected keys {unexpected}")
+    return not missing and not unexpected
+
+
+def validate_agent_foundation_product_state(path: Path) -> None:
+    """Validate agent-foundation's target-specific T2 product-state object."""
+    label = str(path)
+    if not path.is_file():
+        error(f"{label}: missing canonical target product-state.json")
+        return
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        error(f"{label}: invalid JSON: {exc}")
+        return
+
+    if not _require_exact_object_keys(
+        label,
+        document,
+        {"schema_version", "target", "product_scope", "release"},
+    ):
+        if not isinstance(document, dict):
+            return
+
+    if document.get("schema_version") != 1 or type(document.get("schema_version")) is not int:
+        error(f"{label}.schema_version: expected integer 1")
+
+    target = document.get("target")
+    if _require_exact_object_keys(f"{label}.target", target, {"repository"}):
+        if target.get("repository") != "phatnguyen03022001/agent-foundation":
+            error(f"{label}.target.repository: unexpected target repository")
+
+    product_scope = document.get("product_scope")
+    if _require_exact_object_keys(
+        f"{label}.product_scope",
+        product_scope,
+        {"revision", "scope_status", "features"},
+    ):
+        if product_scope.get("revision") != 1 or type(product_scope.get("revision")) is not int:
+            error(f"{label}.product_scope.revision: expected frozen revision 1")
+        if product_scope.get("scope_status") != "FROZEN":
+            error(f"{label}.product_scope.scope_status: expected FROZEN")
+
+        features = product_scope.get("features")
+        if _require_exact_object_keys(
+            f"{label}.product_scope.features",
+            features,
+            {"total", "registered"},
+        ):
+            if features.get("total") != 4 or type(features.get("total")) is not int:
+                error(f"{label}.product_scope.features.total: expected integer 4")
+            registered = features.get("registered")
+            if not isinstance(registered, list):
+                error(f"{label}.product_scope.features.registered: expected array")
+            else:
+                expected_registered = [
+                    {"id": feature_id, "semantic_name": semantic_name, "owner": owner}
+                    for feature_id, semantic_name, owner in AGENT_FOUNDATION_PRODUCT_FEATURES
+                ]
+                ids: list[str] = []
+                names: list[str] = []
+                for index, feature in enumerate(registered):
+                    feature_label = f"{label}.product_scope.features.registered[{index}]"
+                    if not _require_exact_object_keys(
+                        feature_label,
+                        feature,
+                        {"id", "semantic_name", "owner"},
+                    ):
+                        continue
+                    feature_id = feature.get("id")
+                    semantic_name = feature.get("semantic_name")
+                    if isinstance(feature_id, str):
+                        ids.append(feature_id)
+                    if isinstance(semantic_name, str):
+                        names.append(semantic_name)
+                if len(ids) != len(set(ids)):
+                    error(f"{label}.product_scope.features.registered: duplicate feature IDs")
+                if len(names) != len(set(names)):
+                    error(f"{label}.product_scope.features.registered: duplicate semantic names")
+                if len(registered) != features.get("total"):
+                    error(f"{label}.product_scope.features: total does not match registered count")
+                if registered != expected_registered:
+                    error(
+                        f"{label}.product_scope.features.registered: "
+                        "revision 1 must exactly match F001-F004 semantic identities and owners"
+                    )
+
+    release = document.get("release")
+    if _require_exact_object_keys(
+        f"{label}.release",
+        release,
+        {
+            "status",
+            "id",
+            "id_resolution",
+            "required_feature_ids",
+            "required_feature_ids_resolution",
+        },
+    ):
+        if release.get("status") != "OPEN":
+            error(f"{label}.release.status: expected OPEN")
+        if release.get("id") is not None:
+            error(f"{label}.release.id: unresolved release identity must be null")
+        if release.get("id_resolution") != "UNKNOWN":
+            error(f"{label}.release.id_resolution: expected UNKNOWN")
+        if release.get("required_feature_ids") is not None:
+            error(
+                f"{label}.release.required_feature_ids: "
+                "unresolved required feature set must be null, never an empty array"
+            )
+        if release.get("required_feature_ids_resolution") != "UNKNOWN":
+            error(f"{label}.release.required_feature_ids_resolution: expected UNKNOWN")
+
+
 ARTIFACT_VALIDATORS = {
     "task": validate_task_document,
     "report": validate_report_document,
@@ -1955,6 +2085,12 @@ def main(argv: list[str] | None = None) -> int:
     validate_continuation_template()
     validate_template_consistency()
     validate_protocol_docs()
+
+    repository_root = ROOT.parent
+    if ROOT.name == "skills" and all(
+        (repository_root / name).is_dir() for name in ("profile", "documents", "standards")
+    ):
+        validate_agent_foundation_product_state(repository_root / "product-state.json")
 
     if warnings:
         print("\nWarnings:")
