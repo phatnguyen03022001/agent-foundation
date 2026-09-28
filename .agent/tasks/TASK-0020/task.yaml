@@ -1,13 +1,13 @@
 protocol_version: 3
 
 task_id: TASK-0020
-task_revision: 1
+task_revision: 2
 state: APPROVED
 
 origin:
-  type: explicit_operator_continuation
+  type: continuation_after_revision_required_review
   task_id: "TASK-0020"
-  gap_id: "AGENT-FOUNDATION-FEATURE-GATES-DERIVED-STATE"
+  gap_id: "T3-HISTORICAL-VERIFICATION-EVIDENCE-MISSCOPED-PASS"
 
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
@@ -25,7 +25,7 @@ execution_base:
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  revision: "bf610fd546d1286a099e7284acd41ea6c600cf9d"
+  revision: "53b2a60110836ece8f3ab80f4fe078581389ef48"
 
 architect_analysis_skills:
   - architect
@@ -47,96 +47,83 @@ external_skills:
   execution_recommended: []
 
 authority_sources:
-  - source: "operator-supplied AGENT_FOUNDATION_PLAN.md version 2, SHA-256 27f6ae194e1ebc60aa031361b3105337c6f866ab2a127cd8afa81ae10d457b80"
-    role: "approved target-product architecture/state program specification; TASK-0020 implements only T3 feature lifecycle, feature gates, evidence, and derived-state semantics"
+  - source: ".agent/tasks/TASK-0020/review.yaml@53b2a60110836ece8f3ab80f4fe078581389ef48"
+    role: "terminal revision-1 REVISION_REQUIRED review and exact parser-defect reproduction"
     precedence: 1
-  - source: ".agent/tasks/TASK-0019/review.yaml@bf610fd546d1286a099e7284acd41ea6c600cf9d"
-    role: "accepted T2 product scope, four-feature registry, and OPEN unresolved release scope"
+  - source: ".agent/tasks/TASK-0020/report.yaml@c2d28aaef3c18e9f5e2f07926d9bbb7f36c55dbc"
+    role: "revision-1 implementation/qualification evidence reusable except for AC-3/AC-4 fail-closed historical verification parsing"
     precedence: 2
-  - source: "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md@bf610fd546d1286a099e7284acd41ea6c600cf9d"
-    role: "canonical T2 product-state contract to evolve in place rather than duplicate"
+  - source: "operator-supplied AGENT_FOUNDATION_PLAN.md version 2, SHA-256 27f6ae194e1ebc60aa031361b3105337c6f866ab2a127cd8afa81ae10d457b80"
+    role: "canonical product-state/evidence semantics"
     precedence: 3
-  - source: ".agent/tasks/TASK-0018/review.yaml@bf610fd546d1286a099e7284acd41ea6c600cf9d"
-    role: "accepted T1 semantic product-capability ownership"
+  - source: ".agent/tasks/TASK-0019/review.yaml@53b2a60110836ece8f3ab80f4fe078581389ef48"
+    role: "accepted T2 product scope/release scope"
     precedence: 4
 
 structure_authority:
   status: RESOLVED
-  source: "AGENT_FOUNDATION_PLAN.md sections 15-18, 32-35 and 45-47, constrained by accepted T1/T2 state ownership"
-  rationale: "T3 evolves the existing target-specific product-state object and human contract in place. It must not create a second feature-state file or independent state authority. derived_state is a validated projection of explicit gate/evidence facts, not an independently authored source of truth."
+  source: "TASK-0020 revision-1 Architect review"
+  rationale: "Revision 1 established the intended T3 schema and current conservative state but failed independent red-team review because historical verification evidence was recognized by broad token co-occurrence. Revision 2 is a narrow proof-contract correction, not a T3 redesign."
 
-objective: "Establish agent-foundation's T3 feature lifecycle, explicit feature gates, inspectable evidence references, and deterministic evidence-derived feature state for all four current product-scope features. Evolve product-state.json from schema version 1 to schema version 2 while preserving T2 product/release scope semantics. Prevent dual SSOT by requiring the validator to recompute each derived_state from gate statuses and reject any mismatch. Use conservative evidence: missing, contradictory, stale, inaccessible, or not-attributable evidence yields UNKNOWN/not-PASS and cannot promote state. Do not create global system gates, project phase/progression, Architect planning integration, execution/UI recovery redesign, or adoption closure."
+objective: "Correct TASK-0020's historical verification-evidence recognition so a verification gate can PASS only from an owner-specific positive persisted result attributable to the exact current owner bytes. Preserve the revision-1 T3 schema, derivation, release cap, prerequisite, regression, and current feature-state semantics unless the corrected parser itself proves that a current PASS is unsupported. Close the two exact red-team exploits reproduced by Architect without expanding into T4-T6."
 
 scope:
   required_changes:
-    - "Evolve product-state.json schema_version from 1 to 2 in place; do not create feature-state.json or another lifecycle-state artifact."
-    - "Preserve T2 target identity, product_scope revision 1/FROZEN, exact F001-F004 identities/names/owners, and release OPEN with null/UNKNOWN release identity and required feature set."
-    - "Extend each registered F001-F004 feature with one lifecycle object containing exactly: gates, derived_state, and regression."
-    - "Define exactly seven target lifecycle gates in order: scope, specification, implementation, integration, verification, release_readiness, production_acceptance."
-    - "Each gate must record status from PASS | FAIL | PENDING | N/A | UNKNOWN, evidence_refs as a bounded array of inspectable canonical repository-relative references, and reason as null or a non-empty string according to status semantics."
-    - "PASS requires at least one inspectable evidence_ref and may not rely on memory, chat claims, task status alone, filename alone, code presence alone for VERIFIED, or a future/nonexistent artifact."
-    - "FAIL requires attributable evidence_refs plus a non-empty reason. PENDING and UNKNOWN require a non-empty reason. N/A requires a non-empty justification/reason and never counts as PASS for lifecycle advancement."
-    - "Every evidence_ref must resolve to current canonical repository evidence or an immutable in-repository historical artifact whose concrete evidence remains attributable to the current feature bytes. Historical task/report/review state alone is insufficient."
-    - "Do not cite TASK-0020's future report.yaml or review.yaml from the implementation candidate. A future artifact cannot be evidence for the candidate that precedes it."
-    - "If TASK-0020 modifies bytes owned by a feature and no already-persisted evidence independently covers those exact final feature bytes, that feature's verification gate must remain UNKNOWN/not-PASS. Fresh Executor test runs qualify TASK-0020 but do not circularly manufacture pre-report product-state evidence."
-    - "Require scope gate PASS for all four frozen registered features; T2 registry plus target-owned scope/boundary evidence must make PLANNED mechanically reachable."
-    - "Define deterministic derived-state computation: scope PASS establishes PLANNED; specification PASS advances to SPEC_READY; implementation PASS with integration not PASS advances to IMPLEMENTING; integration PASS advances to INTEGRATED; verification PASS advances to VERIFIED; release_readiness PASS advances to RELEASE_READY; production_acceptance PASS advances to LIVE. The first ordered gate that is not PASS prevents advancement beyond the corresponding prior state."
-    - "Reject later-gate PASS when any earlier prerequisite gate is not PASS."
-    - "While release.status is OPEN or release identity/required feature set remains unresolved, release_readiness and production_acceptance must remain UNKNOWN/not-PASS for every feature. Therefore current T3 state cannot exceed VERIFIED."
-    - "Freshly audit F001-F004 against current target-owned evidence. Derive each current state conservatively; do not predeclare all features VERIFIED. Missing evidence remains UNKNOWN and lowers the derived state as required."
-    - "For specification evidence, require enough current target-owned material to make the capability implementable without material architecture guessing, adapted to agent-foundation rather than forcing web/frontend/backend concepts."
-    - "For implementation evidence, require at least one real current production/repository artifact of the capability, not a task claim."
-    - "For integration evidence, require the feature's complete applicable repository-native slice to be connected through its explicit contracts. Inapplicable generic fullstack layers do not need fake N/A entries because T3 uses target-specific lifecycle gates."
-    - "For verification evidence, require persisted inspectable evidence attributable to the exact current integrated feature bytes; a test definition without a result is not itself verification PASS."
-    - "Extend AGENT_FOUNDATION_PRODUCT_STATE.md in place as the single human-readable T2+T3 product-state contract. Preserve T2 semantics and document evidence/gate/derivation/regression rules without creating a second contract."
-    - "Implement deterministic validation that recomputes derived_state from gate statuses and rejects user-authored disagreement, invalid status/evidence/reason combinations, prerequisite violations, release-readiness promotion while release is unresolved, unresolved/missing evidence references, and lifecycle fields outside the exact schema."
-    - "Define forward-only transition semantics. Add a bounded deterministic transition-check helper or equivalent validator logic that rejects a lower derived_state than a prior valid schema-2 state unless current lifecycle.regression records from_state, to_state, non-empty reason, and inspectable evidence_refs matching the downgrade. Initial schema-1 to schema-2 adoption uses regression null."
-    - "Do not turn regression into a history log; store only the current explicit regression record when one is required."
-    - "Add focused regressions for all seven lifecycle states/thresholds, UNKNOWN-not-PASS, N/A justification/non-advancement, PASS evidence requirement, prerequisite ordering, derived_state mismatch rejection, release OPEN cap at VERIFIED, future-artifact/self-attestation rejection, stale/nonexistent evidence rejection, and backward-transition regression requirements."
-    - "Freshly run owner-native verification surfaces as TASK-0020 qualification evidence: profile bootstrap validation/regressions; skills validator/regressions and external sync/regressions; documents validator test suite; standards repository verifier. These runs do not automatically promote feature verification state unless durable pre-candidate evidence rules above are independently satisfied."
-    - "Keep TASK-0014 through TASK-0019 historical artifacts unchanged. Keep T1 architecture contract, seven-skill taxonomy, rationalization, ECC/external metadata, documents/, standards/, authority.lock.json, agent-runtime, Runtime/host state, credentials, branches, tags, and releases unchanged."
-    - "Publish implementation/report on main only by ordinary non-force fast-forward."
+    - "Freshly reconcile local HEAD, origin/main, remote main, ahead/behind, and clean worktree against the exact revision-2 execution base before mutation."
+    - "Treat revision-1 review defect reproduction as mandatory red tests: (1) profile evidence containing OPM_BOOTSTRAP = FALSE plus result: FAIL must not qualify as verification PASS; (2) documents_tests result FAIL plus an unrelated result PASS elsewhere must not qualify as documents verification PASS."
+    - "Replace broad token-co-occurrence logic in _verification_report_covers_owner with deterministic owner-specific positive-result recognition."
+    - "Preserve exact current-owner-tree attribution: historical verification evidence remains valid only when the report's final_execution_head exists and the current owning subtree is byte-equivalent to that evidenced candidate."
+    - "For profile/, require an explicit positive bootstrap verification signal attributable to profile bootstrap, including exact TRUE semantics; mere presence of the OPM_BOOTSTRAP token, FALSE, UNKNOWN, FAIL, or contradictory/ambiguous bootstrap evidence must not pass."
+    - "For documents/ and standards/, when the report exposes owner-specific result blocks such as documents_tests or standards_verifier, bind PASS/FAIL/CAPABILITY_BLOCKED to that exact block. A PASS elsewhere in the report must not satisfy the owner-specific gate."
+    - "For skills/, require an owner-specific persisted positive verification signal; a generic PASS token or unrelated check must never qualify. Keep this conservative if no canonical historical PASS shape exists."
+    - "Reject contradictory owner-specific evidence within one report. Ambiguous positive/negative evidence is not PASS."
+    - "Do not weaken path existence, future/self-attestation rejection, exact owner-byte attribution, ordered gate derivation, release OPEN cap, UNKNOWN/N/A semantics, or transition regression checks."
+    - "Add adversarial regressions for the two exact Architect reproductions and for owner-specific contradictory/mis-scoped PASS cases across supported owners where practical."
+    - "Prove the real current F001 and F003 verification refs still qualify only through correctly scoped positive evidence. Prove F004 TASK-0004 standards_verifier CAPABILITY_BLOCKED remains not-PASS. F002 remains not-PASS unless independently persisted exact-final-byte evidence already exists."
+    - "Preserve product-state.json byte-for-byte if corrected parsing yields the same F001=VERIFIED, F002=INTEGRATED, F003=VERIFIED, F004=INTEGRATED projection. If and only if the corrected parser proves an existing verification PASS unsupported, update product-state.json conservatively and update the existing product-state contract only as required to keep canonical state truthful."
+    - "Do not use TASK-0020 revision-2 report/review or fresh terminal output to manufacture product verification PASS."
+    - "Rerun focused T2+T3 tests, including the new exploit regressions, then the full repo-native qualification set required by revision 1."
+    - "Keep T1 architecture, T2 scope/release semantics, seven-skill bodies, rationalization/external metadata, documents/, standards/, authority.lock.json, TASK-0014..0019, agent-runtime, Runtime/host state, credentials, branches, tags, and releases unchanged."
+    - "On successful qualification create .agent/tasks/TASK-0020/report-r2.yaml with result NEEDS_REVIEW, commit it as the sole report-only child of the revision-2 implementation candidate, and publish by ordinary non-force fast-forward."
+    - "If corrected evidence parsing changes canonical feature state, report the exact state delta and evidence basis; do not preserve revision-1 state merely for continuity."
 
   allowed_existing_files_or_components:
-    - "product-state.json"
-    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"
     - "skills/scripts/validate_skill_library.py"
     - "skills/scripts/test_validate_skill_library.py"
-    - ".agent/tasks/TASK-0020/**"
+    - "product-state.json only if corrected parser changes canonical derived truth"
+    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md only if a product-state truth change requires corresponding documentation"
+    - ".agent/tasks/TASK-0020/task.yaml"
+    - ".agent/tasks/TASK-0020/report.yaml"
+    - ".agent/tasks/TASK-0020/review.yaml"
+    - ".agent/tasks/TASK-0020/report-r2.yaml"
 
-  expected_files_are_restrictive: false
+  expected_files_are_restrictive: true
 
 invariants:
-  - "agent-foundation remains the target-owned product-state authority."
-  - "There is one machine-readable product-state SSOT: product-state.json. No parallel feature-state store is introduced."
-  - "derived_state is a projection validated from gates/evidence, never an independent authoritative input."
-  - "T2 product scope/release scope semantics remain intact."
-  - "Exactly four current features F001-F004 remain registered under product_scope revision 1."
-  - "UNKNOWN, PENDING, FAIL, and N/A are never equivalent to PASS for lifecycle advancement."
-  - "Task acceptance, report/review state, UI/chat state, and Runtime execution state never manufacture feature state."
-  - "Historical artifacts count only through concrete still-attributable evidence, not lifecycle labels."
-  - "Release OPEN/unresolved prevents RELEASE_READY or LIVE."
-  - "No global system gates, project phase, aggregate release state, earliest blocker, progression planner, scheduler, daemon, workflow engine, or central multi-repository state service is introduced."
-  - "T1 architecture contract and protected domains remain unchanged."
-  - "One initiating chat/session is not required to reconstruct feature gates or derived state."
+  - "Revision 2 repairs evidence recognition only; it does not redesign the T3 lifecycle model."
+  - "product-state.json remains the sole machine-readable product-state SSOT."
+  - "derived_state remains validator-recomputed from ordered gates."
+  - "Historical verification PASS requires both owner-specific positive persisted result evidence and exact current owner-tree attribution."
+  - "Negative, blocked, unknown, contradictory, or unrelated PASS evidence never qualifies an owner verification gate."
+  - "Task/report/review lifecycle status alone never manufactures product state."
+  - "Release remains OPEN/null/UNKNOWN and therefore no feature exceeds VERIFIED."
+  - "No global gates, project phase, earliest blocker, Architect progression integration, execution/UI recovery redesign, T4-T6 artifact, scheduler, daemon, queue, workflow engine, or central state service is introduced."
+  - "No host dependency installation or environment mutation is authorized."
 
 forbidden_changes:
-  - "Create feature-state.json, a second product-state manifest, or T4-T6 task artifacts."
-  - "Store an authored state that validator does not recompute."
-  - "Promote a feature from task/report/review terminal status alone."
-  - "Treat a test source file or verifier definition alone as evidence that verification passed."
-  - "Cite TASK-0020 report/review before those artifacts canonically exist."
-  - "Turn fresh Executor terminal output into a hidden product-state PASS without persisted inspectable evidence."
-  - "Force generic frontend/backend/data/async gates onto agent-foundation capabilities when those layers are not target-applicable."
-  - "Mark N/A as equivalent to PASS."
-  - "Set release_readiness or production_acceptance PASS while release scope remains OPEN/unresolved."
-  - "Implement global gates, project phase, progress metrics, earliest-blocker selection, Architect progression changes, execution/UI recovery changes, or closure."
-  - "Modify T1 architecture, seven-skill taxonomy, rationalization, external pins/metadata, documents/, standards/, authority.lock.json, agent-runtime, Runtime/tunnel state, credentials, host security, branches, tags, releases, or repository metadata."
+  - "Accept broad global PASS token matching as owner-specific evidence."
+  - "Treat OPM_BOOTSTRAP = FALSE as positive profile verification."
+  - "Treat documents_tests FAIL or standards_verifier CAPABILITY_BLOCKED as PASS because another report block contains PASS."
+  - "Remove exact owner-tree attribution or weaken future/self-attestation evidence guards."
+  - "Promote F002 from TASK-0020 revision-2 test output or report/review state."
+  - "Change product-state.json merely to simplify tests; state changes require corrected parser evidence."
+  - "Create another state manifest, another lifecycle authority, T4-T6 tasks, or global/project progression machinery."
+  - "Modify protected owners, ECC/external pins, documents/, standards/, authority.lock.json, agent-runtime, Runtime/host/dependency state, credentials, branches, tags, releases, or repository metadata."
 
 gap_policy:
   local_auto_fix: true
   scope_expansion: forbidden
-  architecture_change: revised_contract_required
+  architecture_change: forbidden
   spec_change: revised_contract_required
   dependency_change: forbidden
   public_contract_change: revised_contract_required
@@ -144,65 +131,54 @@ gap_policy:
 
 acceptance_criteria:
   - id: AC-1
-    requirement: "product-state.json schema 2 is the sole machine-readable feature lifecycle owner and preserves accepted T2 scope/release truth."
-    evidence_required: "Exact schema/object proof shows unchanged F001-F004 registry and OPEN unresolved release plus one lifecycle object per feature; no second state file/owner exists."
+    requirement: "The two exact revision-1 Architect evidence-spoof exploits are closed."
+    evidence_required: "Fresh focused regressions prove OPM_BOOTSTRAP=FALSE/result FAIL is rejected for profile and documents_tests FAIL plus unrelated PASS is rejected for documents."
 
   - id: AC-2
-    requirement: "Feature state is mechanically derived from explicit ordered gates rather than authored independently."
-    evidence_required: "Validator and focused tests recompute derived_state, reject mismatches and later-gate PASS without prerequisites, and prove all seven lifecycle thresholds."
+    requirement: "Historical verification evidence is owner-specific, positive, and exact-byte attributable."
+    evidence_required: "Parser tests prove intended owner result is structurally/semantically bound, contradictory or ambiguous owner evidence fails closed, and owner-tree equivalence to final_execution_head remains required."
 
   - id: AC-3
-    requirement: "Gate truth is evidence-backed and fail-closed."
-    evidence_required: "PASS requires inspectable evidence; FAIL/PENDING/UNKNOWN/N/A semantics are validated; missing/stale/nonexistent/future/self-referential evidence cannot manufacture PASS; UNKNOWN/N/A never advance state."
+    requirement: "Current canonical F001-F004 verification/state projection is requalified through corrected evidence parsing."
+    evidence_required: "Real canonical refs are reevaluated. F001/F003 may remain VERIFIED only if corrected parser proves scoped positive evidence; F004 blocked evidence remains not-PASS; F002 remains not-PASS absent persisted exact-final-byte evidence."
 
   - id: AC-4
-    requirement: "Current F001-F004 states are freshly and conservatively derived from target-owned evidence."
-    evidence_required: "Per-feature gate matrix cites current inspectable evidence; independent review can reconstruct why every PASS is attributable and why every non-PASS blocks advancement. No state is inferred from task acceptance or conversation."
+    requirement: "Revision-1 T3 semantics outside the parser defect remain intact."
+    evidence_required: "Focused regressions continue proving derived-state recomputation, ordered prerequisites, UNKNOWN/N/A non-advancement, release OPEN cap, future/self evidence rejection, and forward-only regression semantics."
 
   - id: AC-5
-    requirement: "Release uncertainty caps current lifecycle correctly."
-    evidence_required: "With release OPEN/id UNKNOWN/required features UNKNOWN, every feature has release_readiness and production_acceptance not-PASS and no derived state exceeds VERIFIED."
+    requirement: "Revision 2 is narrowly scoped."
+    evidence_required: "Base-to-candidate diff modifies only validator/tests, plus product-state/contract only if corrected truth requires it; no T4-T6/progression/recovery machinery or protected-owner changes."
 
   - id: AC-6
-    requirement: "Forward-only semantics and explicit evidence-backed regression are deterministic."
-    evidence_required: "Transition tests reject downgrade without a matching regression record and accept only an exact from/to/reason/evidence regression; initial schema-1 migration records no fabricated regression."
-
-  - id: AC-7
-    requirement: "T3 remains bounded and protected T1/T2/Foundation/external owners are preserved."
-    evidence_required: "Base-to-candidate diff is limited to product-state.json, the existing product-state contract, validator, tests; no T4-T6/global-phase/progression/recovery machinery; protected object identities remain unchanged."
-
-  - id: AC-8
-    requirement: "All target and owner-native qualification checks are green on one coherent final candidate."
-    evidence_required: "Task validation, focused T3 tests, full skill/protocol validator/regressions, external sync/regressions, profile bootstrap local/remote/regressions, documents validation regressions, standards tools/verify.py, JSON parse, Python compile, internal links when affected, protected-path checks, and git diff --check PASS."
+    requirement: "All owner-native and repository qualification is green on one coherent final candidate."
+    evidence_required: "Focused T2+T3+rev2 regressions, full skills/protocol tests, external sync/regressions, profile local/remote/regressions, documents regressions, standards verifier using an already-available qualified interpreter, JSON parse, Python compile, protected-path checks, git diff --check all PASS."
 
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Validate TASK-0020 and prove exact local/remote execution-base identity plus clean worktree before mutation."
+      command_or_check: "Validate TASK-0020 revision 2 and exact execution-base/local/remote/clean state."
       required: true
     - id: CHECK-2
-      command_or_check: "Audit current evidence for F001-F004 before assigning any PASS. Identify which current feature bytes have persisted exact verification evidence and where evidence is absent/stale."
+      command_or_check: "Run the two Architect exploit fixtures against the pre-fix parser and record RED: both must reproduce acceptance before correction. If they do not reproduce, stop and report evidence mismatch rather than implementing an unproven fix."
       required: true
     - id: CHECK-3
-      command_or_check: "Run focused T3 lifecycle/gate/derivation/transition regressions including negative evidence and release-cap cases."
+      command_or_check: "Implement owner-specific evidence parsing and rerun exploit fixtures GREEN, plus contradictory/ambiguous owner-result negative cases."
       required: true
     - id: CHECK-4
-      command_or_check: "Run python3 -B skills/scripts/validate_skill_library.py and python3 -B skills/scripts/test_validate_skill_library.py."
+      command_or_check: "Reevaluate canonical F001-F004 verification evidence with the corrected parser and prove the resulting product-state projection."
       required: true
     - id: CHECK-5
-      command_or_check: "Run python3 -B skills/scripts/sync_external_capabilities.py --check and python3 -B skills/scripts/test_sync_external_capabilities.py."
+      command_or_check: "Run focused Task0019ProductStateTests + Task0020FeatureLifecycleTests plus new revision-2 evidence-parser regressions."
       required: true
     - id: CHECK-6
-      command_or_check: "Run python3 -B profile/.agent/bootstrap/validate.py, profile/.agent/bootstrap/test_bootstrap.py, and --remote when already supported without new credentials."
+      command_or_check: "Run python3 -B skills/scripts/validate_skill_library.py and python3 -B skills/scripts/test_validate_skill_library.py; external sync/regressions; profile bootstrap local/remote/regressions; documents tests; standards tools/verify.py with an already-installed interpreter that satisfies existing dependencies."
       required: true
     - id: CHECK-7
-      command_or_check: "Run python3 -B documents/tests/test_validate.py and python3 -B standards/tools/verify.py as owner-native qualification surfaces."
+      command_or_check: "Run JSON parse, modified Python compile, protected object/history checks, exact candidate scope proof, no future-task/global-phase machinery proof, and git diff --check."
       required: true
     - id: CHECK-8
-      command_or_check: "Parse product-state.json, compile modified Python, validate affected links, prove T1 contract/seven skills/rationalization/external tree/documents/standards/authority.lock/TASK-0014..0019 unchanged, and prove no T4-T6/global-phase/progression/recovery artifact was introduced."
-      required: true
-    - id: CHECK-9
-      command_or_check: "Fresh-resolve remote main before ordinary non-force publication and post-prove exact candidate/report lineage, final identity, ahead/behind 0/0, clean worktree, and no tag/release mutation."
+      command_or_check: "Fresh-resolve remote main before ordinary non-force publication; publish candidate then report-r2 only; prove exact direct-child lineage, final HEAD/origin/remote identity, ahead/behind 0/0, clean worktree, and no tag/release mutation."
       required: true
   authoritative_verification:
     required: false
@@ -210,12 +186,13 @@ verification:
     expected_signal: ""
 
 structure_policy:
-  expected_new_files: []
+  expected_new_files:
+    - ".agent/tasks/TASK-0020/report-r2.yaml"
   unlisted_new_files:
     allowed: false
     max: 0
     within: []
-    purpose: "T3 evolves the existing product-state object/contract and existing validator/tests only; no new implementation artifact is required."
+    purpose: "Revision 2 changes the existing parser/tests and emits only its revision-specific report artifact."
   allow_new_top_level_directories: false
   allow_new_shared_modules: false
 
