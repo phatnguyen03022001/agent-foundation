@@ -1,0 +1,257 @@
+protocol_version: 3
+
+task_id: TASK-0016
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0016"
+  gap_id: "TARGET-REPOSITORY-PRODUCT-AUTHORITY-CONTRACT"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "c86d28c076526b54461b1e910675e48e1fb7b6b4"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+  - verification
+
+execution_skills:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator direction on 2026-09-28 to complete the Foundation/ECC vision by making each target repository the unambiguous owner of product truth and repo-native engineering contracts"
+    role: "material target-authority objective"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0015/review.yaml@c86d28c076526b54461b1e910675e48e1fb7b6b4"
+    role: "accepted reduced seven-skill Foundation taxonomy under the ECC-default seam"
+    precedence: 2
+  - source: ".agent/tasks/TASK-0014/review.yaml@c86d28c076526b54461b1e910675e48e1fb7b6b4"
+    role: "accepted target/repo-native -> ECC -> other external -> Foundation generic HOW routing seam"
+    precedence: 3
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@c86d28c076526b54461b1e910675e48e1fb7b6b4"
+    role: "canonical L0/L1/L2 ownership model"
+    precedence: 4
+  - source: "skills/protocols/TASK_PROTOCOL.md@c86d28c076526b54461b1e910675e48e1fb7b6b4"
+    role: "canonical target binding, task authority, lifecycle, Git, evidence, and repository-local artifact semantics"
+    precedence: 5
+  - source: "skills/executor/SKILL.md@c86d28c076526b54461b1e910675e48e1fb7b6b4"
+    role: "current repo-native execution and restrictive mutation procedure"
+    precedence: 6
+  - source: "skills/executor/references/ENGINEERING_HOW.md@c86d28c076526b54461b1e910675e48e1fb7b6b4"
+    role: "current target tooling/acquisition/process-ownership discovery procedure"
+    precedence: 7
+
+structure_authority:
+  status: RESOLVED
+  source: "accepted Foundation/ECC/target separation"
+  rationale: "The missing piece is an explicit ownership/discovery contract for target repositories. It must reuse existing Architecture, Task Protocol, Architect/Executor procedure, and bootstrap navigation rather than creating a target manifest schema, repository adapter layer, or fourth architecture layer."
+
+objective: "Make the target repository the explicit canonical owner of product truth and repository-native engineering contracts for Foundation-governed work. Define a deterministic bounded discovery and precedence model for product architecture/domain behavior, exact task authority, repository instructions, source/toolchain/dependency contracts, build/test/lint/typecheck/codegen commands, runtime/deployment configuration, and repo-local verification surfaces. Foundation remains governance/control, ECC remains default generic engineering HOW, Agent Runtime remains execution transport, and GitHub remote remains canonical durable repository state. Do not impose a new universal manifest or require AGENTS.md or any one filename when the target repository already expresses equivalent truth through its native files and conventions."
+
+target_repository_contract:
+  owner: "the exact currently bound target repository"
+  owns:
+    - product behavior and domain truth
+    - product architecture and public/internal interfaces
+    - exact repository-local task and lifecycle artifacts
+    - repository-native agent/operator instructions when present
+    - source tree and code ownership boundaries
+    - language/runtime/toolchain and dependency contracts
+    - build/test/lint/typecheck/format/codegen commands and configuration
+    - repository-local verification profiles and project-designated authoritative verifier identity
+    - runtime/deployment/migration/configuration contracts belonging to the product
+    - repository-specific Git topology and delivery conventions
+  does_not_automatically_require:
+    - AGENTS.md
+    - CLAUDE.md
+    - a Foundation-specific manifest
+    - ECC installation
+    - copied Foundation skills
+    - copied ECC skills
+    - one universal build/test/lint command shape
+
+scope:
+  required_changes:
+    - "Add one canonical target-repository ownership section to skills/contracts/FOUNDATION_ARCHITECTURE.md. It must explicitly separate target product/repo-native truth from Foundation governance, ECC generic HOW, and Agent Runtime execution transport."
+    - "Define deterministic target discovery precedence without inventing a required new manifest: exact current task/review/continuation authority when bound; explicit target product/architecture/contracts and repository instruction surfaces; repo-native manifests/lockfiles/toolchain/build/test/lint/typecheck/codegen/deployment configuration and source/tests; then external generic HOW through the already accepted TASK-0014 seam. More specific current target authority outranks generic Foundation/ECC guidance."
+    - "Treat AGENTS.md, CLAUDE.md, README instructions, package manifests, Makefile/task runners, CI configuration, language-native project files, architecture docs, test configuration, deployment descriptors, and equivalent repository files as examples of repo-native evidence only when they actually exist and are applicable. Do not create filename-based authority merely from convention."
+    - "Make conflicts fail closed by authority class rather than by filename. Explicit current task/product authority outranks generic repo convention; a repo-native product/tool contract outranks ECC/Foundation generic HOW; stale docs or generated artifacts do not override current canonical target truth merely because they are textual instructions."
+    - "Clarify that Foundation task.yaml owns the authorized WHAT/BOUNDARY/PROOF for one task but does not replace the target repository's enduring product architecture, domain behavior, toolchain, or repo-native verifier definitions. Task authority may explicitly override a repository default only inside its authorized material scope."
+    - "Clarify that ECC supplies generic methodology after target discovery; ECC commands/agents/examples must adapt to target-native commands and architecture rather than replacing them. Do not require project-local ECC installation/configuration merely to make generic HOW usable."
+    - "Clarify that Agent Runtime and other execution surfaces execute or observe target-native operations but do not become owners of target commands, dependencies, process lifecycle, deployment semantics, or product configuration merely because they carry the command."
+    - "Update Architect procedure so planning begins from exact target binding and bounded target-truth discovery before selecting generic HOW. Architect must not prescribe a generic framework/file layout/build command over an established target-native contract without explicit task authority."
+    - "Update Executor procedure/reference so execution resolves the target's actual build/test/lint/typecheck/codegen/dependency/toolchain/runtime conventions before applying ECC generic HOW. Repository-owned commands and verifier profiles remain primary; ECC examples are advisory patterns."
+    - "Define missing-target-contract behavior proportionally: absence of AGENTS.md or a standard command name is not itself a blocker. Continue when actual repo-native behavior is deterministically discoverable; return a blocking authority/spec gap only when safe implementation or required proof depends on unresolved contradictory/missing product truth."
+    - "Preserve target portability across languages/frameworks. Do not encode npm, pytest, Go, Rust, Xcode, Gradle, Docker, Vercel, Cloud Run, or another platform as a Foundation default."
+    - "Add deterministic regression coverage for ownership precedence, conflict behavior, optional instruction files, repo-native verifier/command priority, no universal target manifest requirement, ECC subordination, and Runtime transport-only semantics."
+    - "Update bootstrap/navigation only if an existing route or reconstruction assertion must expose the canonical target-repository contract. Prefer the existing Foundation Architecture locator rather than adding a new capability route or file."
+    - "Keep the TASK-0015 seven-skill taxonomy unchanged. This task must not add, delete, rename, thin, or re-rationalize skills."
+    - "Keep the exact TASK-0014 ECC external capability plane byte-stable, including all pins, snapshots, catalog, harness-source schema, and CLI-optional resolution semantics."
+    - "Keep documents/ and standards/ byte-stable. They remain generic Foundation domains, not target-product storage."
+    - "Preserve MAIN_ONLY topology and publish implementation/report by ordinary non-force fast-forward on main only."
+
+  allowed_existing_files_or_components:
+    - "skills/contracts/FOUNDATION_ARCHITECTURE.md"
+    - "skills/protocols/TASK_PROTOCOL.md"
+    - "skills/architect/SKILL.md"
+    - "skills/executor/SKILL.md"
+    - "skills/executor/references/ENGINEERING_HOW.md"
+    - "skills/README.md only for concise ownership/navigation correction"
+    - "README.md only for concise top-level ownership/navigation correction"
+    - "profile/.agent/bootstrap/bootstrap.json only if existing navigation requires a correction without a new route"
+    - "profile/.agent/bootstrap/test_bootstrap.py only for the corresponding bootstrap regression"
+    - "skills/scripts/test_validate_skill_library.py"
+    - "skills/scripts/validate_skill_library.py only if deterministic doctrine validation requires it"
+    - ".agent/tasks/TASK-0016/**"
+
+  expected_files_are_restrictive: false
+
+invariants:
+  - "Foundation remains MAIN_ONLY and retains exactly two organizational roles: Architect and Executor."
+  - "The accepted seven-skill internal taxonomy remains exactly: adversarial-audit, architect, executor, reliability, security-review, simplicity, verification."
+  - "The target repository is the canonical owner of product truth and repo-native engineering contracts; Foundation and ECC cannot silently replace that ownership."
+  - "Foundation owns governance, authority lifecycle, capability routing/control, Foundation-specific safety/evidence deltas, and cross-repository isolation/continuity."
+  - "ECC remains the exact-pinned default generic engineering harness after target/repo-native truth and never gains target or L0 authority."
+  - "Agent Runtime remains an orthogonal execution transport and never becomes product/toolchain/deployment authority merely by executing commands."
+  - "GitHub remote state remains canonical durable repository truth, while local state is an execution copy subject to existing drift rules."
+  - "No AGENTS.md, CLAUDE.md, README, manifest filename, package manager, language, framework, CI provider, or deployment platform is universally required by Foundation."
+  - "No new target-manifest schema, repository adapter, project registry, daemon, service, package/plugin manager, workflow engine, database, queue, or fourth layer is introduced."
+  - "skills/.agent/rationalization.json and every internal SKILL.md inventory entry remain unchanged from the execution base."
+  - "skills/.agent/external-capabilities/** remains byte-identical to the execution base."
+  - "documents/, standards/, authority.lock.json, agent-runtime, Runtime/host state, credentials, branches, tags, releases, and external repositories remain unchanged."
+
+forbidden_changes:
+  - "Create TARGET.yaml, foundation.json, repo-contract.json, AGENTS.md, CLAUDE.md, or another universal target-repository manifest merely for Foundation integration."
+  - "Require every target to install/configure ECC, copy ECC skills, copy Foundation skills, or expose one fixed build/test/lint command."
+  - "Treat a conventional filename as stronger authority than explicit current task/product truth."
+  - "Make Foundation architecture/docs the owner of target-specific product design, language/framework layout, dependencies, build commands, test commands, deployment semantics, or runtime configuration."
+  - "Make ECC examples or commands canonical target commands when the repository defines its own mechanism."
+  - "Make Agent Runtime command transport the semantic owner of target commands or process/deployment behavior."
+  - "Change the seven-skill taxonomy, ECC/external pins or snapshots, documents/, standards/, authority.lock.json, agent-runtime, Runtime/tunnel state, credentials, host security state, branches, tags, releases, or repository metadata."
+  - "Add a new bootstrap capability route solely for target-repository ownership when Foundation Architecture already supplies the canonical contract locator."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Foundation has one explicit canonical target-repository ownership contract that separates product/repo-native truth from Foundation governance, ECC generic HOW, and Runtime transport."
+    evidence_required: "Architecture/protocol diff plus deterministic doctrine tests prove each ownership class and prohibit authority transfer across those boundaries."
+
+  - id: AC-2
+    requirement: "Target discovery and precedence are deterministic but filename-neutral."
+    evidence_required: "Regression cases prove explicit task/product authority, applicable repo-native instructions/contracts/tooling, and external generic HOW precedence; absence of AGENTS.md/CLAUDE.md or a fixed command name is accepted when equivalent target truth is discoverable."
+
+  - id: AC-3
+    requirement: "Repository-native build/test/lint/typecheck/codegen/toolchain/dependency/verifier contracts outrank generic ECC/Foundation methodology."
+    evidence_required: "Architect/Executor/Engineering HOW diffs plus tests show generic HOW adapting to target commands and reject replacing existing target-native commands with harness examples without explicit authority."
+
+  - id: AC-4
+    requirement: "Missing or contradictory target truth fails proportionally rather than through ceremony."
+    evidence_required: "Tests distinguish optional convention absence from a real blocking product/spec/proof gap and preserve existing LOCAL/FOLLOW_UP/BLOCKING gap semantics."
+
+  - id: AC-5
+    requirement: "TASK-0016 introduces no new repository manifest, capability route, architectural layer, service, or harness installation dependency."
+    evidence_required: "Exact diff/structure proof and negative regressions reject universal manifest/instruction-file requirements, new bootstrap route, ECC-install dependency, or orchestration subsystem."
+
+  - id: AC-6
+    requirement: "Accepted TASK-0014/TASK-0015 seams remain stable."
+    evidence_required: "Exact blob/inventory proof shows skills/.agent/external-capabilities/**, skills/.agent/rationalization.json, and all seven internal SKILL.md paths are unchanged; external seam and taxonomy regressions remain green."
+
+  - id: AC-7
+    requirement: "Protected Foundation domains and execution substrate remain unchanged."
+    evidence_required: "Base-to-candidate diff/object proof for documents/, standards/, authority.lock.json and repository scope; no agent-runtime, Runtime/host, credential, branch/tag/release, or external-repository mutation."
+
+  - id: AC-8
+    requirement: "All affected deterministic Foundation verification is green on one coherent final candidate."
+    evidence_required: "Task artifact validation, full skill/protocol validator and regressions, external-capability seam regressions, bootstrap validation/regressions including remote when already available, Python compilation for modified scripts, internal-link/doctrine validation, and git diff --check PASS."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0016 with the canonical task artifact validator before implementation mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Inspect current target-ownership statements across Foundation Architecture, Task Protocol, Architect, Executor, Engineering HOW, bootstrap, and README before editing; remove contradictions rather than layering duplicate doctrine."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run focused target-contract regressions covering product/repo-native ownership, filename-neutral discovery, command/verifier precedence, conflict handling, optional AGENTS.md/CLAUDE.md, ECC subordination, and Runtime transport-only behavior."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run python3 -B skills/scripts/validate_skill_library.py and python3 -B skills/scripts/test_validate_skill_library.py."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run python3 -B skills/scripts/sync_external_capabilities.py --check and python3 -B skills/scripts/test_sync_external_capabilities.py without refreshing any external source."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Run python3 -B profile/.agent/bootstrap/validate.py and python3 -B profile/.agent/bootstrap/test_bootstrap.py; run --remote when already supported without new credentials."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Prove skills/.agent/rationalization.json, the seven internal SKILL.md path inventory, skills/.agent/external-capabilities/**, documents/, standards/, and profile/.agent/bootstrap/authority.lock.json are unchanged from execution base."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Run python3 -m py_compile for every modified Python file and git diff --check; prove no universal target manifest/instruction file, new bootstrap capability route, service, daemon, registry, package/plugin manager, branch, tag, or release was introduced."
+      required: true
+    - id: CHECK-9
+      command_or_check: "Fresh-resolve remote main before non-force publication and post-prove exact candidate/report lineage, final main identity, ahead/behind 0/0, and clean tracked worktree."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files: []
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "The existing Architecture, Task Protocol, role procedure, Engineering HOW, and validators are sufficient. A new target-repository manifest or subsystem is explicitly unnecessary."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
