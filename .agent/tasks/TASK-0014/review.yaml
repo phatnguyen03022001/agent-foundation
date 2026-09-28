@@ -1,0 +1,57 @@
+protocol_version: 3
+
+task_id: TASK-0014
+task_revision: 1
+review_revision: 1
+state: ACCEPTED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0014/report.yaml
+  commit: "27411439bbd304c40856e3408ad56627d6304f2b"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: PASS
+  verifier_evidence: PASS
+
+acceptance_basis:
+  - "Exact report 27411439bbd304c40856e3408ad56627d6304f2b is the sole report-only child of implementation candidate cf7e4fb06c770d4cde786274d7f7ccd7a9674569; the candidate has sole parent exact authorized base 6344f08efb74f0b32a387921b48a7a2481a7ae46."
+  - "Fresh remote/local proof before review persistence shows HEAD == origin/main == 27411439bbd304c40856e3408ad56627d6304f2b, ahead/behind 0/0, and a clean worktree before the Architect review artifact was authored."
+  - "Base-to-candidate diff is restricted to twelve TASK-0014-authorized Foundation seam, external-capability metadata, generator, validator, and regression paths; candidate-to-report diff contains only .agent/tasks/TASK-0014/report.yaml."
+  - "Foundation Architecture now preserves L0 authority/governance and target-repository product truth while routing remaining generic engineering HOW through exact target/repo-native conventions first, exact-pinned ECC second, another independently admitted exact external capability only for a material ECC gap, and Foundation-internal generic implementation only for Foundation-specific deltas or genuinely uncovered capability."
+  - "ECC remains exactly pinned to affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735 under MIT and is modeled as harness_source with inert indexed skill, command, agent, command-registry, plugin-manifest, and install-manifest metadata."
+  - "Fresh generated metadata inspection proves exact ECC surface counts of 292 skills, 94 commands, and 68 agents, authority NONE catalog semantics, inert_metadata_only activation, cli_required=false, and exclusion of AGENTS.md, CLAUDE.md, hooks, and rules from indexed executable capability entries."
+  - "Architect and Executor procedure changes keep ECC subordinate to exact current task authority and repo-native product behavior; ECC upstream roles, task/session/memory systems, hooks, installers, settings, and unrelated surfaces do not gain Foundation authority or automatic activation."
+  - "The CLI-independent resolver is deterministic and fail-closed against the exact source pin, surface, title, and catalog authority NONE metadata. Fresh focused regressions pass 19/19, including CLI-absent resolution, wrong-surface/missing-entry rejection, mutable/incomplete policy rejection, and no authority transfer."
+  - "Fresh full verification passes: external capability sync is CURRENT; skill-library validator passes; validator regressions pass 174/174; bootstrap validation passes; bootstrap regressions pass 49/49; authenticated remote bootstrap validation returns OPM_BOOTSTRAP = TRUE; and git diff --check passes."
+  - "Fresh object/diff proof confirms documents/, standards/, profile/.agent/bootstrap/authority.lock.json are unchanged from authorized base to candidate; skills/.agent/rationalization.json has identical blob identity; and the complete internal skills/**/SKILL.md inventory is unchanged."
+  - "TASK-0014 establishes the ECC harness seam only. It does not rationalize, remove, rename, or broadly rewrite the current internal Foundation skill taxonomy, and it introduces no new role, fourth layer, daemon, service, registry service, package/plugin manager, queue, database, or Runtime feature."
+
+final_candidate:
+  commit: "cf7e4fb06c770d4cde786274d7f7ccd7a9674569"
+  tree: "87e14d76db3a6c00d8dc1a66b04c30f142365ce1"
+  external_capability_sync: PASS
+  focused_ecc_seam_tests: "19/19 PASS independently rerun"
+  validator_regressions: "174/174 PASS independently rerun"
+  bootstrap_regressions: "49/49 PASS independently rerun"
+  bootstrap_remote_validation: PASS
+  report_validation: PASS
+  result: PASS
+
+notes:
+  - "TASK-0014 is terminally ACCEPTED for exact report 27411439bbd304c40856e3408ad56627d6304f2b."
+  - "A follow-up taxonomy rationalization task may now use this accepted seam, but TASK-0014 itself grants no authority to remove or rewrite internal skills."
+  - "Review operational_timing is omitted because the required review start boundary was not captured before review-specific inspection; no timing is reconstructed."
