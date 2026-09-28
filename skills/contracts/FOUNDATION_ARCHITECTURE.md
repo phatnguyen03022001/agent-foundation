@@ -17,6 +17,22 @@ There are exactly two organizational roles: Architect and Executor.
 
 Sync and read-only Researcher are Executor specializations. They are not organizational roles and have no independent task, mutation, review, acceptance, rebinding, or architecture authority.
 
+## Target repository product authority
+
+The exact currently bound target repository is the canonical owner of product truth and repository-native engineering contracts. Its canonical GitHub remote is durable repository truth; local checkouts and execution state remain subordinate copies under the existing drift rules. Foundation owns governance/control, not the target product; ECC supplies generic engineering HOW after target truth; Agent Runtime supplies execution transport only.
+
+Target-owned truth includes product architecture and domain behavior; public and internal interfaces; exact repository-local task/lifecycle artifacts; applicable agent/operator instructions; source and code-ownership boundaries; language/runtime/toolchain and dependency contracts; build, test, lint, typecheck, format, and codegen commands/configuration; repository-local verification profiles and project-designated authoritative verifier identity; runtime and deployment configuration, migrations, and product configuration; and repository-specific Git topology and delivery conventions.
+
+Target discovery is bounded and filename-neutral. Resolve by authority class rather than filename, in this order: (1) exact current task/review/continuation authority for the task-scoped WHAT/BOUNDARY/PROOF and explicit scoped overrides; (2) explicit current target product, architecture, domain, and applicable repository-instruction contracts; (3) applicable repo-native manifests, lockfiles, toolchain/runtime pins, scripts/task runners, CI configuration, language-native project files, architecture docs, source/tests, test configuration, deployment descriptors, and other equivalent repository-native evidence; then (4) external generic HOW through the existing harness seam below. More specific current target authority outranks generic Foundation/ECC guidance.
+
+`AGENTS.md`, `CLAUDE.md`, README instructions, package manifests, Makefiles/task runners, CI files, language-native project files, architecture docs, test configuration, and deployment descriptors are evidence only when they actually exist and apply. Their names do not grant authority. The absence of a conventional instruction filename is not a blocker when equivalent repository-native evidence deterministically resolves the needed product, tooling, or verification contract.
+
+When authority classes conflict, explicit current task/product authority outranks generic repository convention; a current repo-native product/tool contract outranks ECC/Foundation generic HOW; and stale docs or generated artifacts do not override current canonical target truth merely because they contain instructions. A task-scoped override is valid only inside its authorized material scope and does not transfer enduring product ownership to Foundation.
+
+ECC methodology, commands, agents, and examples must adapt to target-native commands and architecture rather than replace them, and generic HOW does not require project-local ECC installation or configuration. Agent Runtime is execution transport only and does not become the owner of target commands, dependencies, process lifecycle, deployment semantics, or product configuration merely because it carries a command. Other execution surfaces likewise execute or observe target-native operations without inheriting semantic ownership.
+
+There is no universal target manifest, no required `AGENTS.md` or `CLAUDE.md`, no single package manager, language, framework, CI provider, or deployment platform, and no fixed build, test, lint, typecheck, or codegen command shape. Continue when the required target behavior is deterministically discoverable from applicable authority; return a blocking authority/spec gap only when safe implementation or required proof depends on contradictory or missing product truth.
+
 ## L1 — Control and Continuity
 
 L1 owns deterministic capability navigation and non-authoritative continuity. It does not own product decisions or implementation methodology.

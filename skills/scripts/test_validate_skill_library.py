@@ -3291,6 +3291,64 @@ class ActualArtifactCliTests(unittest.TestCase):
 
 
 
+class Task0016TargetRepositoryAuthorityTests(unittest.TestCase):
+    def read(self, relative_path: str) -> str:
+        return (ROOT / relative_path).read_text(encoding="utf-8")
+
+    def test_canonical_target_ownership_and_filename_neutral_precedence(self) -> None:
+        architecture = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
+        protocol = self.read("protocols/TASK_PROTOCOL.md")
+        combined = architecture + "\n" + protocol
+        for marker in (
+            "## Target repository product authority",
+            "canonical owner of product truth and repository-native engineering contracts",
+            "product architecture and domain behavior",
+            "toolchain and dependency contracts",
+            "build, test, lint, typecheck, format, and codegen",
+            "runtime and deployment configuration",
+            "authority class rather than filename",
+            "AGENTS.md",
+            "CLAUDE.md",
+            "absence of a conventional instruction filename is not a blocker",
+            "`task.yaml` owns the authorized WHAT/BOUNDARY/PROOF for one task",
+            "does not replace the target repository's enduring product",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_roles_resolve_repo_native_truth_before_generic_how(self) -> None:
+        combined = "\n".join(
+            self.read(path)
+            for path in (
+                "contracts/FOUNDATION_ARCHITECTURE.md",
+                "architect/SKILL.md",
+                "executor/SKILL.md",
+                "executor/references/ENGINEERING_HOW.md",
+            )
+        )
+        for marker in (
+            "bounded target-truth discovery",
+            "Repository-owned commands and verifier profiles remain primary",
+            "ECC examples are advisory patterns",
+            "adapt to target-native commands and architecture",
+            "execution transport only",
+            "does not become the owner of target commands",
+            "contradictory or missing product truth",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_contract_rejects_universal_manifest_and_platform_defaults(self) -> None:
+        architecture = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
+        engineering = self.read("executor/references/ENGINEERING_HOW.md")
+        combined = architecture + "\n" + engineering
+        for marker in (
+            "no universal target manifest",
+            "no single package manager, language, framework",
+            "no fixed build, test, lint, typecheck, or codegen command shape",
+            "equivalent repository-native evidence",
+        ):
+            self.assertIn(marker, combined)
+
+
 class Task0010RationalizationTests(unittest.TestCase):
     def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
         temp = tempfile.TemporaryDirectory()
