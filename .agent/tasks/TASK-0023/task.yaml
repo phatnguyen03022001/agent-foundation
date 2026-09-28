@@ -1,0 +1,249 @@
+protocol_version: 3
+
+task_id: TASK-0023
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_continuation
+  task_id: "TASK-0023"
+  gap_id: "AGENT-FOUNDATION-REAL-TARGET-ADVERSARIAL-ADOPTION-CLOSURE"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "02561359a4b6d19ecc9ed9e76824bcff9a0349c1"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+  - verification
+  - adversarial-audit
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+  recommended:
+    - adversarial-audit
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "operator-supplied AGENT_FOUNDATION_PLAN.md version 2, SHA-256 27f6ae194e1ebc60aa031361b3105337c6f866ab2a127cd8afa81ae10d457b80"
+    role: "canonical adoption order, final invariant, task/product/execution/UI separation, no-blind-retry and closure semantics"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0022/review.yaml@02561359a4b6d19ecc9ed9e76824bcff9a0349c1"
+    role: "accepted T5 Foundation/Architect progression consumption"
+    precedence: 2
+  - source: ".agent/tasks/TASK-0021/review.yaml@02561359a4b6d19ecc9ed9e76824bcff9a0349c1"
+    role: "accepted T4 deterministic global-gate/phase/blocker semantics"
+    precedence: 3
+  - source: ".agent/tasks/TASK-0020/review.yaml@02561359a4b6d19ecc9ed9e76824bcff9a0349c1"
+    role: "accepted T3 evidence-derived feature lifecycle semantics"
+    precedence: 4
+  - source: "agent-runtime/main@57c046da9e734abe7921f5969f9d85469bad1de2"
+    role: "exact real-target pilot snapshot; source/runtime/release/task/tooling truth remains target-owned and read-only"
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "AGENT_FOUNDATION_PLAN.md sections 24-39 and 41-48 plus accepted T1-T5"
+  rationale: "T6 is qualification-only adoption closure. It proves the completed model on the fully adopted agent-foundation target and on a distinct real target that does not expose the same product-state representation. It must close by evidence only, not by adding more governance/product machinery."
+
+objective: "Perform final real-target adversarial adoption closure for the Fullstack Product Architecture & State SSOT without modifying Foundation semantics, agent-runtime product bytes, live Runtime, or host state. Prove that agent-foundation self-dogfoods the complete T1-T5 model deterministically, while a distinct real target is consumed filename-neutrally and fails closed on product-state facts it does not canonically expose. Demonstrate source/release/installed-runtime/task/execution separation, target-native verifier precedence, task/product separation, UI/execution separation, and no-blind-retry boundaries. On complete PASS emit only the T6 report for independent Architect closure review."
+
+pilot_targets:
+  foundation_self:
+    repository: phatnguyen03022001/agent-foundation
+    expected_main_at_task_authoring: "02561359a4b6d19ecc9ed9e76824bcff9a0349c1"
+    mode: read_only_self_dogfood
+  real_target:
+    repository: phatnguyen03022001/agent-runtime
+    branch: main
+    exact_pilot_sha: "57c046da9e734abe7921f5969f9d85469bad1de2"
+    public_release:
+      tag: v0.5.1
+      packaged_source_sha: "674095e739533e100c2cf75f434dd0bc825a3de3"
+      archive_sha256: "9518e1cf4f28033cbec97b8906e55e1a4da6ad3a9067485fb6ef7c4fcfac58e8"
+    planning_observed_installed_runtime:
+      version: "0.5.0"
+      revision: "b1879b5c185e93457bb634a7ab0508f7220416af"
+      tool_contract_kernel: 2
+      advertised_tools: 20
+      known_capabilities: 21
+    mode: read_only_foreign_target
+
+scope:
+  required_changes:
+    - "Validate TASK-0023 and prove agent-foundation local HEAD == origin/main == freshly resolved remote main at the exact authorized execution base with ahead/behind 0/0 and a clean index/worktree before qualification."
+    - "Do not modify any Foundation governance/product/source bytes during T6. On successful qualification final_execution_head must equal the exact TASK-0023 execution base."
+    - "Self-dogfood the accepted T1-T5 model on current agent-foundation: resolve the ten-step Architect read protocol from fresh target-owned evidence; validate schema-3 product state; recompute current feature states/system aggregates/phase/blocker; prove stored phase equals derived P0_SCOPE and earliest blocker equals release.status."
+    - "Prove current agent-foundation product truth remains F001 VERIFIED, F002 INTEGRATED, F003 VERIFIED, F004 INTEGRATED; release remains OPEN/null/UNKNOWN; later feature/system work cannot bypass the P0 release.status blocker."
+    - "Bind agent-runtime read-only to exact main SHA 57c046da9e734abe7921f5969f9d85469bad1de2. Before the pilot require local HEAD == origin/main == freshly resolved remote main, ahead/behind 0/0, clean index/worktree, and no active mutation/rebase/merge operation. If the target does not satisfy this exact state, stop BLOCKED; do not fetch-forward, reset, clean, stash, checkout, or reconcile it."
+    - "Capture a bounded pre-pilot agent-runtime fingerprint including exact Git identity, porcelain state, tag identities v0.5.1 and v0.5.0, current source version SSOT, minimum target-native product/release/toolchain/verifier/recovery surfaces, and read-only installed Runtime capability identity."
+    - "Reconstruct agent-runtime filename-neutrally using current target-native evidence rather than Foundation conventions. At minimum distinguish: current source main 57c046da... with source version 0.5.1; public release v0.5.1 bound to packaged source 674095e... and archive SHA-256 9518e1cf...; installed Runtime identity observed read-only as 0.5.0/b1879b5c... unless fresh evidence proves task staleness; repository task/review state; repo-native verify/package/install/recovery contracts."
+    - "Prove no state-layer collapse: source main is not treated as packaged-source identity; public release is not treated as installed Runtime state; installed Runtime capability state is not product/task authority; task/report/review state does not manufacture product feature/gate/phase truth; chat/UI state has authority NONE."
+    - "Apply the accepted T5 read protocol to agent-runtime. Resolve every material fact that target-native evidence supports, but do not invent an agent-foundation-style feature registry, global gate matrix, schema-3 state, required release feature set, or project phase for agent-runtime when current target evidence does not canonically establish those facts. Preserve UNKNOWN / actual authority gap rather than fabricating progression."
+    - "The foreign-target pilot must explicitly prove that absence of canonical product-state evidence is a valid fail-closed result, not a reason to infer progress from v0.5.1 publication, TASK-0185 acceptance, README wording, current source version, or installed Runtime health."
+    - "Inspect current agent-runtime target-native verifier and recovery authority read-only: verify ./verify / verification_policy.py / verify_tests.py and relevant tests remain target-owned; inspect docs/RECOVERY.md and durable execution surfaces sufficiently to prove outcome-unknown/no-blind-retry semantics remain target-native and Foundation does not replace them."
+    - "Resolve one exact-pinned Foundation external generic HOW capability from existing metadata and prove it remains subordinate to agent-runtime target-native product/tool/verifier/recovery truth. Do not install, update, or configure ECC or another harness."
+    - "Use adversarial historical evidence without replaying mutating work: demonstrate at least one accepted task does not by itself imply live/product completion, one BLOCKED task does not imply product failure, and public release evidence remains separable from incomplete/missing current task report/review evidence."
+    - "Immediately after the agent-runtime pilot, freshly resolve remote main again and require exact same bound SHA 57c046da..., ahead/behind 0/0, clean index/worktree, unchanged tag identities, and unchanged installed Runtime read-only identity. Any drift or overlapping writer invalidates the closure interval and requires BLOCKED without reconciliation."
+    - "Run fresh Foundation qualification to prove no regression since T5: task artifact validation; current product-state validation; focused T2-T5 regressions; full skills/protocol validator/regressions; external capability sync/regressions; profile bootstrap local/remote/regressions; documents tests; standards verifier using an already-installed qualified interpreter; Python compile where applicable; protected/history identity checks; internal links if touched; git diff --check."
+    - "Prove all Foundation paths outside .agent/tasks/TASK-0023/report.yaml remain byte-identical to the exact execution base before report authorship. Prove agent-runtime suffered zero repository, index, ref, tag, release, dependency, process/service, config, tunnel, credential, host-security, install/cutover, or live Runtime mutation caused by TASK-0023."
+    - "On complete PASS create only .agent/tasks/TASK-0023/report.yaml with result NEEDS_REVIEW, final_execution_head equal to the exact unchanged TASK-0023 execution base, commit it as the sole report-only child, and publish by ordinary non-force fast-forward after fresh Foundation remote reconciliation."
+    - "On any material failure create the same report path with result BLOCKED and exact evidence when publication remains authorized/capable; do not modify Foundation or agent-runtime to make closure pass."
+    - "Executor must not declare program/vision closure. Only independent Architect review of the exact T6 report may terminally accept T6."
+
+  allowed_existing_files_or_components:
+    - ".agent/tasks/TASK-0023/task.yaml"
+    - ".agent/tasks/TASK-0023/report.yaml"
+
+  expected_files_are_restrictive: true
+
+invariants:
+  - "T6 is qualification-only; no Foundation source/governance/product semantics change is authorized."
+  - "agent-runtime is strictly read-only for T6."
+  - "The target owns product/release/tooling/recovery truth; Foundation consumes but never replaces it."
+  - "agent-foundation self-dogfood must derive P0_SCOPE / release.status from canonical evidence."
+  - "agent-runtime must remain filename-neutral: absence of a Foundation-style product-state model yields UNKNOWN/authority gap rather than invented feature/gate/phase truth."
+  - "Source, release, installed Runtime, task/governance, execution, and UI states remain distinct."
+  - "Historical task terminal state does not manufacture product state."
+  - "Public release existence does not manufacture installed Runtime state."
+  - "Installed Runtime health/capability does not manufacture source/release/task authority."
+  - "No blind retry or execution-state inference from UI/chat is permitted."
+  - "No planner service, scheduler, daemon, queue, workflow engine, central state database, cross-repository mutable state, new manifest, new lifecycle state, or new organizational role is introduced."
+  - "No dependency, host, credential, tunnel, Runtime, branch, tag, or release mutation is authorized."
+
+forbidden_changes:
+  - "Modify any Foundation path other than the T6 report artifact after task authoring."
+  - "Modify agent-runtime files, index, refs, branches, tags, releases, tasks, reports, reviews, dependencies, build outputs, Runtime/service/config/tunnel/process state, credentials, or host security."
+  - "Run package, install, cutover, restart, reload, uninstall, migration, deployment, release publication, tag mutation, or other consequence-bearing agent-runtime operation."
+  - "Run canonical agent-runtime ./verify merely for confidence; T6 only inspects target-native verifier authority and existing persisted evidence unless a non-mutating target command is explicitly necessary and safely bounded. Foundation qualification runs are separate and required."
+  - "Invent agent-runtime feature IDs, feature registry, system gate matrix, required release feature set, derived project phase, or earliest product blocker without canonical target evidence."
+  - "Treat README text alone, task status alone, release existence alone, source version alone, installed runtime identity alone, or chat memory as complete product-state authority."
+  - "Reconcile agent-runtime if any drift is observed."
+  - "Modify T1-T5 contracts/state to make the pilot pass."
+  - "Create another task after TASK-0023 as part of T6 closure."
+
+gap_policy:
+  local_auto_fix: false
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: forbidden
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Agent-foundation self-dogfoods the full accepted T1-T5 product-state/progression model deterministically."
+    evidence_required: "Fresh ten-step read reconstruction validates target-owned schema-3 state, exact F001-F004 states, system aggregates, stored-vs-derived phase, and earliest blocker P0_SCOPE/release.status with no later-work bypass."
+
+  - id: AC-2
+    requirement: "A distinct real target is consumed filename-neutrally without importing Foundation product-state assumptions."
+    evidence_required: "Exact stable agent-runtime SHA plus current target-native source/release/toolchain/verifier/recovery evidence are reconstructed read-only; unsupported feature/global-gate/phase facts remain UNKNOWN/authority gap rather than fabricated."
+
+  - id: AC-3
+    requirement: "State-layer and ownership boundaries survive adversarial real-target facts."
+    evidence_required: "Proof distinguishes source main, packaged-source tag, public release assets, installed Runtime identity, task/review lifecycle, execution/runtime state, and UI/chat authority; no layer is used to manufacture another."
+
+  - id: AC-4
+    requirement: "Task/product and release/install separation are demonstrated from real evidence."
+    evidence_required: "At least one accepted task is shown not to imply live/product completion; one BLOCKED task is shown not to imply product failure; v0.5.1 public release is shown not to imply installed Runtime v0.5.1; missing/incomplete task lifecycle does not erase independently observable release truth."
+
+  - id: AC-5
+    requirement: "Target-native verifier/recovery authority and no-blind-retry semantics remain primary."
+    evidence_required: "Agent-runtime verifier/recovery surfaces are resolved from current target bytes; exact-pinned external generic HOW remains authority NONE/subordinate; no Foundation generic HOW replaces target commands or recovery semantics."
+
+  - id: AC-6
+    requirement: "Both closure pilots are interference-free and side-effect-free."
+    evidence_required: "Foundation remains exact execution base before report; agent-runtime pre/post exact SHA, clean/synced state, tag identities and installed Runtime identity are unchanged; no repository/live/host/release effects are caused by T6."
+
+  - id: AC-7
+    requirement: "Accepted T1-T5 Foundation implementation remains fully qualified."
+    evidence_required: "Fresh Foundation artifact/product-state/focused/full/external/bootstrap/documents/standards/static/protected checks all PASS on unchanged governing source."
+
+  - id: AC-8
+    requirement: "T6 truthfully hands final closure judgment to independent Architect review."
+    evidence_required: "All ACs PASS -> report result NEEDS_REVIEW as sole report-only child of unchanged execution base; any failed material predicate -> BLOCKED. Executor never self-accepts program closure."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0023; prove exact Foundation execution-base/local/origin/remote identity and clean worktree."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Freshly reconstruct agent-foundation ten-step read protocol and prove P0_SCOPE/release.status plus exact current feature/system truth."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Bind exact agent-runtime SHA 57c046da9e734abe7921f5969f9d85469bad1de2 with clean/synced pre-fingerprint and no active mutation operation."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Perform bounded read-only filename-neutral agent-runtime source/release/installed-runtime/task/toolchain/verifier/recovery reconstruction and explicitly record unsupported product-state facts as UNKNOWN/authority gap."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run adversarial state-layer/task-product/release-install/no-blind-retry ownership probes using current persisted target evidence; no mutating replay."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Resolve one exact-pinned external generic capability from existing Foundation metadata and prove subordination to target-native agent-runtime truth."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Capture exact agent-runtime post-pilot fingerprint and require exact equality with pre-pilot SHA/clean/sync/tag/installed-runtime identity; drift -> BLOCKED without reconciliation."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Run fresh Foundation product-state validation, focused T2-T5 regressions, full skills/protocol validation/regressions, external sync/regressions, profile bootstrap local/remote/regressions, documents tests, standards verifier, relevant compile/static/protected/history checks, and git diff --check."
+      required: true
+    - id: CHECK-9
+      command_or_check: "Prove final_execution_head equals exact TASK-0023 base and every Foundation path except report.yaml is byte-identical; prove zero target/live side effects."
+      required: true
+    - id: CHECK-10
+      command_or_check: "Fresh-resolve Foundation remote before ordinary non-force report publication and post-prove report-only direct-child lineage, final HEAD/origin/remote identity, ahead/behind 0/0, clean worktree, main-only remote, and unchanged tag/release surface."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files:
+    - ".agent/tasks/TASK-0023/report.yaml"
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "T6 is qualification-only and emits exactly one Executor report artifact."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
