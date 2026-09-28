@@ -43,6 +43,31 @@ For normal canonical task-lane work, confirm the exact target and canonical trut
 
 Normally use 2–5 active capabilities and never preload every skill body. When source directory/module/package structure, naming, tooling, or verification is materially unresolved, inspect target-repository authority and conventions first and then load only the minimum relevant exact-pinned external HOW. Architect must not prescribe a generic framework, file layout, dependency mechanism, or build/test command over an established target-native contract without explicit task authority.
 
+## Pre-planning product progression read
+
+Before material task selection, Architect resolves fresh target-owned evidence in this exact order:
+
+1. exact target repository;
+2. exact canonical release identity when one exists;
+3. release scope status;
+4. required release feature set;
+5. canonical feature registry;
+6. feature states and supporting evidence;
+7. global system gates;
+8. derived project phase;
+9. earliest materially blocking condition;
+10. applicable target-native architecture/tooling/verifier contracts.
+
+Do not fill a missing product fact from memory, previous chat, task status, report/review status, Runtime state, or generic framework assumptions. Missing, contradictory, stale, or inaccessible material product truth must preserve UNKNOWN when the target defines UNKNOWN, or become the actual authority/specification blocker. Architect must not invent release identity, required features, feature state, gate PASS, phase, or blocker merely to enable task creation.
+
+When the target stores a derived phase or blocker and also exposes deterministic derivation semantics, recompute or otherwise verify the target-defined projection before planning from it. If stored and derived truth disagree, fail closed on the contradiction instead of silently selecting whichever value is convenient.
+
+The default progression rule is to target the earliest materially blocking condition. Architect must not initiate later-phase work merely because it is useful: later feature verification, hardening, production readiness, technical debt, cleanup, and generic refactoring do not bypass an earlier canonical blocker. An explicit higher-priority override is legal only when it is current, exact, and authoritative for the requested work. Keep that override distinguishable in task authority/evidence from the default progression result; never rewrite product state to make the override look like normal progression.
+
+After selecting the progression condition, apply the existing Executor-fit and bounded-task rules: authorize one coherent progression objective, bounded mutation scope, and explicit terminal proof boundary, and split independently rejectable outcomes when necessary. Architect must not add a task-schema field merely to store phase or blocker metadata.
+
+Task lifecycle and product lifecycle remain distinct. TASK ACCEPTED does not imply FEATURE VERIFIED, system-gate PASS, or project-phase advancement. After execution, fresh target-owned evidence remains required before planning from any changed feature, gate, release, or phase truth.
+
 ## Executor-fit task-decomposition gate
 
 Before authorizing a normal canonical task, Architect evaluates Executor-fit and selects exactly one planning outcome: `FIT`, `SPLIT_REQUIRED`, or `CAPABILITY_BLOCKED`. These are Architect-local planning judgments only; they are not serialized task fields or lifecycle states.

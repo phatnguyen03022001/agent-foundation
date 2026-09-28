@@ -3943,6 +3943,123 @@ class Task0021GlobalProgressionTests(unittest.TestCase):
         self.assertTrue(any("cannot evidence their own implementation candidate" in message for message in errors))
 
 
+class Task0022ProgressionConsumptionTests(unittest.TestCase):
+    def read(self, relative_path: str) -> str:
+        return (ROOT / relative_path).read_text(encoding="utf-8")
+
+    def load_state(self) -> dict:
+        return json.loads((ROOT.parent / "product-state.json").read_text(encoding="utf-8"))
+
+    def test_architect_preplanning_read_order_is_exact(self) -> None:
+        architect = self.read("architect/SKILL.md")
+        markers = (
+            "1. exact target repository",
+            "2. exact canonical release identity when one exists",
+            "3. release scope status",
+            "4. required release feature set",
+            "5. canonical feature registry",
+            "6. feature states and supporting evidence",
+            "7. global system gates",
+            "8. derived project phase",
+            "9. earliest materially blocking condition",
+            "10. applicable target-native architecture/tooling/verifier contracts",
+        )
+        positions = [architect.index(marker) for marker in markers]
+        self.assertEqual(positions, sorted(positions))
+
+    def test_fresh_target_evidence_preserves_unknown_and_separates_task_lifecycle(self) -> None:
+        combined = self.read("contracts/FOUNDATION_ARCHITECTURE.md") + "\n" + self.read("architect/SKILL.md")
+        for marker in (
+            "fresh target-owned evidence",
+            "memory, previous chat, task status, report/review status, Runtime state",
+            "Missing, contradictory, stale, or inaccessible",
+            "preserve UNKNOWN",
+            "must not invent",
+            "Task lifecycle and product lifecycle remain distinct",
+            "fresh target-owned evidence remains required",
+        ):
+            self.assertIn(marker, combined)
+
+    def test_default_progression_override_and_bounded_handoff_are_explicit(self) -> None:
+        architect = self.read("architect/SKILL.md")
+        for marker in (
+            "earliest materially blocking condition",
+            "must not initiate later-phase work merely because it is useful",
+            "explicit higher-priority override",
+            "current, exact, and authoritative",
+            "distinguishable",
+            "one coherent progression objective",
+            "bounded mutation scope",
+            "explicit terminal proof boundary",
+            "independently rejectable",
+            "must not add a task-schema field",
+        ):
+            self.assertIn(marker, architect)
+
+    def test_foundation_is_filename_neutral_progression_consumer_not_product_owner(self) -> None:
+        architecture = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
+        for marker in (
+            "## Target product progression consumption",
+            "filename-neutral",
+            "consume target-owned product progression truth",
+            "verify target-defined derived phase",
+            "select the target-defined earliest blocker",
+            "create bounded task authority",
+            "does not own release scope, feature registry, feature state, system gates, or project phase",
+            "does not require product-state.json",
+            "does not require agent-foundation schema 3",
+            "no universal product manifest",
+            "one language or validator implementation",
+        ):
+            self.assertIn(marker, architecture)
+
+    def test_current_p0_consumption_uses_the_accepted_t4_resolver(self) -> None:
+        state = self.load_state()
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(state), "P0_SCOPE")
+        self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "release.status")
+        self.assertEqual(
+            {
+                feature["id"]: feature["lifecycle"]["derived_state"]
+                for feature in state["product_scope"]["features"]["registered"]
+            },
+            {"F001": "VERIFIED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
+        )
+
+    def test_later_phase_fixtures_reuse_t4_resolver_and_earlier_blockers_win(self) -> None:
+        helper = Task0021GlobalProgressionTests(methodName="runTest")
+
+        foundation = helper.future_state()
+        helper.set_system_leaf(foundation, "foundation", "security", "UNKNOWN")
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(foundation), "P1_FOUNDATION")
+        self.assertEqual(
+            VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(foundation),
+            "system_gates.foundation.security",
+        )
+
+        verification = helper.future_state()
+        helper.set_feature_prefix(verification, "F002", 4)
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(verification), "P4_VERIFICATION")
+        self.assertEqual(
+            VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(verification),
+            "features.F002.verification",
+        )
+
+        current = self.load_state()
+        helper.set_feature_prefix(current, "F002", 4)
+        helper.set_feature_prefix(current, "F004", 4)
+        self.assertEqual(VALIDATOR_MODULE._derive_agent_foundation_project_phase(current), "P0_SCOPE")
+        self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(current), "release.status")
+
+    def test_stored_projection_must_match_target_derivation_before_planning(self) -> None:
+        combined = self.read("contracts/FOUNDATION_ARCHITECTURE.md") + "\n" + self.read("architect/SKILL.md")
+        for marker in (
+            "stored and derived truth disagree",
+            "fail closed",
+            "deterministic derivation semantics",
+        ):
+            self.assertIn(marker, combined)
+
+
 class Task0020FeatureLifecycleTests(unittest.TestCase):
     def load_state(self) -> dict:
         return json.loads((ROOT.parent / "product-state.json").read_text(encoding="utf-8"))

@@ -35,6 +35,20 @@ ECC methodology, commands, agents, and examples must adapt to target-native comm
 
 There is no universal target manifest, no required `AGENTS.md` or `CLAUDE.md`, no single package manager, language, framework, CI provider, or deployment platform, and no fixed build, test, lint, typecheck, or codegen command shape. Continue when the required target behavior is deterministically discoverable from applicable authority; return a blocking authority/spec gap only when safe implementation or required proof depends on contradictory or missing product truth.
 
+## Target product progression consumption
+
+Foundation may consume target-owned product progression truth only after binding the exact target repository and resolving fresh target-owned evidence. This consumption boundary is filename-neutral: resolve semantic authority from applicable target evidence rather than requiring a particular state filename, manifest shape, schema, language, or validator.
+
+Within that boundary, Foundation may consume target-owned release scope, required release features, feature registry, feature states and supporting evidence, system gates, and target-defined progression projections; verify target-defined derived phase when deterministic derivation semantics are exposed; select the target-defined earliest blocker; and create bounded task authority for the selected progression condition. These are governance consumption actions, not product-state authorship.
+
+Foundation does not own release scope, feature registry, feature state, system gates, or project phase. It does not require product-state.json, does not require agent-foundation schema 3, imposes no universal product manifest, and does not require one language or validator implementation. A target may expose equivalent product truth through any current repository-native representation that deterministically establishes the needed semantics.
+
+Missing, contradictory, stale, or inaccessible material product truth does not become progress. Preserve UNKNOWN when the target semantics define that state, or surface the actual authority/specification blocker when the required fact cannot be resolved. Foundation must not invent release identity, required features, feature state, gate PASS, phase, or blocker to make planning proceed.
+
+If a target stores a derived phase or blocker and also exposes deterministic derivation semantics, verify consistency before planning from the stored projection. If stored and derived truth disagree, fail closed on the contradiction; do not choose the convenient value and do not rewrite target product state to manufacture normal progression.
+
+Task lifecycle and product lifecycle remain distinct. Task acceptance, report state, review state, chat history, execution state, and Runtime state do not imply feature verification, gate PASS, release readiness, production acceptance, or project-phase advancement. After execution, fresh target-owned evidence remains required before any product-state transition can be consumed as current truth.
+
 ## L1 — Control and Continuity
 
 L1 owns deterministic capability navigation and non-authoritative continuity. It does not own product decisions or implementation methodology.
