@@ -1,13 +1,13 @@
 protocol_version: 3
 
 task_id: TASK-0020
-task_revision: 2
+task_revision: 3
 state: APPROVED
 
 origin:
   type: continuation_after_revision_required_review
   task_id: "TASK-0020"
-  gap_id: "T3-HISTORICAL-VERIFICATION-EVIDENCE-MISSCOPED-PASS"
+  gap_id: "T3-PROFILE-BOOTSTRAP-MISSCOPED-TRUE"
 
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
@@ -25,7 +25,7 @@ execution_base:
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  revision: "53b2a60110836ece8f3ab80f4fe078581389ef48"
+  revision: "dc9d782df687eddd81aa3e4c347db7c5d7637f59"
 
 architect_analysis_skills:
   - architect
@@ -47,78 +47,75 @@ external_skills:
   execution_recommended: []
 
 authority_sources:
-  - source: ".agent/tasks/TASK-0020/review.yaml@53b2a60110836ece8f3ab80f4fe078581389ef48"
-    role: "terminal revision-1 REVISION_REQUIRED review and exact parser-defect reproduction"
+  - source: ".agent/tasks/TASK-0020/review.yaml@dc9d782df687eddd81aa3e4c347db7c5d7637f59"
+    role: "terminal revision-2 REVISION_REQUIRED review and exact remaining profile evidence bypass"
     precedence: 1
-  - source: ".agent/tasks/TASK-0020/report.yaml@c2d28aaef3c18e9f5e2f07926d9bbb7f36c55dbc"
-    role: "revision-1 implementation/qualification evidence reusable except for AC-3/AC-4 fail-closed historical verification parsing"
+  - source: ".agent/tasks/TASK-0020/report-r2.yaml@27b8d65fddf5d0198ba6c7f2e29b5e2299bf2283"
+    role: "revision-2 parser correction and reusable qualification evidence"
     precedence: 2
   - source: "operator-supplied AGENT_FOUNDATION_PLAN.md version 2, SHA-256 27f6ae194e1ebc60aa031361b3105337c6f866ab2a127cd8afa81ae10d457b80"
-    role: "canonical product-state/evidence semantics"
+    role: "canonical feature-evidence semantics"
     precedence: 3
-  - source: ".agent/tasks/TASK-0019/review.yaml@53b2a60110836ece8f3ab80f4fe078581389ef48"
+  - source: ".agent/tasks/TASK-0019/review.yaml@dc9d782df687eddd81aa3e4c347db7c5d7637f59"
     role: "accepted T2 product scope/release scope"
     precedence: 4
 
 structure_authority:
   status: RESOLVED
-  source: "TASK-0020 revision-1 Architect review"
-  rationale: "Revision 1 established the intended T3 schema and current conservative state but failed independent red-team review because historical verification evidence was recognized by broad token co-occurrence. Revision 2 is a narrow proof-contract correction, not a T3 redesign."
+  source: "TASK-0020 revision-2 Architect review"
+  rationale: "Revision 2 closed the original cross-owner token-matching defects but profile verification still accepts an arbitrary report scalar containing OPM_BOOTSTRAP = TRUE. Revision 3 is limited to binding positive profile bootstrap evidence to recognized bootstrap verification structure."
 
-objective: "Correct TASK-0020's historical verification-evidence recognition so a verification gate can PASS only from an owner-specific positive persisted result attributable to the exact current owner bytes. Preserve the revision-1 T3 schema, derivation, release cap, prerequisite, regression, and current feature-state semantics unless the corrected parser itself proves that a current PASS is unsupported. Close the two exact red-team exploits reproduced by Architect without expanding into T4-T6."
+objective: "Close the remaining profile historical-verification evidence bypass by requiring OPM_BOOTSTRAP=TRUE to occur in recognized bootstrap verification evidence rather than arbitrary report narration. Preserve the revision-2 documents/standards/skills parser behavior, exact owner-tree attribution, T3 lifecycle semantics, and canonical product state unless the corrected profile parser proves a state change is required."
 
 scope:
   required_changes:
-    - "Freshly reconcile local HEAD, origin/main, remote main, ahead/behind, and clean worktree against the exact revision-2 execution base before mutation."
-    - "Treat revision-1 review defect reproduction as mandatory red tests: (1) profile evidence containing OPM_BOOTSTRAP = FALSE plus result: FAIL must not qualify as verification PASS; (2) documents_tests result FAIL plus an unrelated result PASS elsewhere must not qualify as documents verification PASS."
-    - "Replace broad token-co-occurrence logic in _verification_report_covers_owner with deterministic owner-specific positive-result recognition."
-    - "Preserve exact current-owner-tree attribution: historical verification evidence remains valid only when the report's final_execution_head exists and the current owning subtree is byte-equivalent to that evidenced candidate."
-    - "For profile/, require an explicit positive bootstrap verification signal attributable to profile bootstrap, including exact TRUE semantics; mere presence of the OPM_BOOTSTRAP token, FALSE, UNKNOWN, FAIL, or contradictory/ambiguous bootstrap evidence must not pass."
-    - "For documents/ and standards/, when the report exposes owner-specific result blocks such as documents_tests or standards_verifier, bind PASS/FAIL/CAPABILITY_BLOCKED to that exact block. A PASS elsewhere in the report must not satisfy the owner-specific gate."
-    - "For skills/, require an owner-specific persisted positive verification signal; a generic PASS token or unrelated check must never qualify. Keep this conservative if no canonical historical PASS shape exists."
-    - "Reject contradictory owner-specific evidence within one report. Ambiguous positive/negative evidence is not PASS."
-    - "Do not weaken path existence, future/self-attestation rejection, exact owner-byte attribution, ordered gate derivation, release OPEN cap, UNKNOWN/N/A semantics, or transition regression checks."
-    - "Add adversarial regressions for the two exact Architect reproductions and for owner-specific contradictory/mis-scoped PASS cases across supported owners where practical."
-    - "Prove the real current F001 and F003 verification refs still qualify only through correctly scoped positive evidence. Prove F004 TASK-0004 standards_verifier CAPABILITY_BLOCKED remains not-PASS. F002 remains not-PASS unless independently persisted exact-final-byte evidence already exists."
-    - "Preserve product-state.json byte-for-byte if corrected parsing yields the same F001=VERIFIED, F002=INTEGRATED, F003=VERIFIED, F004=INTEGRATED projection. If and only if the corrected parser proves an existing verification PASS unsupported, update product-state.json conservatively and update the existing product-state contract only as required to keep canonical state truthful."
-    - "Do not use TASK-0020 revision-2 report/review or fresh terminal output to manufacture product verification PASS."
-    - "Rerun focused T2+T3 tests, including the new exploit regressions, then the full repo-native qualification set required by revision 1."
-    - "Keep T1 architecture, T2 scope/release semantics, seven-skill bodies, rationalization/external metadata, documents/, standards/, authority.lock.json, TASK-0014..0019, agent-runtime, Runtime/host state, credentials, branches, tags, and releases unchanged."
-    - "On successful qualification create .agent/tasks/TASK-0020/report-r2.yaml with result NEEDS_REVIEW, commit it as the sole report-only child of the revision-2 implementation candidate, and publish by ordinary non-force fast-forward."
-    - "If corrected evidence parsing changes canonical feature state, report the exact state delta and evidence basis; do not preserve revision-1 state merely for continuity."
+    - "Freshly prove local HEAD == origin/main == freshly resolved remote main at the exact revision-3 execution base, ahead/behind 0/0, clean index/worktree."
+    - "Before mutation reproduce the exact revision-2 Architect probe against the pre-fix parser: an exact-owner profile report with no bootstrap verification block and only unrelated narration containing OPM_BOOTSTRAP = TRUE must return accepted=True. If it does not reproduce, stop and report evidence mismatch."
+    - "Correct _profile_verification_is_positive or equivalent logic so arbitrary scalars/narration outside recognized profile-bootstrap verification structures cannot qualify profile verification PASS."
+    - "A qualifying profile historical report must contain an explicit positive bootstrap verification signal in recognized bootstrap evidence structure and remain semantically unambiguous."
+    - "Recognized positive profile evidence must require exact TRUE semantics; FALSE, UNKNOWN, FAIL, contradictory, ambiguous, absent, or merely narrated TRUE evidence must not qualify."
+    - "Preserve exact current profile/ subtree attribution to execution.final_execution_head."
+    - "Preserve revision-2 documents/, standards/, and skills owner-specific parsing byte-for-byte unless a directly related mechanical refactor is strictly required; no new behavior is authorized for those owners."
+    - "Add the exact mis-scoped TRUE probe as a permanent adversarial regression, plus one positive scoped profile fixture proving valid recognized bootstrap evidence still qualifies."
+    - "Retain the existing revision-2 negative regressions for profile FALSE/FAIL, contradiction, UNKNOWN/failed bootstrap evidence, documents mis-scoped PASS, blocked standards evidence, and generic/negative skills evidence."
+    - "Reevaluate the real canonical F001 profile evidence after correction. F001 may remain VERIFIED only if TASK-0015 evidence qualifies through recognized scoped bootstrap evidence plus exact current profile-byte attribution."
+    - "Preserve F002/F003/F004 states and product-state.json / AGENT_FOUNDATION_PRODUCT_STATE.md byte-for-byte unless corrected profile parsing proves canonical truth must change."
+    - "Do not use revision-3 terminal output, report, review, or task status to manufacture feature verification PASS."
+    - "Run focused T2+T3+revision-2+revision-3 parser regressions, then full skills/protocol verification and all owner-native qualification surfaces required by revision 2."
+    - "Keep T1 architecture, T2 scope/release semantics, seven-skill bodies, rationalization/external metadata, documents/, standards/, authority.lock.json, TASK-0014..0019, agent-runtime, Runtime/host/dependency state, credentials, branches, tags, and releases unchanged."
+    - "On successful qualification create .agent/tasks/TASK-0020/report-r3.yaml with result NEEDS_REVIEW, commit it as the sole report-only child of the revision-3 implementation candidate, and publish by ordinary non-force fast-forward."
 
   allowed_existing_files_or_components:
     - "skills/scripts/validate_skill_library.py"
     - "skills/scripts/test_validate_skill_library.py"
-    - "product-state.json only if corrected parser changes canonical derived truth"
+    - "product-state.json only if corrected profile parsing changes canonical derived truth"
     - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md only if a product-state truth change requires corresponding documentation"
     - ".agent/tasks/TASK-0020/task.yaml"
     - ".agent/tasks/TASK-0020/report.yaml"
-    - ".agent/tasks/TASK-0020/review.yaml"
     - ".agent/tasks/TASK-0020/report-r2.yaml"
+    - ".agent/tasks/TASK-0020/review.yaml"
+    - ".agent/tasks/TASK-0020/report-r3.yaml"
 
   expected_files_are_restrictive: true
 
 invariants:
-  - "Revision 2 repairs evidence recognition only; it does not redesign the T3 lifecycle model."
+  - "Revision 3 repairs only profile bootstrap evidence scoping."
+  - "Historical profile verification PASS requires recognized scoped positive bootstrap evidence plus exact current profile-tree attribution."
+  - "An arbitrary narration scalar containing OPM_BOOTSTRAP = TRUE is never sufficient."
+  - "Negative, unknown, contradictory, ambiguous, or absent bootstrap verification evidence never qualifies PASS."
   - "product-state.json remains the sole machine-readable product-state SSOT."
   - "derived_state remains validator-recomputed from ordered gates."
-  - "Historical verification PASS requires both owner-specific positive persisted result evidence and exact current owner-tree attribution."
-  - "Negative, blocked, unknown, contradictory, or unrelated PASS evidence never qualifies an owner verification gate."
-  - "Task/report/review lifecycle status alone never manufactures product state."
-  - "Release remains OPEN/null/UNKNOWN and therefore no feature exceeds VERIFIED."
-  - "No global gates, project phase, earliest blocker, Architect progression integration, execution/UI recovery redesign, T4-T6 artifact, scheduler, daemon, queue, workflow engine, or central state service is introduced."
-  - "No host dependency installation or environment mutation is authorized."
+  - "Release remains OPEN/null/UNKNOWN and no feature exceeds VERIFIED."
+  - "No T4-T6/global phase/progression/recovery machinery, scheduler, daemon, queue, workflow engine, central state service, new state manifest, or host dependency installation is introduced."
 
 forbidden_changes:
-  - "Accept broad global PASS token matching as owner-specific evidence."
-  - "Treat OPM_BOOTSTRAP = FALSE as positive profile verification."
-  - "Treat documents_tests FAIL or standards_verifier CAPABILITY_BLOCKED as PASS because another report block contains PASS."
-  - "Remove exact owner-tree attribution or weaken future/self-attestation evidence guards."
-  - "Promote F002 from TASK-0020 revision-2 test output or report/review state."
-  - "Change product-state.json merely to simplify tests; state changes require corrected parser evidence."
-  - "Create another state manifest, another lifecycle authority, T4-T6 tasks, or global/project progression machinery."
-  - "Modify protected owners, ECC/external pins, documents/, standards/, authority.lock.json, agent-runtime, Runtime/host/dependency state, credentials, branches, tags, releases, or repository metadata."
+  - "Scan arbitrary report scalars globally for OPM_BOOTSTRAP = TRUE as sufficient profile verification evidence."
+  - "Treat unrelated narration or acceptance text as profile bootstrap verification."
+  - "Weaken exact owner-tree attribution, future/self evidence guards, gate ordering, derived-state recomputation, release cap, or regression semantics."
+  - "Change documents/standards/skills parsing behavior without a directly required mechanical reason."
+  - "Promote F002 from current execution output or task/report/review state."
+  - "Change canonical feature state merely to satisfy tests."
+  - "Create T4-T6 artifacts or mutate protected domains, agent-runtime, Runtime/host state, dependencies, credentials, tags, releases, branches, or repository metadata."
 
 gap_policy:
   local_auto_fix: true
@@ -131,54 +128,51 @@ gap_policy:
 
 acceptance_criteria:
   - id: AC-1
-    requirement: "The two exact revision-1 Architect evidence-spoof exploits are closed."
-    evidence_required: "Fresh focused regressions prove OPM_BOOTSTRAP=FALSE/result FAIL is rejected for profile and documents_tests FAIL plus unrelated PASS is rejected for documents."
+    requirement: "The exact revision-2 mis-scoped profile TRUE bypass is closed."
+    evidence_required: "RED before fix reproduces accepted=True; GREEN after fix proves the same fixture is rejected."
 
   - id: AC-2
-    requirement: "Historical verification evidence is owner-specific, positive, and exact-byte attributable."
-    evidence_required: "Parser tests prove intended owner result is structurally/semantically bound, contradictory or ambiguous owner evidence fails closed, and owner-tree equivalence to final_execution_head remains required."
+    requirement: "Positive profile historical verification is scoped to recognized bootstrap evidence."
+    evidence_required: "Focused tests prove a recognized scoped OPM_BOOTSTRAP=TRUE positive fixture qualifies while unrelated narration TRUE, FALSE, UNKNOWN, FAIL, contradiction, ambiguity, and missing scoped evidence do not."
 
   - id: AC-3
-    requirement: "Current canonical F001-F004 verification/state projection is requalified through corrected evidence parsing."
-    evidence_required: "Real canonical refs are reevaluated. F001/F003 may remain VERIFIED only if corrected parser proves scoped positive evidence; F004 blocked evidence remains not-PASS; F002 remains not-PASS absent persisted exact-final-byte evidence."
+    requirement: "Exact current profile-byte attribution remains mandatory."
+    evidence_required: "A valid positive historical profile report fails when current profile/ differs from the report's final_execution_head and passes only when owner bytes are exact."
 
   - id: AC-4
-    requirement: "Revision-1 T3 semantics outside the parser defect remain intact."
-    evidence_required: "Focused regressions continue proving derived-state recomputation, ordered prerequisites, UNKNOWN/N/A non-advancement, release OPEN cap, future/self evidence rejection, and forward-only regression semantics."
+    requirement: "Canonical feature-state truth is requalified without unnecessary mutation."
+    evidence_required: "Real F001 evidence is reevaluated through corrected logic; product-state/contract stay byte-identical unless corrected truth requires an explicit conservative delta."
 
   - id: AC-5
-    requirement: "Revision 2 is narrowly scoped."
-    evidence_required: "Base-to-candidate diff modifies only validator/tests, plus product-state/contract only if corrected truth requires it; no T4-T6/progression/recovery machinery or protected-owner changes."
+    requirement: "Revision 3 remains narrowly scoped."
+    evidence_required: "Base-to-candidate diff is limited to validator/tests, plus product-state/contract only if truth changes; documents/standards/skills parser semantics and all protected owners remain unchanged."
 
   - id: AC-6
-    requirement: "All owner-native and repository qualification is green on one coherent final candidate."
-    evidence_required: "Focused T2+T3+rev2 regressions, full skills/protocol tests, external sync/regressions, profile local/remote/regressions, documents regressions, standards verifier using an already-available qualified interpreter, JSON parse, Python compile, protected-path checks, git diff --check all PASS."
+    requirement: "All affected verification is green on one coherent final candidate."
+    evidence_required: "Focused parser/state regressions, full skills/protocol suite, external sync/regressions, profile local/remote/regressions, documents tests, standards verifier with existing qualified interpreter, JSON parse, Python compile, protected/history checks, scope proof, and git diff --check PASS."
 
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Validate TASK-0020 revision 2 and exact execution-base/local/remote/clean state."
+      command_or_check: "Validate TASK-0020 revision 3 and exact execution-base/local/remote/clean state."
       required: true
     - id: CHECK-2
-      command_or_check: "Run the two Architect exploit fixtures against the pre-fix parser and record RED: both must reproduce acceptance before correction. If they do not reproduce, stop and report evidence mismatch rather than implementing an unproven fix."
+      command_or_check: "Reproduce the exact mis-scoped profile TRUE probe RED on the pre-fix revision-3 base."
       required: true
     - id: CHECK-3
-      command_or_check: "Implement owner-specific evidence parsing and rerun exploit fixtures GREEN, plus contradictory/ambiguous owner-result negative cases."
+      command_or_check: "Implement scoped profile-bootstrap evidence recognition and prove RED-to-GREEN plus valid scoped positive fixture."
       required: true
     - id: CHECK-4
-      command_or_check: "Reevaluate canonical F001-F004 verification evidence with the corrected parser and prove the resulting product-state projection."
+      command_or_check: "Rerun all prior revision-2 parser adversarial regressions to prove no regression in documents/standards/skills or prior profile negatives."
       required: true
     - id: CHECK-5
-      command_or_check: "Run focused Task0019ProductStateTests + Task0020FeatureLifecycleTests plus new revision-2 evidence-parser regressions."
+      command_or_check: "Reevaluate canonical F001-F004 state and prove product-state/contract byte identity unless corrected truth changes."
       required: true
     - id: CHECK-6
-      command_or_check: "Run python3 -B skills/scripts/validate_skill_library.py and python3 -B skills/scripts/test_validate_skill_library.py; external sync/regressions; profile bootstrap local/remote/regressions; documents tests; standards tools/verify.py with an already-installed interpreter that satisfies existing dependencies."
+      command_or_check: "Run focused T2+T3+rev2+rev3 tests, full skills/protocol tests, external sync/regressions, profile local/remote/regressions, documents tests, standards verifier with existing interpreter, JSON parse, Python compile, protected/history checks, git diff --check."
       required: true
     - id: CHECK-7
-      command_or_check: "Run JSON parse, modified Python compile, protected object/history checks, exact candidate scope proof, no future-task/global-phase machinery proof, and git diff --check."
-      required: true
-    - id: CHECK-8
-      command_or_check: "Fresh-resolve remote main before ordinary non-force publication; publish candidate then report-r2 only; prove exact direct-child lineage, final HEAD/origin/remote identity, ahead/behind 0/0, clean worktree, and no tag/release mutation."
+      command_or_check: "Fresh-resolve remote before publication; publish candidate then report-r3 only; prove direct-child lineage, final HEAD/origin/remote identity, ahead/behind 0/0, clean worktree, and unchanged tags/releases."
       required: true
   authoritative_verification:
     required: false
@@ -187,12 +181,12 @@ verification:
 
 structure_policy:
   expected_new_files:
-    - ".agent/tasks/TASK-0020/report-r2.yaml"
+    - ".agent/tasks/TASK-0020/report-r3.yaml"
   unlisted_new_files:
     allowed: false
     max: 0
     within: []
-    purpose: "Revision 2 changes the existing parser/tests and emits only its revision-specific report artifact."
+    purpose: "Revision 3 changes the existing parser/tests and emits only its revision-specific report artifact."
   allow_new_top_level_directories: false
   allow_new_shared_modules: false
 
