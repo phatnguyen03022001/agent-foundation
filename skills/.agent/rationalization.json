@@ -22,7 +22,7 @@
       "skill_id": "adversarial-audit",
       "current_path": "adversarial-audit/SKILL.md",
       "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "Owns reusable failure-pressure and governance-bypass HOW. Standards assurance/reliability define properties and evidence, while ecc:santa-method is a multi-agent convergence workflow rather than an equivalent fault-model methodology.",
+      "rationale": "Fresh TASK-0015 audit found no exact-pinned external equivalent for Foundation's governance-pressure and failure-assurance method. ECC agent-architecture-audit diagnoses agent-stack layers but does not own stale-state, retry, partial-effect, or governance-bypass pressure. Reliability owns production operability, not this governance-pressure boundary.",
       "surviving_semantic_owner": "internal:adversarial-audit",
       "external_capability": null
     },
@@ -30,24 +30,24 @@
       "skill_id": "architect",
       "current_path": "architect/SKILL.md",
       "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "Mandatory Foundation organizational-role owner for routing, planning authority, task creation, and review judgment; external L2 capability cannot own or grant this authority.",
+      "rationale": "Mandatory Foundation organizational-role owner for repository binding, routing, planning authority, task creation, and final review judgment. External L2 architecture methodology cannot own or grant this L0 authority.",
       "surviving_semantic_owner": "internal:architect",
       "external_capability": null
     },
     {
       "skill_id": "cloud-run-basics",
       "current_path": "cloud-run-basics/SKILL.md",
-      "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "Pinned capability sources contain no exact Cloud Run capability. Awesome is discovery-only, so no admissible external capability can replace the deployment identity/IAM/cost/verification HOW.",
-      "surviving_semantic_owner": "internal:cloud-run-basics",
+      "disposition": "RETIRE",
+      "rationale": "Google Cloud Run deployment, IAM, scaling, billing, and provider behavior are platform-specific HOW, not a Foundation-wide capability. Generic deployment patterns do not become Cloud Run authority; exact target-repository truth and current provider guidance own this HOW for each target.",
+      "surviving_semantic_owner": "target-repository:cloud-run",
       "external_capability": null
     },
     {
       "skill_id": "debugging",
       "current_path": "debugging/SKILL.md",
-      "disposition": "THIN_DELTA",
-      "rationale": "superpowers:systematic-debugging owns the generic reproduce/narrow/hypothesis/root-cause/fix method. Foundation retains only authority/scope boundaries, incident coordination, mitigation labeling, and routing to version-sensitive research.",
-      "surviving_semantic_owner": "internal:debugging",
+      "disposition": "REPLACE_BY_EXTERNAL",
+      "rationale": "Exact-pinned ECC agent-introspection-debugging is agent-run-specific and does not cover general software root-cause diagnosis. Superpowers systematic-debugging remains the admitted exact external owner for generic reproduce, trace, hypothesize, isolate, fix, and verify HOW; the former local delta duplicated Task Protocol, reliability, and role routing semantics.",
+      "surviving_semantic_owner": "external:superpowers:systematic-debugging",
       "external_capability": {
         "catalog_entry_id": "superpowers:systematic-debugging",
         "repository": "obra/superpowers",
@@ -58,41 +58,51 @@
     {
       "skill_id": "design-review",
       "current_path": "design-review/SKILL.md",
-      "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "Owns reusable architecture/design integrity HOW against target authority. documents/ owns project documentation truth and standards/ owns engineering requirements, but neither supplies this review method and no exact pinned external capability is equivalent.",
-      "surviving_semantic_owner": "internal:design-review",
-      "external_capability": null
+      "disposition": "REPLACE_BY_EXTERNAL",
+      "rationale": "Generic architecture/design review methodology is covered by exact-pinned ECC agent:architect. Foundation Architect and Task Protocol already own material-design authority, readiness, scope, and judgment, so a local design-review wrapper would only duplicate external HOW or existing L0 authority.",
+      "surviving_semantic_owner": "external:ecc:agent:architect",
+      "external_capability": {
+        "catalog_entry_id": "ecc:agent:architect",
+        "repository": "affaan-m/ECC",
+        "revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+        "path": "agents/architect.md"
+      }
     },
     {
       "skill_id": "executor",
       "current_path": "executor/SKILL.md",
       "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "Mandatory Foundation organizational-role owner for exact task execution, mutation gates, divergence handling, local hygiene, execution bundling, and report production.",
+      "rationale": "Mandatory Foundation organizational-role owner for exact task execution, mutation gates, divergence handling, evidence production, and Executor-local safety procedure. External L2 engineering methodology cannot own or grant this L0 authority.",
       "surviving_semantic_owner": "internal:executor",
       "external_capability": null
     },
     {
       "skill_id": "gap-analysis",
       "current_path": "gap-analysis/SKILL.md",
-      "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "documents/DOCUMENT_MODEL.md owns documentation closure, but this skill provides broader reusable completeness analysis for plans, contracts, migrations, and implementation proposals; no exact pinned external capability covers that scope.",
-      "surviving_semantic_owner": "internal:gap-analysis",
-      "external_capability": null
+      "disposition": "REPLACE_BY_EXTERNAL",
+      "rationale": "Generic specification/acceptance completeness analysis is covered by exact-pinned ECC intent-driven-development, including scope, assumptions, missing decisions, observable criteria, and risk-relevant boundaries. Foundation Architect and Task Protocol retain material blocking-gap authority, so no local wrapper is needed.",
+      "surviving_semantic_owner": "external:ecc:intent-driven-development",
+      "external_capability": {
+        "catalog_entry_id": "ecc:intent-driven-development",
+        "repository": "affaan-m/ECC",
+        "revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+        "path": "skills/intent-driven-development/SKILL.md"
+      }
     },
     {
       "skill_id": "github-workflow",
       "current_path": "github-workflow/SKILL.md",
-      "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "Foundation-specific Git authority, canonical-remote, promotion-lineage, phase-capability, and release separation are material. ecc:git-workflow includes generic branch, rebase, hook, global-config, and force-push assumptions that are not compatible replacement semantics.",
-      "surviving_semantic_owner": "internal:github-workflow",
+      "disposition": "RETIRE",
+      "rationale": "Foundation-specific Git authority, canonical remote truth, publication, promotion lineage, topology, and release separation are already canonically owned by Task Protocol and role procedure. Generic Git/GitHub HOW routes through exact-pinned ECC git-workflow/github-ops under the TASK-0014 seam; keeping a wrapper would restate existing owners.",
+      "surviving_semantic_owner": "canonical:skills/protocols/TASK_PROTOCOL.md",
       "external_capability": null
     },
     {
       "skill_id": "optimization",
       "current_path": "optimization/SKILL.md",
-      "disposition": "THIN_DELTA",
-      "rationale": "ecc:benchmark-optimization-loop owns the generic measured baseline/bottleneck/variant/re-measure loop. Foundation retains only bundle/synchronization optimization, assurance-preserving constraints, and routing across simplicity, verification, reliability, and cost.",
-      "surviving_semantic_owner": "internal:optimization",
+      "disposition": "REPLACE_BY_EXTERNAL",
+      "rationale": "Exact-pinned ECC benchmark-optimization-loop fully owns generic measured baseline, bottleneck, bounded-variant, correctness-gate, and re-measure HOW. The former local delta only repeated Executor/verification execution-bundle safety and existing authority boundaries.",
+      "surviving_semantic_owner": "external:ecc:benchmark-optimization-loop",
       "external_capability": {
         "catalog_entry_id": "ecc:benchmark-optimization-loop",
         "repository": "affaan-m/ECC",
@@ -104,49 +114,69 @@
       "skill_id": "reliability",
       "current_path": "reliability/SKILL.md",
       "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "standards/standards/reliability.yaml owns reliability requirements/evidence, while this skill owns reusable failure/recovery/incident HOW. No exact pinned external capability provides a compatible generic replacement.",
+      "rationale": "Fresh ECC audit found only narrower deployment and error-handling capabilities, not one exact owner for bounded operability across dependency failure, retries, backpressure, state recovery, rollout/rollback, incident response, and recovery exercises. Standards define required properties/evidence rather than this reusable operating method.",
       "surviving_semantic_owner": "internal:reliability",
       "external_capability": null
     },
     {
       "skill_id": "research",
       "current_path": "research/SKILL.md",
-      "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "Pinned external research capabilities add background-agent, monitoring, recommendation, or repo-note workflow assumptions. Foundation retains its generic source-order, claim-classification, conflict-resolution, freshness, and stop-condition HOW; L1 independent fan-out remains contract-owned.",
-      "surviving_semantic_owner": "internal:research",
-      "external_capability": null
+      "disposition": "REPLACE_BY_EXTERNAL",
+      "rationale": "Exact-pinned ECC research-ops, backed by deep-research when needed, owns current evidence discovery, local-first escalation, fact/inference boundaries, freshness, and synthesis. Foundation Architecture already owns authority and independent research routing, so the internal generic research method is redundant.",
+      "surviving_semantic_owner": "external:ecc:research-ops",
+      "external_capability": {
+        "catalog_entry_id": "ecc:research-ops",
+        "repository": "affaan-m/ECC",
+        "revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+        "path": "skills/research-ops/SKILL.md"
+      }
     },
     {
       "skill_id": "reuse-first",
       "current_path": "reuse-first/SKILL.md",
-      "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "ecc:search-first mixes package scoring, harness-specific agents/MCP discovery, and implementation actions. Foundation needs a smaller generic build-versus-reuse method aligned with exact capability-state and supply-chain boundaries.",
-      "surviving_semantic_owner": "internal:reuse-first",
-      "external_capability": null
+      "disposition": "REPLACE_BY_EXTERNAL",
+      "rationale": "Exact-pinned ECC search-first owns research-before-code, repository-first discovery, candidate evaluation, and adopt/extend/build generic HOW. Foundation Architecture supplies the authority/pinning seam and target repository truth remains first, so no internal reuse wrapper is required.",
+      "surviving_semantic_owner": "external:ecc:search-first",
+      "external_capability": {
+        "catalog_entry_id": "ecc:search-first",
+        "repository": "affaan-m/ECC",
+        "revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+        "path": "skills/search-first/SKILL.md"
+      }
     },
     {
       "skill_id": "security-review",
       "current_path": "security-review/SKILL.md",
-      "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "standards/standards/security.yaml owns security requirements/evidence. ecc:security-review is a framework-heavy checklist and is not semantically equivalent to Foundation's concrete threat-path and trust-boundary review HOW.",
+      "disposition": "THIN_DELTA",
+      "rationale": "Exact-pinned ECC security-review owns generic security implementation/checklist HOW. Foundation retains only the irreducible threat-path, trust/authority-boundary, evidence-severity, and fail-closed review delta needed to preserve Foundation assurance semantics without adopting ECC examples as authority.",
       "surviving_semantic_owner": "internal:security-review",
-      "external_capability": null
+      "external_capability": {
+        "catalog_entry_id": "ecc:security-review",
+        "repository": "affaan-m/ECC",
+        "revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+        "path": "skills/security-review/SKILL.md"
+      }
     },
     {
       "skill_id": "simplicity",
       "current_path": "simplicity/SKILL.md",
       "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "Owns reusable solution-ladder, source-structure, and evidence-backed governance change-admission HOW. Maintainability/efficiency standards constrain outcomes but do not replace this method; no exact pinned external capability is equivalent.",
+      "rationale": "No exact-pinned external capability owns Foundation governance change admission, rationalization-taxonomy closure, and anti-overengineering consequences. Generic build-vs-reuse, architecture review, and language/source-layout HOW now route through target/ECC owners; the surviving skill is reduced to the Foundation-specific simplicity boundary.",
       "surviving_semantic_owner": "internal:simplicity",
       "external_capability": null
     },
     {
       "skill_id": "verification",
       "current_path": "verification/SKILL.md",
-      "disposition": "KEEP_FOUNDATION_SPECIFIC",
-      "rationale": "External verification capabilities are completion-gate or harness-specific loops. Foundation retains acceptance-to-evidence design, evidence-layer separation, deterministic execution-bundle semantics, and authoritative-verification boundaries; assurance standards own requirements rather than HOW.",
+      "disposition": "THIN_DELTA",
+      "rationale": "Exact-pinned ECC verification-loop owns generic build/type/lint/test/diff completion HOW. Foundation retains acceptance-to-evidence mapping, evidence-layer separation, exact-candidate binding, authoritative-verifier boundaries, and deterministic execution-bundle semantics that ECC does not provide.",
       "surviving_semantic_owner": "internal:verification",
-      "external_capability": null
+      "external_capability": {
+        "catalog_entry_id": "ecc:verification-loop",
+        "repository": "affaan-m/ECC",
+        "revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+        "path": "skills/verification-loop/SKILL.md"
+      }
     }
   ]
 }

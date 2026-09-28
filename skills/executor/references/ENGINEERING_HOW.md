@@ -10,7 +10,7 @@ For an existing repository, inspect Git state, manifests, lockfiles, package-man
 
 For greenfield/framework bootstrap, fresh-resolve the current official framework/toolchain documentation and supported scaffold/generator behavior before manually recreating equivalent boilerplate. Resolve the current official mechanism when execution needs it rather than encoding transient package versions, flags, or one-shot command syntax into reusable doctrine.
 
-Operationalize [reuse-first](../reuse-first/SKILL.md) before custom implementation of commodity capability. Evaluate, in order, an existing repository implementation, standard library/native platform capability, framework/platform capability, maintained ecosystem tooling/library, and mature admitted OSS. Use a small local implementation only when the prior options do not fit the authorized requirement, and treat a custom framework as a last resort justified by evidence. Fast model-generated code is not itself justification for a custom replacement.
+Before custom implementation of commodity capability, follow the [Foundation Architecture](../../contracts/FOUNDATION_ARCHITECTURE.md) routing seam: target-repository implementation and repo-native conventions first, then the exact-pinned ECC generic harness (notably `ecc:search-first` for build-versus-reuse work), then another exact admitted capability only for a material ECC gap. Use a small local implementation only when those options do not fit the authorized requirement; fast model-generated code is not itself justification for a custom replacement.
 
 Choose the least-persistent sufficient authorized acquisition mode; this classification creates no acquisition subsystem:
 

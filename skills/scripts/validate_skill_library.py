@@ -314,17 +314,33 @@ def validate_rationalization() -> frozenset[str]:
                 if owner != expected_owner:
                     error(f"{prefix}: external replacement owner must be {expected_owner}")
         elif disposition == "RETIRE":
-            if type(owner) is not str or not owner.startswith("canonical:"):
-                error(f"{prefix}: RETIRE must identify a canonical surviving owner")
-            else:
-                target = (ROOT.parent / owner.removeprefix("canonical:")).resolve()
+            if type(owner) is not str:
+                error(f"{prefix}: RETIRE must identify a resolvable canonical or target-repository owner")
+            elif owner.startswith("canonical:"):
+                relative = Path(owner.removeprefix("canonical:"))
+                target = (ROOT.parent / relative).resolve()
+                repository_root = ROOT.parent.resolve()
                 try:
-                    target.relative_to(ROOT.parent.resolve())
+                    target.relative_to(repository_root)
                 except ValueError:
                     error(f"{prefix}: RETIRE owner escapes Foundation repository")
                 else:
+                    if not target.exists() and relative.parts[:1] == ("skills",):
+                        isolated = (ROOT / Path(*relative.parts[1:])).resolve()
+                        try:
+                            isolated.relative_to(ROOT.resolve())
+                        except ValueError:
+                            isolated = target
+                        if isolated.exists():
+                            target = isolated
                     if not target.exists():
                         error(f"{prefix}: orphaned semantic capability; RETIRE owner does not exist")
+            elif owner.startswith("target-repository:") and NAME_RE.fullmatch(owner.removeprefix("target-repository:")):
+                architecture = ROOT / "contracts" / "FOUNDATION_ARCHITECTURE.md"
+                if not architecture.is_file():
+                    error(f"{prefix}: target-repository owner is not resolvable without Foundation Architecture")
+            else:
+                error(f"{prefix}: RETIRE must identify a resolvable canonical or target-repository owner")
 
         if disposition in EXTERNAL_DISPOSITIONS:
             if type(external) is not dict:

@@ -39,7 +39,7 @@ When production is impaired:
 2. mitigate safely and restore service;
 3. preserve evidence;
 4. communicate material changes/risks;
-5. identify root cause with `debugging`;
+5. identify root cause through the admitted external debugging capability;
 6. record follow-up actions that prevent recurrence or improve detection/recovery.
 
 Do not let a postmortem become blame or a list of vague intentions. Follow-up actions need owners/mechanisms appropriate to the target repository.
@@ -48,4 +48,4 @@ Do not let a postmortem become blame or a list of vague intentions. Follow-up ac
 
 Exercise recovery paths when feasible. A backup never restored, failover never tried, or retry path never tested provides weaker confidence than its existence suggests.
 
-Use `adversarial-audit` to pressure-test assumptions, `verification` to design deterministic evidence, and `optimization` when reliability choices are constrained by measured resource or cost budgets.
+Use `adversarial-audit` to pressure-test assumptions and `verification` for Foundation evidence semantics. When reliability choices are constrained by measured performance or cost budgets, route generic optimization HOW through the exact external capability seam.

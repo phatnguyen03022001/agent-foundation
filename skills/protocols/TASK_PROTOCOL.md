@@ -299,7 +299,7 @@ Deterministic execution bundling is Executor-local HOW owned by the [Executor sk
 
 ## Target-authoritative Git topologies
 
-Repository-specific branch policy and exact live refs outrank generic defaults. The existing Git workflow owner supports:
+Repository-specific branch policy and exact live refs outrank generic defaults. This Task Protocol supports:
 
 - `MAIN_ONLY`: one stable/working `main`-style branch when target authority says so;
 - `DEV_MAIN`: mutable `dev` integration plus stable `main`, preserving existing dev/main behavior;

@@ -491,26 +491,16 @@ class ValidatorRegressionTests(unittest.TestCase):
         self.assertEqual(discovered, expected)
         self.assertEqual(tuple(document["starting_taxonomy"]), VALIDATOR_MODULE.STARTING_SKILLS)
 
-    def test_current_git_workflow_identity_is_github_workflow(self) -> None:
-        current = "github-workflow"
-        legacy = "github-" + "dev-main-workflow"
+    def test_retired_git_workflow_resolves_to_task_protocol(self) -> None:
         document = json.loads((ROOT / ".agent" / "rationalization.json").read_text(encoding="utf-8"))
-        internal = {
-            record["skill_id"]
-            for record in document["dispositions"]
-            if record["disposition"] in VALIDATOR_MODULE.INTERNAL_DISPOSITIONS
-        }
-        self.assertIn(current, internal)
-        self.assertNotIn(legacy, internal)
-        path = ROOT / current / "SKILL.md"
-        self.assertTrue(path.is_file())
-        self.assertFalse((ROOT / legacy).exists())
-        metadata, _ = VALIDATOR_MODULE.parse_frontmatter(path)
-        self.assertEqual(metadata.get("name"), current)
+        record = next(item for item in document["dispositions"] if item["skill_id"] == "github-workflow")
+        self.assertEqual(record["disposition"], "RETIRE")
+        self.assertEqual(record["surviving_semantic_owner"], "canonical:skills/protocols/TASK_PROTOCOL.md")
+        self.assertFalse((ROOT / "github-workflow").exists())
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         catalog = readme.split("<!-- SKILL_CATALOG_START -->", 1)[1].split("<!-- SKILL_CATALOG_END -->", 1)[0]
-        self.assertIn(f"| `{current}` | workflow |", catalog)
-        self.assertNotIn(legacy, catalog)
+        self.assertNotIn("`github-workflow`", catalog)
+        self.assertIn("exact-pinned external capability seam", readme)
 
     def test_canonical_continuation_template_is_required_and_closed(self) -> None:
         _, root = self.fixture()
@@ -686,20 +676,20 @@ class ValidatorRegressionTests(unittest.TestCase):
             self.assertIn(token, combined)
 
     def test_task0002_remote_truth_and_local_divergence_doctrine(self) -> None:
-        workflow = (ROOT / "github-workflow" / "SKILL.md").read_text(encoding="utf-8")
         executor = (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8")
         protocol = (ROOT / "protocols" / "TASK_PROTOCOL.md").read_text(encoding="utf-8")
-        combined = workflow + executor + protocol
+        combined = (executor + protocol).lower()
         for token in (
-            "authorized remote Git state",
+            "authorized remote git state",
             "canonical repository truth",
             "local state is an execution copy",
             "local ahead",
             "local dirty",
             "remote drift",
+            "auto-push",
+            "reset",
+            "adopt",
         ):
-            self.assertIn(token, combined)
-        for token in ("auto-push", "reset", "adopt"):
             self.assertIn(token, combined)
 
     def test_task0002_task_launch_is_architect_only_non_authority_ux(self) -> None:
@@ -1132,16 +1122,13 @@ class Task0004GovernanceTests(unittest.TestCase):
             self.assertIn(token, combined)
 
     def test_ac6_git_topologies_are_target_authoritative(self) -> None:
-        combined = (
-            self.read("github-workflow/SKILL.md")
-            + self.read("protocols/TASK_PROTOCOL.md")
-        )
+        combined = self.read("protocols/TASK_PROTOCOL.md").lower()
         for token in (
-            "MAIN_ONLY",
-            "DEV_MAIN",
-            "DEV_STAGING_MAIN",
+            "main_only",
+            "dev_main",
+            "dev_staging_main",
             "explicitly activated",
-            "Never infer or create staging",
+            "never infer or create staging",
             "repository-specific branch policy",
         ):
             self.assertIn(token, combined)
@@ -1170,12 +1157,7 @@ class Task0004GovernanceTests(unittest.TestCase):
         self.assertIn("Supported protocol version: **3**", protocol)
 
     def test_ac9_design_readiness_is_material_and_proportional(self) -> None:
-        combined = (
-            self.read("architect/SKILL.md")
-            + self.read("gap-analysis/SKILL.md")
-            + self.read("design-review/SKILL.md")
-            + self.read("protocols/TASK_PROTOCOL.md")
-        )
+        combined = self.read("architect/SKILL.md") + self.read("protocols/TASK_PROTOCOL.md")
         for token in (
             "material-design-readiness",
             "applicable target product/design authority",
@@ -1208,8 +1190,7 @@ class Task0004GovernanceTests(unittest.TestCase):
             "NO CHANGE REQUIRED",
             "evidence-backed defect",
             "recurring missing capability",
-            "security issue",
-            "compatibility failure",
+            "security or compatibility failure",
             "material cost/usability/maintainability regression",
             "smallest safe correction",
             "Preference, novelty, elegance, architectural fashion, and hypothetical future scale",
@@ -1476,8 +1457,7 @@ class Task0007ProtocolCorrectnessTests(unittest.TestCase):
     def test_task0007_canonical_docs_expose_topology_neutral_terms(self) -> None:
         continuation = (ROOT / "templates" / "continuation.yaml").read_text(encoding="utf-8")
         protocol = (ROOT / "protocols" / "TASK_PROTOCOL.md").read_text(encoding="utf-8")
-        workflow = (ROOT / "github-workflow" / "SKILL.md").read_text(encoding="utf-8")
-        combined = continuation + protocol + workflow
+        combined = continuation + protocol
         for token in (
             "PROMOTE_TARGET_REF",
             "promotion_target_ref",
@@ -2684,8 +2664,7 @@ class Task0030ControlPlaneAccelerationTests(unittest.TestCase):
     def test_execution_bundle_is_bounded_and_parallel_only_when_all_safety_predicates_hold(self) -> None:
         executor = (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8").lower()
         verification = (ROOT / "verification" / "SKILL.md").read_text(encoding="utf-8").lower()
-        optimization = (ROOT / "optimization" / "SKILL.md").read_text(encoding="utf-8").lower()
-        combined = "\n".join((executor, verification, optimization))
+        combined = "\n".join((executor, verification))
         self.assertIn("execution bundle", combined)
         for predicate in (
             "no shared mutable state",
@@ -2932,11 +2911,10 @@ class Task0053ExecutorRepositoryConstructionTests(unittest.TestCase):
     def test_scenario_g_existing_native_framework_and_mature_oss_precede_custom_rebuild(self) -> None:
         executor = self.executor_doctrine()
         for marker in (
-            "existing repository implementation",
-            "standard library/native platform",
-            "framework/platform capability",
-            "maintained ecosystem tooling/library",
-            "mature admitted oss",
+            "target-repository implementation",
+            "exact-pinned ecc generic harness",
+            "ecc:search-first",
+            "material ecc gap",
             "fast model-generated code is not itself justification for a custom replacement",
         ):
             self.assertIn(marker, executor)
@@ -3364,16 +3342,44 @@ class Task0010RationalizationTests(unittest.TestCase):
         self.assertEqual({path.parent.name for path in ROOT.rglob("SKILL.md")}, expected)
         self.assertEqual(
             {record["skill_id"] for record in document["dispositions"] if record["disposition"] == "KEEP_FOUNDATION_SPECIFIC"},
-            {
-                "adversarial-audit", "architect", "cloud-run-basics", "design-review", "executor",
-                "gap-analysis", "github-workflow", "reliability", "research", "reuse-first",
-                "security-review", "simplicity", "verification",
-            },
+            {"adversarial-audit", "architect", "executor", "reliability", "simplicity"},
         )
         self.assertEqual(
             {record["skill_id"] for record in document["dispositions"] if record["disposition"] == "THIN_DELTA"},
-            {"debugging", "optimization"},
+            {"security-review", "verification"},
         )
+
+    def test_task0015_external_routes_are_exact_and_ecc_first_except_proven_gap(self) -> None:
+        document = self.read_map(ROOT)
+        expected = {
+            "debugging": ("superpowers:systematic-debugging", "5bf4e78011075bcfc0dc295f0724994cd123ee71"),
+            "design-review": ("ecc:agent:architect", "bf70150eb2df8070024e5bdf08e4aa08959e2735"),
+            "gap-analysis": ("ecc:intent-driven-development", "bf70150eb2df8070024e5bdf08e4aa08959e2735"),
+            "optimization": ("ecc:benchmark-optimization-loop", "bf70150eb2df8070024e5bdf08e4aa08959e2735"),
+            "research": ("ecc:research-ops", "bf70150eb2df8070024e5bdf08e4aa08959e2735"),
+            "reuse-first": ("ecc:search-first", "bf70150eb2df8070024e5bdf08e4aa08959e2735"),
+            "security-review": ("ecc:security-review", "bf70150eb2df8070024e5bdf08e4aa08959e2735"),
+            "verification": ("ecc:verification-loop", "bf70150eb2df8070024e5bdf08e4aa08959e2735"),
+        }
+        for skill_id, (entry_id, revision) in expected.items():
+            with self.subTest(skill_id=skill_id):
+                record = self.disposition(document, skill_id)
+                external = record["external_capability"]
+                self.assertEqual(external["catalog_entry_id"], entry_id)
+                self.assertEqual(external["revision"], revision)
+                self.assertEqual(record["surviving_semantic_owner"], f"external:{entry_id}" if record["disposition"] == "REPLACE_BY_EXTERNAL" else f"internal:{skill_id}")
+
+    def test_retired_skill_reappearance_is_rejected(self) -> None:
+        _, root = self.fixture()
+        path = root / "cloud-run-basics" / "SKILL.md"
+        path.parent.mkdir(parents=True)
+        path.write_text(
+            "---\nname: cloud-run-basics\ndescription: stale retired skill\n---\n\n# stale\n",
+            encoding="utf-8",
+        )
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("curated skill locations mismatch", result.stdout + result.stderr)
 
     def test_missing_starting_skill_disposition_is_rejected(self) -> None:
         _, root = self.fixture()
@@ -3457,10 +3463,10 @@ class Task0010RationalizationTests(unittest.TestCase):
 
     def test_missing_thin_delta_reference_is_rejected(self) -> None:
         _, root = self.fixture()
-        path = root / "debugging" / "SKILL.md"
+        path = root / "security-review" / "SKILL.md"
         path.write_text(
             path.read_text(encoding="utf-8").replace(
-                "5bf4e78011075bcfc0dc295f0724994cd123ee71",
+                "bf70150eb2df8070024e5bdf08e4aa08959e2735",
                 "PIN_REMOVED",
             ),
             encoding="utf-8",
@@ -3477,6 +3483,27 @@ class Task0010RationalizationTests(unittest.TestCase):
         result = self.run_validator(root)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("duplicate semantic owner", result.stdout + result.stderr)
+
+    def test_target_repository_retire_owner_is_resolvable(self) -> None:
+        document = self.read_map(ROOT)
+        record = self.disposition(document, "cloud-run-basics")
+        self.assertEqual(record["disposition"], "RETIRE")
+        self.assertEqual(record["surviving_semantic_owner"], "target-repository:cloud-run")
+        self.assertIsNone(record["external_capability"])
+        result = self.run_validator(ROOT)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_malformed_target_repository_retire_owner_is_rejected(self) -> None:
+        _, root = self.fixture()
+        document = self.read_map(root)
+        record = self.disposition(document, "cloud-run-basics")
+        record["disposition"] = "RETIRE"
+        record["surviving_semantic_owner"] = "target-repository:"
+        record["external_capability"] = None
+        self.write_map(root, document)
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("RETIRE must identify a resolvable canonical or target-repository owner", result.stdout + result.stderr)
 
     def test_orphaned_retire_owner_is_rejected(self) -> None:
         _, root = self.fixture()

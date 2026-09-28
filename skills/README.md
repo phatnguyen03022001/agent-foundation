@@ -27,21 +27,13 @@ Mature governance may correctly return NO CHANGE REQUIRED when no material repro
 <!-- SKILL_CATALOG_START -->
 | Skill | Type | Decision domain / trigger |
 | --- | --- | --- |
-| `architect` | core | repository-bound routing/governance, planning authority, skill selection, tasks, handoffs, report review |
+| `architect` | core | repository-bound routing/governance, planning authority, task creation, handoffs, and final review judgment |
 | `executor` | core | controlled execution of one approved task revision against one exact repository/base |
-| `research` | reasoning | unknown/current/disputed/version-sensitive facts that materially affect an engineering decision |
-| `reuse-first` | reasoning | build-vs-reuse decisions involving repository capabilities, standards, platforms, libraries, or upstream implementations |
-| `simplicity` | reasoning | proposed abstractions, services, layers, state, configuration, dependencies, automation, or speculative generality |
-| `design-review` | review | proposed or implemented consequential architecture, interfaces, structural integrity, and product-direction alignment |
-| `gap-analysis` | review | missing requirements, states, failure paths, ownership, migration, verification, or unspecified decisions |
-| `adversarial-audit` | review | stale state, retries, concurrency, partial failure, process death, dependency faults, and governance rationalizations |
-| `security-review` | specialist | authentication, authorization, secrets, sensitive data, trust boundaries, untrusted input, and security-critical integrations |
-| `verification` | engineering | testing/evidence strategy, regression proof, contract/invariant testing, acceptance evidence, confidence before completion |
-| `debugging` | engineering | reproducible root-cause analysis for bugs, failing tests, CI failures, regressions, and unexpected behavior |
-| `reliability` | engineering | operability through load/failure/retry/recovery, rollout/rollback, observability, and production incidents |
-| `optimization` | engineering | measured performance, resource, developer-loop, automation, or cost constraints |
-| `github-workflow` | workflow | target-authoritative Git/GitHub topology, promotion, and Actions risk without inventing branches |
-| `cloud-run-basics` | domain | Google Cloud Run deployment, configuration, security, scaling, troubleshooting, and platform-specific cost behavior |
+| `simplicity` | governance | Foundation change admission, taxonomy closure, and anti-overengineering boundaries |
+| `adversarial-audit` | assurance | stale state, retries, partial effects, process death, and governance-bypass pressure |
+| `security-review` | delta | Foundation threat-path, trust/authority-boundary, and security-evidence semantics over exact-pinned ECC generic HOW |
+| `verification` | delta | acceptance/evidence, exact-candidate, authoritative-verifier, and execution-bundle semantics over exact-pinned ECC generic HOW |
+| `reliability` | engineering | operability through dependency failure, retries/backpressure, recovery, rollout/rollback, and production incidents |
 <!-- SKILL_CATALOG_END -->
 
 The validator recursively discovers every `SKILL.md` and requires exact agreement with the `KEEP_FOUNDATION_SPECIFIC` plus `THIN_DELTA` records in `.agent/rationalization.json`. A replaced/retired implementation that still exists, an omitted retained/thin skill, or an extra hidden/nested skill is an error.
@@ -73,7 +65,7 @@ Use `python3 -B scripts/sync_external_capabilities.py --check` to regenerate the
 
 ## Validation
 
-The stdlib-only validator checks the exact taxonomy, frontmatter/catalog, constrained YAML, canonical templates, generated-program JSON shape/graph/coverage invariants, protocol-v3 compatibility, required doctrine tokens, and internal links. The repository keeps one bounded validation workflow on relevant pushes to `dev`; workflow policy is owned by [github-workflow](github-workflow/SKILL.md).
+The stdlib-only validator checks the exact rationalization-derived taxonomy, frontmatter/catalog, constrained YAML, canonical templates, generated-program JSON shape/graph/coverage invariants, protocol-v3 compatibility, required doctrine tokens, and internal links. Target-repository workflow configuration remains target-owned; Foundation Git authority, publication, promotion, and release semantics are owned by the [Task Protocol](protocols/TASK_PROTOCOL.md), while generic Git/GitHub HOW routes through the exact-pinned external capability seam.
 
 Validate one authored artifact without changing it with `python3 scripts/validate_skill_library.py --artifact report .agent/tasks/TASK-0043/report.yaml`; replace `report` with `task` or `review` as needed.
 

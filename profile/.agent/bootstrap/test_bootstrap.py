@@ -441,7 +441,6 @@ class BootstrapContractTests(unittest.TestCase):
             "executor",
             "task_protocol",
             "simplicity",
-            "github_workflow",
             "verification",
             "engineering_assurance",
             "documentation_closure",

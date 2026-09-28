@@ -67,11 +67,6 @@
       "path": "skills/simplicity/SKILL.md"
     },
     {
-      "capability": "github_workflow",
-      "owner": "skills",
-      "path": "skills/github-workflow/SKILL.md"
-    },
-    {
       "capability": "verification",
       "owner": "skills",
       "path": "skills/verification/SKILL.md"

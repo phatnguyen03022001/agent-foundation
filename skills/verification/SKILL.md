@@ -1,60 +1,33 @@
 ---
 name: verification
-description: Use when a change needs a testing and evidence strategy, regression proof, acceptance checks, contract tests, invariant tests, or confidence before completion or release.
+description: Use when Foundation needs acceptance-to-evidence mapping, exact-candidate proof, execution-bundle safety, or authoritative-verifier boundaries beyond generic build/test completion checks.
 ---
 
-# Verification
+# Verification — Foundation Delta
 
-Design evidence that would fail when the required behavior is wrong.
+Generic build, type-check, lint, test, security-scan, and diff-review completion HOW is adopted from the exact external capability:
 
-## Start from risk and acceptance
+- catalog entry: `ecc:verification-loop`
+- repository: `affaan-m/ECC`
+- revision: `bf70150eb2df8070024e5bdf08e4aa08959e2735`
+- path: `skills/verification-loop/SKILL.md`
 
-Map each acceptance criterion and important invariant to the cheapest reliable evidence. Choose test level by the failure being prevented, not by habit.
+That pinned capability is L2 HOW only. Target-repository verifier commands and acceptance authority remain authoritative; ECC does not create Foundation PASS, review, promotion, or release authority.
 
-Useful methods include:
+## Acceptance and evidence
 
-- focused unit tests for local deterministic behavior;
-- regression tests that reproduce a bug before the fix where practical;
-- characterization tests before risky legacy changes;
-- integration tests for boundaries that mocks cannot prove;
-- contract tests for independently changing producers/consumers;
-- property-based or fuzz tests for broad invariants and input spaces;
-- end-to-end tests for critical user/system paths;
-- static analysis, schema validation, reproducible build checks, or runtime probes when they test the actual requirement.
+Map each acceptance criterion and material invariant to the cheapest reliable evidence that would fail when the required behavior is wrong. Preserve distinct predicates even when execution is deduplicated. Passing Git, CI, build, lint, or a broad suite is not proof of an acceptance condition unless it actually establishes that condition.
 
-TDD is useful when behavior can be expressed before implementation and feedback is fast. It is a method inside verification, not a ritual required for every configuration, migration, generated artifact, or exploratory task.
+Separate Executor implementation checks, integration/CI evidence, acceptance evidence, and project-designated authoritative verification. Bind every reusable result to the exact candidate identity, selected command/profile, and material environment. Rerun only when the candidate, required predicate, verifier selection, material environment, or ability to establish the prior result changes.
 
 ## Bounded deterministic execution bundles
 
-When several required checks are deterministic and independent, they may share one **EXECUTION BUNDLE**: one bounded runtime invocation containing multiple jobs and one compact attributable `JOIN` result. Parallelize only a subset proven to have no shared mutable state, no ordering dependency, no conflicting externally rate-limited dependency, no material resource contention, and independently attributable results. Otherwise serialize the affected jobs inside or outside the bundle. Publication/ref mutation, migrations, shared databases/ports/temp/cache writes, and final mutation gates are serial.
+Several required deterministic checks may share one **EXECUTION BUNDLE** only when the bundled jobs have no shared mutable state, no ordering dependency, no conflicting externally rate-limited dependency, no material resource contention, and independently attributable results. Otherwise serialize the affected jobs. Publication/ref mutation, migrations, shared mutable stores, and final mutation gates remain serial.
 
-The JOIN must preserve per-job identity and result; one failed job cannot be hidden by aggregate success. Bundling changes synchronization cost, not the assurance predicate set.
+One bounded invocation may return a compact attributable `JOIN`, but every job keeps its identity and result; aggregate success cannot hide failure. Bundling removes synchronization cost, never assurance predicates.
 
-## Focused versus full suites
+When a mandatory full suite semantically subsumes a focused happy path suite, run the mandatory full suite directly and use the focused suite as a diagnostic after failure unless it has distinct acceptance authority or proves a distinct predicate. Deduplicate evidence, not predicates.
 
-When a mandatory full suite semantically subsumes a focused suite, run the mandatory full suite directly on the happy path. Do not spend an extra synchronization boundary on focused-before-full ceremony. The focused suite becomes a diagnostic after failure unless it has distinct acceptance authority or proves a predicate the full suite does not cover. Separately authoritative focused checks remain mandatory.
+## Completion boundary
 
-For a repository-owned verifier with a selection plan, inspect the plan against the exact stable candidate and run the smallest set of broad profiles covering the required predicates: one when a single profile suffices. If the plan escalates a profile to a stronger one which subsumes it, do not run both for ceremony. A focused RED reproduction before the fix can establish the defect's cause; preserve that evidence and prove the corresponding GREEN behavior on the final candidate. Keep any focused check that proves a distinct predicate. Deduplicate evidence, not predicates.
-
-Bind a verification result to its candidate identity, selected command/profile, and material environment. A conversation turn ending is not a reason to rerun an unchanged candidate: when the selected carrier retains the original run, reattach to that run and collect its result. Replan or rerun when candidate, required predicates, verifier selection, or material environment changes, or when the prior result cannot be established. A runtime run locator is operational evidence only; the final report must preserve enough completed result and resolvable evidence for later review without relying on session retention.
-
-## Evidence quality
-
-A check should have a clear failure meaning. Verify that new tests can fail for the defect they claim to detect; a permanently green test is decoration. Avoid assertions tied only to implementation details, mocks that prove their own setup, and broad suites used as a substitute for a targeted causal test.
-
-For nondeterministic systems, control time/randomness/environment where possible and define tolerances or repeated measurement honestly.
-
-Separate:
-
-- implementation checks run by the Executor;
-- integration/CI evidence;
-- acceptance evidence;
-- project-designated authoritative verification.
-
-Passing Git or CI mechanics is not proof that the intended change exists.
-
-## Completion
-
-Before declaring contract satisfaction, require evidence for every criterion, record skipped/substituted checks, and surface residual uncertainty. Failed mandatory checks block a clean result unless the Architect revises the contract.
-
-Use `debugging` to find the cause of a failing check. Use `reliability` when verification must cover production recovery or fault behavior. Use `security-review` for security-specific negative tests and threat validation.
+Before claiming contract satisfaction, require evidence for every required criterion, record substitutions or unavailable proof truthfully, and surface residual uncertainty. Failed mandatory evidence remains FAIL unless governing authority changes the requirement. Generic root-cause diagnosis routes through the admitted external debugging capability; production recovery routes through `reliability`; security-specific assurance uses `security-review`.

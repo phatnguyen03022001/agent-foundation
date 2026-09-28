@@ -47,6 +47,6 @@ Look especially for single observations being mistaken for guarantees: one succe
 
 ## Boundaries
 
-This is a generic failure and governance-pressure audit, not a substitute for `security-review` threat modeling, `reliability` production operating design, `debugging` root-cause work on an observed failure, or `gap-analysis` completeness review.
+This skill owns Foundation-wide governance-pressure and failure-assurance review, not generic root-cause debugging or specification completeness. Route generic debugging/completeness HOW through the exact external capability seam; use `security-review` for malicious trust-boundary analysis and `reliability` for production operability/recovery.
 
 Do not demand distributed-systems machinery for a local deterministic problem simply because exotic failures can be imagined.

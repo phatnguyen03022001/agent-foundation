@@ -1,46 +1,25 @@
 ---
 name: security-review
-description: Use when a change affects authentication, authorization, secrets, sensitive data, trust boundaries, untrusted input, external integrations, dependencies, or other security-critical behavior.
+description: Use when Foundation assurance needs threat-path, trust-boundary, authority-boundary, or security-evidence judgment beyond generic implementation security guidance.
 ---
 
-# Security Review
+# Security Review — Foundation Delta
 
-Review security as a design property with concrete threat paths, not as a generic checklist.
+Generic security implementation and checklist HOW is adopted from the exact external capability:
 
-## Model the system
+- catalog entry: `ecc:security-review`
+- repository: `affaan-m/ECC`
+- revision: `bf70150eb2df8070024e5bdf08e4aa08959e2735`
+- path: `skills/security-review/SKILL.md`
 
-Identify protected assets, actors, entry points, trust boundaries, data flows, privileges, external dependencies, and security assumptions. Read the target repository’s security policy and existing controls before proposing new ones.
+That pinned capability is L2 HOW only. Target-repository security authority and current platform/framework guidance still outrank it, and it grants no Foundation task, mutation, review, acceptance, promotion, or release authority.
 
-Ask what an attacker or compromised dependency can influence and what authority each component actually needs.
+## Foundation-specific delta
 
-## Analyze threats and controls
+- Model security from concrete protected assets, attacker-controlled inputs, trust and authority boundaries, privileges, sensitive state, and meaningful sinks. A checklist match is not itself a vulnerability.
+- Trace a plausible attack path from controllable source to privileged or sensitive effect. Record prerequisites, existing mitigations, blast radius, and the evidence that distinguishes an exploitable path from a theoretical pattern.
+- Preserve least authority and fail closed at ambiguous privilege, identity, secret, or trust-boundary transitions. A security control never expands the active task boundary.
+- Security evidence must be attributable to the exact candidate and relevant environment. Negative/boundary tests, artifact inspection, runtime observation, or independent verification are selected by the governing acceptance/assurance requirement rather than by ECC ceremony.
+- Do not weaken threat-path coverage because the external checklist is narrower, and do not import framework-specific ECC examples as universal policy.
 
-Focus where relevant on:
-
-- authentication, session/token lifecycle, and identity binding;
-- authorization at the resource/action boundary, including tenant isolation;
-- validation and canonicalization of untrusted input;
-- injection and unsafe interpretation;
-- secrets, keys, credentials, and logging exposure;
-- sensitive-data collection, storage, transit, retention, and deletion;
-- SSRF/path traversal/file or URL handling;
-- dependency and supply-chain trust;
-- webhook/signature/replay semantics;
-- privilege escalation and confused-deputy paths;
-- secure defaults, least privilege, and failure behavior.
-
-Trace concrete attack paths from controllable source to meaningful sink. Distinguish a plausible vulnerability from a scanner-shaped suspicion. When safe and authorized, validate findings with minimal reproducible evidence rather than inflating severity from theory.
-
-## Prioritize
-
-Rank findings by exploitability, impact, exposure, and existing mitigations. Recommend the smallest control that closes the threat without breaking product constraints. Prefer standard, well-maintained security mechanisms over custom cryptography or bespoke identity systems.
-
-Security controls still require verification. Specify negative and boundary tests when they materially prove the control.
-
-Treat security findings skeptically in both directions. Do not dismiss a path because exploitation seems inconvenient, and do not promote a theoretical pattern to critical severity without showing how attacker-controlled data reaches a privileged effect. Record prerequisites and existing mitigations explicitly. For version-sensitive controls or vulnerabilities, verify current upstream guidance rather than relying on remembered best practices.
-
-## Boundaries
-
-Use `adversarial-audit` for non-malicious fault pressure and governance bypasses, `reuse-first` for selecting established security mechanisms, and `reliability` for availability/recovery concerns.
-
-Do not broaden scope into a repository-wide security audit unless authorized, and do not claim a project secure because one change passed review.
+Use `adversarial-audit` for non-malicious failure/governance pressure and `reliability` for availability/recovery. Completion and authoritative evidence semantics remain owned by Foundation `verification` and the Task Protocol.
