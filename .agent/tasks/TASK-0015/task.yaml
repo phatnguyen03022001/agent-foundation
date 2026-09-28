@@ -1,0 +1,272 @@
+protocol_version: 3
+
+task_id: TASK-0015
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0015"
+  gap_id: "POST-ECC-INTERNAL-SKILL-REDUCTION"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "5922fc44278a6bc6950bbf0988e460b2114a82ac"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+  - reuse-first
+  - verification
+
+execution_skills:
+  required:
+    - executor
+    - simplicity
+    - verification
+  recommended:
+    - reuse-first
+    - research
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator direction on 2026-09-28 to cut Foundation skills that are unused, generic, or inferior/redundant relative to the accepted ECC default harness"
+    role: "material reduction objective"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0014/review.yaml@5922fc44278a6bc6950bbf0988e460b2114a82ac"
+    role: "accepted ECC-default engineering harness seam and authority separation"
+    precedence: 2
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@5922fc44278a6bc6950bbf0988e460b2114a82ac"
+    role: "canonical L0/L1/L2 ownership and target -> ECC -> other external -> Foundation routing order"
+    precedence: 3
+  - source: "skills/.agent/rationalization.json@5922fc44278a6bc6950bbf0988e460b2114a82ac"
+    role: "current 15-skill rationalization state to be re-evaluated under the accepted ECC seam"
+    precedence: 4
+  - source: "skills/.agent/external-capabilities/catalog.json@5922fc44278a6bc6950bbf0988e460b2114a82ac"
+    role: "inert exact-pinned ECC and other external capability inventory"
+    precedence: 5
+  - source: "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735"
+    role: "exact pinned default generic engineering harness source; authority NONE"
+    precedence: 6
+  - source: "documents/DOCUMENT_MODEL.md@5922fc44278a6bc6950bbf0988e460b2114a82ac"
+    role: "canonical documentation ownership boundary"
+    precedence: 7
+  - source: "standards/STANDARD_MODEL.md@5922fc44278a6bc6950bbf0988e460b2114a82ac"
+    role: "canonical engineering assurance/evidence ownership boundary"
+    precedence: 8
+
+structure_authority:
+  status: RESOLVED
+  source: "TASK-0014 accepted ECC seam plus existing TASK-0010 rationalization model"
+  rationale: "This task is one coherent taxonomy-reduction outcome. It may remove or thin internal skills and update references/validators, but it introduces no new layer, role, capability registry, workflow engine, or harness subsystem."
+
+objective: "Re-rationalize the complete current 15-skill Foundation taxonomy under the accepted TASK-0014 seam so Foundation retains only organizational-role owners and genuinely irreducible Foundation-specific reusable HOW/deltas. Generic engineering methodology should resolve to exact-pinned ECC by default; another exact admitted external capability may survive only where ECC is materially insufficient; platform/product-specific HOW belongs to the target repository or an exact external capability rather than Foundation merely because no exact ECC skill exists. Remove redundant internal implementations and stale routing/references without semantic loss, while preserving Foundation authority, proof, safety, and target-repository ownership."
+
+rationalization_model:
+  dispositions:
+    - KEEP_FOUNDATION_SPECIFIC
+    - THIN_DELTA
+    - REPLACE_BY_EXTERNAL
+    - RETIRE
+  mandatory_keep:
+    - architect
+    - executor
+  starting_taxonomy:
+    - adversarial-audit
+    - architect
+    - cloud-run-basics
+    - debugging
+    - design-review
+    - executor
+    - gap-analysis
+    - github-workflow
+    - optimization
+    - reliability
+    - research
+    - reuse-first
+    - security-review
+    - simplicity
+    - verification
+  reduction_principle: "No target count is authoritative. Every non-role internal skill must prove a distinct recurring Foundation-specific owner boundary; otherwise it must be thinned, externally replaced, or retired into another canonical owner."
+
+scope:
+  required_changes:
+    - "Audit every one of the 15 starting internal skills exactly once under the accepted TASK-0014 routing order. architect and executor remain mandatory KEEP_FOUNDATION_SPECIFIC organizational-role owners."
+    - "For each of the 13 non-role skills, inspect its actual current SKILL.md semantics, actual Foundation references/usage evidence, relevant documents/standards ownership, and exact candidate ECC content at bf70150eb2df8070024e5bdf08e4aa08959e2735. Do not classify from names, descriptions, popularity, or remembered ECC behavior."
+    - "Treat absence of meaningful task/history usage as evidence against maintaining a separate internal owner, but never as sufficient evidence by itself. A skill survives only if its semantics establish a distinct recurring Foundation-wide responsibility after the accepted ECC seam."
+    - "Apply the accepted sourcing order strictly: target-repository truth and repo-native conventions first; exact-pinned ECC for generic engineering HOW second; another independently admitted exact external capability only for a material ECC gap; Foundation internal HOW only for an irreducible Foundation-specific compatibility/governance/evidence delta or truly uncovered Foundation-wide capability."
+    - "Do not preserve platform/product-domain HOW in Foundation merely because ECC lacks an exact named equivalent. If the responsibility is target/platform specific rather than Foundation-wide, RETIRE it to target-repository ownership or route it to an exact admitted external capability."
+    - "Use KEEP_FOUNDATION_SPECIFIC only when the complete surviving skill is itself a distinct Foundation-wide reusable owner and cannot be represented more cleanly by an existing L0/L1 contract, Architect/Executor role procedure, documents/standards authority, target-repository truth, or exact external capability."
+    - "Use THIN_DELTA only when generic HOW belongs to ECC/another exact external capability and a small irreducible Foundation-specific compatibility/authority/evidence delta remains. The internal SKILL.md must contain only that delta plus exact external capability identity; duplicated generic upstream methodology must be removed."
+    - "Use REPLACE_BY_EXTERNAL when exact-pinned ECC, or another exact admitted external capability after a proved ECC gap, fully owns the reusable methodology. Remove the internal skill directory after deterministic route/reference closure is proven."
+    - "Use RETIRE when the former skill is no longer a distinct capability because its surviving semantics belong to Architect, Executor, an existing contract/protocol, documents/standards, or target-repository ownership. Identify the surviving canonical owner explicitly and remove the internal skill directory."
+    - "Re-evaluate all prior TASK-0010 dispositions. Prior KEEP_FOUNDATION_SPECIFIC or THIN_DELTA status is evidence/history, not a permanent entitlement after TASK-0014 changed the default generic HOW seam."
+    - "At minimum, directly evaluate the exact ECC candidates already present in the accepted catalog where semantically relevant: ecc:search-first, ecc:benchmark-optimization-loop, ecc:deep-research, ecc:research-ops, ecc:security-review, ecc:verification-loop, ecc:git-workflow, ecc:github-ops, ecc:agent-architecture-audit, ecc:agent-introspection-debugging, and ecc:deployment-patterns. This is a candidate set, not a forced mapping."
+    - "For debugging, compare exact-pinned ECC first under TASK-0014. The currently referenced Superpowers systematic-debugging capability may remain only if exact semantic evidence proves a material ECC gap and the Superpowers capability is the better admitted owner."
+    - "For security-review and verification, do not replace Foundation-specific threat-path, trust-boundary, acceptance-to-evidence, evidence-layer, authoritative-verifier, or execution-bundle semantics with a weaker checklist/completion loop. Keep only the irreducible delta if those semantics remain distinct; route generic security/testing HOW to ECC."
+    - "For github-workflow, separate Foundation-specific remote/authority/publication/promotion semantics from generic branch/rebase/PR/Git advice. Generic Git/GitHub HOW must not survive internally if ECC covers it."
+    - "For research, reuse-first, optimization, reliability, debugging, design-review, gap-analysis, simplicity, adversarial-audit, and cloud-run-basics, require explicit evidence for any surviving Foundation-owned semantic boundary. Existing references to the skill do not by themselves justify KEEP."
+    - "Update skills/.agent/rationalization.json deterministically with exactly one disposition for every starting skill, exact surviving owner, exact external identity where applicable, and rationale grounded in inspected semantics. Preserve the historical starting_taxonomy so the reduction remains reconstructible."
+    - "After final dispositions are proven, make the physical internal skill inventory equal exactly the KEEP_FOUNDATION_SPECIFIC plus THIN_DELTA records. Remove REPLACE_BY_EXTERNAL and RETIRE skill directories completely; do not create tombstones, aliases, wrappers, archive/, legacy/, deprecated/, backup/, or copied-retirement directories."
+    - "Update all Foundation-internal references, routing/navigation, README/catalog text, Architect/Executor procedure, templates/contracts, and validator expectations that materially refer to removed or thinned skill owners. A removed skill name must not remain as a live required route or unresolved Markdown link."
+    - "Do not bulk rewrite unaffected governance prose. Move only genuinely surviving Foundation-specific semantics to an existing canonical owner when RETIRE requires it; do not use retirement as a pretext to duplicate large skill bodies into Architect, Executor, or contracts."
+    - "Update validators/regressions so the final filesystem taxonomy is derived from the revised rationalization map, external replacements require exact immutable admitted capability identity, RETIRE owners are resolvable, THIN_DELTA bodies prove exact source binding, and removed skills cannot silently reappear."
+    - "Keep the accepted TASK-0014 ECC source pin, generated external snapshots/catalog, harness_source schema, CLI-optional fallback, and activation boundaries unchanged. This task consumes the seam; it does not update or redesign ECC integration."
+    - "Keep documents/ and standards/ byte-unchanged. If execution discovers a genuine contradiction requiring those domains to change, stop for Architect revision rather than expanding scope."
+    - "Preserve Agent Runtime, Runtime/tunnel state, host-global harness configuration, credentials, TCC, Keychain, System Settings, authority.lock.json, repository topology, branches/tags/releases, and other repositories unchanged."
+    - "Publish implementation/report on main only by non-force fast-forward."
+
+  allowed_existing_files_or_components:
+    - "skills/** except skills/.agent/external-capabilities/** must remain byte-stable"
+    - "README.md only for concise navigation correction if removed skills are named"
+    - ".agent/tasks/TASK-0015/**"
+
+  expected_files_are_restrictive: false
+
+invariants:
+  - "Foundation remains MAIN_ONLY with exactly two organizational roles: Architect and Executor."
+  - "architect and executor remain internal Foundation skills and cannot be externalized, thinned into external ownership, or retired."
+  - "TASK-0014 routing remains canonical: target/repo-native -> exact-pinned ECC -> another exact admitted external only for a material ECC gap -> Foundation internal only for Foundation-specific delta or genuine uncovered Foundation-wide capability."
+  - "No numeric final skill count is an acceptance criterion; semantic ownership and absence of duplication determine the final taxonomy."
+  - "No internal skill survives solely because it existed previously, is linked frequently, or has a familiar name."
+  - "No internal skill is removed solely because ECC has a similarly named skill."
+  - "Generic engineering methodology must not be copied from ECC into Foundation to preserve an internal skill."
+  - "Platform/product-specific methodology is not Foundation-wide governance and must not survive internally without an independently proven Foundation-wide responsibility."
+  - "INDEXED, PINNED, SYNCED, ADOPTED, LOADED, and AUTHORIZED distinctions remain unchanged; external capability never creates L0 authority."
+  - "The exact ECC source revision remains bf70150eb2df8070024e5bdf08e4aa08959e2735 and external capability metadata remains inert authority NONE."
+  - "documents/, standards/, authority.lock.json, agent-runtime, Runtime state, host-global harness configuration, credentials, and host security state remain unchanged."
+  - "No new organizational role, fourth layer, package/plugin manager, registry service, daemon, scheduler, queue, database, provider pool, workflow engine, or alternate task lifecycle is introduced."
+  - "Every semantic responsibility removed from an internal skill has one explicit surviving owner or exact external route; no silent semantic loss or ambiguous dual ownership is allowed."
+
+forbidden_changes:
+  - "Set or optimize for an arbitrary final internal skill count."
+  - "Keep a skill because deleting it would require reference cleanup."
+  - "Delete a skill because it appears unused without semantic-owner analysis."
+  - "Replace stronger Foundation-specific security/proof/authority semantics with weaker generic ECC checklist text."
+  - "Copy whole or substantial ECC/Superpowers/Matt skill bodies into Foundation."
+  - "Update ECC, refresh external source pins, regenerate external capability metadata against another revision, install/update/repair/configure a harness, or activate upstream hooks/installers/settings."
+  - "Move generic engineering HOW into Architect/Executor/contracts merely to make a skill directory disappear."
+  - "Create compatibility tombstone skills, alias wrappers, archive/legacy/deprecated/backup directories, or another ownership registry."
+  - "Modify documents/, standards/, authority.lock.json, agent-runtime, Runtime/tunnel state, host security state, credentials, branches, tags, releases, or repository metadata."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "All 15 starting skills have exactly one fresh post-TASK-0014 evidence-backed disposition, with architect and executor retained as mandatory Foundation-specific organizational-role owners."
+    evidence_required: "Revised canonical rationalization map plus deterministic validation proving complete one-to-one coverage, closed disposition vocabulary, mandatory role retention, and exact surviving owner identity."
+
+  - id: AC-2
+    requirement: "Every non-role KEEP_FOUNDATION_SPECIFIC or THIN_DELTA record proves a distinct surviving Foundation-wide semantic boundary after exact comparison with the accepted ECC harness and other canonical owners."
+    evidence_required: "Per-skill comparison evidence against actual current internal content, exact relevant ECC bytes at bf70150..., usage/reference evidence, and applicable contract/doc/standard/target ownership; no rationale based only on naming or historical existence."
+
+  - id: AC-3
+    requirement: "Every generic methodology fully covered by ECC or another exact admitted external capability is no longer duplicated as a full internal Foundation skill."
+    evidence_required: "REPLACE_BY_EXTERNAL/THIN_DELTA records bind exact repository/revision/path/catalog entry; removed/thinned bodies and route tests prove generic upstream HOW is not duplicated internally."
+
+  - id: AC-4
+    requirement: "Every RETIRE disposition has one explicit canonical surviving owner and no live Foundation route/reference requires the retired skill."
+    evidence_required: "Reference/routing closure tests, Markdown/internal-link validation, and negative tests for orphaned or ambiguous owners."
+
+  - id: AC-5
+    requirement: "The physical internal skill inventory equals exactly the revised KEEP_FOUNDATION_SPECIFIC plus THIN_DELTA set, with no tombstone or compatibility wrapper directories."
+    evidence_required: "Filesystem enumeration versus rationalization map plus validator regressions rejecting removed-skill reappearance, missing retained skills, hidden nested skills, aliases, or tombstones."
+
+  - id: AC-6
+    requirement: "Foundation-specific authority, security, verification, Git/publication, continuity, and safety semantics are not weakened by reduction."
+    evidence_required: "Focused regression mapping for every moved/retired semantic obligation plus full task/protocol/skill/bootstrap regressions; security/proof semantics must remain at least as strong as the authorized base."
+
+  - id: AC-7
+    requirement: "TASK-0014 ECC seam remains byte/behavior stable while TASK-0015 only changes internal ownership and routing."
+    evidence_required: "Exact blob proof for skills/.agent/external-capabilities/** and tests confirming ECC exact pin, harness_source semantics, inert authority NONE metadata, and CLI-optional resolution are unchanged."
+
+  - id: AC-8
+    requirement: "Protected domains and external execution substrate remain unchanged."
+    evidence_required: "Exact base-to-candidate diff/object proof for documents/, standards/, authority.lock.json and repository scope; no agent-runtime, Runtime/host, credential, branch/tag/release, or external-repository mutation."
+
+  - id: AC-9
+    requirement: "All affected Foundation verification remains green on one coherent final candidate."
+    evidence_required: "Task artifact validation; updated rationalization/skill-library validation; full validator regressions; TASK-0014 external-capability seam regressions; bootstrap validation/regressions including remote when already available; Python compilation for modified scripts; Markdown/link checks represented by the canonical validator; and git diff --check PASS."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0015 with the canonical task artifact validator before implementation mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Before deleting or thinning any skill, produce the complete 15-skill fresh disposition matrix from exact current internal content plus exact relevant ECC/external bytes and canonical owner evidence."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run focused rationalization tests covering mandatory roles, exact external pinning, ECC-first routing, RETIRE owner resolution, THIN_DELTA source binding, orphan/duplicate-owner rejection, filesystem/map equality, and removed-skill reappearance."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run python3 -B skills/scripts/sync_external_capabilities.py --check and python3 -B skills/scripts/test_sync_external_capabilities.py without refreshing any pin."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run python3 -B skills/scripts/validate_skill_library.py and python3 -B skills/scripts/test_validate_skill_library.py."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Run python3 -B profile/.agent/bootstrap/validate.py and python3 -B profile/.agent/bootstrap/test_bootstrap.py; run --remote when already supported without new credentials."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Prove skills/.agent/external-capabilities/**, documents/, standards/, and profile/.agent/bootstrap/authority.lock.json are byte-identical to the execution base."
+      required: true
+    - id: CHECK-8
+      command_or_check: "Run python3 -m py_compile for every modified Python file and git diff --check; prove no tombstone/alias/archive/legacy/deprecated/backup skill directories and no out-of-scope repository mutation."
+      required: true
+    - id: CHECK-9
+      command_or_check: "Fresh-resolve remote main before non-force publication, then post-prove exact implementation/report lineage, final main identity, ahead/behind 0/0, and clean tracked worktree."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files: []
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "Taxonomy reduction must reuse the existing rationalization map, skill directories, contracts, references, and validators; no new subsystem or compatibility layer is needed."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
