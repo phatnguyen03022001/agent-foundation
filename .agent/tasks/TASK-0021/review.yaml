@@ -1,0 +1,62 @@
+protocol_version: 3
+
+task_id: TASK-0021
+task_revision: 1
+review_revision: 1
+state: REVISION_REQUIRED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0021/report.yaml
+  commit: "4cf0de161db80afc5dcf89e17228a130fcfb439b"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: FAIL
+  verifier_evidence: FAIL
+
+acceptance_basis:
+  - "Fresh review resolution proved HEAD == origin/main == exact reviewed report commit 4cf0de161db80afc5dcf89e17228a130fcfb439b, ahead/behind 0/0, clean index/worktree, and canonical main-only lineage."
+  - "Implementation candidate fae9a33f84f30107b44679592249cfcd79705a93 is the sole direct child of exact authorized base 0b74cc6eb79d149a8b19fd5828e75b152f931192. Reviewed report 4cf0de161db80afc5dcf89e17228a130fcfb439b is the sole direct child of that candidate and adds only .agent/tasks/TASK-0021/report.yaml."
+  - "Base-to-candidate implementation scope is exactly product-state.json, skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md, skills/scripts/validate_skill_library.py, and skills/scripts/test_validate_skill_library.py."
+  - "Schema 3 preserves accepted T1-T3 product truth and adds the five canonical global gate groups plus derived_project.phase. Current release remains OPEN/null/UNKNOWN, current feature states remain F001 VERIFIED, F002 INTEGRATED, F003 VERIFIED, F004 INTEGRATED, and current phase derives P0_SCOPE."
+  - "Aggregate derivation is deterministic on the reviewed candidate: FAIL outranks UNKNOWN, UNKNOWN outranks PENDING, justified N/A is excluded from PASS aggregation, and all-N/A groups are rejected by validation. Production acceptance is separated from operational_readiness."
+  - "Fresh independent baseline verification passes: focused Task0021GlobalProgressionTests 8/8; full skills/protocol regressions 226/226; task/report artifact validation, protected-scope proof, and git diff --check pass."
+  - "However, independent adversarial review reproduced a deterministic earliest-blocker defect when N/A precedes a real unresolved system leaf. A synthetic resolved release with foundation.architecture=N/A and foundation.dependency_rules=UNKNOWN derives foundation aggregate UNKNOWN and phase P1_FOUNDATION, but _resolve_agent_foundation_earliest_blocker returns system_gates.foundation.architecture."
+  - "That result is incorrect under the T4 contract because N/A is explicit exclusion from applicability and does not materially block progression. The earliest blocker should skip N/A and return the first blocking status among FAIL, UNKNOWN, or PENDING; in the reproduced fixture that is system_gates.foundation.dependency_rules."
+  - "The defect is in _first_unmet_agent_foundation_system_leaf, which currently selects the first leaf whose status is not PASS and therefore treats N/A as blocking despite aggregate semantics explicitly excluding it."
+  - "This violates AC-5 deterministic earliest-blocker semantics and the progression rule requiring the earliest materially blocking gate. Current canonical P0_SCOPE/release.status resolution remains correct because current state does not traverse a system-leaf resolver."
+  - "No defect was reproduced in current P0 phase derivation, registry-order required-feature normalization, production acceptance/readiness separation, derived-phase recomputation, or aggregate precedence. Revision should remain narrowly scoped to N/A-skipping in system-leaf blocker selection plus focused adversarial regressions."
+
+gap_disposition:
+  - gap_id: "T4-EARLIEST-BLOCKER-N-A-EXCLUSION"
+    decision: "REVISE_TASK"
+    rationale: "System-gate N/A is excluded from applicability and must never be emitted as the earliest materially blocking leaf. Update the pure blocker resolver to skip N/A while preserving canonical leaf order among actual blocking statuses FAIL/UNKNOWN/PENDING and preserve all existing phase/aggregate semantics."
+
+final_candidate:
+  commit: "fae9a33f84f30107b44679592249cfcd79705a93"
+  report_commit: "4cf0de161db80afc5dcf89e17228a130fcfb439b"
+  focused_t4: "8/8 PASS independently rerun"
+  skill_protocol_regressions: "226/226 PASS independently rerun"
+  aggregate_semantics: PASS
+  current_p0_phase: PASS
+  current_release_status_blocker: PASS
+  na_system_leaf_blocker_probe: FAIL
+  result: REVISION_REQUIRED
+
+notes:
+  - "TASK-0021 revision 1 is terminally REVISION_REQUIRED for exact report commit 4cf0de161db80afc5dcf89e17228a130fcfb439b."
+  - "This review does not reopen T4 architecture or current product-state truth; it rejects earliest-blocker correctness for valid N/A-containing future states."
+  - "Revision 2 should modify only blocker-selection logic/tests unless the fix independently exposes another canonical state defect. Do not begin T5 until T4 is terminally accepted."
