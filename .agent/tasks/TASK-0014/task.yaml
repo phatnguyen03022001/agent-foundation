@@ -1,0 +1,235 @@
+protocol_version: 3
+
+task_id: TASK-0014
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_request
+  task_id: "TASK-0014"
+  gap_id: "ECC-DEFAULT-ENGINEERING-HARNESS"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "0083d1383bfc0326729e615a85844b7b2004950d"
+
+architect_analysis_skills:
+  - architect
+  - reuse-first
+  - simplicity
+  - verification
+
+execution_skills:
+  required:
+    - executor
+    - reuse-first
+    - simplicity
+    - verification
+  recommended: []
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "explicit operator direction on 2026-09-28 to make ECC the standard engineering harness beneath Foundation governance and above target execution"
+    role: "material architecture objective and scope authority"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0010/review.yaml@0083d1383bfc0326729e615a85844b7b2004950d"
+    role: "accepted current internal-skill rationalization and immutable external-capability model"
+    precedence: 2
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@0083d1383bfc0326729e615a85844b7b2004950d"
+    role: "current L0/L1/L2 ownership and capability-state semantics"
+    precedence: 3
+  - source: "skills/.agent/external-capabilities/sources.json@0083d1383bfc0326729e615a85844b7b2004950d"
+    role: "current exact ECC source pin and external source registry"
+    precedence: 4
+  - source: "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/agent-harness-construction/SKILL.md"
+    role: "exact pinned reference evidence for harness action-space, observation, recovery, and context-budget design; authority NONE"
+    precedence: 5
+  - source: "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:commands/project-init.md"
+    role: "exact pinned reference evidence for project-local ECC onboarding and dry-run boundaries; authority NONE"
+    precedence: 6
+  - source: "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:commands/harness-audit.md"
+    role: "exact pinned reference evidence for deterministic harness inspection; authority NONE"
+    precedence: 7
+
+structure_authority:
+  status: RESOLVED
+  source: "operator-approved Foundation/ECC separation: Foundation governance, ECC engineering harness, target repository product truth"
+  rationale: "The change establishes sourcing and routing semantics only. It reuses the existing external capability plane and exact ECC pin, introduces no new service or organizational layer, and intentionally defers internal-skill retirement to a later independently reviewable task."
+
+objective: "Make exact-pinned ECC the default reusable generic engineering harness for Foundation-governed repository work while preserving Foundation as the authority/governance kernel and each target repository as product truth. Upgrade ECC from a skill-only external source concept to a deterministic harness source that can expose its relevant skills, commands, agents, and install/catalog metadata without activating upstream governance, hooks, installers, global configuration, or target mutation authority. Keep the current internal skill taxonomy intact in this task; only establish the seam and routing contract required for later safe rationalization."
+
+scope:
+  required_changes:
+    - "Revise the Foundation architecture so L0 remains authority/governance, L1 remains deterministic capability control/continuity, and L2 no longer implies that Foundation should maintain a broad generic engineering methodology corpus. Generic engineering HOW should default to exact-pinned ECC when semantically applicable; Foundation-owned L2 content should survive only when it is Foundation-specific, an explicit compatibility/authority/evidence delta, or a capability not supplied by the admitted default harness."
+    - "Define the reusable HOW selection order for normal repository work: exact target-repository truth and repo-native conventions first; then exact-pinned ECC as the default generic engineering harness; then another independently admitted exact external capability only when ECC is insufficient or materially inapplicable; then a Foundation-internal generic implementation only when a real Foundation-specific or uncovered capability remains. Availability, installation, loading, or provider identity never grants authority."
+    - "Upgrade the ECC entry in skills/.agent/external-capabilities/sources.json from a skill-only capability-source description to an explicit deterministic harness-source description while preserving the exact revision bf70150eb2df8070024e5bdf08e4aa08959e2735 and MIT provenance."
+    - "Represent only the ECC surfaces required for reusable engineering routing and reproducibility. At minimum, the source model must distinguish skills, commands, agents, and the deterministic manifest/catalog/install metadata required to resolve those surfaces. Do not treat upstream hooks, CLAUDE.md/AGENTS.md, role systems, session bootstrap, memory policy, task governance, installers, or host configuration as Foundation authority."
+    - "Extend the existing external-capability synchronization/indexing machinery only as much as needed to model and deterministically validate the ECC harness surfaces. Reuse the current source registry, snapshots/catalog, and scripts; do not create a second registry, plugin manager, package manager, database, daemon, or service."
+    - "Keep external snapshots/catalog inert metadata. Indexing or exposing an ECC command/agent/skill does not adopt it automatically, load it automatically, or authorize execution. Existing INDEXED/PINNED/SYNCED/ADOPTED/LOADED/AUTHORIZED distinctions remain binding."
+    - "Update Architect procedure so generic engineering methodology is selected after exact target binding and material authority are known, with ECC as the default generic harness source. Architect still owns WHAT/BOUNDARY/PROOF and final review judgment; ECC may inform HOW but cannot create task/review/acceptance/rebinding/promotion/release authority."
+    - "Update Executor capability acquisition so repository-native behavior and exact task authority remain primary, while generic implementation methodology defaults to the relevant exact-pinned ECC capability instead of automatically loading Foundation-maintained generic HOW. Executor must load only the minimum relevant ECC content and must not activate unrelated ECC commands, agents, hooks, installers, or settings."
+    - "Provide a fail-closed fallback for environments where the ECC CLI is unavailable: exact source identity plus deterministic Foundation catalog/source metadata may resolve the required admitted capability without mutating host-global state. Do not require installing, updating, repairing, or configuring ECC as a precondition for ordinary Foundation governance."
+    - "Preserve Matt skills, Superpowers, and Awesome as existing external sources. ECC becoming the default harness changes routing preference, not source authority or the ability to use a better exact admitted capability when ECC is materially insufficient."
+    - "Do not remove, rename, or semantically rewrite the current internal skill directories in TASK-0014. Existing rationalization dispositions remain historical/current compatibility truth until the follow-up taxonomy task explicitly revises them."
+    - "Add deterministic tests proving the ECC harness-source schema/pin/surface inventory, routing preference, authority separation, fail-closed resolution, and rejection of mutable/unpinned or governance-activating interpretations."
+    - "Preserve Foundation MAIN_ONLY topology and publish implementation/report by non-force fast-forward on main only."
+
+  allowed_existing_files_or_components:
+    - "skills/contracts/FOUNDATION_ARCHITECTURE.md"
+    - "skills/architect/SKILL.md"
+    - "skills/executor/SKILL.md"
+    - "skills/.agent/external-capabilities/sources.json"
+    - "skills/.agent/external-capabilities/catalog.json"
+    - "skills/.agent/external-capabilities/snapshots/** only when deterministic regeneration is required by the existing source model"
+    - "skills/scripts/sync_external_capabilities.py"
+    - "skills/scripts/test_sync_external_capabilities.py"
+    - "skills/scripts/validate_skill_library.py only if required to validate the new harness-source metadata"
+    - "skills/scripts/test_validate_skill_library.py only if required by the corresponding validator change"
+    - "skills/README.md only for concise navigation/discovery correction"
+    - "README.md only for concise top-level architecture discovery correction"
+    - ".agent/tasks/TASK-0014/**"
+
+  expected_files_are_restrictive: false
+
+invariants:
+  - "Foundation remains MAIN_ONLY and all Foundation-internal canonical paths resolve from one exact authority_set_identity revision."
+  - "There remain exactly two organizational roles: Architect and Executor."
+  - "Foundation L0 owns authority and lifecycle governance; ECC never becomes an authority source."
+  - "Target repositories remain the canonical owners of product truth, architecture, code, tests, task-specific constraints, and repo-native build/test/lint behavior."
+  - "Agent Runtime remains an orthogonal execution transport and receives no methodology or governance ownership."
+  - "ECC is pinned exactly to bf70150eb2df8070024e5bdf08e4aa08959e2735 for this task; mutable main/latest identity is never sufficient."
+  - "INDEXED != LOADED, PINNED != TRUSTED, SYNCED != ADOPTED, ADOPTED != AUTHORIZED, LOADED != AUTHORIZED, and SNAPSHOT != AUTHORITY remain true."
+  - "ECC skills, commands, agents, manifests, and catalog/install metadata are reusable capability inputs only. ECC hooks, global/project installation side effects, role systems, memory/session governance, and repository governance are not activated by indexing."
+  - "The current internal skill filesystem taxonomy and TASK-0010 rationalization dispositions remain unchanged in TASK-0014."
+  - "Matt skills, Superpowers, and Awesome remain registered with their current exact source semantics."
+  - "No package manager, plugin manager, registry service, daemon, scheduler, queue, database, provider pool, workflow engine, or fourth Foundation layer is introduced."
+  - "documents/, standards/, profile operator preferences, authority.lock.json, agent-runtime, Runtime state, host security state, and credentials remain unchanged."
+
+forbidden_changes:
+  - "Delete, rename, or broadly rewrite internal Foundation skill implementations as part of this task."
+  - "Make ECC task governance, roles, hooks, memory/session policy, installer behavior, or host configuration canonical Foundation authority."
+  - "Install, update, repair, uninstall, or globally configure ECC, Claude, Codex, or another harness."
+  - "Write .claude/, .codex/, .agents/, .cursor/, or equivalent project harness configuration into agent-foundation solely to satisfy ECC consumer audit shape."
+  - "Use ECC harness-audit score as an acceptance score for Foundation architecture."
+  - "Vendor ECC source bodies into Foundation or duplicate its generic methodology in new Foundation files."
+  - "Replace exact immutable ECC identity with mutable main/latest/version-only routing."
+  - "Remove or weaken task/report/review authority, exact-base binding, evidence validity, continuation, publication, promotion, release, or safety semantics."
+  - "Modify documents/, standards/, authority.lock.json, agent-runtime, Runtime/tunnel state, Keychain, TCC, System Settings, credentials, branches, tags, releases, or repository metadata."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: revised_contract_required
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Foundation architecture explicitly establishes ECC as the default generic engineering harness without transferring L0 authority or target product ownership."
+    evidence_required: "Exact contract diff defines the Foundation/ECC/target/Runtime ownership seam and the deterministic HOW sourcing order, with no new organizational role or fourth layer."
+
+  - id: AC-2
+    requirement: "ECC is modeled as one exact immutable harness source rather than only a SKILL.md index."
+    evidence_required: "Committed source registry and deterministic generated/index evidence identify bf70150eb2df8070024e5bdf08e4aa08959e2735 and distinguish at least skills, commands, agents, and required deterministic manifest/catalog/install metadata; mutable or incomplete source identities are rejected."
+
+  - id: AC-3
+    requirement: "Architect and Executor route generic engineering HOW to the minimum relevant ECC capability while preserving exact task authority and repo-native truth."
+    evidence_required: "Role-procedure diffs plus focused tests/fixtures show target bind -> authority -> repo-native context -> ECC capability selection, and prove ECC loading/availability never creates mutation or lifecycle authority."
+
+  - id: AC-4
+    requirement: "ECC CLI availability is an optimization, not a governance dependency."
+    evidence_required: "Deterministic tests prove equivalent fail-closed capability resolution from exact pinned Foundation metadata when the CLI is unavailable, without global installation/configuration mutation."
+
+  - id: AC-5
+    requirement: "Existing external capability-state and provenance semantics remain intact."
+    evidence_required: "Sync/index tests prove ECC harness surfaces remain inert metadata until separately selected/admitted/loaded, other external sources preserve their current identities, and upstream governance/hooks/install side effects are never activated by indexing."
+
+  - id: AC-6
+    requirement: "TASK-0014 creates the seam only and leaves taxonomy rationalization for a later task."
+    evidence_required: "Exact diff proves current internal skill directories and skills/.agent/rationalization.json dispositions are unchanged, with no generic methodology copied into new Foundation-owned skill bodies."
+
+  - id: AC-7
+    requirement: "Unrelated Foundation and Runtime authority remains byte/identity stable."
+    evidence_required: "Diff/object proof shows documents/, standards/, authority.lock.json, agent-runtime, operator routing, Runtime state/configuration, and repository topology are unchanged."
+
+  - id: AC-8
+    requirement: "All affected deterministic Foundation verification remains green."
+    evidence_required: "Task artifact validation, external-capability sync/index tests, skill-library regressions affected by schema changes, bootstrap validation/tests, Python compilation for modified scripts, and git diff --check PASS on one coherent final candidate."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0014 with the canonical task artifact validator before implementation mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Inspect the exact pinned ECC source at bf70150eb2df8070024e5bdf08e4aa08959e2735 for the surfaces represented by the proposed harness-source schema; do not infer them from current mutable upstream."
+      required: true
+    - id: CHECK-3
+      command_or_check: "python3 -B skills/scripts/sync_external_capabilities.py --check"
+      required: true
+    - id: CHECK-4
+      command_or_check: "python3 -B skills/scripts/test_sync_external_capabilities.py"
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run the skill-library validator/regression suite if its schema or routing checks are touched."
+      required: true
+    - id: CHECK-6
+      command_or_check: "python3 -B profile/.agent/bootstrap/validate.py and python3 -B profile/.agent/bootstrap/test_bootstrap.py; run authenticated --remote validation if the existing execution environment supports it without new credentials."
+      required: true
+    - id: CHECK-7
+      command_or_check: "Prove skills/.agent/rationalization.json and every existing internal skill directory are unchanged from execution base."
+      required: true
+    - id: CHECK-8
+      command_or_check: "python3 -m py_compile for modified Python files and git diff --check; prove no new harness config, service, daemon, registry, package/plugin manager, branch, tag, release, or agent-runtime mutation."
+      required: true
+    - id: CHECK-9
+      command_or_check: "Fresh-resolve remote main before non-force publication and post-prove final main/report identity and clean tracked worktree."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files: []
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "The existing external capability plane and contracts are sufficient; no new architectural subsystem or file type is required."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
