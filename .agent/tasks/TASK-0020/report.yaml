@@ -1,0 +1,104 @@
+protocol_version: 3
+
+task_id: TASK-0020
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0020/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "47138ad4dade516af7b7f9e05766bb679a872345"
+  final_execution_head: "499082ce8f36df5beed4ab6c181c3e54496b5f8f"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "bf610fd546d1286a099e7284acd41ea6c600cf9d"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact local and remote Git identity observation
+    - bounded repository mutation
+    - deterministic Python and JSON verification
+    - owner-native profile, skills, documents, and standards qualification
+    - ordinary non-force Git publication
+  available:
+    - exact local and origin/main observation
+    - bounded local repository read/write and terminal execution
+    - repository-native validators and regression suites
+    - existing /usr/bin/python3 with PyYAML for the standards verifier
+    - authenticated remote bootstrap validation
+    - ordinary non-force Git publication
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0020 designates no separate authoritative verifier; independent Architect review remains the next lifecycle boundary."
+
+pushed: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "product-state.json is schema version 2 and remains the sole machine-readable target product-state owner. T2 target identity, product_scope revision 1/FROZEN, exact F001-F004 identities/names/owners, and OPEN null/UNKNOWN release truth are preserved; each feature has exactly one lifecycle object."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "The validator recomputes derived_state from the exact ordered seven-gate PASS prefix and rejects disagreement, invalid gate order/status/shape, and later-gate PASS after an earlier non-PASS. Focused regressions exercise every lifecycle threshold PLANNED through LIVE."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Gate validation fails closed: PASS requires persisted inspectable evidence; FAIL requires attributable evidence and reason; PENDING/UNKNOWN/N/A require reason; N/A never advances. Self-attestation, TASK-0020 future artifacts, missing paths, stale verification evidence, and verifier/test definitions without attributable result evidence are rejected."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Fresh evidence audit derives F001=VERIFIED, F002=INTEGRATED, F003=VERIFIED, F004=INTEGRATED. F001 uses persisted TASK-0015 bootstrap results with byte-identical current profile/; F003 uses persisted TASK-0004 document tests with byte-identical current documents/. F002 stays UNKNOWN at verification because T3 changes skills-owned final bytes; F004 stays UNKNOWN because persisted exact-tree evidence records its verifier as capability-blocked."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "release remains OPEN with id null/UNKNOWN and required_feature_ids null/UNKNOWN. Every feature therefore keeps release_readiness and production_acceptance not-PASS, and validator/regressions reject RELEASE_READY or LIVE under unresolved release truth."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "Schema-2 transition validation rejects backward derived_state movement without one exact from_state/to_state, non-empty reason, and inspectable evidence regression record; same/forward transitions require regression null. Initial schema-1 to schema-2 adoption also requires regression null."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Base-to-candidate diff is exactly product-state.json, the existing product-state contract, validator, and validator regressions. T1 architecture, seven-skill bodies, rationalization/external tree, documents/, standards/, authority.lock.json, and TASK-0014 through TASK-0019 are unchanged. No T4-T6 global gates, project/aggregate phase, earliest blocker, progression, recovery redesign, or closure machinery was introduced."
+  - criterion_id: AC-8
+    status: PASS
+    evidence: "On the final candidate bytes: focused T2+T3 regressions 20/20 PASS; full skill/protocol regressions 205/205 PASS; skill validator PASS; external sync CURRENT and regressions 19/19 PASS; profile local/remote OPM_BOOTSTRAP=TRUE and regressions 49/49 PASS; documents 94/94 PASS; standards 57/57 PASS using the already-installed /usr/bin/python3 environment with PyYAML; JSON parse, modified Python compile, protected-path proof, and git diff --check PASS. The default Homebrew Python 3.14 lacked PyYAML, so no dependency or host mutation was performed and the same repository verifier was run with the existing qualified system interpreter."
+
+executor_checks:
+  - check_id: CHECK-1
+    result: PASS
+    evidence: "Before mutation, local HEAD and fresh origin/main both resolved exactly to 47138ad4dade516af7b7f9e05766bb679a872345 with clean index/worktree; TASK-0020 revision 1 was APPROVED and execution_ready."
+  - check_id: CHECK-2
+    result: PASS
+    evidence: "Evidence audit proved current profile/ equals TASK-0015's verified candidate owner tree; current documents/ equals TASK-0004's documented tested tree; current standards/ equals TASK-0004's tree whose verifier result was blocked; TASK-0020 necessarily changes skills/ final bytes. Gate states were assigned conservatively from those facts."
+  - check_id: CHECK-3
+    result: PASS
+    evidence: "Task0019ProductStateTests plus Task0020FeatureLifecycleTests ran 20/20 PASS, including all seven thresholds, UNKNOWN/PENDING/FAIL/N/A non-advancement, N/A justification, PASS evidence, prerequisite ordering, derived-state mismatch, release cap, self/future/missing/stale evidence, and regression-transition rules."
+  - check_id: CHECK-4
+    result: PASS
+    evidence: "python3 -B skills/scripts/validate_skill_library.py PASS; python3 -B skills/scripts/test_validate_skill_library.py PASS 205/205."
+  - check_id: CHECK-5
+    result: PASS
+    evidence: "python3 -B skills/scripts/sync_external_capabilities.py --check returned EXTERNAL_CAPABILITY_SYNC = CURRENT; python3 -B skills/scripts/test_sync_external_capabilities.py PASS 19/19."
+  - check_id: CHECK-6
+    result: PASS
+    evidence: "python3 -B profile/.agent/bootstrap/validate.py and authenticated --remote both returned OPM_BOOTSTRAP = TRUE; profile/.agent/bootstrap/test_bootstrap.py PASS 49/49."
+  - check_id: CHECK-7
+    result: PASS
+    evidence: "python3 -B documents/tests/test_validate.py PASS 94/94. The default Homebrew python3 could not import yaml; without installing or mutating dependencies, PATH=/usr/bin:/bin:/usr/sbin:/sbin python3 -B standards/tools/verify.py used the already-installed system interpreter and PASS 57/57 with VALID: standards definition."
+  - check_id: CHECK-8
+    result: PASS
+    evidence: "product-state.json parses; modified Python compiles; git diff --check passes. Exact base-to-candidate protected-path diff is empty for T1 architecture, rationalization/external metadata, documents/, standards/, authority.lock.json, and TASK-0014..0019. Candidate has exactly four authorized implementation paths and no new implementation artifact."
+  - check_id: CHECK-9
+    result: EVIDENCE_INDEXED
+    evidence: "Immediately before candidate closure, fresh remote main remained the exact authorized base; remote had only main, with no tags or GitHub Releases. Candidate 499082ce8f36df5beed4ab6c181c3e54496b5f8f is the direct child of the authorized base. Report-only parentage, ordinary non-force publication, final local/remote identity, clean worktree, and unchanged tag/release state are consequence-boundary proofs performed after this report is authored and are not self-attested here."
+
+result: NEEDS_REVIEW
