@@ -1,13 +1,13 @@
 protocol_version: 3
 
 task_id: TASK-0021
-task_revision: 1
+task_revision: 2
 state: APPROVED
 
 origin:
-  type: explicit_operator_continuation
+  type: continuation_after_revision_required_review
   task_id: "TASK-0021"
-  gap_id: "AGENT-FOUNDATION-GLOBAL-GATES-DETERMINISTIC-PROGRESSION"
+  gap_id: "T4-EARLIEST-BLOCKER-N-A-EXCLUSION"
 
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
@@ -25,7 +25,7 @@ execution_base:
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  revision: "4638fb3d6a88ac48d8c94e48242cdf1466a44d5a"
+  revision: "307aab49e4025f2368aca5283ee176589c050f87"
 
 architect_analysis_skills:
   - architect
@@ -47,91 +47,75 @@ external_skills:
   execution_recommended: []
 
 authority_sources:
-  - source: "operator-supplied AGENT_FOUNDATION_PLAN.md version 2, SHA-256 27f6ae194e1ebc60aa031361b3105337c6f866ab2a127cd8afa81ae10d457b80"
-    role: "canonical global system gates, project-phase derivation, progression ordering, and failure semantics"
+  - source: ".agent/tasks/TASK-0021/review.yaml@307aab49e4025f2368aca5283ee176589c050f87"
+    role: "terminal revision-1 REVISION_REQUIRED review and exact N/A blocker reproduction"
     precedence: 1
-  - source: ".agent/tasks/TASK-0020/review.yaml@4638fb3d6a88ac48d8c94e48242cdf1466a44d5a"
-    role: "accepted T3 feature lifecycle/gates/evidence-derived state"
+  - source: ".agent/tasks/TASK-0021/report.yaml@4cf0de161db80afc5dcf89e17228a130fcfb439b"
+    role: "revision-1 implementation and reusable qualification evidence"
     precedence: 2
-  - source: "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md@4638fb3d6a88ac48d8c94e48242cdf1466a44d5a"
-    role: "canonical T2+T3 product-state contract to evolve in place"
+  - source: "operator-supplied AGENT_FOUNDATION_PLAN.md version 2, SHA-256 27f6ae194e1ebc60aa031361b3105337c6f866ab2a127cd8afa81ae10d457b80"
+    role: "canonical global-gate and earliest materially blocking gate semantics"
     precedence: 3
-  - source: "product-state.json@4638fb3d6a88ac48d8c94e48242cdf1466a44d5a"
-    role: "current target-owned product truth: release OPEN/UNKNOWN and F001-F004 evidence-derived states"
-    precedence: 4
 
 structure_authority:
   status: RESOLVED
-  source: "AGENT_FOUNDATION_PLAN.md sections 19-25, 42-48, constrained by accepted T1-T3 target state ownership"
-  rationale: "T4 adds global system gates and deterministic project-phase/progression derivation to the existing product-state SSOT. It formalizes global-gate aggregation and earliest-blocker tie-breaks but does not yet modify Architect skill consumption behavior; that remains T5."
+  source: "TASK-0021 revision-1 Architect review"
+  rationale: "Revision 1 correctly established schema-3 global gates and phase derivation but earliest-blocker selection treats N/A as blocking. Revision 2 is limited to blocker-selection semantics and regression coverage."
 
-objective: "Establish agent-foundation's canonical global system gates, deterministic aggregate-gate semantics, deterministic project phase, and deterministic earliest-blocker resolver. Evolve product-state.json from schema version 2 to schema version 3 in place, preserving accepted T1-T3 product truth. Current release remains OPEN with unresolved required feature set, so the current derived project phase must be P0_SCOPE regardless of later feature/system-gate evidence. Formalize progression ordering without integrating it into Architect behavior yet."
+objective: "Correct TASK-0021 earliest-blocker selection so system-gate leaves with status N/A are skipped as non-applicable and can never be emitted as materially blocking. Preserve revision-1 schema-3 product state, aggregate semantics, phase derivation, current P0_SCOPE/release.status truth, and all T1-T3/T4 state unless the narrow fix independently proves another defect."
 
 scope:
   required_changes:
-    - "Evolve product-state.json schema_version from 2 to 3 in place; do not create project-state.json, system-gates.json, progression.json, or another product-state authority."
-    - "Preserve target identity, product_scope revision 1/FROZEN, exact F001-F004 identities and lifecycle states/evidence, and release OPEN/null/UNKNOWN truth unless fresh evidence independently proves a pre-existing canonical state defect."
-    - "Extend product-state.json with exactly one target-owned system_gates object and one derived_project object."
-    - "Use the canonical global gate groups foundation, integration, verification, hardening, production. Preserve the canonical plan leaf names unless a leaf is demonstrably inapplicable to agent-foundation; inapplicability is represented by N/A with explicit reason, not by deleting the canonical leaf."
-    - "Foundation leaves: architecture, dependency_rules, test_infrastructure, telemetry, security, ci."
-    - "Integration leaves: cross_feature_flows, contracts, data_consistency, authorization, external_dependencies."
-    - "Verification leaves: unit, integration, contract, e2e, security, failure_paths."
-    - "Hardening leaves: performance, capacity, security, privacy, observability, slo, alerts, rollback, backup_restore, disaster_recovery, cost."
-    - "Production leaves: deployment, smoke_test, critical_journeys, telemetry, operational_readiness."
-    - "Each system-gate leaf records status from PASS | FAIL | PENDING | N/A | UNKNOWN, bounded inspectable evidence_refs, and reason using the same fail-closed evidence principles as T3. PASS requires attributable persisted evidence; N/A requires explicit target-specific justification; UNKNOWN is never PASS."
-    - "Each non-production group stores a derived aggregate status. Production stores derived acceptance_status over deployment, smoke_test, critical_journeys, telemetry; operational_readiness remains a separately evaluated leaf because the canonical phase algorithm checks it independently."
-    - "Define deterministic aggregate precedence: any FAIL -> FAIL; otherwise any UNKNOWN -> UNKNOWN; otherwise any PENDING -> PENDING; otherwise all remaining leaves must be PASS or justified N/A and the aggregate is PASS. N/A is exclusion from applicability, never itself PASS. Reject malformed groups and aggregate disagreement."
-    - "Require at least one applicable non-N/A leaf for any group/production acceptance aggregate to be PASS; an all-N/A group cannot manufacture PASS."
-    - "Freshly audit current agent-foundation evidence for every global leaf. Use PASS only where target-owned persisted evidence supports the exact current fact. Use N/A only for genuinely inapplicable concerns with explicit justification. Use UNKNOWN where evidence is absent, stale, contradictory, or not attributable. Do not force generic fullstack/runtime concerns to PASS."
-    - "Do not reinterpret fresh TASK-0021 terminal output as hidden global-gate PASS unless the result is persisted in canonical evidence that the candidate may validly reference without self-attestation. Current task/report/review state does not manufacture product state."
-    - "Extend AGENT_FOUNDATION_PRODUCT_STATE.md in place as the single human-readable T2+T3+T4 contract. Document global gate semantics, aggregate precedence, derived project phase, and deterministic blocker ordering."
-    - "Add derived_project containing exactly phase. Store the phase projection, but require validator recomputation and reject authored disagreement."
-    - "Implement the canonical phase algorithm exactly: release not FROZEN or required release feature set unresolved -> P0_SCOPE; foundation aggregate not PASS -> P1_FOUNDATION; any required feature below INTEGRATED -> P2_FEATURE_BUILD; integration aggregate not PASS -> P3_INTEGRATION; any required feature below VERIFIED or verification aggregate not PASS -> P4_VERIFICATION; any required feature below RELEASE_READY or hardening aggregate not PASS -> P5_HARDENING; any required feature not LIVE or production acceptance not PASS or production operational_readiness not PASS -> P6_RELEASE_READY; otherwise P7_LIVE."
-    - "Because current release.status is OPEN and required_feature_ids is unresolved, current derived_project.phase must be P0_SCOPE. Do not invent or freeze a release to exercise later phases."
-    - "Implement a deterministic pure earliest-blocker resolver from canonical state without changing Architect skill behavior. It must mirror phase-algorithm precedence and use explicit tie-break ordering."
-    - "Blocker ordering: P0 first release.status, then required_feature_ids_resolution; P1 foundation leaf order; P2 required features in canonical product-registry order, then earliest unmet feature lifecycle gate order; P3 integration leaf order; P4 required features below VERIFIED in registry order before verification-group leaves; P5 required features below RELEASE_READY in registry order before hardening leaves; P6 required features not LIVE in registry order before production acceptance leaves, then operational_readiness."
-    - "When release required_feature_ids is resolved in test fixtures, normalize required-feature evaluation through canonical product-registry order rather than arbitrary input/list/set iteration. Unknown or foreign feature IDs fail closed."
-    - "Current earliest blocker must resolve deterministically to release.status because current release scope is OPEN. Do not select F002/F004 verification while P0 blocks progression."
-    - "Add focused regressions covering every P0-P7 phase branch, aggregate precedence, all-N/A rejection, N/A justification, UNKNOWN-not-PASS, production acceptance versus operational_readiness separation, registry-order feature tie-break, leaf-order tie-break, foreign required-feature rejection, derived-phase mismatch rejection, and current P0/release.status blocker."
-    - "Keep T1 architecture, T2 scope/release truth, T3 feature lifecycle semantics/evidence, seven-skill taxonomy, rationalization/external metadata, documents/, standards/, authority.lock.json, TASK-0014..0020 historical artifacts, agent-runtime, Runtime/host state, credentials, branches, tags, and releases unchanged."
-    - "Publish implementation/report on main only by ordinary non-force fast-forward."
+    - "Freshly prove local HEAD == origin/main == freshly resolved remote main at the exact revision-2 execution base, ahead/behind 0/0, clean index/worktree."
+    - "Before mutation reproduce the exact Architect probe: in a resolved future-state fixture with foundation.architecture=N/A and foundation.dependency_rules=UNKNOWN, aggregate must derive UNKNOWN, phase P1_FOUNDATION, and the pre-fix resolver must incorrectly return system_gates.foundation.architecture."
+    - "If the exact defect does not reproduce from the authorized base, stop and report evidence mismatch rather than implementing an unproven fix."
+    - "Correct _first_unmet_agent_foundation_system_leaf or equivalent pure blocker-selection logic so PASS and N/A are skipped, and the first canonical-order status among FAIL, UNKNOWN, or PENDING is returned."
+    - "Preserve canonical leaf order as the tie-break among actual blocking statuses."
+    - "Apply the same N/A-exclusion semantics consistently to foundation, integration, verification, hardening, and production-acceptance leaf resolution."
+    - "Keep production operational_readiness ordering unchanged: required-feature blockers first, then production acceptance blockers, then operational_readiness."
+    - "Do not change aggregate precedence. N/A remains excluded from aggregation, all-N/A remains invalid, FAIL > UNKNOWN > PENDING > PASS remains unchanged."
+    - "Do not change project-phase derivation, required-feature normalization, registry ordering, feature lifecycle semantics, release truth, or current derived phase/blocker."
+    - "Add focused adversarial regressions proving N/A-before-UNKNOWN, N/A-before-PENDING, and N/A-before-FAIL each skip N/A and return the actual blocking leaf in canonical order."
+    - "Add or retain a proof that an N/A production-acceptance leaf does not become the blocker when a later production-acceptance leaf is UNKNOWN/PENDING/FAIL."
+    - "Retain all revision-1 T4 regressions for P0-P7 phases, aggregate precedence, all-N/A rejection, N/A justification, foreign-ID fail-closed behavior, registry-order feature tie-breaks, production acceptance/readiness separation, stored-phase mismatch, and current P0/release.status."
+    - "Preserve product-state.json and AGENT_FOUNDATION_PRODUCT_STATE.md byte-for-byte unless the narrow blocker correction independently proves canonical truth must change. No current canonical state change is expected."
+    - "Keep T1-T3 truth, seven-skill taxonomy, rationalization/external metadata, documents/, standards/, authority.lock.json, TASK-0014..0020, agent-runtime, Runtime/host state, credentials, branches, tags, and releases unchanged."
+    - "On successful qualification create .agent/tasks/TASK-0021/report-r2.yaml with result NEEDS_REVIEW, commit it as the sole report-only child of the revision-2 implementation candidate, and publish by ordinary non-force fast-forward."
 
   allowed_existing_files_or_components:
-    - "product-state.json"
-    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"
     - "skills/scripts/validate_skill_library.py"
     - "skills/scripts/test_validate_skill_library.py"
-    - ".agent/tasks/TASK-0021/**"
+    - "product-state.json only if corrected blocker logic proves canonical truth change"
+    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md only if canonical truth change requires documentation"
+    - ".agent/tasks/TASK-0021/task.yaml"
+    - ".agent/tasks/TASK-0021/report.yaml"
+    - ".agent/tasks/TASK-0021/review.yaml"
+    - ".agent/tasks/TASK-0021/report-r2.yaml"
 
-  expected_files_are_restrictive: false
+  expected_files_are_restrictive: true
 
 invariants:
+  - "Revision 2 repairs earliest-blocker N/A exclusion only."
+  - "System-gate N/A is non-applicable and never materially blocking."
+  - "Actual blockers are FAIL, UNKNOWN, or PENDING."
+  - "Canonical leaf order remains the tie-break among actual blocking statuses."
+  - "Current canonical project truth remains P0_SCOPE with earliest blocker release.status."
   - "product-state.json remains the sole machine-readable product-state SSOT."
-  - "System-gate aggregate statuses and project phase are derived projections validated from leaf facts and release/feature state, never independently authored authority."
-  - "Current release truth remains OPEN/null/UNKNOWN and therefore current phase is P0_SCOPE."
-  - "Current F001 VERIFIED, F002 INTEGRATED, F003 VERIFIED, F004 INTEGRATED state remains unchanged unless fresh evidence independently proves a pre-existing defect."
-  - "UNKNOWN never becomes PASS. N/A is justified exclusion, not PASS."
-  - "Task/report/review status, Runtime state, and chat/UI state never manufacture global gate or project phase truth."
-  - "Earliest blocker is deterministic and mirrors phase precedence; it does not become Architect behavior until T5."
-  - "No global progression scheduler, daemon, queue, workflow engine, central multi-repository database, or background reconciler is introduced."
-  - "No release identity or required feature set is invented merely to advance phase."
+  - "No T5/T6, Architect progression integration, execution/UI recovery redesign, scheduler, daemon, queue, workflow engine, or central state service is introduced."
 
 forbidden_changes:
-  - "Create another product/project/system-gate state file."
-  - "Freeze release scope, invent a release ID, or invent required_feature_ids."
-  - "Promote feature state from TASK-0021 execution/report/review."
-  - "Treat N/A as PASS without explicit exclusion semantics or allow an all-N/A aggregate to PASS."
-  - "Use percentages or subjective interpretation to choose phase."
-  - "Let later gate evidence override an earlier phase blocker."
-  - "Select F002/F004 feature verification as current earliest blocker while release remains OPEN."
-  - "Modify Architect skill progression behavior, task-generation behavior, execution/UI recovery, or adoption closure."
-  - "Create T5/T6 task artifacts."
-  - "Modify T1 architecture, T2 release semantics, T3 lifecycle semantics, protected domains, ECC/external pins, documents/, standards/, authority.lock.json, agent-runtime, Runtime/host state, credentials, branches, tags, releases, or repository metadata."
+  - "Return an N/A system-gate leaf as earliest blocker."
+  - "Change aggregate precedence or treat N/A as PASS."
+  - "Change current release OPEN/null/UNKNOWN truth or invent required_feature_ids."
+  - "Change project phase semantics or current P0_SCOPE merely to simplify tests."
+  - "Change product-state.json or product-state contract unless the corrected resolver proves a real canonical state change."
+  - "Modify Architect behavior or create T5/T6 artifacts."
+  - "Modify protected domains, external pins, agent-runtime, Runtime/host/dependency state, credentials, branches, tags, releases, or repository metadata."
 
 gap_policy:
   local_auto_fix: true
   scope_expansion: forbidden
-  architecture_change: revised_contract_required
+  architecture_change: forbidden
   spec_change: revised_contract_required
   dependency_change: forbidden
   public_contract_change: revised_contract_required
@@ -139,55 +123,47 @@ gap_policy:
 
 acceptance_criteria:
   - id: AC-1
-    requirement: "Schema-3 product state contains one canonical global-system-gate model and one derived project-phase projection without duplicating product-state authority."
-    evidence_required: "Exact object/schema proof shows system_gates + derived_project in product-state.json, no parallel state file, preserved T1-T3 state, and validator recomputation of derived fields."
+    requirement: "The exact revision-1 N/A earliest-blocker defect is closed."
+    evidence_required: "RED pre-fix reproduces architecture=N/A before dependency_rules=UNKNOWN returning architecture; GREEN post-fix returns dependency_rules."
 
   - id: AC-2
-    requirement: "Global gate aggregation is deterministic and fail-closed."
-    evidence_required: "Focused tests prove FAIL > UNKNOWN > PENDING > PASS precedence, justified N/A exclusion, all-N/A cannot PASS, missing/invalid evidence cannot manufacture PASS, and production acceptance excludes operational_readiness from its own aggregate while phase checks operational_readiness separately."
+    requirement: "System-leaf blocker resolution treats N/A as excluded across all global groups."
+    evidence_required: "Focused tests prove N/A-before-FAIL, N/A-before-UNKNOWN, and N/A-before-PENDING skip N/A while preserving canonical-order selection among actual blockers."
 
   - id: AC-3
-    requirement: "Current global gate leaf truth is evidence-backed and target-specific."
-    evidence_required: "Every PASS cites attributable persisted target evidence; every N/A has explicit applicability reason; missing/stale/contradictory evidence remains UNKNOWN. Independent review can reconstruct each group aggregate."
+    requirement: "Aggregate and phase semantics remain unchanged."
+    evidence_required: "All revision-1 T4 aggregate/P0-P7/required-feature/production-readiness regressions remain green and current canonical state remains P0_SCOPE with release.status blocker."
 
   - id: AC-4
-    requirement: "Project phase derivation exactly follows canonical P0-P7 precedence."
-    evidence_required: "Validator/tests cover each phase branch, recompute stored phase, reject mismatch, reject foreign/unresolved required-feature sets, and prove current canonical state derives P0_SCOPE because release is OPEN/unresolved."
+    requirement: "Revision 2 remains narrowly scoped."
+    evidence_required: "Base-to-candidate diff modifies only validator/tests unless a proven canonical state change requires product-state/contract changes; no T5/T6/progression integration or protected-owner mutation."
 
   - id: AC-5
-    requirement: "Earliest-blocker selection is deterministic without yet changing Architect behavior."
-    evidence_required: "Pure resolver tests prove phase-order, registry-order and leaf-order tie-breaks, feature-before-system ordering where specified, production acceptance/readiness ordering, and current blocker release.status."
-
-  - id: AC-6
-    requirement: "T4 remains bounded and T1-T3/protected owners remain intact."
-    evidence_required: "Base-to-candidate diff is limited to product-state, existing product-state contract, validator/tests; no T5/T6, Architect progression integration, execution recovery, or new orchestration infrastructure; protected objects unchanged."
-
-  - id: AC-7
     requirement: "All affected qualification is green on one coherent final candidate."
-    evidence_required: "Task validation, focused T4 tests plus existing T2/T3 regressions, full skills/protocol validator/regressions, external sync/regressions, profile bootstrap local/remote/regressions, documents tests, standards verifier with existing qualified interpreter, JSON parse, Python compile, protected/history checks, exact scope proof, internal links if affected, and git diff --check PASS."
+    evidence_required: "Focused T4+rev2 regressions, full skills/protocol tests, external sync/regressions, profile local/remote/regressions, documents tests, standards verifier using an existing qualified interpreter, JSON parse, Python compile, protected/history checks, exact scope proof, and git diff --check PASS."
 
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Validate TASK-0021 and prove exact local/remote execution-base identity plus clean worktree before mutation."
+      command_or_check: "Validate TASK-0021 revision 2 and exact execution-base/local/remote/clean state."
       required: true
     - id: CHECK-2
-      command_or_check: "Audit current target evidence for every canonical global gate leaf before assigning PASS/N/A/UNKNOWN; preserve fail-closed truth."
+      command_or_check: "Reproduce the exact Architect N/A-before-UNKNOWN blocker defect RED on the pre-fix revision-2 base."
       required: true
     - id: CHECK-3
-      command_or_check: "Run focused schema-3 aggregate/phase/blocker regressions including all P0-P7 branches and adversarial precedence/tie-break cases."
+      command_or_check: "Implement N/A-skipping system-leaf blocker resolution and prove RED-to-GREEN plus N/A-before-FAIL/PENDING/UNKNOWN adversarial cases."
       required: true
     - id: CHECK-4
-      command_or_check: "Run existing T2/T3 product-state/lifecycle/evidence-parser regressions to prove no regression."
+      command_or_check: "Rerun all revision-1 T4 phase/aggregate/blocker regressions and prove current product-state/contract remain byte-identical unless corrected truth changes."
       required: true
     - id: CHECK-5
-      command_or_check: "Run full skills/protocol validator/regressions; external sync/regressions; profile bootstrap local/remote/regressions; documents tests; standards verifier with an already-installed qualified interpreter."
+      command_or_check: "Run full skills/protocol validator/regressions; external sync/regressions; profile bootstrap local/remote/regressions; documents tests; standards verifier using an already-installed qualified interpreter."
       required: true
     - id: CHECK-6
-      command_or_check: "Parse product-state.json, compile modified Python, validate affected Markdown links, prove protected/history identities, exact implementation scope, no T5/T6/progression-integration/recovery machinery, and git diff --check."
+      command_or_check: "Run JSON parse, modified Python compile, protected/history checks, exact candidate scope proof, no T5/T6/progression/recovery machinery proof, and git diff --check."
       required: true
     - id: CHECK-7
-      command_or_check: "Fresh-resolve remote before publication; publish candidate then report only; prove direct-child lineage, final HEAD/origin/remote identity, ahead/behind 0/0, clean worktree, main-only remote, unchanged empty tags/releases."
+      command_or_check: "Fresh-resolve remote before publication; publish candidate then report-r2 only; prove direct-child lineage, final HEAD/origin/remote identity, ahead/behind 0/0, clean worktree, main-only remote, unchanged tags/releases."
       required: true
   authoritative_verification:
     required: false
@@ -195,12 +171,13 @@ verification:
     expected_signal: ""
 
 structure_policy:
-  expected_new_files: []
+  expected_new_files:
+    - ".agent/tasks/TASK-0021/report-r2.yaml"
   unlisted_new_files:
     allowed: false
     max: 0
     within: []
-    purpose: "T4 evolves the existing target-owned state object/contract and validator/tests in place."
+    purpose: "Revision 2 changes existing resolver/tests and emits only its revision-specific report."
   allow_new_top_level_directories: false
   allow_new_shared_modules: false
 
