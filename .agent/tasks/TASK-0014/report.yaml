@@ -1,0 +1,72 @@
+protocol_version: 3
+
+task_id: TASK-0014
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0014/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "6344f08efb74f0b32a387921b48a7a2481a7ae46"
+  final_execution_head: "cf7e4fb06c770d4cde786274d7f7ccd7a9674569"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "0083d1383bfc0326729e615a85844b7b2004950d"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - repository_content_write
+    - local_test_execution
+    - bounded_network_resolution
+    - non_force_git_publication
+  available:
+    - Agent Runtime expected-state repository mutation
+    - Agent Runtime bounded local command execution
+    - bounded exact Git remote resolution
+    - exact-lease non-force Git publication
+  missing: []
+  passed: true
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0014 revision 1 designates no separate authoritative verifier."
+
+pushed: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "FOUNDATION_ARCHITECTURE now defines one seam without adding a role or layer: exact target-repository truth and repo-native conventions first, exact-pinned ECC as the default generic engineering harness second, another independently admitted exact external capability only for a material ECC gap, and Foundation-internal generic implementation only for Foundation-specific deltas or genuinely uncovered capability."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "ECC remains pinned to affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735 under MIT and is modeled as harness_source. The deterministic exact-pin snapshot distinguishes 292 skills, 94 commands, 68 agents, plugin manifest version 2.2.2, command-registry metadata, and install component/module/profile metadata. Regressions reject mutable revisions, incomplete metadata policy, and activation-policy expansion."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Architect and Executor both preserve target/task authority and repository-native behavior while routing remaining generic HOW to only the minimum relevant exact-pinned ECC skill, command, or agent surface. Upstream ECC role/task/session/memory systems, hooks, installers, settings, and unrelated surfaces are explicitly non-authoritative and non-activating."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "ECC CLI availability is not required. resolve_harness_entry resolves exactly one entry from Foundation registry/catalog metadata at the pinned revision and fails closed on missing or wrong-surface resolution; the focused regression passes with PATH empty and performs no harness installation or host mutation."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "External catalog authority remains NONE and the pre-existing capability state_model is byte-identical to the authorized base. Matt skills, Superpowers, and Awesome source records are byte-identical to the base. Generated ECC entries exclude AGENTS.md, CLAUDE.md, hooks, rules, installers, and global configuration from activation."
+  - criterion_id: AC-6
+    status: PASS
+    evidence: "skills/.agent/rationalization.json is unchanged from the authorized base and the complete skills/**/SKILL.md path inventory is unchanged. No internal skill was added, removed, renamed, retired, or broadly rationalized."
+  - criterion_id: AC-7
+    status: PASS
+    evidence: "Base-to-candidate scope contains only the twelve task-authorized seam, generated metadata, test, and corresponding validator paths. documents/, standards/, profile/.agent/bootstrap/authority.lock.json, agent-runtime, harness configuration, credentials, and host security state were not mutated."
+  - criterion_id: AC-8
+    status: PASS
+    evidence: "On candidate cf7e4fb06c770d4cde786274d7f7ccd7a9674569: external capability --check passes byte-identically; focused ECC seam regressions pass 19/19; the full skill validator and full validator regression suite pass; bootstrap local validation, bootstrap regression suite, and bootstrap --remote validation pass; py_compile passes for all four modified Python files; git diff --check passes; scope/protected-domain/taxonomy proofs pass."
+
+result: NEEDS_REVIEW
