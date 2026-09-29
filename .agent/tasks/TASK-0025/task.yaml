@@ -1,0 +1,202 @@
+protocol_version: 3
+
+task_id: TASK-0025
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: architect_progression
+  task_id: "TASK-0025"
+  gap_id: "F001-PERSISTED-VERIFICATION-STATE-REFRESH"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "d4283602ae61acb306cc4deb923c8d77ac690a8c"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+  - verification
+  - adversarial-audit
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+  recommended:
+    - adversarial-audit
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: ".agent/tasks/TASK-0024/review.yaml@d4283602ae61acb306cc4deb923c8d77ac690a8c"
+    role: "terminal ACCEPTED T1 review establishing that F001 remains conservatively INTEGRATED/UNKNOWN until a separately authorized canonical state refresh consumes persisted exact-byte TASK-0024 report evidence"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0024/report.yaml@e845fc023a7fba21d639f68300da3f29d9ab4150"
+    role: "persisted positive profile bootstrap verification result bound to TASK-0024 final_execution_head dbdff63fb2e9572ed9ba9748de046f4c35e33c23"
+    precedence: 2
+  - source: "product-state.json@d4283602ae61acb306cc4deb923c8d77ac690a8c"
+    role: "current canonical F001 INTEGRATED/verification UNKNOWN product-state truth and regression record to be refreshed"
+    precedence: 3
+  - source: "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md@d4283602ae61acb306cc4deb923c8d77ac690a8c"
+    role: "canonical evidence attribution, lifecycle derivation, regression, release-cap, and current-state semantics"
+    precedence: 4
+  - source: "skills/scripts/validate_skill_library.py@d4283602ae61acb306cc4deb923c8d77ac690a8c"
+    role: "canonical historical verification attribution and product-state transition validator; semantics are preserved unchanged"
+    precedence: 5
+
+structure_authority:
+  status: RESOLVED
+  source: "TASK-0024 terminal review plus current schema-3 product-state/evidence validator"
+  rationale: "TASK-0024 deliberately left F001 at INTEGRATED/UNKNOWN because its candidate could not self-attest verification. Its persisted report now exists, is independently accepted, contains recognized positive bootstrap evidence, and the canonical verifier proves it covers the exact current profile/ owner bytes. The smallest correct next action is therefore a target-owned state refresh only; no routing, lifecycle, evidence-model, product-delivery, ECC, release, or architecture redesign is needed."
+
+objective: "Refresh only F001 canonical lifecycle truth from INTEGRATED / verification UNKNOWN back to VERIFIED / verification PASS by consuming the already-persisted exact-byte TASK-0024 report evidence. Preserve all T1 routing behavior and all product-state/evidence semantics. Do not manufacture new verification evidence, do not change profile/ bytes, and do not start T2 or any broader product-delivery progression."
+
+scope:
+  required_changes:
+    - "Freshly prove local HEAD == origin/main == freshly resolved remote main at the exact TASK-0025 execution base, ahead/behind 0/0, clean worktree, MAIN_ONLY topology, and no active Git mutation operation."
+    - "Before mutation reproduce the exact refresh preconditions from current canonical bytes: F001 verification is UNKNOWN, F001 derived_state is INTEGRATED, F001 has the current VERIFIED->INTEGRATED regression record, project phase is P0_SCOPE, earliest blocker is release.status, and _verification_report_covers_owner('.agent/tasks/TASK-0024/report.yaml', owner='profile/') or the canonical equivalent returns true."
+    - "Also prove profile/ is byte-equivalent to TASK-0024 report execution.final_execution_head dbdff63fb2e9572ed9ba9748de046f4c35e33c23. If exact owner-byte attribution is false, stop BLOCKED; do not weaken the verifier or substitute terminal output."
+    - "Update only F001 verification gate in product-state.json from UNKNOWN to PASS. Its evidence_refs must include .agent/tasks/TASK-0024/report.yaml plus current profile-owned verification artifacts sufficient for the existing owner-domain evidence rule; set reason to null."
+    - "Recompute only F001 derived_state from INTEGRATED to VERIFIED and clear its lifecycle.regression to null because this is a forward/non-regression transition. Do not retain the temporary TASK-0024 evidence-freshness regression as history."
+    - "Update skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md only to mirror the exact refreshed current truth: F001 VERIFIED with persisted TASK-0024 bootstrap result evidence covering exact current profile/ bytes. Preserve evidence attribution rules, anti-self-attestation semantics, lifecycle ordering, schema version 3, release cap, global gates, project-phase semantics, and earliest-blocker semantics."
+    - "Update only canonical-state regression assertions in skills/scripts/test_validate_skill_library.py that directly encode the superseded F001 INTEGRATED/UNKNOWN/current-regression projection. Preserve generic downgrade, forward-transition, stale-evidence, anti-self-attestation, report parsing, and exact-owner attribution behavior."
+    - "Add or retain a focused deterministic proof that TASK-0024 report qualifies F001 verification only while current profile/ remains byte-equivalent to its final_execution_head, and that a synthetic/current owner-byte drift causes the same evidence to stop qualifying. Do not change validate_skill_library.py to make this test pass."
+    - "Keep F002=INTEGRATED/verification UNKNOWN, F003=VERIFIED, F004=INTEGRATED/verification UNKNOWN exactly unchanged. TASK-0025 changes skills-owned contract/test bytes but must not promote or regress F002."
+    - "Keep release OPEN with unresolved identity and required feature set, all global system-gate truth, derived project phase P0_SCOPE, and earliest blocker release.status unchanged."
+    - "Keep TASK-0024 task/report/review artifacts immutable. Do not rewrite historical evidence or add TASK-0025 artifacts as evidence for F001 verification."
+    - "Keep profile/, documents/, standards/, external capability metadata/pins, Foundation Architecture, Case Router, Architect/Executor, Task Protocol, bootstrap semantics, protocol version, Agent Runtime, host state, dependencies, credentials, tags, releases, and repository metadata unchanged."
+    - "Run a focused F001 state-refresh test set first, including current exact report attribution, state validation, and forward-transition/null-regression behavior. Only after focused PASS run the current full skills/protocol validator and regressions plus bootstrap local/remote/regressions, external sync/regressions, Documents regressions, Standards verifier/regressions, JSON parse, modified Python compile, scope/protected/history checks, and git diff --check."
+    - "On successful qualification commit the state-refresh candidate, publish it by ordinary non-force MAIN_ONLY fast-forward, then create .agent/tasks/TASK-0025/report.yaml as the sole report-only child with result NEEDS_REVIEW and publish it by ordinary non-force fast-forward."
+    - "Do not create TASK-0026 or any T2/T3/T4/T5 implementation/task artifact in this task."
+
+  allowed_existing_files_or_components:
+    - "product-state.json"
+    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"
+    - "skills/scripts/test_validate_skill_library.py"
+    - ".agent/tasks/TASK-0025/**"
+
+  expected_files_are_restrictive: true
+
+invariants:
+  - "TASK-0024 report is historical persisted verification evidence; TASK-0025 does not create or reinterpret evidence-model semantics."
+  - "F001 refresh is forward-only: INTEGRATED/UNKNOWN -> VERIFIED/PASS with regression null."
+  - "Exact current profile/ owner-byte attribution remains mandatory for historical verification PASS."
+  - "No current terminal output, TASK-0025 report, task status, or review status may self-attest F001 verification."
+  - "F002, F003, F004, release truth, system gates, project phase, and earliest blocker remain unchanged."
+  - "Schema version remains 3 and protocol version remains 3."
+  - "Exactly two organizational roles remain Architect and Executor."
+  - "T1 semantic routing and minimum-context behavior remain byte-identical."
+  - "No T2 ECC exploitation, T3 delivery-readiness model, T4 slice planning, T5 adoption, release progression, or new product authority is introduced."
+
+forbidden_changes:
+  - "Modify profile/ or TASK-0024 task/report/review artifacts."
+  - "Modify skills/scripts/validate_skill_library.py or weaken exact-owner historical verification attribution."
+  - "Treat TASK-0025 task/report/review or fresh terminal output as F001 verification evidence."
+  - "Promote F002, F004, release readiness, production acceptance, system gates, or project phase."
+  - "Change feature identities/owners, release identity/scope, schema shape, global gate inventory, phase precedence, or earliest-blocker semantics."
+  - "Modify Case Router, Foundation Architecture, Architect, Executor, Task Protocol, bootstrap, external capability catalog/pins, Documents, Standards, Agent Runtime, host/dependency state, credentials, branches, tags, releases, or repository metadata."
+  - "Create another role, registry, state store, workflow engine, planner, scheduler, queue, service, database, or universal manifest."
+  - "Create TASK-0026 or later progression artifacts."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "TASK-0024 persisted report is proven attributable to exact current F001 owner bytes before refresh."
+    evidence_required: "Canonical historical verification helper/equivalent returns true for .agent/tasks/TASK-0024/report.yaml and profile/, and exact git/tree proof shows current profile/ equals TASK-0024 final_execution_head; a drift fixture proves stale bytes fail closed."
+
+  - id: AC-2
+    requirement: "F001 canonical verification truth is refreshed without changing evidence semantics."
+    evidence_required: "product-state.json has F001 verification PASS with persisted TASK-0024 report plus current profile evidence, reason null, derived_state VERIFIED, regression null; validator source remains byte-identical."
+
+  - id: AC-3
+    requirement: "The state refresh is isolated from unrelated product truth."
+    evidence_required: "Exact before/after proof shows F002-F004 lifecycle truth, release OPEN/null/UNKNOWN, system gates, derived P0_SCOPE, earliest blocker release.status, feature identities/owners, and schema version unchanged."
+
+  - id: AC-4
+    requirement: "Canonical product-state documentation and regressions match the refreshed truth."
+    evidence_required: "AGENT_FOUNDATION_PRODUCT_STATE.md states F001 VERIFIED based on persisted TASK-0024 exact-byte bootstrap evidence; only direct current-state assertions are updated and generic evidence/transition/adversarial regressions remain green."
+
+  - id: AC-5
+    requirement: "The final candidate is fully qualified without T2 or architecture expansion."
+    evidence_required: "Focused F001 refresh tests PASS; full skills/protocol, bootstrap, external, Documents, Standards, static/scope/history/diff checks PASS on one coherent candidate; exact diff contains only the three authorized existing files."
+
+  - id: AC-6
+    requirement: "Publication and review handoff preserve protocol-v3 lineage."
+    evidence_required: "Candidate is an ordinary non-force MAIN_ONLY child of the exact execution base; report is the sole direct report-only child of candidate; final local/origin/fresh remote identity is synchronized and clean; report ends NEEDS_REVIEW for independent Architect judgment."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0025 and exact execution-base/local/remote/clean MAIN_ONLY state. Reproduce F001 INTEGRATED/UNKNOWN plus persisted TASK-0024 report attribution TRUE before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Apply only the F001 product-state/contract/current-state-test refresh; prove F001 verification PASS, derived VERIFIED, regression null, exact TASK-0024 report attribution, and stale-owner-byte fail-closed behavior."
+      required: true
+    - id: CHECK-3
+      command_or_check: "Run focused product-state transition/evidence tests, then full skills/protocol validator and regression suite. Prove validate_skill_library.py is byte-identical to the authorized base."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run profile bootstrap local and remote validation plus bootstrap regressions; external sync --check and regressions; Documents regressions; Standards verifier/regressions."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Run JSON parse, modified Python compile, protected/history checks, exact three-file scope proof, unchanged F002-F004/release/system-gates/phase/blocker proof, and git diff --check."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Fresh-resolve remote before publication; publish candidate then report by ordinary non-force fast-forward; prove candidate/report direct-child lineage, final HEAD/origin/fresh remote identity, ahead/behind 0/0, clean worktree, remote main-only topology, and no tag/release/repository-metadata effects."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files:
+    - ".agent/tasks/TASK-0025/report.yaml"
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "TASK-0025 refreshes one existing target-owned lifecycle truth and emits one Executor report."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
