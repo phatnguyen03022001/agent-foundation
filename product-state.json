@@ -54,14 +54,14 @@
               },
               {
                 "name": "verification",
-                "status": "PASS",
+                "status": "UNKNOWN",
                 "evidence_refs": [
                   ".agent/tasks/TASK-0015/report.yaml",
                   "profile/.agent/bootstrap/bootstrap.json",
                   "profile/.agent/bootstrap/test_bootstrap.py",
                   "profile/.agent/bootstrap/validate.py"
                 ],
-                "reason": null
+                "reason": "TASK-0015 verification no longer covers current profile/ bytes changed by TASK-0024; no persisted exact-owner result exists."
               },
               {
                 "name": "release_readiness",
@@ -76,8 +76,19 @@
                 "reason": "Release is OPEN; production acceptance cannot be established before release readiness."
               }
             ],
-            "derived_state": "VERIFIED",
-            "regression": null
+            "derived_state": "INTEGRATED",
+            "regression": {
+              "from_state": "VERIFIED",
+              "to_state": "INTEGRATED",
+              "reason": "TASK-0015 final_execution_head f09c2df5e1affdd843af91d3dc70375269d255ab predates the three current profile/ bootstrap changes in TASK-0024; no persisted result verifies these exact current owner bytes.",
+              "evidence_refs": [
+                ".agent/tasks/TASK-0015/report.yaml",
+                ".agent/tasks/TASK-0024/task.yaml",
+                "profile/.agent/bootstrap/bootstrap.json",
+                "profile/.agent/bootstrap/test_bootstrap.py",
+                "profile/.agent/bootstrap/validate.py"
+              ]
+            }
           }
         },
         {

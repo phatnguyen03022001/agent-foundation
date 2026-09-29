@@ -254,6 +254,17 @@ class BootstrapContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "missing Foundation canonical path"):
             validate.validate_resolution(self.bootstrap, self.lock, resolved, PROFILE_REVISION)
 
+    def test_legacy_execute_case_router_normalizes_only_to_task_execution(self) -> None:
+        router = validate.parse_case_router(
+            "cases:\n  - id: EXECUTE\n    capabilities:\n      - executor\n"
+        )
+        validate.validate_case_router(router)
+        selected = validate.select_semantic_route(router, "EXECUTE")
+        self.assertEqual(selected["route"]["id"], "TASK_EXECUTION")
+        self.assertEqual(selected["disposition"], "LEGACY_EXECUTE_COMPATIBILITY")
+        with self.assertRaisesRegex(ValueError, "supports only EXECUTE task compatibility"):
+            validate.select_semantic_route(router, "MATERIAL_JUDGMENT")
+
     def test_malformed_case_router_fails_closed(self) -> None:
         with self.assertRaisesRegex(ValueError, "malformed Case Router"):
             validate.validate_resolution(
@@ -264,11 +275,13 @@ class BootstrapContractTests(unittest.TestCase):
             )
 
     def test_case_router_rejects_unadmitted_case(self) -> None:
+        router = (ROOT / "skills/.agent/case-router.yaml").read_text(encoding="utf-8")
+        router = router.replace("id: MATERIAL_JUDGMENT", "id: REVIEW", 1)
         with self.assertRaisesRegex(ValueError, "unauthorized Case Router semantics"):
             validate.validate_resolution(
                 self.bootstrap,
                 self.lock,
-                self.resolved_routes_with_router('cases:\n  - id: REVIEW\n    capabilities:\n      - executor\n'),
+                self.resolved_routes_with_router(router),
                 PROFILE_REVISION,
             )
 
@@ -282,7 +295,9 @@ class BootstrapContractTests(unittest.TestCase):
             )
 
     def test_unknown_case_selection_fails_closed(self) -> None:
-        router = {"cases": [{"id": "EXECUTE", "capabilities": ["executor"]}]}
+        router = validate.parse_case_router(
+            (ROOT / "skills/.agent/case-router.yaml").read_text(encoding="utf-8")
+        )
         with self.assertRaisesRegex(ValueError, "unknown case"):
             validate.select_case_capability_routes(self.bootstrap, router, "VERIFY")
 
@@ -357,6 +372,12 @@ class BootstrapContractTests(unittest.TestCase):
         self.assertEqual(
             resolved["agent-foundation"]["contents"]["skills/.agent/case-router.yaml"],
             router,
+        )
+        legacy_router = validate.parse_case_router(router)
+        validate.validate_case_router(legacy_router)
+        self.assertEqual(
+            validate.select_semantic_route(legacy_router, "EXECUTE")["route"]["id"],
+            "TASK_EXECUTION",
         )
         self.assertEqual(resolved["agent-foundation"]["revision"], PROFILE_REVISION)
         self.assertEqual(resolved["agent-runtime"]["revision"], runtime_revision)
@@ -480,14 +501,8 @@ class BootstrapContractTests(unittest.TestCase):
                     "CWD",
                     "LOCAL_DIRECTORY_NAME",
                 ],
-                "required_fields": [
-                    "repository",
-                    "branch",
-                    "task_path",
-                    "task_revision",
-                    "base_head",
-                    "phase",
-                ],
+                "generic_required_fields": ["repository", "branch"],
+                "task_bound_required_fields": ["task_path", "task_revision", "base_head", "phase"],
             },
         )
 
@@ -522,79 +537,38 @@ class BootstrapContractTests(unittest.TestCase):
                 self.assertEqual(validate.render_task_launch(self.bootstrap, surface_id, "NEW"), expected)
 
     def test_fresh_context_reconstruction_is_bounded_and_chat_free(self) -> None:
-        target_locator = {
-            "repository": "owner/repo",
-            "branch": "dev",
-            "task_path": ".agent/tasks/TASK-0001/task.yaml",
-            "task_revision": 2,
-            "base_head": "a" * 40,
-            "phase": "EXECUTION",
-        }
-        result = validate.reconstruct_context(
-            root=ROOT,
-            profile_revision=PROFILE_REVISION,
-            target_locator=target_locator,
-            required_capabilities=["executor", "verification"],
-            controller="CHATGPT",
-            location="LOCAL",
-        )
+        target_binding = {"repository": "owner/repo", "branch": "dev"}
+        result = self._resolve_entry(target_binding, "READ_ONLY_RESEARCH")
         self.assertEqual(result["authority_set_identity"], PROFILE_REVISION)
-        self.assertEqual(result["target_binding"], target_locator)
+        self.assertEqual(result["authority"], "NONE")
+        self.assertEqual(result["target_binding"], target_binding)
         self.assertEqual(result["surface"]["id"], "CHATGPT_LOCAL")
         self.assertEqual(result["surface"]["transport"], "AGENT_RUNTIME")
         self.assertEqual(
             [route["capability"] for route in result["capability_routes"]],
-            ["executor", "verification"],
+            ["executor"],
+        )
+        self.assertEqual(
+            set(result["l1_navigation"]),
+            {"research_request_contract", "research_result_contract"},
         )
         self.assertNotIn("chat_history", result)
-        self.assertEqual(
-            result["repository_contract"],
-            {
-                "repository": "phatnguyen03022001/agent-foundation",
-                "topology": "MAIN_ONLY",
-                "working_ref": "main",
-                "stable_ref": "main",
-                "local_policy": "MANAGED_MIRROR",
-            },
-        )
+        self.assertNotIn("external_capability_catalog", result)
 
-    def test_fresh_context_reconstruction_exposes_the_pre_router_locator(self) -> None:
-        target_locator = {
-            "repository": "owner/repo",
-            "branch": "dev",
-            "task_path": ".agent/tasks/TASK-0001/task.yaml",
-            "task_revision": 2,
-            "base_head": "a" * 40,
-            "phase": "EXECUTION",
-        }
-        result = validate.reconstruct_context(
-            root=ROOT,
-            profile_revision=PROFILE_REVISION,
-            target_locator=target_locator,
-            required_capabilities=["executor"],
-            controller="CODEX",
-            location="LOCAL",
-        )
+    def test_fresh_context_reconstruction_exposes_only_the_selected_route(self) -> None:
+        target_binding = {"repository": "owner/repo", "branch": "dev"}
+        result = self._resolve_entry(target_binding, "MATERIAL_JUDGMENT")
         self.assertIn("case_router", result)
-        self.assertEqual(result["foundation_control_plane"]["revision"], PROFILE_REVISION)
-        self.assertEqual(result["foundation_control_plane"]["path"], "skills/contracts/FOUNDATION_ARCHITECTURE.md")
-        self.assertEqual(result["external_capability_catalog"]["revision"], PROFILE_REVISION)
+        self.assertEqual(result["entry_route"], "MATERIAL_JUDGMENT")
+        self.assertEqual(result["role"], "architect")
         self.assertEqual(
-            result["external_capability_catalog"]["path"],
-            "skills/.agent/external-capabilities/catalog.json",
+            [route["capability"] for route in result["capability_routes"]],
+            ["architect"],
         )
-        self.assertEqual(
-            result["l1_navigation"]["research_request_contract"],
-            {
-                "repository": "phatnguyen03022001/agent-foundation",
-                "revision": PROFILE_REVISION,
-                "path": "skills/templates/research-request.yaml",
-            },
-        )
-        self.assertEqual(
-            result["l1_navigation"]["continuity_root"]["path"],
-            "profile/.agent/continuity",
-        )
+        self.assertEqual(result["l1_navigation"], {})
+        self.assertNotIn("foundation_control_plane", result)
+        self.assertNotIn("external_capability_catalog", result)
+        self.assertNotIn("repository_contract", result)
 
     def test_execution_reconstruction_resolves_execute_from_one_foundation_revision(self) -> None:
         target_locator = {
@@ -605,33 +579,43 @@ class BootstrapContractTests(unittest.TestCase):
             "base_head": "a" * 40,
             "phase": "EXECUTION",
         }
-        router = "cases:\n  - id: EXECUTE\n    capabilities:\n      - executor\n"
+        router = (ROOT / "skills/.agent/case-router.yaml").read_text(encoding="utf-8")
         foundation_revision = "b" * 40
         resolved = self.resolved_routes_with_router(router, foundation_revision)
-        result = validate.reconstruct_execution_context(
-            ROOT, foundation_revision, target_locator, "EXECUTE", resolved
-        )
+        with patch.object(validate, "resolve_target_branch", return_value={
+            "repository": "owner/repo", "branch": "dev", "head": target_locator["base_head"]
+        }):
+            result = validate.reconstruct_execution_context(
+                ROOT, foundation_revision, target_locator, "EXECUTE", resolved
+            )
         self.assertEqual(
             result["bootstrap_trace"],
-            ["PROFILE_REVISION", "AUTHORITY_LOCK", "FOUNDATION_CONTROL_PLANE", "CASE_ROUTER", "CASE", "CAPABILITY_ROUTE", "CANONICAL_ARTIFACT"],
+            ["PROFILE_REVISION", "AUTHORITY_LOCK", "TARGET_BINDING", "CASE_ROUTER", "SEMANTIC_ROUTE", "CAPABILITY_ROUTE", "CANONICAL_ARTIFACT"],
         )
-        self.assertEqual(result["case"], "EXECUTE")
+        self.assertEqual(result["case"], "TASK_EXECUTION")
+        self.assertEqual(result["entry_route"], "TASK_EXECUTION")
+        self.assertEqual(result["role"], "executor")
+        self.assertNotIn("external_capability_catalog", result)
         self.assertEqual(
-            result["external_capability_catalog"],
-            {
-                "repository": "phatnguyen03022001/agent-foundation",
-                "revision": foundation_revision,
-                "path": "skills/.agent/external-capabilities/catalog.json",
-            },
+            [item["capability"] for item in result["capability_routes"]],
+            ["executor", "task_protocol"],
         )
         self.assertEqual(
             result["canonical_artifacts"],
-            [{
-                "capability": "executor",
-                "repository": "phatnguyen03022001/agent-foundation",
-                "revision": foundation_revision,
-                "path": "skills/executor/SKILL.md",
-            }],
+            [
+                {
+                    "capability": "executor",
+                    "repository": "phatnguyen03022001/agent-foundation",
+                    "revision": foundation_revision,
+                    "path": "skills/executor/SKILL.md",
+                },
+                {
+                    "capability": "task_protocol",
+                    "repository": "phatnguyen03022001/agent-foundation",
+                    "revision": foundation_revision,
+                    "path": "skills/protocols/TASK_PROTOCOL.md",
+                },
+            ],
         )
         self.assertNotIn("chat_history", result)
         self.assertNotIn("cwd", result)
@@ -659,19 +643,15 @@ class BootstrapContractTests(unittest.TestCase):
         )
         self.assertFalse(set(self.lock["repositories"]) & validate.LEGACY_INTERNAL_OWNER_ALIASES)
 
-    def test_fresh_context_reconstruction_requires_exact_target_locator(self) -> None:
-        with self.assertRaisesRegex(ValueError, "target locator"):
-            validate.reconstruct_context(
+    def test_fresh_context_reconstruction_requires_generic_target_identity(self) -> None:
+        with self.assertRaisesRegex(ValueError, "generic target binding"):
+            validate.reconstruct_entry_context(
                 root=ROOT,
                 profile_revision=PROFILE_REVISION,
-                target_locator={
-                    "branch": "dev",
-                    "task_path": ".agent/tasks/TASK-0001/task.yaml",
-                    "task_revision": 2,
-                    "base_head": "a" * 40,
-                    "phase": "EXECUTION",
-                },
-                required_capabilities=["executor"],
+                target_binding={"branch": "dev"},
+                request_identity="request-1",
+                entry_intent="MATERIAL_JUDGMENT",
+                resolved=self._entry_resolved(),
                 controller="CHATGPT",
                 location="LOCAL",
             )
@@ -685,6 +665,201 @@ class BootstrapContractTests(unittest.TestCase):
         for forbidden_key in ("roles", "role_engine", "review_roles", "executor_specializations"):
             self.assertNotIn(forbidden_key, self.bootstrap)
 
+
+
+    def _entry_resolved(self, foundation_revision: str = PROFILE_REVISION) -> dict:
+        router = (ROOT / "skills/.agent/case-router.yaml").read_text(encoding="utf-8")
+        return self.resolved_routes_with_router(router, foundation_revision)
+
+    def _resolve_entry(
+        self,
+        target_binding: dict,
+        entry_intent: object,
+        request_identity: str | None = "request-1",
+    ) -> dict:
+        resolved_head = target_binding.get("base_head", "c" * 40)
+        resolved_target = {
+            "repository": target_binding["repository"],
+            "branch": target_binding["branch"],
+            "head": resolved_head,
+        }
+        with patch.object(validate, "resolve_target_branch", return_value=resolved_target):
+            return validate.reconstruct_entry_context(
+                root=ROOT,
+                profile_revision=PROFILE_REVISION,
+                target_binding=target_binding,
+                request_identity=request_identity,
+                entry_intent=entry_intent,
+                controller="CHATGPT",
+                location="LOCAL",
+                resolved=self._entry_resolved(),
+            )
+
+    def test_material_judgment_uses_generic_binding_and_loads_only_architect_route(self) -> None:
+        target = {"repository": "owner/repo", "branch": "main"}
+        resolved = self._entry_resolved()
+        target_head = "c" * 40
+        loaded: list[str] = []
+        original_load_json = validate.load_json
+
+        def observe_json(path: Path) -> dict:
+            loaded.append(path.relative_to(ROOT).as_posix())
+            return original_load_json(path)
+
+        with patch.object(validate, "resolve_target_branch", return_value={
+            "repository": "owner/repo", "branch": "main", "head": target_head
+        }) as target_resolver, patch.object(
+            validate, "validate_local_external_capability_catalog",
+            side_effect=AssertionError("route selection must not read the external catalog")
+        ), patch.object(
+            validate, "validate_local_foundation_control_plane",
+            side_effect=AssertionError("route selection must not load Foundation Architecture")
+        ), patch.object(
+            validate, "validate_local_l1_navigation",
+            side_effect=AssertionError("route selection must not load unrelated navigation bodies")
+        ), patch.object(validate, "load_json", side_effect=observe_json):
+            result = validate.reconstruct_entry_context(
+                root=ROOT,
+                profile_revision=PROFILE_REVISION,
+                target_binding=target,
+                request_identity="request-1",
+                entry_intent="MATERIAL_JUDGMENT",
+                controller="CHATGPT",
+                location="LOCAL",
+                resolved=resolved,
+            )
+
+        self.assertEqual(result["authority"], "NONE")
+        self.assertEqual(result["entry_route"], "MATERIAL_JUDGMENT")
+        self.assertEqual(result["role"], "architect")
+        self.assertIsNone(result["specialization"])
+        self.assertEqual([item["capability"] for item in result["capability_routes"]], ["architect"])
+        self.assertEqual(result["l1_navigation"], {})
+        self.assertEqual(result["target_binding"], target)
+        self.assertEqual(result["target_resolution"]["head"], target_head)
+        target_resolver.assert_called_once_with("owner/repo", "main")
+        self.assertCountEqual(
+            loaded,
+            [
+                "profile/.agent/bootstrap/bootstrap.json",
+                "profile/.agent/bootstrap/authority.lock.json",
+            ],
+        )
+
+    def test_read_only_research_uses_generic_binding_without_task_protocol_or_external_how(self) -> None:
+        target = {"repository": "owner/repo", "branch": "main"}
+        result = self._resolve_entry(target, "READ_ONLY_RESEARCH")
+        self.assertEqual(result["authority"], "NONE")
+        self.assertEqual(result["entry_route"], "READ_ONLY_RESEARCH")
+        self.assertEqual(result["role"], "executor")
+        self.assertEqual(result["specialization"], "researcher")
+        self.assertEqual([item["capability"] for item in result["capability_routes"]], ["executor"])
+        self.assertEqual(
+            set(result["l1_navigation"]),
+            {"research_request_contract", "research_result_contract"},
+        )
+        self.assertNotIn("task_protocol", {item["capability"] for item in result["capability_routes"]})
+        self.assertNotIn("external_capability_catalog", result)
+        self.assertNotIn("task_path", result["target_binding"])
+        self.assertNotIn("base_head", result["target_binding"])
+
+    def test_task_execution_and_legacy_execute_select_executor_without_architect(self) -> None:
+        target = {
+            "repository": "owner/repo",
+            "branch": "main",
+            "task_path": ".agent/tasks/TASK-0001/task.yaml",
+            "task_revision": 1,
+            "base_head": "d" * 40,
+            "phase": "EXECUTION",
+        }
+        resolved = self._entry_resolved()
+        with patch.object(validate, "resolve_target_branch", return_value={
+            "repository": "owner/repo", "branch": "main", "head": target["base_head"]
+        }):
+            result = validate.reconstruct_execution_context(
+                ROOT, PROFILE_REVISION, target, "EXECUTE", resolved
+            )
+        self.assertEqual(result["entry_route"], "TASK_EXECUTION")
+        self.assertEqual(result["case"], "TASK_EXECUTION")
+        self.assertEqual(result["role"], "executor")
+        self.assertEqual(
+            [item["capability"] for item in result["capability_routes"]],
+            ["executor", "task_protocol"],
+        )
+        self.assertNotIn("architect", {item["capability"] for item in result["capability_routes"]})
+        self.assertEqual(result["target_binding"], target)
+
+    def test_task_execution_rejects_missing_task_binding_fields(self) -> None:
+        target = {
+            "repository": "owner/repo",
+            "branch": "main",
+            "task_path": ".agent/tasks/TASK-0001/task.yaml",
+        }
+        with patch.object(validate, "resolve_target_branch", return_value={
+            "repository": "owner/repo", "branch": "main", "head": "c" * 40
+        }):
+            with self.assertRaisesRegex(ValueError, "task-bound"):
+                validate.reconstruct_entry_context(
+                    root=ROOT,
+                    profile_revision=PROFILE_REVISION,
+                    target_binding=target,
+                    request_identity=None,
+                    entry_intent="TASK_EXECUTION",
+                    controller="CHATGPT",
+                    location="LOCAL",
+                    resolved=self._entry_resolved(),
+                )
+
+    def test_unknown_entry_intent_fails_closed_to_architect_and_ambiguity_errors(self) -> None:
+        target = {"repository": "owner/repo", "branch": "main"}
+        result = self._resolve_entry(target, "UNRECOGNIZED")
+        self.assertEqual(result["entry_route"], "MATERIAL_JUDGMENT")
+        self.assertEqual(result["route_disposition"], "DEFAULTED_TO_MATERIAL_JUDGMENT")
+        with self.assertRaisesRegex(ValueError, "entry intent"):
+            self._resolve_entry(target, ["READ_ONLY_RESEARCH", "TASK_EXECUTION"])
+
+    def test_target_branch_resolution_uses_fresh_exact_github_branch(self) -> None:
+        head = "e" * 40
+        with patch.object(validate, "_github_json", return_value={
+            "name": "feature/topic",
+            "commit": {"sha": head},
+        }) as github:
+            result = validate.resolve_target_branch("owner/repo", "feature/topic")
+        self.assertEqual(
+            result,
+            {"repository": "owner/repo", "branch": "feature/topic", "head": head},
+        )
+        self.assertEqual(
+            github.call_args.args[0],
+            "https://api.github.com/repos/owner/repo/branches/feature%2Ftopic",
+        )
+
+    def test_micro_maintenance_remains_architect_owned_and_outside_router_classes(self) -> None:
+        architect = (ROOT / "skills/architect/SKILL.md").read_text(encoding="utf-8")
+        protocol = (ROOT / "skills/protocols/TASK_PROTOCOL.md").read_text(encoding="utf-8")
+        router = validate.parse_case_router(
+            (ROOT / "skills/.agent/case-router.yaml").read_text(encoding="utf-8")
+        )
+        self.assertIn(
+            "taskless micro-maintenance exception remains Architect-owned only after this route",
+            architect,
+        )
+        self.assertIn("only after proving every eligibility predicate before mutation", architect)
+        self.assertIn("Eligibility must be proven before mutation.", protocol)
+        self.assertIn("Supported protocol version: **3**", protocol)
+        self.assertNotIn("micro-maintenance", [route["id"] for route in router["routes"]])
+
+    def test_case_router_has_exactly_three_routes_and_two_organizational_roles(self) -> None:
+        router_text = (ROOT / "skills/.agent/case-router.yaml").read_text(encoding="utf-8")
+        router = validate.parse_case_router(router_text)
+        validate.validate_case_router(router)
+        self.assertEqual(router["authority"], "NONE")
+        self.assertEqual(
+            [route["id"] for route in router["routes"]],
+            ["MATERIAL_JUDGMENT", "READ_ONLY_RESEARCH", "TASK_EXECUTION"],
+        )
+        self.assertEqual({route["role"] for route in router["routes"]}, {"architect", "executor"})
+        self.assertEqual(router["legacy_aliases"], {"EXECUTE": "TASK_EXECUTION"})
 
 
 if __name__ == "__main__":

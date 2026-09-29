@@ -111,12 +111,12 @@ The current evidence-derived projection is:
 
 | Feature | Scope | Spec | Impl | Integration | Verification | Release readiness | Production acceptance | Derived |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `F001` | PASS | PASS | PASS | PASS | PASS | UNKNOWN | UNKNOWN | `VERIFIED` |
+| `F001` | PASS | PASS | PASS | PASS | UNKNOWN | UNKNOWN | UNKNOWN | `INTEGRATED` |
 | `F002` | PASS | PASS | PASS | PASS | UNKNOWN | UNKNOWN | UNKNOWN | `INTEGRATED` |
 | `F003` | PASS | PASS | PASS | PASS | PASS | UNKNOWN | UNKNOWN | `VERIFIED` |
 | `F004` | PASS | PASS | PASS | PASS | UNKNOWN | UNKNOWN | UNKNOWN | `INTEGRATED` |
 
-F001 has persisted bootstrap validation/regression evidence from TASK-0015 whose implementation candidate still has the exact current `profile/` tree.
+F001's prior verification result is persisted in TASK-0015 and bound to `profile/` at `final_execution_head` `f09c2df5e1affdd843af91d3dc70375269d255ab`. TASK-0024 changes `profile/.agent/bootstrap/bootstrap.json`, `profile/.agent/bootstrap/test_bootstrap.py`, and `profile/.agent/bootstrap/validate.py`, so TASK-0015 no longer covers the current owner bytes. F001 therefore remains `INTEGRATED` with verification `UNKNOWN` and one evidence-backed `VERIFIED` to `INTEGRATED` regression until a persisted result covers the exact current `profile/` bytes.
 
 F002 is intentionally not VERIFIED. T3 changes `skills/` bytes, including this contract, the validator, and its regressions. No pre-existing persisted result independently covers those final bytes.
 

@@ -161,9 +161,11 @@
       "CWD",
       "LOCAL_DIRECTORY_NAME"
     ],
-    "required_fields": [
+    "generic_required_fields": [
       "repository",
-      "branch",
+      "branch"
+    ],
+    "task_bound_required_fields": [
       "task_path",
       "task_revision",
       "base_head",

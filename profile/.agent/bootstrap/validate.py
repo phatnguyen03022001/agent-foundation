@@ -14,10 +14,14 @@ import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
+from urllib.parse import quote
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+GENERIC_TARGET_FIELDS = ("repository", "branch")
+TASK_BOUND_TARGET_FIELDS = ("task_path", "task_revision", "base_head", "phase")
+REPOSITORY_RE = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 
 FOUNDATION_REPOSITORY = "phatnguyen03022001/agent-foundation"
 FOUNDATION_RESOLVED_KEY = "agent-foundation"
@@ -215,20 +219,79 @@ def case_router_locator(bootstrap: dict[str, Any]) -> dict[str, str]:
         raise ValueError("case_router must identify the canonical Foundation skills-domain router path")
     return dict(expected)
 
+EXPECTED_CASE_ROUTER = {
+    "authority": "NONE",
+    "routes": [
+        {
+            "id": "MATERIAL_JUDGMENT",
+            "role": "architect",
+            "binding": "generic",
+            "specialization": None,
+            "capabilities": ["architect"],
+            "navigation": [],
+        },
+        {
+            "id": "READ_ONLY_RESEARCH",
+            "role": "executor",
+            "binding": "generic",
+            "specialization": "researcher",
+            "capabilities": ["executor"],
+            "navigation": ["research_request_contract", "research_result_contract"],
+        },
+        {
+            "id": "TASK_EXECUTION",
+            "role": "executor",
+            "binding": "task",
+            "specialization": None,
+            "capabilities": ["executor", "task_protocol"],
+            "navigation": [],
+        },
+    ],
+    "legacy_aliases": {"EXECUTE": "TASK_EXECUTION"},
+}
+
+
 def parse_case_router(content: str) -> dict[str, Any]:
     if not isinstance(content, str):
         raise ValueError("malformed Case Router")
-    lines = content.splitlines()
-    if not lines or lines[0] != "cases:":
+    lines = [line for line in content.splitlines() if line.strip()]
+    legacy_execute = [
+        "cases:",
+        "  - id: EXECUTE",
+        "    capabilities:",
+        "      - executor",
+    ]
+    if lines == legacy_execute:
+        return {
+            "authority": "NONE",
+            "routes": [{
+                **EXPECTED_CASE_ROUTER["routes"][2],
+                "capabilities": list(EXPECTED_CASE_ROUTER["routes"][2]["capabilities"]),
+                "navigation": list(EXPECTED_CASE_ROUTER["routes"][2]["navigation"]),
+            }],
+            "legacy_aliases": {"EXECUTE": "TASK_EXECUTION"},
+        }
+    if lines[:2] != ["authority: NONE", "routes:"]:
         raise ValueError("malformed Case Router")
-    cases: list[dict[str, Any]] = []
-    index = 1
-    while index < len(lines):
-        line = lines[index]
-        if not line.startswith("  - id: ") or not line[8:]:
+
+    routes: list[dict[str, Any]] = []
+    index = 2
+    while index < len(lines) and lines[index].startswith("  - id: "):
+        route_id = lines[index][8:]
+        if not route_id:
             raise ValueError("malformed Case Router")
-        case_id = line[8:]
         index += 1
+
+        fields: dict[str, str] = {}
+        for field in ("role", "binding", "specialization"):
+            prefix = f"    {field}: "
+            if index >= len(lines) or not lines[index].startswith(prefix):
+                raise ValueError("malformed Case Router")
+            fields[field] = lines[index][len(prefix):]
+            if not fields[field]:
+                raise ValueError("malformed Case Router")
+            index += 1
+
         if index >= len(lines) or lines[index] != "    capabilities:":
             raise ValueError("malformed Case Router")
         index += 1
@@ -241,13 +304,93 @@ def parse_case_router(content: str) -> dict[str, Any]:
             index += 1
         if not capabilities:
             raise ValueError("malformed Case Router")
-        cases.append({"id": case_id, "capabilities": capabilities})
-    return {"cases": cases}
+
+        if index >= len(lines):
+            raise ValueError("malformed Case Router")
+        navigation_line = lines[index]
+        if navigation_line == "    navigation: none":
+            navigation: list[str] = []
+            index += 1
+        elif navigation_line == "    navigation:":
+            index += 1
+            navigation = []
+            while index < len(lines) and lines[index].startswith("      - "):
+                item = lines[index][8:]
+                if not item:
+                    raise ValueError("malformed Case Router")
+                navigation.append(item)
+                index += 1
+            if not navigation:
+                raise ValueError("malformed Case Router")
+        else:
+            raise ValueError("malformed Case Router")
+
+        routes.append({
+            "id": route_id,
+            "role": fields["role"],
+            "binding": fields["binding"],
+            "specialization": None if fields["specialization"] == "none" else fields["specialization"],
+            "capabilities": capabilities,
+            "navigation": navigation,
+        })
+
+    if index >= len(lines) or lines[index] != "legacy_aliases:":
+        raise ValueError("malformed Case Router")
+    index += 1
+    aliases: dict[str, str] = {}
+    while index < len(lines) and lines[index].startswith("  - from: "):
+        alias = lines[index][10:]
+        index += 1
+        if not alias or index >= len(lines) or not lines[index].startswith("    to: "):
+            raise ValueError("malformed Case Router")
+        target = lines[index][8:]
+        if not target or alias in aliases:
+            raise ValueError("malformed Case Router")
+        aliases[alias] = target
+        index += 1
+    if index != len(lines):
+        raise ValueError("malformed Case Router")
+    return {"authority": "NONE", "routes": routes, "legacy_aliases": aliases}
 
 
 def validate_case_router(router: dict[str, Any]) -> None:
-    if router != {"cases": [{"id": "EXECUTE", "capabilities": ["executor"]}]}:
+    legacy_router = {
+        "authority": "NONE",
+        "routes": [EXPECTED_CASE_ROUTER["routes"][2]],
+        "legacy_aliases": {"EXECUTE": "TASK_EXECUTION"},
+    }
+    if router not in (EXPECTED_CASE_ROUTER, legacy_router):
         raise ValueError("unauthorized Case Router semantics")
+
+
+def select_semantic_route(router: dict[str, Any], entry_intent: object) -> dict[str, Any]:
+    validate_case_router(router)
+    legacy_router = len(router["routes"]) == 1
+    if legacy_router:
+        if not isinstance(entry_intent, str):
+            raise ValueError("legacy Case Router requires explicit EXECUTE task intent")
+        route_id = router["legacy_aliases"].get(entry_intent, entry_intent)
+        if route_id != "TASK_EXECUTION":
+            raise ValueError("legacy Case Router supports only EXECUTE task compatibility")
+        return {
+            "route": dict(router["routes"][0]),
+            "disposition": "LEGACY_EXECUTE_COMPATIBILITY",
+        }
+    if entry_intent is None:
+        return {
+            "route": dict(router["routes"][0]),
+            "disposition": "DEFAULTED_TO_MATERIAL_JUDGMENT",
+        }
+    if not isinstance(entry_intent, str):
+        raise ValueError("entry intent must identify one unambiguous semantic route")
+    route_id = router["legacy_aliases"].get(entry_intent, entry_intent)
+    for route in router["routes"]:
+        if route["id"] == route_id:
+            return {"route": dict(route), "disposition": "EXPLICIT"}
+    return {
+        "route": dict(router["routes"][0]),
+        "disposition": "DEFAULTED_TO_MATERIAL_JUDGMENT",
+    }
 
 
 def resolve_case_router(
@@ -280,10 +423,10 @@ def select_case_capability_routes(
 ) -> list[dict[str, Any]]:
     if not isinstance(case_id, str):
         raise ValueError("unknown case")
-    for case in router["cases"]:
-        if case["id"] == case_id:
-            return select_capability_routes(bootstrap, case["capabilities"])
-    raise ValueError(f"unknown case: {case_id}")
+    selection = select_semantic_route(router, case_id)
+    if selection["disposition"] not in {"EXPLICIT", "LEGACY_EXECUTE_COMPATIBILITY"}:
+        raise ValueError(f"unknown case: {case_id}")
+    return select_capability_routes(bootstrap, selection["route"]["capabilities"])
 
 
 def canonical_artifacts(
@@ -372,9 +515,10 @@ def validate_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
             "CWD",
             "LOCAL_DIRECTORY_NAME",
         ],
-        "required_fields": ["repository", "branch", "task_path", "task_revision", "base_head", "phase"],
+        "generic_required_fields": ["repository", "branch"],
+        "task_bound_required_fields": ["task_path", "task_revision", "base_head", "phase"],
     }:
-        raise ValueError("target binding must require explicit current identity and fresh GitHub resolution")
+        raise ValueError("target binding must separate generic and task-bound fields and require fresh GitHub resolution")
 
     routes = bootstrap.get("capability_routes")
     if not isinstance(routes, list) or not routes:
@@ -614,6 +758,21 @@ def _github_json(url: str) -> dict[str, Any]:
     return value
 
 
+def resolve_target_branch(repository: str, branch: str) -> dict[str, str]:
+    if not isinstance(repository, str) or not REPOSITORY_RE.fullmatch(repository):
+        raise ValueError("target repository must be an explicit owner/repository identity")
+    if not isinstance(branch, str) or not branch or branch.strip() != branch:
+        raise ValueError("target branch must be an explicit non-empty ref")
+    value = _github_json(
+        f"https://api.github.com/repos/{repository}/branches/{quote(branch, safe='')}"
+    )
+    commit = value.get("commit")
+    head = commit.get("sha") if isinstance(commit, dict) else None
+    if value.get("name") != branch or not isinstance(head, str) or not SHA_RE.fullmatch(head):
+        raise ValueError("fresh GitHub target branch resolution is malformed")
+    return {"repository": repository, "branch": branch, "head": head}
+
+
 def _github_blob_text(repository: str, blob_sha: str) -> str:
     if not SHA_RE.fullmatch(blob_sha):
         raise ValueError(f"router blob is not immutable: {repository}@{blob_sha}")
@@ -683,45 +842,121 @@ def resolve_remote(
         resolved[owner] = {"revision": revision, "paths": external_paths}
     return resolved
 
-def reconstruct_context(
+def validate_generic_target_binding(target_binding: dict[str, Any]) -> dict[str, str]:
+    if not isinstance(target_binding, dict) or set(target_binding) != set(GENERIC_TARGET_FIELDS):
+        raise ValueError("generic target binding requires exactly repository and branch")
+    repository = target_binding.get("repository")
+    branch = target_binding.get("branch")
+    if not isinstance(repository, str) or not REPOSITORY_RE.fullmatch(repository):
+        raise ValueError("target repository must be an explicit owner/repository identity")
+    if not isinstance(branch, str) or not branch or branch.strip() != branch:
+        raise ValueError("target branch must be an explicit non-empty ref")
+    return {"repository": repository, "branch": branch}
+
+
+def validate_task_target_binding(target_binding: dict[str, Any]) -> dict[str, Any]:
+    required = {*GENERIC_TARGET_FIELDS, *TASK_BOUND_TARGET_FIELDS}
+    if not isinstance(target_binding, dict) or set(target_binding) != required:
+        raise ValueError("task-bound target binding requires exact task identity, revision, base, and phase")
+    generic = validate_generic_target_binding({
+        "repository": target_binding.get("repository"),
+        "branch": target_binding.get("branch"),
+    })
+    for field in ("task_path", "phase"):
+        value = target_binding.get(field)
+        if not isinstance(value, str) or not value:
+            raise ValueError(f"task-bound target field must be a non-empty string: {field}")
+    revision = target_binding.get("task_revision")
+    if isinstance(revision, bool) or not isinstance(revision, int) or revision < 1:
+        raise ValueError("task-bound target task_revision must be a positive integer")
+    base_head = target_binding.get("base_head")
+    if not isinstance(base_head, str) or not SHA_RE.fullmatch(base_head):
+        raise ValueError("task-bound target base_head must be an exact commit")
+    return {**generic, **{field: target_binding[field] for field in TASK_BOUND_TARGET_FIELDS}}
+
+
+def reconstruct_entry_context(
     root: Path,
     profile_revision: str,
-    target_locator: dict[str, Any],
-    required_capabilities: list[str],
-    controller: str,
-    location: str,
+    target_binding: dict[str, Any],
+    request_identity: str | None,
+    entry_intent: object,
+    resolved: dict[str, dict[str, Any]],
+    controller: str | None = None,
+    location: str | None = None,
 ) -> dict[str, Any]:
     if not SHA_RE.fullmatch(profile_revision):
         raise ValueError("authority-set identity must be an exact agent-foundation commit")
     bootstrap, lock = load_contract(root)
     validate_contract(bootstrap, lock)
-    validate_local_foundation_control_plane(root, bootstrap)
-    validate_local_external_capability_catalog(root, bootstrap)
-    validate_local_l1_navigation(root, bootstrap)
-    required_target_fields = bootstrap["target_binding"]["required_fields"]
-    if set(target_locator) != set(required_target_fields):
-        raise ValueError("target locator requires exactly the canonical binding fields")
-    for field in ("repository", "branch", "task_path", "base_head", "phase"):
-        if not isinstance(target_locator.get(field), str) or not target_locator[field]:
-            raise ValueError(f"target locator field must be a non-empty string: {field}")
-    if not isinstance(target_locator.get("task_revision"), int) or target_locator["task_revision"] < 1:
-        raise ValueError("target locator task_revision must be a positive integer")
-    if not SHA_RE.fullmatch(target_locator["base_head"]):
-        raise ValueError("target locator base_head must be an exact commit")
-    return {
+
+    if not isinstance(target_binding, dict):
+        raise ValueError("target binding must be an explicit mapping")
+    for field in GENERIC_TARGET_FIELDS:
+        if field not in target_binding:
+            raise ValueError(f"generic target binding requires {field}")
+    repository = target_binding.get("repository")
+    branch = target_binding.get("branch")
+    if not isinstance(repository, str) or not REPOSITORY_RE.fullmatch(repository):
+        raise ValueError("target repository must be an explicit owner/repository identity")
+    if not isinstance(branch, str) or not branch or branch.strip() != branch:
+        raise ValueError("target branch must be an explicit non-empty ref")
+
+    target_resolution = resolve_target_branch(repository, branch)
+    router = resolve_case_router(bootstrap, profile_revision, resolved)
+    selection = select_semantic_route(router, entry_intent)
+    route = selection["route"]
+
+    if route["binding"] == "task":
+        bound_target = validate_task_target_binding(target_binding)
+        if bound_target["base_head"] != target_resolution["head"]:
+            raise ValueError("task-bound base_head does not match fresh GitHub branch resolution")
+    else:
+        bound_target = validate_generic_target_binding(target_binding)
+        if not isinstance(request_identity, str) or not request_identity.strip():
+            raise ValueError("generic entry requires an explicit current request identity")
+
+    capabilities = select_capability_routes(bootstrap, route["capabilities"])
+    artifacts = canonical_artifacts(profile_revision, lock, capabilities, resolved)
+    all_navigation = l1_navigation_artifacts(bootstrap, profile_revision)
+    foundation = resolved.get(FOUNDATION_RESOLVED_KEY)
+    if foundation is None or foundation.get("revision") != profile_revision:
+        raise ValueError(f"unresolvable Foundation authority-set revision: {profile_revision}")
+    foundation_paths = foundation.get("paths")
+    if not isinstance(foundation_paths, (set, frozenset)):
+        foundation_paths = set(foundation_paths or [])
+    selected_navigation: dict[str, dict[str, str]] = {}
+    for key in route["navigation"]:
+        artifact = all_navigation[key]
+        if artifact["path"] not in foundation_paths:
+            raise ValueError(f"missing routed Foundation navigation path: {artifact['path']}")
+        selected_navigation[key] = artifact
+
+    if (controller is None) != (location is None):
+        raise ValueError("execution surface requires both controller and location")
+    surface = (
+        normalize_surface(bootstrap, controller, location)
+        if controller is not None and location is not None
+        else None
+    )
+    result = {
+        "authority": "NONE",
         "authority_set_identity": profile_revision,
-        "authority_lock": lock,
-        "case_router": case_router_locator(bootstrap),
-        "foundation_control_plane": foundation_control_plane_artifact(bootstrap, profile_revision),
-        "external_capability_catalog": external_capability_catalog_artifact(
-            bootstrap, profile_revision
-        ),
-        "l1_navigation": l1_navigation_artifacts(bootstrap, profile_revision),
-        "repository_contract": bootstrap["repository_contract"],
-        "target_binding": dict(target_locator),
-        "capability_routes": select_capability_routes(bootstrap, required_capabilities),
-        "surface": normalize_surface(bootstrap, controller, location),
+        "target_binding": bound_target,
+        "target_resolution": target_resolution,
+        "request_identity": request_identity,
+        "case_router": router,
+        "entry_route": route["id"],
+        "role": route["role"],
+        "specialization": route["specialization"],
+        "route_disposition": selection["disposition"],
+        "capability_routes": capabilities,
+        "canonical_artifacts": artifacts,
+        "l1_navigation": selected_navigation,
     }
+    if surface is not None:
+        result["surface"] = surface
+    return result
 
 
 def reconstruct_execution_context(
@@ -731,49 +966,25 @@ def reconstruct_execution_context(
     case_id: str,
     resolved: dict[str, dict[str, Any]],
 ) -> dict[str, Any]:
-    if not SHA_RE.fullmatch(profile_revision):
-        raise ValueError("authority-set identity must be an exact agent-foundation commit")
-    bootstrap, lock = load_contract(root)
-    validate_contract(bootstrap, lock)
-    validate_local_foundation_control_plane(root, bootstrap)
-    validate_local_external_capability_catalog(root, bootstrap)
-    validate_local_l1_navigation(root, bootstrap)
-    required_target_fields = bootstrap["target_binding"]["required_fields"]
-    if set(target_locator) != set(required_target_fields):
-        raise ValueError("target locator requires exactly the canonical binding fields")
-    for field in ("repository", "branch", "task_path", "base_head", "phase"):
-        if not isinstance(target_locator.get(field), str) or not target_locator[field]:
-            raise ValueError(f"target locator field must be a non-empty string: {field}")
-    if not isinstance(target_locator.get("task_revision"), int) or target_locator["task_revision"] < 1:
-        raise ValueError("target locator task_revision must be a positive integer")
-    if not SHA_RE.fullmatch(target_locator["base_head"]):
-        raise ValueError("target locator base_head must be an exact commit")
-
-    router = resolve_case_router(bootstrap, profile_revision, resolved)
-    routes = select_case_capability_routes(bootstrap, router, case_id)
-    return {
-        "bootstrap_trace": [
-            "PROFILE_REVISION",
-            "AUTHORITY_LOCK",
-            "FOUNDATION_CONTROL_PLANE",
-            "CASE_ROUTER",
-            "CASE",
-            "CAPABILITY_ROUTE",
-            "CANONICAL_ARTIFACT",
-        ],
-        "authority_set_identity": profile_revision,
-        "authority_lock": lock,
-        "foundation_control_plane": foundation_control_plane_artifact(bootstrap, profile_revision),
-        "external_capability_catalog": external_capability_catalog_artifact(
-            bootstrap, profile_revision
-        ),
-        "l1_navigation": l1_navigation_artifacts(bootstrap, profile_revision),
-        "target_binding": dict(target_locator),
-        "case_router": router,
-        "case": case_id,
-        "capability_routes": routes,
-        "canonical_artifacts": canonical_artifacts(profile_revision, lock, routes, resolved),
-    }
+    result = reconstruct_entry_context(
+        root=root,
+        profile_revision=profile_revision,
+        target_binding=target_locator,
+        request_identity=None,
+        entry_intent=case_id,
+        resolved=resolved,
+    )
+    result["bootstrap_trace"] = [
+        "PROFILE_REVISION",
+        "AUTHORITY_LOCK",
+        "TARGET_BINDING",
+        "CASE_ROUTER",
+        "SEMANTIC_ROUTE",
+        "CAPABILITY_ROUTE",
+        "CANONICAL_ARTIFACT",
+    ]
+    result["case"] = result["entry_route"]
+    return result
 
 
 def current_foundation_revision(root: Path = ROOT) -> str:

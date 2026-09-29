@@ -902,10 +902,35 @@ class Task0006FoundationArchitectureTests(unittest.TestCase):
 
 class CaseNavigationTests(unittest.TestCase):
     CASE_PATH = Path(".agent/case-router.yaml")
-    CANONICAL_CASE = """cases:
-  - id: EXECUTE
+    CANONICAL_CASE = """authority: NONE
+routes:
+  - id: MATERIAL_JUDGMENT
+    role: architect
+    binding: generic
+    specialization: none
+    capabilities:
+      - architect
+    navigation: none
+  - id: READ_ONLY_RESEARCH
+    role: executor
+    binding: generic
+    specialization: researcher
     capabilities:
       - executor
+    navigation:
+      - research_request_contract
+      - research_result_contract
+  - id: TASK_EXECUTION
+    role: executor
+    binding: task
+    specialization: none
+    capabilities:
+      - executor
+      - task_protocol
+    navigation: none
+legacy_aliases:
+  - from: EXECUTE
+    to: TASK_EXECUTION
 """
 
     def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
@@ -945,7 +970,7 @@ class CaseNavigationTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, output)
         self.assertIn(expected, output)
 
-    def test_canonical_case_router_has_one_execute_capability_route(self) -> None:
+    def test_canonical_router_has_exact_three_routes_and_execute_alias(self) -> None:
         _, root = self.fixture()
         path = root / self.CASE_PATH
         self.assertTrue(path.is_file(), f"missing canonical case artifact: {self.CASE_PATH}")
@@ -955,83 +980,65 @@ class CaseNavigationTests(unittest.TestCase):
             document = VALIDATOR_MODULE.load_protocol_document(str(self.CASE_PATH))
         finally:
             VALIDATOR_MODULE.ROOT = original_root
-        self.assertEqual(
-            document,
-            {"cases": [{"id": "EXECUTE", "capabilities": ["executor"]}]},
-        )
+        self.assertEqual(document, VALIDATOR_MODULE.EXPECTED_CASE_ROUTER)
         result = self.run_validator(root)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_unknown_case_id_fails_closed(self) -> None:
+    def test_unknown_or_duplicate_route_class_fails_closed(self) -> None:
         self.assert_case_rejected(
-            self.CANONICAL_CASE.replace("EXECUTE", "VERIFY"),
-            "unsupported case id 'VERIFY'",
+            self.CANONICAL_CASE.replace("MATERIAL_JUDGMENT", "VERIFY", 1),
+            "must exactly match canonical route MATERIAL_JUDGMENT",
         )
+        duplicate = self.CANONICAL_CASE.replace(
+            "legacy_aliases:",
+            self.CANONICAL_CASE.split("  - id: TASK_EXECUTION", 1)[1]
+            .split("legacy_aliases:", 1)[0]
+            .join(["  - id: TASK_EXECUTION", ""]) + "legacy_aliases:",
+            1,
+        )
+        self.assert_case_rejected(duplicate, "routes must contain exactly three canonical route classes")
 
-    def test_duplicate_case_id_fails_closed(self) -> None:
+    def test_wrong_route_binding_or_capabilities_fail_closed(self) -> None:
+        wrong_binding = self.CANONICAL_CASE.replace(
+            "  - id: READ_ONLY_RESEARCH\n    role: executor\n    binding: generic",
+            "  - id: READ_ONLY_RESEARCH\n    role: executor\n    binding: task",
+            1,
+        )
         self.assert_case_rejected(
-            self.CANONICAL_CASE.replace(
-                "  - id: EXECUTE\n    capabilities:\n      - executor\n",
-                "  - id: EXECUTE\n    capabilities:\n      - executor\n"
-                "  - id: EXECUTE\n    capabilities:\n      - executor\n",
-            ),
-            "duplicate case id 'EXECUTE'",
+            wrong_binding,
+            "routes[1] must exactly match canonical route READ_ONLY_RESEARCH",
+        )
+        wrong_capability = self.CANONICAL_CASE.replace(
+            "  - id: MATERIAL_JUDGMENT\n    role: architect\n    binding: generic\n"
+            "    specialization: none\n    capabilities:\n      - architect",
+            "  - id: MATERIAL_JUDGMENT\n    role: architect\n    binding: generic\n"
+            "    specialization: none\n    capabilities:\n      - executor",
+            1,
+        )
+        self.assert_case_rejected(
+            wrong_capability,
+            "routes[0] must exactly match canonical route MATERIAL_JUDGMENT",
         )
 
-    def test_empty_or_duplicate_capability_load_fails_closed(self) -> None:
-        cases = [
-            (
-                "cases:\n  - id: EXECUTE\n    capabilities: []\n",
-                "path 'cases[0].capabilities' must not be empty",
-            ),
-            (
-                "cases:\n  - id: EXECUTE\n    capabilities:\n      - executor\n      - executor\n",
-                "path 'cases[0].capabilities' must not contain duplicates",
-            ),
-        ]
-        for text, expected in cases:
-            with self.subTest(expected=expected):
-                self.assert_case_rejected(text, expected)
-
-    def test_unknown_and_noncanonical_capability_keys_fail_closed(self) -> None:
-        cases = [
-            (self.CANONICAL_CASE.replace("executor", "unknown"), "unsupported capability key 'unknown'"),
-            (self.CANONICAL_CASE.replace("executor", "Executor"), "invalid capability key 'Executor'"),
-            (self.CANONICAL_CASE.replace("executor", "research"), "EXECUTE must route to exactly ['executor']"),
-        ]
-        for text, expected in cases:
-            with self.subTest(expected=expected):
-                self.assert_case_rejected(text, expected)
-
-    def test_malformed_case_shape_fails_closed(self) -> None:
-        cases = [
-            ("case: EXECUTE\n", "path 'case-router' missing required fields ['cases']"),
-            ("cases: EXECUTE\n", "path 'case-router.cases' must be list"),
-            ("cases:\n  - id: EXECUTE\n", "missing required fields ['capabilities']"),
-            (
-                "cases:\n  - id: EXECUTE\n    capabilities:\n      - executor\n    mode: CODEX_LOCAL\n",
-                "unexpected fields ['mode']",
-            ),
-        ]
-        for text, expected in cases:
-            with self.subTest(expected=expected):
-                self.assert_case_rejected(text, expected)
-
-    def test_binding_specialization_mode_task_state_and_lifecycle_fields_are_rejected(self) -> None:
-        forbidden = (
-            "binding", "specialization", "mode", "task", "state",
-            "next", "retry", "success", "failure", "terminal", "transition",
+    def test_legacy_execute_alias_and_authority_are_exact(self) -> None:
+        self.assert_case_rejected(
+            self.CANONICAL_CASE.replace("to: TASK_EXECUTION", "to: MATERIAL_JUDGMENT"),
+            "legacy_aliases must map EXECUTE to TASK_EXECUTION exactly once",
         )
-        for field in forbidden:
-            with self.subTest(field=field):
-                text = self.CANONICAL_CASE + f"    {field}: forbidden\n"
-                self.assert_case_rejected(text, f"unexpected fields ['{field}']")
+        self.assert_case_rejected(
+            self.CANONICAL_CASE.replace("authority: NONE", "authority: EXECUTOR"),
+            "authority must be NONE",
+        )
 
-    def test_owner_path_and_sha_fields_are_rejected(self) -> None:
-        for field in ("owner", "path", "sha"):
-            with self.subTest(field=field):
-                text = self.CANONICAL_CASE + f"    {field}: duplicated\n"
-                self.assert_case_rejected(text, f"unexpected fields ['{field}']")
+    def test_router_rejects_extra_state_or_top_level_fields(self) -> None:
+        self.assert_case_rejected(
+            self.CANONICAL_CASE.replace("authority: NONE", "authority: NONE\nstate: READY"),
+            "top-level fields must be exactly",
+        )
+        self.assert_case_rejected(
+            self.CANONICAL_CASE.replace("  - id: TASK_EXECUTION", "    state: RUNNING\n  - id: TASK_EXECUTION", 1),
+            "routes[1] must exactly match canonical route READ_ONLY_RESEARCH",
+        )
 
 
 class Task0004GovernanceTests(unittest.TestCase):
@@ -3667,7 +3674,7 @@ class Task0021GlobalProgressionTests(unittest.TestCase):
         self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "release.status")
         self.assertEqual(
             {feature["id"]: feature["lifecycle"]["derived_state"] for feature in state["product_scope"]["features"]["registered"]},
-            {"F001": "VERIFIED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
+            {"F001": "INTEGRATED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
         )
 
     def test_exact_global_leaf_inventory_and_current_aggregate_truth(self) -> None:
@@ -4022,7 +4029,7 @@ class Task0022ProgressionConsumptionTests(unittest.TestCase):
                 feature["id"]: feature["lifecycle"]["derived_state"]
                 for feature in state["product_scope"]["features"]["registered"]
             },
-            {"F001": "VERIFIED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
+            {"F001": "INTEGRATED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
         )
 
     def test_later_phase_fixtures_reuse_t4_resolver_and_earlier_blockers_win(self) -> None:
@@ -4110,15 +4117,27 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
         gate["evidence_refs"] = [] if refs is None else refs
         gate["reason"] = reason
 
-    def test_canonical_schema3_preserves_exact_t3_gates_conservative_states_and_null_regression(self) -> None:
+    def test_canonical_schema3_preserves_exact_t3_gates_conservative_states_and_f001_regression(self) -> None:
         state = self.load_state()
         self.assertEqual(self.validate_state(state), [])
         self.assertEqual(state["schema_version"], 3)
         expected_states = {
-            "F001": "VERIFIED",
+            "F001": "INTEGRATED",
             "F002": "INTEGRATED",
             "F003": "VERIFIED",
             "F004": "INTEGRATED",
+        }
+        expected_f001_regression = {
+            "from_state": "VERIFIED",
+            "to_state": "INTEGRATED",
+            "reason": "TASK-0015 final_execution_head f09c2df5e1affdd843af91d3dc70375269d255ab predates the three current profile/ bootstrap changes in TASK-0024; no persisted result verifies these exact current owner bytes.",
+            "evidence_refs": [
+                ".agent/tasks/TASK-0015/report.yaml",
+                ".agent/tasks/TASK-0024/task.yaml",
+                "profile/.agent/bootstrap/bootstrap.json",
+                "profile/.agent/bootstrap/test_bootstrap.py",
+                "profile/.agent/bootstrap/validate.py",
+            ],
         }
         for feature in state["product_scope"]["features"]["registered"]:
             self.assertEqual(
@@ -4126,7 +4145,10 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
                 list(VALIDATOR_MODULE.AGENT_FOUNDATION_LIFECYCLE_GATES),
             )
             self.assertEqual(feature["lifecycle"]["derived_state"], expected_states[feature["id"]])
-            self.assertIsNone(feature["lifecycle"]["regression"])
+            if feature["id"] == "F001":
+                self.assertEqual(feature["lifecycle"]["regression"], expected_f001_regression)
+            else:
+                self.assertIsNone(feature["lifecycle"]["regression"])
             self.assertNotIn(feature["lifecycle"]["derived_state"], {"RELEASE_READY", "LIVE"})
 
     def test_all_seven_lifecycle_thresholds_are_derived_from_ordered_pass_prefix(self) -> None:
@@ -4209,7 +4231,7 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
 
     def test_release_open_caps_every_feature_at_verified(self) -> None:
         state = self.load_state()
-        feature = self.feature(state, "F001")
+        feature = self.feature(state, "F003")
         self.set_gate(
             feature,
             "release_readiness",
@@ -4241,10 +4263,14 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
         state = self.load_state()
         feature = self.feature(state, "F001")
         verification = feature["lifecycle"]["gates"][4]
+        verification["status"] = "PASS"
+        verification["reason"] = None
         verification["evidence_refs"] = [
             ".agent/tasks/TASK-0004/report.yaml",
             "profile/.agent/bootstrap/validate.py",
         ]
+        feature["lifecycle"]["derived_state"] = "VERIFIED"
+        feature["lifecycle"]["regression"] = None
         errors = self.validate_state(state)
         self.assertTrue(any("attributable to exact current owner bytes" in message for message in errors))
 
@@ -4270,6 +4296,16 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
 
     def test_downgrade_requires_exact_evidence_backed_regression_record(self) -> None:
         previous = self.load_state()
+        previous_feature = self.feature(previous, "F001")
+        self.set_gate(
+            previous_feature,
+            "verification",
+            "PASS",
+            refs=[".agent/tasks/TASK-0015/report.yaml"],
+            reason=None,
+        )
+        previous_feature["lifecycle"]["derived_state"] = "VERIFIED"
+        previous_feature["lifecycle"]["regression"] = None
         current = deepcopy(previous)
         feature = self.feature(current, "F001")
         self.set_gate(
@@ -4299,6 +4335,7 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
 
     def test_non_regression_transition_rejects_stale_regression_record(self) -> None:
         previous = self.load_state()
+        self.feature(previous, "F001")["lifecycle"]["regression"] = None
         current = deepcopy(previous)
         feature = self.feature(current, "F002")
         feature["lifecycle"]["regression"] = {
@@ -4311,11 +4348,12 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
         self.assertTrue(any("non-regression transition must keep regression null" in message for message in errors))
 
     def test_initial_schema1_to_schema2_adoption_requires_null_regression(self) -> None:
-        previous = self.load_state()
+        current = self.load_state()
+        self.feature(current, "F001")["lifecycle"]["regression"] = None
+        previous = deepcopy(current)
         previous["schema_version"] = 1
         for feature in previous["product_scope"]["features"]["registered"]:
             feature.pop("lifecycle")
-        current = self.load_state()
         self.assertEqual(self.transition_errors(previous, current), [])
 
         feature = self.feature(current, "F002")
@@ -4591,9 +4629,9 @@ verification:
         (root / "profile" / "owner.txt").write_text("changed profile bytes\n", encoding="utf-8")
         self.assertFalse(self.covers(report_ref, "profile/", root))
 
-    def test_real_f001_and_f003_evidence_remain_scoped_and_exact_byte_attributable(self) -> None:
+    def test_real_f001_evidence_is_stale_after_profile_changes_while_f003_stays_exact(self) -> None:
         root = ROOT.parent
-        self.assertTrue(self.covers(".agent/tasks/TASK-0015/report.yaml", "profile/", root))
+        self.assertFalse(self.covers(".agent/tasks/TASK-0015/report.yaml", "profile/", root))
         self.assertTrue(self.covers(".agent/tasks/TASK-0004/report.yaml", "documents/", root))
         self.assertFalse(self.covers(".agent/tasks/TASK-0004/report.yaml", "standards/", root))
 

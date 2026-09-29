@@ -1,4 +1,29 @@
-cases:
-  - id: EXECUTE
+authority: NONE
+routes:
+  - id: MATERIAL_JUDGMENT
+    role: architect
+    binding: generic
+    specialization: none
+    capabilities:
+      - architect
+    navigation: none
+  - id: READ_ONLY_RESEARCH
+    role: executor
+    binding: generic
+    specialization: researcher
     capabilities:
       - executor
+    navigation:
+      - research_request_contract
+      - research_result_contract
+  - id: TASK_EXECUTION
+    role: executor
+    binding: task
+    specialization: none
+    capabilities:
+      - executor
+      - task_protocol
+    navigation: none
+legacy_aliases:
+  - from: EXECUTE
+    to: TASK_EXECUTION

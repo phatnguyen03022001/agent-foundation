@@ -81,7 +81,36 @@ PROGRAM_ARTIFACT_TYPE = "GENERATED_PROGRAM"
 PROGRAM_AUTHORITY = "NONE"
 PROGRAM_INVALIDATION = "FULL_REGENERATION_ON_MATERIAL_INPUT_CHANGE"
 CASE_ROUTER_PATH = ".agent/case-router.yaml"
-ADMITTED_CASE_ID = "EXECUTE"
+EXPECTED_CASE_ROUTER: dict[str, Any] = {
+    "authority": "NONE",
+    "routes": [
+        {
+            "id": "MATERIAL_JUDGMENT",
+            "role": "architect",
+            "binding": "generic",
+            "specialization": "none",
+            "capabilities": ["architect"],
+            "navigation": "none",
+        },
+        {
+            "id": "READ_ONLY_RESEARCH",
+            "role": "executor",
+            "binding": "generic",
+            "specialization": "researcher",
+            "capabilities": ["executor"],
+            "navigation": ["research_request_contract", "research_result_contract"],
+        },
+        {
+            "id": "TASK_EXECUTION",
+            "role": "executor",
+            "binding": "task",
+            "specialization": "none",
+            "capabilities": ["executor", "task_protocol"],
+            "navigation": "none",
+        },
+    ],
+    "legacy_aliases": [{"from": "EXECUTE", "to": "TASK_EXECUTION"}],
+}
 AGENT_FOUNDATION_PRODUCT_FEATURES = (
     ("F001", "operator-and-architect-configuration", "profile/"),
     ("F002", "governance-control-and-capability", "skills/"),
@@ -806,43 +835,40 @@ def validate_case_navigation(expected_skills: frozenset[str]) -> None:
     document = load_protocol_document(label)
     if document is None:
         return
-
-    valid_document = require_mapping_schema(label, document, "case-router", {"cases": list})
-    cases = get_path(document, "cases")
-    if not valid_document or type(cases) is not list:
+    if type(document) is not dict:
+        error(f"{label}: top-level document must be a mapping")
         return
 
-    entries = require_mapping_sequence_schema(
-        label,
-        document,
-        "cases",
-        {"id": str, "capabilities": list},
-    )
-    if len(cases) != 1:
-        error(f"{label}: path 'cases' must contain exactly one admitted case")
-
-    seen_case_ids: set[str] = set()
-    for index, entry in entries:
-        case_id = entry["id"]
-        if case_id in seen_case_ids:
-            error(f"{label}: duplicate case id {case_id!r}")
-        seen_case_ids.add(case_id)
-        if case_id != ADMITTED_CASE_ID:
-            error(f"{label}: unsupported case id {case_id!r}")
-
-        capabilities = validate_string_list(
-            label,
-            entry["capabilities"],
-            f"cases[{index}].capabilities",
-            require_non_empty=True,
+    expected_fields = set(EXPECTED_CASE_ROUTER)
+    actual_fields = set(document)
+    if actual_fields != expected_fields:
+        error(
+            f"{label}: top-level fields must be exactly "
+            f"{sorted(expected_fields)}"
         )
-        for capability in capabilities:
-            if not CAPABILITY_RE.fullmatch(capability):
-                error(f"{label}: invalid capability key {capability!r}")
-            elif capability not in expected_skills or not (ROOT / capability / "SKILL.md").is_file():
-                error(f"{label}: unsupported capability key {capability!r}")
-        if case_id == ADMITTED_CASE_ID and capabilities != ["executor"]:
-            error(f"{label}: EXECUTE must route to exactly ['executor']")
+    if document.get("authority") != "NONE":
+        error(f"{label}: authority must be NONE")
+
+    routes = document.get("routes")
+    expected_routes = EXPECTED_CASE_ROUTER["routes"]
+    if type(routes) is not list or len(routes) != len(expected_routes):
+        error(f"{label}: routes must contain exactly three canonical route classes")
+    else:
+        for index, (route, expected) in enumerate(zip(routes, expected_routes)):
+            if type(route) is not dict:
+                error(f"{label}: routes[{index}] must be a mapping")
+                continue
+            if route != expected:
+                error(
+                    f"{label}: routes[{index}] must exactly match "
+                    f"canonical route {expected['id']}"
+                )
+    aliases = document.get("legacy_aliases")
+    if aliases != EXPECTED_CASE_ROUTER["legacy_aliases"]:
+        error(
+            f"{label}: legacy_aliases must map EXECUTE to TASK_EXECUTION "
+            "exactly once"
+        )
 
 
 _MISSING = object()

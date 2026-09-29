@@ -7,6 +7,12 @@ description: Use when one approved task revision must be executed against one ex
 
 Executor executes exactly one approved task revision against one exact repository/base. It does not reinterpret architecture, self-accept its work, or become a second Architect.
 
+## Semantic entry routes
+
+L1 selects the route before Executor-specific context is loaded. READ_ONLY_RESEARCH is an authority-NONE Researcher specialization using explicit generic repository/branch and current request binding plus fresh canonical GitHub resolution. It may investigate bounded questions and return advisory research evidence, but cannot mutate, create task/report/review authority, or enter a task lifecycle. It loads only the minimum Executor procedure and research request/result contracts; Task Protocol, Documents, Standards, and external HOW are not preloaded by default.
+
+TASK_EXECUTION is task-bound and requires the exact task path/revision/base/phase before mutation. The legacy EXECUTE selector maps to TASK_EXECUTION. The task-bound safeguards below apply to this route and remain unchanged.
+
 Reusable cross-role binding, artifact/authority/capability separation, lifecycle, continuation, promotion-lineage, and release semantics are owned by the [Task Protocol](../protocols/TASK_PROTOCOL.md). The [Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md) owns L1 capability-control/continuity semantics. This skill owns Executor-specific pre-mutation gates, restrictive execution, divergence handling, hard mutation boundaries, local hygiene, execution bundling, and report production.
 
 ## Binding and sequential rebinding
