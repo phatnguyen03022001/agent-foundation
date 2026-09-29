@@ -1,0 +1,245 @@
+protocol_version: 3
+
+task_id: TASK-0024
+task_revision: 1
+state: APPROVED
+
+origin:
+  type: explicit_operator_continuation
+  task_id: "TASK-0024"
+  gap_id: "AGENT-FOUNDATION-L1-SEMANTIC-ENTRY-ROUTING"
+
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "e74e3b958779b995506f1004709b824812e455fd"
+
+architect_analysis_skills:
+  - architect
+  - simplicity
+  - verification
+  - adversarial-audit
+
+execution_skills:
+  required:
+    - executor
+    - verification
+    - simplicity
+  recommended:
+    - adversarial-audit
+
+external_skills:
+  architect_analysis: []
+  execution_required: []
+  execution_recommended: []
+
+authority_sources:
+  - source: "operator-supplied accepted T1 L1 Semantic Entry Routing research synthesis, bound against agent-foundation main e74e3b958779b995506f1004709b824812e455fd on 2026-09-29"
+    role: "accepted defect reproduction, semantic-routing boundary, minimum-context acceptance intent, and T1-only progression authority"
+    precedence: 1
+  - source: "profile/.agent/bootstrap/bootstrap.json@e74e3b958779b995506f1004709b824812e455fd plus profile/.agent/bootstrap/validate.py and test_bootstrap.py at the same revision"
+    role: "current execution-centric bootstrap, Case Router validation, task launch, and target-binding implementation to be minimally corrected"
+    precedence: 2
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@e74e3b958779b995506f1004709b824812e455fd"
+    role: "canonical L0/L1/L2 ownership, two-role model, minimum-capability doctrine, Researcher specialization, and external HOW boundary"
+    precedence: 3
+  - source: "skills/architect/SKILL.md@e74e3b958779b995506f1004709b824812e455fd"
+    role: "current Architect-local routing, material judgment, task authoring, review, progression consumption, and micro-maintenance semantics"
+    precedence: 4
+  - source: "skills/executor/SKILL.md@e74e3b958779b995506f1004709b824812e455fd"
+    role: "current task-bound Executor procedure that must gain only the minimum compatibility needed for authority-NONE read-only specialization"
+    precedence: 5
+  - source: "skills/protocols/TASK_PROTOCOL.md@e74e3b958779b995506f1004709b824812e455fd"
+    role: "canonical task-bound authority/lifecycle/binding semantics and Architect micro-maintenance exception"
+    precedence: 6
+  - source: ".agent/tasks/TASK-0023/review.yaml@e74e3b958779b995506f1004709b824812e455fd"
+    role: "accepted prior product-state/progression closure whose T1-T6 product semantics and ownership boundaries must remain unchanged"
+    precedence: 7
+
+structure_authority:
+  status: RESOLVED
+  source: "accepted T1 research synthesis plus current canonical bootstrap/router/Foundation Architecture/Architect/Executor/Task Protocol contracts at e74e3b958779b995506f1004709b824812e455fd"
+  rationale: "T1 fixes one reproduced control-flow defect: deterministic shallow semantic entry routing and route-specific binding/context selection must precede Architect material reasoning. The correction stays inside existing bootstrap/router/role/control-plane owners, preserves exactly two organizational roles, and does not introduce a router service, planner, state store, registry, workflow engine, or T2-T5 product-delivery semantics."
+
+objective: "Establish one mechanically validated L1 semantic entry-routing boundary that classifies explicit current request/binding facts before role-specific material reasoning, selects the minimum initial binding/context path, and preserves all material judgment in Architect and all task-bound mutation execution in Executor. Support taskless authority-NONE read-only research without forcing task-specific binding, preserve existing exact EXECUTE task handoffs through compatibility behavior, keep the existing narrow Architect micro-maintenance exception unchanged in authority and scope, and prove unrelated canonical bodies/external HOW are not preloaded by default."
+
+scope:
+  required_changes:
+    - "Replace the execution-only Case Router semantics with exactly three canonical shallow semantic route classes: MATERIAL_JUDGMENT, READ_ONLY_RESEARCH, and TASK_EXECUTION. These are L1 navigation classes, not lifecycle states, roles, lanes, authority sources, product phases, readiness states, or orchestration states."
+    - "MATERIAL_JUDGMENT selects Architect as the initial organizational role path. It covers requests that require architecture/product/technology/contract/progression/task-authoring/review/continuation judgment and is also the fail-closed escalation for unknown or semantically ambiguous entry intent. The router must not perform that material reasoning itself."
+    - "READ_ONLY_RESEARCH selects the existing Executor Researcher specialization under authority NONE using generic target/request binding only. It must permit bounded read-only investigation without canonical task identity, mutation authority, report/review authority, or task-lifecycle manufacture. Researcher remains a specialization/capability, not a third organizational role."
+    - "TASK_EXECUTION selects Executor for an already-existing explicit task-bound execution request. Exact task/revision/base/phase binding remains mandatory before mutation and all current Executor pre-mutation/task verification remains in force. The route itself never proves or grants task authority."
+    - "Preserve backward compatibility for existing explicit EXECUTE task handoffs/selectors by deterministically normalizing that legacy entry to TASK_EXECUTION or an equivalent compatibility path. Do not keep EXECUTE as a fourth semantic route class and do not reinterpret old handoffs as material Architect requests."
+    - "Make the semantic entry router explicitly authority NONE and shallow. It may inspect only current request facts, explicit target/binding facts, and an exact task/phase locator when already supplied. It must not inspect product state deeply, select the earliest blocker, choose architecture/technology, define task scope/acceptance criteria, synthesize research into product decisions, judge reviews, mutate repositories, create tasks, manufacture authority, or manufacture product/progression truth."
+    - "Split generic target/request binding from task-bound binding. Generic binding must no longer require task_path, task_revision, base_head, or phase merely to bind a pre-task design/read-only request. Keep explicit repository/branch identity and fresh canonical GitHub resolution as required target facts; task-specific locator fields become mandatory only for TASK_EXECUTION or another already task-bound lifecycle operation."
+    - "Keep TASK LAUNCH as the existing task-specific presentation surface. Do not turn it into a universal request envelope. Introduce only the minimum bootstrap contract/API distinction required so generic entry routing can be resolved without falsely requiring a task locator while current task-launch rendering remains compatible."
+    - "Before semantic route selection, bootstrap may load only the minimum authority/navigation metadata required to bind Foundation identity, resolve the exact target/request facts, validate/obtain the Case Router, and normalize the execution surface where applicable. It must not preload Architect, Executor, Task Protocol, Documents, Standards, product-state/progression bodies, or external HOW merely to decide the initial route."
+    - "After route selection, MATERIAL_JUDGMENT may initially load Architect only; Architect may then load Task Protocol, target product/progression truth, Documents, Standards, or external HOW only when materially required by the actual judgment. TASK_EXECUTION may load Executor plus the exact task-bound protocol/context required for execution without loading Architect. READ_ONLY_RESEARCH may load the minimum Executor/Researcher procedure and research request/result contract needed for the read-only job, but must not require Task Protocol, Documents, Standards, or external HOW unless the specific research need materially selects them."
+    - "Make external HOW strictly post-route and demand-loaded. No semantic route may load ECC or another external capability merely because it exists in the catalog. Preserve the current target truth -> semantic need -> bounded capability metadata resolution -> exact-fit external HOW -> irreducible Foundation delta invariant for later T2 work without implementing T2 rationalization."
+    - "Resolve the apparent Architect/Executor boundary around Architect micro-maintenance with the smallest semantic correction: preserve the existing taskless Architect micro-maintenance exception exactly as a narrow non-semantic, low-risk Architect-owned exception reached only through MATERIAL_JUDGMENT/eligibility judgment. Do not route it through TASK_EXECUTION, do not widen its mutation scope, and do not rewrite the global model into an absolute 'Executor performs every mutation' rule. Material semantic/product/runtime/public-contract/task-lane implementation remains Executor work."
+    - "Update Foundation Architecture and role-local procedure only enough to replace the current 'Architect is the central router/governor' execution-entry implication with the L1-first boundary: L1 shallow routing/navigation first, then Architect material judgment or Executor specialization/execution as selected. Keep Architect as the sole owner of material governance judgment/task authority/review judgment and Executor as the sole task-bound implementation role."
+    - "Adjust Executor role-local binding semantics only as required to support READ_ONLY_RESEARCH as an authority-NONE taskless specialization. The ordinary Executor mutation path must remain exact-task/handoff-bound and all mutation/report/publication safeguards remain unchanged."
+    - "Modify Task Protocol only if a direct textual contradiction remains after the bootstrap/Foundation Architecture/role-local correction. Any Task Protocol edit must be the minimum compatibility clarification that generic pre-task/read-only entry binding is outside task-bound lifecycle authority while normal task lanes, Executor mutation, review persistence, continuation, micro-maintenance, publication, promotion, and release semantics remain unchanged. Do not redesign protocol-v3."
+    - "Add deterministic focused tests that prove route and binding behavior mechanically rather than by prose alone. At minimum cover: MATERIAL_JUDGMENT selects Architect without Executor preloading; READ_ONLY_RESEARCH succeeds without task fields and without Task Protocol/Documents/Standards/external HOW preloading; TASK_EXECUTION selects Executor without Architect preloading and rejects missing task-bound fields; legacy EXECUTE compatibility; unknown/ambiguous intent fails closed to Architect judgment or explicit route failure without deep product reasoning; external HOW is not loaded until explicitly selected; exactly two organizational roles remain."
+    - "Where the bootstrap implementation can observe body loading, add spies/fakes or equivalent deterministic fixtures proving unrelated canonical bodies are not fetched/loaded merely for route selection. Repository path existence/metadata validation is not itself body preloading and need not be removed if it remains bounded and non-authoritative."
+    - "Preserve all accepted target-owned product-state/schema/release/feature/system-gate/progression semantics from TASK-0018 through TASK-0023. T1 may not add readiness predicates, technology-research progression, contract-readiness doctrine, vertical-slice doctrine, estimation doctrine, release progression, or product delivery state."
+    - "Preserve the existing external capability catalog/source architecture. Do not split the catalog, add another registry, add vector search, install/configure ECC, activate ECC role/session/hook/global-config semantics, or change exact external source pins except if execution proves a tiny directly necessary T1 compatibility correction; such a correction must remain metadata-only and must not broaden T1 into T2."
+    - "Keep Documents and Standards semantic ownership unchanged. Do not redesign documents/, standards/, product-state schema, release scope, feature registry, system gates, product-state validators, Agent Runtime, execution continuity, task/report/review schemas, or current release/runtime state."
+    - "Run focused T1 tests first. Only after focused PASS, run the current full Foundation verification profiles needed to prove bootstrap/router/skills/protocol/external/product-state/documents/standards compatibility, plus relevant compile/static/protected/history/internal-link and git diff checks."
+    - "On successful implementation create only .agent/tasks/TASK-0024/report.yaml as Executor evidence with result NEEDS_REVIEW, then publish the candidate/report according to current protocol-v3 publication semantics by ordinary non-force MAIN_ONLY publication. Independent Architect review of the exact report is required before T1 acceptance."
+    - "Do not author, create, or pre-stage TASK-0025 or any later T2-T5 task/artifact."
+
+  allowed_existing_files_or_components:
+    - "profile/.agent/bootstrap/bootstrap.json"
+    - "profile/.agent/bootstrap/validate.py"
+    - "profile/.agent/bootstrap/test_bootstrap.py"
+    - "skills/.agent/case-router.yaml"
+    - "skills/contracts/FOUNDATION_ARCHITECTURE.md"
+    - "skills/architect/SKILL.md"
+    - "skills/executor/SKILL.md"
+    - "skills/protocols/TASK_PROTOCOL.md"
+    - "skills/scripts/validate_skill_library.py"
+    - "skills/scripts/test_validate_skill_library.py"
+    - ".agent/tasks/TASK-0024/**"
+
+  expected_files_are_restrictive: true
+
+invariants:
+  - "Exactly two organizational roles remain: Architect and Executor."
+  - "L1 semantic entry routing has authority NONE and cannot manufacture L0 authority, product truth, task authority, review judgment, or mutation permission."
+  - "The three canonical route classes are MATERIAL_JUDGMENT, READ_ONLY_RESEARCH, and TASK_EXECUTION; compatibility aliases do not become additional semantic classes."
+  - "Architect retains all material governance judgment, architecture/product/technology/contract/progression decisions, task creation, research synthesis, and review judgment."
+  - "Executor retains task-bound implementation/execution; Researcher remains an authority-NONE Executor specialization."
+  - "Generic target/request binding is sufficient for pre-task design and read-only research; task-specific fields are required only when the selected path is task-bound."
+  - "Existing exact authorized EXECUTE task handoffs remain usable through deterministic compatibility behavior."
+  - "Minimum-context routing occurs before role-specific deep reasoning and does not preload unrelated canonical bodies by default."
+  - "Unknown or ambiguous semantic entry intent cannot trigger deep L1 product reasoning or mutation; it fails closed to Architect judgment or explicit route failure."
+  - "Architect micro-maintenance remains the existing narrow non-semantic exception and is neither widened nor converted into a normal execution lane."
+  - "Task Protocol remains the cross-role task/lifecycle SSOT and protocol version remains 3."
+  - "Target repository remains owner of product truth; Foundation L0/L1/L2 ownership, Documents, Standards, ECC seam, and Agent Runtime execution-transport boundaries remain unchanged."
+  - "No new role, router service, planner service, context-manager framework, universal manifest, persistent routing state, readiness state, scheduler, queue, database, capability service, workflow engine, or orchestration framework is introduced."
+  - "T2 ECC exploitation, T3 generic product delivery readiness, T4 feature delivery planning doctrine, and T5 adversarial adoption remain outside TASK-0024."
+
+forbidden_changes:
+  - "Create a third organizational role or promote Researcher, Sync, verifier, router, planner, or another capability into a role."
+  - "Make the router inspect deep product state, choose blockers, perform architecture/technology decisions, define task scope or acceptance criteria, synthesize research conclusions, judge reviews, or mutate repositories."
+  - "Treat route selection, capability loading, execution-surface availability, or external catalog membership as mutation/task/review authority."
+  - "Require generic pre-task/read-only requests to provide task_path, task_revision, base_head, or phase."
+  - "Relax exact task/revision/base/phase verification for TASK_EXECUTION or ordinary Executor mutation."
+  - "Load Architect for normal task execution merely for routing, or load Executor/Task Protocol/Documents/Standards/external HOW for MATERIAL_JUDGMENT before those bodies are materially selected."
+  - "Install, update, repair, or configure ECC or another external harness."
+  - "Split the external capability catalog, add vector search, add another registry/database/cache/service, or implement T2 skill-first/catalog rationalization."
+  - "Add product readiness, dependency-selection workflow, contract readiness, vertical-slice planning, estimation, release progression, or generic product-delivery doctrine."
+  - "Redesign product-state.json, AGENT_FOUNDATION_PRODUCT_STATE.md, feature registry, release scope, system gates, Documents, Standards, execution continuity, Agent Runtime, task/report/review schema, or protocol version."
+  - "Widen Architect micro-maintenance into material semantic/product/runtime/public-contract/task evidence/dependency/branch/promotion/release mutation."
+  - "Create branches, tags, releases, repository metadata changes, dependencies, services, host configuration, credentials, tunnels, or Runtime lifecycle effects."
+  - "Create TASK-0025 or later task/program artifacts."
+
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Foundation has a mechanically validated semantic entry-routing boundary before Architect-specific material reasoning."
+    evidence_required: "Canonical router/bootstrap validation recognizes exactly three semantic classes with authority NONE and deterministic route selection from explicit shallow request/binding facts; focused tests prove the router performs no deep product/progression judgment."
+
+  - id: AC-2
+    requirement: "Generic target/request binding is separated from task-bound execution binding."
+    evidence_required: "Pre-task MATERIAL_JUDGMENT and READ_ONLY_RESEARCH fixtures validate with explicit target/request identity and fresh target resolution but no task_path/task_revision/base_head/phase; TASK_EXECUTION rejects missing exact task-bound fields and preserves current exact binding guards."
+
+  - id: AC-3
+    requirement: "Minimum initial role/context loading is mechanically enforced."
+    evidence_required: "Tests prove MATERIAL_JUDGMENT initially selects Architect without Executor/Task Protocol/Documents/Standards/external HOW bodies; TASK_EXECUTION selects Executor without Architect; READ_ONLY_RESEARCH does not require task/protocol/document/standards/external HOW bodies; external HOW is loaded only after explicit semantic capability selection."
+
+  - id: AC-4
+    requirement: "Read-only research is a taskless authority-NONE Executor specialization, not a third role or hidden task lane."
+    evidence_required: "Foundation/Executor semantics and focused fixtures permit bounded read-only research under generic binding, forbid mutation/task/report/review authority in that route, and mechanically retain exactly Architect and Executor as organizational roles."
+
+  - id: AC-5
+    requirement: "Existing authorized EXECUTE task handoffs remain backward compatible."
+    evidence_required: "A canonical compatibility regression proves the prior EXECUTE selector/handoff shape deterministically reaches TASK_EXECUTION/Executor semantics without loading Architect or weakening task identity/base/phase verification."
+
+  - id: AC-6
+    requirement: "Unknown or ambiguous routing fails closed without turning L1 into a god-context planner."
+    evidence_required: "Focused tests prove unknown/ambiguous intent either escalates to MATERIAL_JUDGMENT/Architect or returns an explicit fail-closed routing error, while deep product-state/blocker/architecture/task-scope routines are not invoked by the router."
+
+  - id: AC-7
+    requirement: "The Architect micro-maintenance exception is reconciled without semantic expansion."
+    evidence_required: "Canonical text makes clear that material task implementation remains Executor work while the pre-existing non-semantic low-risk Architect micro-maintenance exception remains Architect-owned, taskless, narrow, and unchanged in eligibility/forbidden surfaces; no fourth lane/route/role is created."
+
+  - id: AC-8
+    requirement: "T1 preserves all unrelated Foundation ownership, product-state, external-capability, protocol, Documents/Standards, and Runtime boundaries."
+    evidence_required: "Exact diff plus focused/full regressions prove no T2-T5 doctrine, product-state/schema semantics, external pins/catalog architecture, Documents/Standards semantics, task/report/review schema, execution continuity, Agent Runtime, host/runtime/release state, role count, or protocol version changed."
+
+  - id: AC-9
+    requirement: "The final candidate is fully qualified and handed to independent Architect review."
+    evidence_required: "TASK-0024 validates; focused T1 regressions PASS; current full Foundation verification profiles PASS on one coherent candidate; publication is ordinary non-force MAIN_ONLY with exact remote/final-state proof; report is the sole report-only child of final_execution_head and ends NEEDS_REVIEW for independent Architect judgment."
+
+verification:
+  executor_checks:
+    - id: CHECK-1
+      command_or_check: "Validate TASK-0024 with the current canonical skills/scripts/validate_skill_library.py artifact validator; fresh-resolve Foundation remote and prove exact execution-base identity, main-only topology, ahead/behind 0/0, and clean worktree before mutation."
+      required: true
+    - id: CHECK-2
+      command_or_check: "Run focused bootstrap/router/role semantic regressions covering the three canonical routes, generic-vs-task binding, legacy EXECUTE compatibility, ambiguous fail-closed behavior, minimum body-loading observations, read-only authority NONE, and external HOW non-preload."
+      required: true
+    - id: CHECK-3
+      command_or_check: "After focused PASS, run the current full skills/protocol validator and regression suite plus profile bootstrap local validator, authenticated/current remote bootstrap validation when available under existing environment authority, and the full bootstrap regression suite."
+      required: true
+    - id: CHECK-4
+      command_or_check: "Run current external-capability sync/check regressions, current target-owned product-state/progression validation/regressions, documents regressions, and standards verification/regressions sufficiently to prove T1 preserved those owners and accepted semantics."
+      required: true
+    - id: CHECK-5
+      command_or_check: "Compile modified Python; validate affected internal Markdown links; prove exact restrictive scope/no unexpected files, two-role invariant, protocol-v3 invariant, unchanged external pins/product-state/Documents/Standards/Runtime/protected historical artifacts outside authorized scope, and git diff --check."
+      required: true
+    - id: CHECK-6
+      command_or_check: "Fresh-resolve remote before publication; publish candidate/report only under current protocol-v3 ordinary non-force semantics; post-prove report-only sole-child lineage, final HEAD/origin/remote identity, ahead/behind 0/0, clean worktree, remote main-only topology, and no tag/release/repository-metadata effects."
+      required: true
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+
+structure_policy:
+  expected_new_files:
+    - ".agent/tasks/TASK-0024/report.yaml"
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "T1 modifies only existing bootstrap/router/control-plane/role/validator surfaces and emits one Executor report artifact."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+
+release_authority:
+  create_version_tag: false
+  mutate_repository_metadata: false
+  publish_release: false
+
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+
+blocking_decisions: []
+execution_ready: true
