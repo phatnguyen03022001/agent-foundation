@@ -1,13 +1,13 @@
 protocol_version: 3
 
 task_id: TASK-0024
-task_revision: 1
+task_revision: 2
 state: APPROVED
 
 origin:
   type: explicit_operator_continuation
   task_id: "TASK-0024"
-  gap_id: "AGENT-FOUNDATION-L1-SEMANTIC-ENTRY-ROUTING"
+  gap_id: "AGENT-FOUNDATION-L1-SEMANTIC-ENTRY-ROUTING-F001-EVIDENCE-FRESHNESS"
 
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
@@ -25,7 +25,7 @@ execution_base:
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  revision: "e74e3b958779b995506f1004709b824812e455fd"
+  revision: "2366c168384fcb752275782f5197a0a62032b048"
 
 architect_analysis_skills:
   - architect
@@ -66,18 +66,23 @@ authority_sources:
     role: "canonical task-bound authority/lifecycle/binding semantics and Architect micro-maintenance exception"
     precedence: 6
   - source: ".agent/tasks/TASK-0023/review.yaml@e74e3b958779b995506f1004709b824812e455fd"
-    role: "accepted prior product-state/progression closure whose T1-T6 product semantics and ownership boundaries must remain unchanged"
+    role: "accepted prior product-state/progression closure whose T1-T6 product semantics and ownership boundaries must remain unchanged except for truthfully derived current evidence state when T1 changes an owning subtree"
     precedence: 7
+  - source: ".agent/tasks/TASK-0024/task.yaml@2366c168384fcb752275782f5197a0a62032b048 plus reproduced current validator failure on the revision-1 dirty candidate"
+    role: "revision-1 T1 authority and exact continuation blocker: F001 historical verification is stale because current profile/ bytes differ from TASK-0015 final_execution_head"
+    precedence: 8
 
 structure_authority:
   status: RESOLVED
   source: "accepted T1 research synthesis plus current canonical bootstrap/router/Foundation Architecture/Architect/Executor/Task Protocol contracts at e74e3b958779b995506f1004709b824812e455fd"
   rationale: "T1 fixes one reproduced control-flow defect: deterministic shallow semantic entry routing and route-specific binding/context selection must precede Architect material reasoning. The correction stays inside existing bootstrap/router/role/control-plane owners, preserves exactly two organizational roles, and does not introduce a router service, planner, state store, registry, workflow engine, or T2-T5 product-delivery semantics."
 
-objective: "Establish one mechanically validated L1 semantic entry-routing boundary that classifies explicit current request/binding facts before role-specific material reasoning, selects the minimum initial binding/context path, and preserves all material judgment in Architect and all task-bound mutation execution in Executor. Support taskless authority-NONE read-only research without forcing task-specific binding, preserve existing exact EXECUTE task handoffs through compatibility behavior, keep the existing narrow Architect micro-maintenance exception unchanged in authority and scope, and prove unrelated canonical bodies/external HOW are not preloaded by default."
+objective: "Continue the already-implemented revision-1 T1 candidate without redesign, close the reproduced F001 evidence-freshness blocker truthfully, and complete the same L1 semantic entry-routing outcome. Preserve the existing dirty T1 implementation, conservatively downgrade F001 verification state because TASK-0015 no longer covers the changed profile/ bytes, fully qualify the final candidate, then persist exact TASK-0024 bootstrap result evidence for later state refresh without self-attesting this candidate. All revision-1 routing, role, binding, minimum-context, micro-maintenance, external-HOW, and T1-only boundaries remain authoritative."
 
 scope:
   required_changes:
+    - "This is revision-2 continuation of the existing revision-1 dirty candidate at HEAD 2366c168384fcb752275782f5197a0a62032b048. Before any new mutation prove fresh remote main still equals that HEAD and the worktree contains exactly the ten previously produced T1 candidate paths, all unstaged, with no untracked/conflicted/out-of-scope paths. Preserve those candidate bytes; do not reset, stash, clean, discard, replay, or reimplement them. A change to an existing revision-1 candidate path is allowed only for a directly necessary rev2 compatibility correction reproduced by a focused test."
+    - "Preserve the already-observed revision-1 qualification evidence: focused T1 route/bootstrap 58/58 PASS, router validator 5/5 PASS, external sync CURRENT and regressions 19/19 PASS, Documents 94/94 PASS, Standards VALID and 57/57 PASS, task/compile/scope/diff checks PASS, and local/remote bootstrap OPM_BOOTSTRAP=TRUE. Treat the full skills-suite F001 failure as the known deterministic pre-rev2 blocker; do not rerun the unchanged pre-fix full suite merely for confidence."
     - "Replace the execution-only Case Router semantics with exactly three canonical shallow semantic route classes: MATERIAL_JUDGMENT, READ_ONLY_RESEARCH, and TASK_EXECUTION. These are L1 navigation classes, not lifecycle states, roles, lanes, authority sources, product phases, readiness states, or orchestration states."
     - "MATERIAL_JUDGMENT selects Architect as the initial organizational role path. It covers requests that require architecture/product/technology/contract/progression/task-authoring/review/continuation judgment and is also the fail-closed escalation for unknown or semantically ambiguous entry intent. The router must not perform that material reasoning itself."
     - "READ_ONLY_RESEARCH selects the existing Executor Researcher specialization under authority NONE using generic target/request binding only. It must permit bounded read-only investigation without canonical task identity, mutation authority, report/review authority, or task-lifecycle manufacture. Researcher remains a specialization/capability, not a third organizational role."
@@ -95,7 +100,11 @@ scope:
     - "Modify Task Protocol only if a direct textual contradiction remains after the bootstrap/Foundation Architecture/role-local correction. Any Task Protocol edit must be the minimum compatibility clarification that generic pre-task/read-only entry binding is outside task-bound lifecycle authority while normal task lanes, Executor mutation, review persistence, continuation, micro-maintenance, publication, promotion, and release semantics remain unchanged. Do not redesign protocol-v3."
     - "Add deterministic focused tests that prove route and binding behavior mechanically rather than by prose alone. At minimum cover: MATERIAL_JUDGMENT selects Architect without Executor preloading; READ_ONLY_RESEARCH succeeds without task fields and without Task Protocol/Documents/Standards/external HOW preloading; TASK_EXECUTION selects Executor without Architect preloading and rejects missing task-bound fields; legacy EXECUTE compatibility; unknown/ambiguous intent fails closed to Architect judgment or explicit route failure without deep product reasoning; external HOW is not loaded until explicitly selected; exactly two organizational roles remain."
     - "Where the bootstrap implementation can observe body loading, add spies/fakes or equivalent deterministic fixtures proving unrelated canonical bodies are not fetched/loaded merely for route selection. Repository path existence/metadata validation is not itself body preloading and need not be removed if it remains bounded and non-authoritative."
-    - "Preserve all accepted target-owned product-state/schema/release/feature/system-gate/progression semantics from TASK-0018 through TASK-0023. T1 may not add readiness predicates, technology-research progression, contract-readiness doctrine, vertical-slice doctrine, estimation doctrine, release progression, or product delivery state."
+    - "Preserve all accepted target-owned product-state schema, feature identities/owners, release truth, system-gate semantics, and progression derivation from TASK-0018 through TASK-0023, but update current F001 evidence-derived lifecycle truth because T1 changes its owning profile/ subtree. In product-state.json set only F001 verification from PASS to UNKNOWN, derive F001 from VERIFIED to INTEGRATED, and add the exact required VERIFIED->INTEGRATED regression record with inspectable evidence that TASK-0015 no longer covers current profile/ bytes. Update skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md only to mirror that exact conservative current-state truth. Keep F002/F003/F004, release OPEN/null/UNKNOWN, global gates, stored/derived P0_SCOPE, and earliest blocker release.status unchanged."
+    - "The F001 downgrade is evidence freshness, not a product-behavior failure. Do not weaken owner-tree attribution or historical verification rules. Do not mark F001 verification PASS from current terminal output, current test definitions, the uncommitted candidate, or TASK-0024 task/report content that does not yet persist exact final owner-byte result evidence. Update only the existing canonical-state regression fixtures/assertions that directly encode the superseded F001 VERIFIED/null-regression projection so they expect the new F001 INTEGRATED/UNKNOWN plus exact regression record; generic evidence, transition, and anti-self-attestation semantics must remain unchanged."
+    - "After the final candidate is committed and all pre-publication local qualification passes, use the protocol-v3 two-publication path because exact remote bootstrap validation materially depends on candidate remote visibility. Publish the exact candidate first by ordinary non-force main fast-forward, prove fresh remote identity, run exact candidate local/remote bootstrap validation and bootstrap regressions, then author the report as the sole direct child."
+    - "TASK-0024 report must persist recognized positive profile-bootstrap result evidence bound to final_execution_head, using the existing canonical profile evidence semantics (for example a recognized bootstrap result block or acceptance evidence that unambiguously records bootstrap local and remote validation returns OPM_BOOTSTRAP=TRUE). That persisted report may qualify as historical F001 verification evidence only for a later canonical state refresh; revision 2 must not use its own not-yet-persisted report to restore F001 to VERIFIED."
+    - "T1 may not add readiness predicates, technology-research progression, contract-readiness doctrine, vertical-slice doctrine, estimation doctrine, release progression, or product delivery state."
     - "Preserve the existing external capability catalog/source architecture. Do not split the catalog, add another registry, add vector search, install/configure ECC, activate ECC role/session/hook/global-config semantics, or change exact external source pins except if execution proves a tiny directly necessary T1 compatibility correction; such a correction must remain metadata-only and must not broaden T1 into T2."
     - "Keep Documents and Standards semantic ownership unchanged. Do not redesign documents/, standards/, product-state schema, release scope, feature registry, system gates, product-state validators, Agent Runtime, execution continuity, task/report/review schemas, or current release/runtime state."
     - "Run focused T1 tests first. Only after focused PASS, run the current full Foundation verification profiles needed to prove bootstrap/router/skills/protocol/external/product-state/documents/standards compatibility, plus relevant compile/static/protected/history/internal-link and git diff checks."
@@ -113,6 +122,8 @@ scope:
     - "skills/protocols/TASK_PROTOCOL.md"
     - "skills/scripts/validate_skill_library.py"
     - "skills/scripts/test_validate_skill_library.py"
+    - "product-state.json"
+    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"
     - ".agent/tasks/TASK-0024/**"
 
   expected_files_are_restrictive: true
@@ -130,6 +141,8 @@ invariants:
   - "Architect micro-maintenance remains the existing narrow non-semantic exception and is neither widened nor converted into a normal execution lane."
   - "Task Protocol remains the cross-role task/lifecycle SSOT and protocol version remains 3."
   - "Target repository remains owner of product truth; Foundation L0/L1/L2 ownership, Documents, Standards, ECC seam, and Agent Runtime execution-transport boundaries remain unchanged."
+  - "Current F001 lifecycle truth is evidence-derived: changing profile/ invalidates TASK-0015 verification attribution, so revision-2 candidate must conservatively project F001 as INTEGRATED with verification UNKNOWN and one exact VERIFIED->INTEGRATED regression record."
+  - "TASK-0024 final report may become future historical verification evidence only after it is persisted and bound to exact final profile/ bytes; it cannot self-attest the revision-2 candidate."
   - "No new role, router service, planner service, context-manager framework, universal manifest, persistent routing state, readiness state, scheduler, queue, database, capability service, workflow engine, or orchestration framework is introduced."
   - "T2 ECC exploitation, T3 generic product delivery readiness, T4 feature delivery planning doctrine, and T5 adversarial adoption remain outside TASK-0024."
 
@@ -143,7 +156,8 @@ forbidden_changes:
   - "Install, update, repair, or configure ECC or another external harness."
   - "Split the external capability catalog, add vector search, add another registry/database/cache/service, or implement T2 skill-first/catalog rationalization."
   - "Add product readiness, dependency-selection workflow, contract readiness, vertical-slice planning, estimation, release progression, or generic product-delivery doctrine."
-  - "Redesign product-state.json, AGENT_FOUNDATION_PRODUCT_STATE.md, feature registry, release scope, system gates, Documents, Standards, execution continuity, Agent Runtime, task/report/review schema, or protocol version."
+  - "Redesign product-state.json or skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md beyond the exact F001 evidence-freshness delta authorized by revision 2; change feature identity/owner, release scope/truth, system gates, phase derivation, Documents, Standards, execution continuity, Agent Runtime, task/report/review schema, or protocol version."
+  - "Keep F001 VERIFIED by weakening exact owner-byte attribution, inventing persisted evidence, treating fresh terminal output as canonical feature evidence, or citing TASK-0024 report before that report exists as persisted exact-candidate evidence."
   - "Widen Architect micro-maintenance into material semantic/product/runtime/public-contract/task evidence/dependency/branch/promotion/release mutation."
   - "Create branches, tags, releases, repository metadata changes, dependencies, services, host configuration, credentials, tunnels, or Runtime lifecycle effects."
   - "Create TASK-0025 or later task/program artifacts."
@@ -188,31 +202,31 @@ acceptance_criteria:
 
   - id: AC-8
     requirement: "T1 preserves all unrelated Foundation ownership, product-state, external-capability, protocol, Documents/Standards, and Runtime boundaries."
-    evidence_required: "Exact diff plus focused/full regressions prove no T2-T5 doctrine, product-state/schema semantics, external pins/catalog architecture, Documents/Standards semantics, task/report/review schema, execution continuity, Agent Runtime, host/runtime/release state, role count, or protocol version changed."
+    evidence_required: "Exact diff plus focused/full regressions prove the only product-state change is the required F001 verification PASS->UNKNOWN / VERIFIED->INTEGRATED evidence-freshness regression and matching contract text; no schema/feature-owner/release/system-gate/phase semantics, T2-T5 doctrine, external pins/catalog architecture, Documents/Standards semantics, task/report/review schema, execution continuity, Agent Runtime, host/runtime/release state, role count, or protocol version changed."
 
   - id: AC-9
     requirement: "The final candidate is fully qualified and handed to independent Architect review."
-    evidence_required: "TASK-0024 validates; focused T1 regressions PASS; current full Foundation verification profiles PASS on one coherent candidate; publication is ordinary non-force MAIN_ONLY with exact remote/final-state proof; report is the sole report-only child of final_execution_head and ends NEEDS_REVIEW for independent Architect judgment."
+    evidence_required: "TASK-0024 revision 2 validates; preserved focused T1 evidence remains applicable and any rerun required by changed bytes PASS; product-state transition validation proves F001 conservatively INTEGRATED; current full Foundation verification profiles PASS on one coherent final candidate; the candidate is published first by ordinary non-force MAIN_ONLY fast-forward so exact candidate remote bootstrap validation can PASS; report then persists recognized local/remote OPM_BOOTSTRAP=TRUE evidence as the sole report-only child of final_execution_head and ends NEEDS_REVIEW for independent Architect judgment."
 
 verification:
   executor_checks:
     - id: CHECK-1
-      command_or_check: "Validate TASK-0024 with the current canonical skills/scripts/validate_skill_library.py artifact validator; fresh-resolve Foundation remote and prove exact execution-base identity, main-only topology, ahead/behind 0/0, and clean worktree before mutation."
+      command_or_check: "Validate TASK-0024 revision 2; fresh-resolve remote main == exact revision-2 execution base and prove main-only topology. Reconcile the continuation worktree by observation only: exactly the ten known revision-1 T1 candidate paths must remain unstaged/dirty with no untracked/conflicted/out-of-scope paths. Do not require or manufacture a clean worktree at rev2 start."
       required: true
     - id: CHECK-2
       command_or_check: "Run focused bootstrap/router/role semantic regressions covering the three canonical routes, generic-vs-task binding, legacy EXECUTE compatibility, ambiguous fail-closed behavior, minimum body-loading observations, read-only authority NONE, and external HOW non-preload."
       required: true
     - id: CHECK-3
-      command_or_check: "After focused PASS, run the current full skills/protocol validator and regression suite plus profile bootstrap local validator, authenticated/current remote bootstrap validation when available under existing environment authority, and the full bootstrap regression suite."
+      command_or_check: "Apply the exact F001 conservative product-state/contract correction first; then run the current full skills/protocol validator and regression suite on the coherent candidate plus profile bootstrap local validation and the full bootstrap regression suite. Defer exact remote bootstrap validation until the candidate commit is published, because remote validation must bind the final candidate rather than the pre-task base."
       required: true
     - id: CHECK-4
-      command_or_check: "Run current external-capability sync/check regressions, current target-owned product-state/progression validation/regressions, documents regressions, and standards verification/regressions sufficiently to prove T1 preserved those owners and accepted semantics."
+      command_or_check: "Run current external-capability sync/check regressions, target-owned product-state validation and transition regressions proving only F001 VERIFIED->INTEGRATED with verification UNKNOWN while P0_SCOPE/release.status remains unchanged, Documents regressions, and Standards verification/regressions."
       required: true
     - id: CHECK-5
-      command_or_check: "Compile modified Python; validate affected internal Markdown links; prove exact restrictive scope/no unexpected files, two-role invariant, protocol-v3 invariant, unchanged external pins/product-state/Documents/Standards/Runtime/protected historical artifacts outside authorized scope, and git diff --check."
+      command_or_check: "Compile modified Python; validate affected internal Markdown links; prove exact restrictive scope/no unexpected files, two-role invariant, protocol-v3 invariant, unchanged external pins/F002-F004/release/system-gates/Documents/Standards/Runtime/protected historical artifacts outside authorized scope, exact F001 evidence-regression delta, and git diff --check."
       required: true
     - id: CHECK-6
-      command_or_check: "Fresh-resolve remote before publication; publish candidate/report only under current protocol-v3 ordinary non-force semantics; post-prove report-only sole-child lineage, final HEAD/origin/remote identity, ahead/behind 0/0, clean worktree, remote main-only topology, and no tag/release/repository-metadata effects."
+      command_or_check: "Use protocol-v3 two-publication closure: fresh-resolve remote at the authorized base; ordinary non-force publish the exact verified candidate; prove remote main == candidate; run exact candidate authenticated/current remote bootstrap validation and require OPM_BOOTSTRAP=TRUE; persist that recognized profile result in report.yaml bound to final_execution_head; commit report as sole direct child and ordinary non-force publish it; post-prove final HEAD/origin/remote identity, ahead/behind 0/0, clean worktree, remote main-only topology, and no tag/release/repository-metadata effects."
       required: true
   authoritative_verification:
     required: false
@@ -226,7 +240,7 @@ structure_policy:
     allowed: false
     max: 0
     within: []
-    purpose: "T1 modifies only existing bootstrap/router/control-plane/role/validator surfaces and emits one Executor report artifact."
+    purpose: "T1 modifies only the existing revision-1 bootstrap/router/control-plane/role/validator candidate plus the exact revision-2 F001 product-state/contract evidence-freshness correction, and emits one Executor report artifact."
   allow_new_top_level_directories: false
   allow_new_shared_modules: false
 
