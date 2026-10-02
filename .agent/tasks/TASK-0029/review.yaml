@@ -1,13 +1,13 @@
 protocol_version: 3
 task_id: TASK-0029
-task_revision: 1
-review_revision: 1
-state: REVISION_REQUIRED
+task_revision: 2
+review_revision: 2
+state: ACCEPTED
 reviewed_report:
   repository: phatnguyen03022001/agent-foundation
   path: .agent/tasks/TASK-0029/report.yaml
-  commit: "a53cb2488fa786cb2f9f5a3a689b640372fcbee5"
-  report_revision: 1
+  commit: "afacb9379376bfc534d5bd96e044ca07ac15618f"
+  report_revision: 2
 independence:
   reviewer_role: ARCHITECT
   separate_session_from_executor: true
@@ -20,12 +20,12 @@ contract_compliance:
   scope: PASS
   structure_policy: PASS
   git_authority: PASS
-  acceptance_criteria: NOT_PROVEN
+  acceptance_criteria: PASS
   verifier_evidence: PASS
 notes:
-  - "Fresh GitHub inspection resolves report blob 144f180508af20b660e0b9aeed10c342ab125204 at the exact reviewed report commit, matching the local Git blob. Candidate b966ccdf6dbcd956fc7e5e1c39cd06ea9b03543e is the sole direct child of authorized base 74fc51dc402f3704a7699e84a12ac627112d7456 and changes exactly the four authorized existing implementation paths. The reviewed commit is its sole report-only child. Fresh remote main equals the report; only main is exposed."
-  - "Independent external execution passes 25/25, full skills execution 240/240, native validator and current task/report validation PASS, modified-Python in-memory compile and candidate/report diff checks PASS. Real committed-metadata smoke reproduces React/testing 3 rows / 2349 JSON bytes, disclosed truncation at limit 1, honest zero matches and exact skill/react-testing resolution. Existing source-byte inventories match the report. Both kernels remain byte-identical at 16717 and 17359 bytes, with all protected owner, metadata, product and other repository bytes unchanged outside the declared candidate/report paths."
-  - "The implementation otherwise preserves the thin inert seam: literal deterministic metadata matching, bounded output, exact provenance, unique explicit resolution and relevant-catalog validation. The existing external-plane owner documents target constraints, rejection/refinement and minimum pinned-section reads. No body loading, installation, behavioral activation, semantic ranker, stack matrix or new owner is introduced. No separate authoritative verifier is designated."
-  - "Material AC-1/AC-2 gap reproduced against the exact candidate: --resolve --source '' --surface skill --title react-testing exits 0 and emits ecc:react-testing; --query react --source '' also exits 0 and emits ECC candidates. main uses args.source or 'ecc', collapsing an explicitly supplied unsupported empty source into the omitted-source default. --query react --title '' likewise exits 0, because a truthiness check ignores a supplied option that the query mode explicitly rejects. An invalid explicit request must fail instead of being silently reinterpreted. The current passing suite does not exercise these empty-value CLI cases."
-  - "Required revision is bounded to CLI argument presence/default handling and its existing regression file. Default ECC only when source was omitted; reject explicitly invalid source values and mode-incompatible supplied options even when their value is empty. Preserve valid omitted defaults, explicit ECC selection, query/resolve schemas and applicability boundaries, all existing generation/refresh authority, documentation and protected bytes. Reproduce the two explicit-empty-source successes before correction, add meaningful negative CLI coverage, then rerun related qualification. No TASK-0030 or successor is authorized before independent r2 review."
-  - "Publication closure is independently proven: local HEAD/origin/main equal the reviewed report, one worktree remains, tracked/index state is clean and the sole untracked regular .DS_Store remains 6148 bytes / SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. pushed false is truthful candidate-prepublication evidence. The operator reports reconciliation of a failed refspec attempt before ordinary non-force publication; this review proves resulting lineage/ref identity and does not manufacture historical transport observations. Existing role/provider policy remains unchanged; current Codex Architect supervision is the operator's session exception only."
+  - "Fresh GitHub inspection resolves report blob b437e727d4b9e3f4e2bfe30f44f5bbe1451dc58f at the exact reviewed report commit, matching the local Git blob. Its sole parent is candidate 9ceb9d17a7a8366feb0e3e277ddd6888dfed3719, the sole direct child of r2 authorized base 0d9ddedb7436ba8bf78f61db04cba26677ac0391. Candidate changes only the two authorized Python files; its sole child replaces only report.yaml and records task/report revision 2. Fresh remote main equals the report and only main is exposed."
+  - "AC-1 PASS: independently replayed the newly added regression against the exact r2-base CLI and reproduced six failing invalid subcases. Against the current candidate, all six actual committed-metadata empty-source/title/task requests exit 2 with zero stdout bytes; four omitted-source/explicit-ECC query/resolve positives remain successful. The production diff changes only argument presence/default handling in main, preserving the distinction between omission and explicitly invalid input."
+  - "AC-2 PASS: independent external execution passes 26/26, including offline/no-write checks and unchanged FakeClient generation/refresh proof. AST comparison proves all 25 previous external test bodies unchanged, with exactly one added regression. All documentation, registry/catalog/snapshots, immutable ECC pin, kernels and other protected bytes remain unchanged from r2 base. Existing query/resolution schemas, literal matching, applicability separation and authority NONE are preserved. Reused r1 synthetic/source-section proof is attributed to report a53cb2488fa786cb2f9f5a3a689b640372fcbee5 and candidate b966ccdf6dbcd956fc7e5e1c39cd06ea9b03543e and remains applicable to the unchanged source/documentation/metadata inputs."
+  - "AC-3 PASS: independent native validator, canonical skills 240/240, r2 task/report artifact validation, modified-Python in-memory compile, real metadata smoke, scope and base-to-report diff checks PASS. The optional 320-case discovery result is Executor-reported supplementary evidence and was not required or independently rerun. Architect remains 16717 bytes and Executor 17359 bytes. Product projection independently derives P0_SCOPE with earliest blocker release.status; product-state bytes are unchanged, and task acceptance grants no feature/system-gate/release PASS."
+  - "Publication closure PASS: pushed false is truthful candidate-prepublication evidence; later report reachability/ref identity is independently proven. Local HEAD/origin/main equal the reviewed report, one worktree remains, tracked/index state is clean and sole untracked regular .DS_Store remains 6148 bytes / SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. This review does not certify Runtime helper behavior. No separate authoritative verifier is designated."
+  - "This ACCEPTED judgment governs the exact r2 report and supersedes r1 REVISION_REQUIRED only for the corrected r2 candidate/report. Earlier task/report/review evidence remains immutable at recorded SHAs. Existing roles/provider policy remains unchanged; Codex Architect supervision is the operator's current session exception only."

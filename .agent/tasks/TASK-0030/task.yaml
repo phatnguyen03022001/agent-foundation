@@ -1,0 +1,127 @@
+protocol_version: 3
+task_id: TASK-0030
+task_revision: 1
+state: APPROVED
+origin:
+  type: user_request
+  task_id: TASK-0029
+  gap_id: EXPLICIT-TARGET-OWNED-RULE-ADOPTION
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "afacb9379376bfc534d5bd96e044ca07ac15618f"
+architect_analysis_skills:
+  - architect
+  - verification
+execution_skills:
+  required:
+    - executor
+    - verification
+  recommended: []
+external_skills:
+  architect_analysis:
+    - "ecc:agent:planner @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:agents/planner.md; only repository-aware minimum-change and incremental planning HOW; no upstream role/model/phase activation"
+  execution_required:
+    - "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:rules/README.md; relevant common/language layering, rule-versus-skill and specificity sections as evaluated HOW/reference only; installation/global-configuration and blanket always-install instructions are not authorized"
+    - "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:rules/common/coding-style.md, rules/typescript/coding-style.md and rules/golang/coding-style.md; only materially relevant source sections for the bounded synthetic applicability receipts, not generic bodies copied into Foundation"
+  execution_recommended: []
+authority_sources:
+  - source: "operator-authorized thin-Foundation programme: rules derived from ECC belong in the target repository and follow target product/stack authority"
+    role: "one explicit rule-adoption seam; Foundation owns authority/routing/proof, ECC generic HOW, target product/stack/rules and Runtime transport; maintenance overrides release-first selection without changing product truth"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0029/report.yaml@afacb9379376bfc534d5bd96e044ca07ac15618f and its r2 ACCEPTED review published with this task"
+    role: "qualified bounded inert metadata query and exact resolver remain unchanged; selection is not adoption, applicability or target authority"
+    precedence: 2
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md#target-repository-product-authority, #capability-control and #generic-engineering-harness-seam at afacb9379376bfc534d5bd96e044ca07ac15618f"
+    role: "existing filename-neutral target precedence and capability-state distinctions; explicit authorized project-local adoption needs a small durable ownership/provenance boundary"
+    precedence: 3
+  - source: "current ECC sources.json/catalog.json and exact upstream rules/README.md at bf70150eb2df8070024e5bdf08e4aa08959e2735"
+    role: "rules are not indexed catalog skill/command/agent entries; upstream rule paths resolve directly at the admitted immutable ECC source and do not gain authority from a directory name, frontmatter, relative include or installation example"
+    precedence: 4
+  - source: "operator feedback on material uncertainty before authority freeze"
+    role: "contradictory or unknown target scope/stack/rule ownership remains explicit and cannot be converted into assumed adoption; later feature/slice planning must probe uncertainty or declare a bounded component/mutation envelope. No uncertainty schema is implemented here."
+    precedence: 5
+structure_authority:
+  status: RESOLVED
+  source: "existing Foundation Architecture target/capability owners, linked external-plane README and immutable ECC rule-source inspection"
+  rationale: "Ownership and inert state distinctions exist, but the exact transition from evaluated ECC rule guidance to an explicitly scoped target-native rule needs an operational boundary. Add only that small governance delta at the existing owner and its linked procedure; no new rule pack, schema, store, installer, mandatory target path or kernel body."
+objective: "Make explicit target-owned adoption of selected ECC rule guidance reconstructible and bounded, while keeping generic engineering rules outside Foundation and preserving target-native precedence."
+scope:
+  required_changes:
+    - "Fresh-resolve the exact handoff, safely fast-forward the designated mirror and bind TASK-0029 r2 ACCEPTED review. Permit precisely the pinned .DS_Store exception; unexpected edits/paths, divergence, conflicts or Git-operation state are BLOCKED."
+    - "Extend the existing Foundation Architecture owner with a concise rule-adoption boundary: discovered/loaded ECC rules remain advisory until the governing target authority explicitly approves their applicable scope and target-owned integration. Resolve existing target product/stack/instructions/rule owners first; keep target-specific commands, dependencies, architecture and authorized scoped overrides controlling. Adoption does not grant a new task, mutation, role, release or installation authority. More-specific upstream rules may inform evaluation but cannot override target authority by their own priority claim."
+    - "Define durable adoption evidence in the existing applicable target-native rule/instruction/decision owner, without a mandated filename, schema or registry: exact upstream repository/commit/path and relevant section identity; applicable target component/language/concern boundary; accepted/adapted rule meaning and material deviations/rejections; current target approval/proof reference where required. This may use an existing document or authorized reference rather than create duplicate prose or a mirrored rule corpus. The target integration must be sufficient to reconstruct the chosen effective rule without assuming latest upstream contents or applying unselected siblings. Preserve license/attribution obligations when reproducing upstream content. Scope-limited rules load only when the current concern enters that scope."
+    - "Add one bounded procedure at the external-plane README with a concise skills README locator: resolve target owners and need; locate and inspect minimum exact-pinned relevant common/language/framework rule sections; evaluate compatibility and material conflicts; obtain missing material decisions through Architect; persist only approved target-specific rule meaning/reference in the existing target owner through separately authorized target mutation; load it on demand under that target scope. If scoped adoption is absent or not provable, keep upstream HOW advisory. Missing relevant source or contradictory material target truth fails explicitly; never fabricate a catalog skill ID for unindexed rules. Task-0029 CLI query/resolve remains skill/command/agent metadata navigation and does not discover or adopt rules by implication."
+    - "Preserve the existing no-activation statements while clarifying intentional scoped target adoption. Rule selection or copying never installs/activates upstream hooks, role/model/session/memory systems, installers, global configuration or implicit relative include trees. Resolve materially relevant referenced source sections at the same immutable pin; translate or preserve their relationships without broken local references or unnoticed inherited obligations. A local path alone is not approval. Upstream updates never silently change the adopted target rule; material target/source changes require applicable target re-evaluation and separately authorized edits, not automatic synchronization."
+    - "Persist three compact synthetic walkthrough receipts in the task report only: (1) a mixed React/TypeScript frontend plus Go backend chooses language-specific guidance within the corresponding declared components and avoids carrying frontend tooling/props rules into Go; (2) a target already using another approved schema-validation mechanism evaluates the TypeScript Zod recommendation without adding a dependency or replacing its native contract; (3) a new-context consumer reconstructs an approved rule from an exact scoped target-owned record, while mere local copy or indexed/loaded upstream content does not prove adoption or mutation authority. Use the actual pinned source sections above, explicit synthetic target constraints, accepted/adapted/rejected conclusions and the evidence missing in each negative case. These are synthetic proof inputs, not actual target adoption or another repository binding."
+    - "Keep the three-file documentation change small: total final UTF-8 bytes minus handoff-base total must be <=4000, with no copied generic HOW examples or rule corpus. Foundation Architecture owns only the irreducible authority/ownership/provenance semantics; external-plane README owns navigation/procedure; skills README is a concise locator. Both kernels stay byte-identical. Do not add tests that merely assert new prose: verify meaningful positive/negative synthetic semantics and links, then run the existing related qualification."
+    - "Run native skills validator, full existing skills 240/240 and external 26/26 regressions because they consume the modified architecture owner; validate current task/report artifacts; resolve all newly introduced relative owner links/anchors; check exact protected/scope bytes, three-file inventory ceiling and git diff --check. No production-script mutation, live upstream refresh/regeneration, dependency installation or unrelated full-suite reruns absent input invalidation. Keep operations bounded/recoverable and reconcile unknown effects before mutation retries."
+    - "Commit the qualified documentation candidate as the direct child of exact handoff base, then its sole report-only child. Apply protected protocol-v3 publication eligibility and truthful candidate-prepublication pushed state; final ordinary non-force MAIN_ONLY closure has local main, origin/main and fresh remote main equal the report commit, one worktree, tracked/index cleanliness and the pinned .DS_Store exception. Finish NEEDS_REVIEW and stop before feature design, slice planning, continuation redesign or successor execution."
+  allowed_existing_files_or_components:
+    - skills/contracts/FOUNDATION_ARCHITECTURE.md
+    - skills/.agent/external-capabilities/README.md
+    - skills/README.md
+  expected_files_are_restrictive: true
+invariants:
+  - "Foundation stays authority/routing/proof plus tiny capability navigation; ECC owns generic HOW and targets own their effective project rules. No upstream rule, filename, loaded body, installer or catalog selection self-authorizes target adoption or mutation."
+  - "Architect remains byte-identical at 16717 bytes; Executor at 17359 bytes. Existing roles/provider policy is unchanged; Codex supervision is only the current operator exception."
+  - "Task Protocol, all other contracts, all scripts/tests, source registry/pins/snapshots/catalog, bootstrap/profile/router/rationalization, Documents and Standards remain byte-identical. Preserve existing capability-state distinctions and target-first precedence."
+  - "Product-state.json remains byte-identical: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, system gates unchanged, derived P0_SCOPE and blocker release.status. Acceptance does not create feature/gate/release verification."
+  - "Preserve sole untracked regular .DS_Store: 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. No stage-all, deletion, move, modification, ignore change or publication."
+forbidden_changes:
+  - "Add Foundation-owned frontend/backend/language rule packs or generic HOW bodies, universal target filenames/manifests/schemas, adoption registries/state fields, rules indexing/taxonomy/query changes, CLI/installers/loaders/caches, new docs/shards, hooks or upstream role/model/session activation."
+  - "Modify protected kernels/code/tests/pins/product state/profile/Documents/Standards/Runtime/host/dependencies/current authority; adopt rules into any actual second repository; impose universal coverage/line-count/tooling/phase/stack mandates; implement feature docs, third-party selection, uncertainty modes or successor work."
+  - "Force push, branch/tag/release creation, history rewriting or unrelated cleanup."
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Intentional target-owned rule adoption is distinct from external discovery/loading and execution authority."
+    evidence_required: "Correct owner semantics and synthetic positives/negatives prove explicit target approval, exact source/scope provenance, native precedence and no implicit activation, sibling rule inheritance or target mutation authority."
+  - id: AC-2
+    requirement: "Rule selection remains contextual and demand-loaded."
+    evidence_required: "Mixed-stack and native-tool-conflict walkthroughs use actual pinned sections, reject incompatible scope/dependency assumptions and preserve unknown material applicability; new-context reconstruction resolves effective target-owned rule meaning without assuming latest upstream or mandatory filename/schema."
+  - id: AC-3
+    requirement: "The seam stays thin at existing owners."
+    evidence_required: "Only three authorized documentation paths change, combined net addition <=4000 bytes, no generic rule bodies/new files/registries/corpus; both kernels and all protected owner/product/metadata bytes remain unchanged; new relative links/anchors resolve."
+  - id: AC-4
+    requirement: "Related qualification and exact publication close safely."
+    evidence_required: "Native validator, existing skills 240/240 and external 26/26, task/report artifacts, inventory/scope/diff checks PASS; candidate direct child of exact base, sole report-only child, truthful pushed state and fresh remote/local MAIN_ONLY closure with pinned exception."
+verification:
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0030/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "Use existing semantic/procedure/navigation owners; add only the task report."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+blocking_decisions: []
+execution_ready: true
