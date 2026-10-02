@@ -1401,6 +1401,24 @@ def validate_foundation_architecture_contract() -> None:
             error(f"{label}: missing required architecture invariant {token!r}")
     validate_links(path, text)
 
+    architect_owner_references = (
+        "[Task Protocol — Core bindings](../protocols/TASK_PROTOCOL.md#core-bindings)",
+        "[Task Protocol — Artifact ownership and authority](../protocols/TASK_PROTOCOL.md#artifact-ownership-and-authority)",
+        "[Task Protocol — Phase-specific capability preflight](../protocols/TASK_PROTOCOL.md#phase-specific-capability-preflight)",
+        "[Foundation Architecture — Target repository product authority](../contracts/FOUNDATION_ARCHITECTURE.md#target-repository-product-authority)",
+        "[Foundation Architecture — Target product progression consumption](../contracts/FOUNDATION_ARCHITECTURE.md#target-product-progression-consumption)",
+        "[Foundation Architecture — Capability control](../contracts/FOUNDATION_ARCHITECTURE.md#capability-control)",
+        "[Architect Review — Review ownership and exact report identity](../contracts/ARCHITECT_REVIEW.md#review-ownership-and-exact-report-identity)",
+        "[Architect Review — Review artifact obligations](../contracts/ARCHITECT_REVIEW.md#review-artifact-obligations)",
+        "[Execution Continuity — Recovery](../contracts/EXECUTION_CONTINUITY.md#recovery)",
+        "[Simplicity — Stable governance and change admission](../simplicity/SKILL.md#stable-governance-and-change-admission)",
+        "[Verification — Acceptance and evidence](../verification/SKILL.md#acceptance-and-evidence)",
+    )
+    architect_text = (ROOT / "architect" / "SKILL.md").read_text(encoding="utf-8")
+    for reference in architect_owner_references:
+        if reference not in architect_text:
+            error(f"architect/SKILL.md: missing required Architect owner reference {reference!r}")
+
     role_requirements = {
         "architect/SKILL.md": ("../contracts/FOUNDATION_ARCHITECTURE.md", "Capability control and reusable HOW"),
         "executor/SKILL.md": ("../contracts/FOUNDATION_ARCHITECTURE.md", "Capability HOW and acquisition"),

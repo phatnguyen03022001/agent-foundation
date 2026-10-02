@@ -4959,5 +4959,75 @@ class Task0010RationalizationTests(unittest.TestCase):
         self.assertIn("deterministic starting-taxonomy order", result.stdout + result.stderr)
 
 
+class Task0027ArchitectKernelReductionTests(unittest.TestCase):
+    REQUIRED_OWNER_LINKS = (
+        "[Task Protocol — Core bindings](../protocols/TASK_PROTOCOL.md#core-bindings)",
+        "[Task Protocol — Artifact ownership and authority](../protocols/TASK_PROTOCOL.md#artifact-ownership-and-authority)",
+        "[Task Protocol — Phase-specific capability preflight](../protocols/TASK_PROTOCOL.md#phase-specific-capability-preflight)",
+        "[Foundation Architecture — Target repository product authority](../contracts/FOUNDATION_ARCHITECTURE.md#target-repository-product-authority)",
+        "[Foundation Architecture — Target product progression consumption](../contracts/FOUNDATION_ARCHITECTURE.md#target-product-progression-consumption)",
+        "[Foundation Architecture — Capability control](../contracts/FOUNDATION_ARCHITECTURE.md#capability-control)",
+        "[Architect Review — Review ownership and exact report identity](../contracts/ARCHITECT_REVIEW.md#review-ownership-and-exact-report-identity)",
+        "[Architect Review — Review artifact obligations](../contracts/ARCHITECT_REVIEW.md#review-artifact-obligations)",
+        "[Execution Continuity — Recovery](../contracts/EXECUTION_CONTINUITY.md#recovery)",
+        "[Simplicity — Stable governance and change admission](../simplicity/SKILL.md#stable-governance-and-change-admission)",
+        "[Verification — Acceptance and evidence](../verification/SKILL.md#acceptance-and-evidence)",
+    )
+
+    def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
+        temp = tempfile.TemporaryDirectory()
+        root = Path(temp.name) / "repo"
+        shutil.copytree(ROOT, root)
+        self.addCleanup(temp.cleanup)
+        return temp, root
+
+    def run_validator(self, root: Path) -> subprocess.CompletedProcess[str]:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        original_root = VALIDATOR_MODULE.ROOT
+        try:
+            VALIDATOR_MODULE.ROOT = root
+            VALIDATOR_MODULE.errors.clear()
+            VALIDATOR_MODULE.warnings.clear()
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                returncode = VALIDATOR_MODULE.main()
+        finally:
+            VALIDATOR_MODULE.ROOT = original_root
+        return subprocess.CompletedProcess(
+            args=["python3", str(root / VALIDATOR)],
+            returncode=returncode,
+            stdout=stdout.getvalue(),
+            stderr=stderr.getvalue(),
+        )
+
+    def test_required_owner_links_are_explicit_and_resolvable(self) -> None:
+        architect = (ROOT / "architect" / "SKILL.md").read_text(encoding="utf-8")
+        for link in self.REQUIRED_OWNER_LINKS:
+            self.assertIn(link, architect)
+
+    def test_validator_rejects_missing_required_architect_owner_link(self) -> None:
+        _, root = self.fixture()
+        path = root / "architect" / "SKILL.md"
+        text = path.read_text(encoding="utf-8")
+        link = self.REQUIRED_OWNER_LINKS[0]
+        self.assertIn(link, text)
+        path.write_text(text.replace(link, "Task Protocol core binding owner", 1), encoding="utf-8")
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("missing required Architect owner reference", result.stdout + result.stderr)
+
+    def test_validator_rejects_misdirected_required_architect_owner_link(self) -> None:
+        _, root = self.fixture()
+        path = root / "architect" / "SKILL.md"
+        text = path.read_text(encoding="utf-8")
+        link = self.REQUIRED_OWNER_LINKS[6]
+        self.assertIn(link, text)
+        wrong = "[Architect Review — Review ownership and exact report identity](../protocols/TASK_PROTOCOL.md#review-ownership-and-exact-report-identity)"
+        path.write_text(text.replace(link, wrong), encoding="utf-8")
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("missing required Architect owner reference", result.stdout + result.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()
