@@ -1,8 +1,8 @@
 protocol_version: 3
 
 task_id: TASK-0029
-task_revision: 1
-report_revision: 1
+task_revision: 2
+report_revision: 2
 state: REPORTED
 
 task_source:
@@ -13,88 +13,71 @@ execution:
   branch:
     name: main
     role: stable
-  authorized_base_head: "74fc51dc402f3704a7699e84a12ac627112d7456"
-  final_execution_head: "b966ccdf6dbcd956fc7e5e1c39cd06ea9b03543e"
+  authorized_base_head: "0d9ddedb7436ba8bf78f61db04cba26677ac0391"
+  final_execution_head: "9ceb9d17a7a8366feb0e3e277ddd6888dfed3719"
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  authorized_revision: "4db71360c6070f44e9debc4e119a3b9f141f0426"
+  authorized_revision: "a53cb2488fa786cb2f9f5a3a689b640372fcbee5"
 
 capability_preflight:
   phase: EXECUTION
   required:
     - fresh local and remote Git identity observation
     - bounded repository text mutation
-    - native Python verification
+    - native Python repository verification
     - exact-path commit and ordinary non-force MAIN_ONLY publication
   available:
     - Agent Runtime 0.5.1 repository, filesystem, and keyed terminal surfaces
-    - native Git guarded exact-path staging, commit, publication, and remote observation
-    - native Python stdlib test and validation surfaces
+    - native Git guarded fast-forward, exact-path staging/commit, fetch, and remote observation
+    - native Python stdlib validator and unittest surfaces
   missing: []
   passed: true
 
 qualification:
+  inherited_r1:
+    report_commit: "a53cb2488fa786cb2f9f5a3a689b640372fcbee5"
+    report_revision: 1
+    candidate_commit: "b966ccdf6dbcd956fc7e5e1c39cd06ea9b03543e"
+    review_state: REVISION_REQUIRED
+    review_bound_at_r2_base: "0d9ddedb7436ba8bf78f61db04cba26677ac0391"
+    unchanged_input_proof: "a53cb2488fa786cb2f9f5a3a689b640372fcbee5..0d9ddedb7436ba8bf78f61db04cba26677ac0391 changes only TASK-0029 task/review authority; the r2 candidate changes only the two permitted Python files. Existing documentation, registry/catalog/snapshots and the immutable ECC pin are unchanged."
+    reused_synthetic_receipts:
+      - "React/TypeScript component testing -> explicit skill/react-testing; angular-developer rejected as stack-incompatible."
+      - "Next.js/Node backend API -> explicit skill/backend-patterns; Java-framework candidates rejected."
+      - "Rust ownership -> explicit skill/rust-patterns; ownership coverage does not prove Axum-specific API support."
+  reproduced_gap:
+    resolve_empty_source: "--resolve --source '' --surface skill --title react-testing exited 0 at the r2 base and emitted the ecc:react-testing success payload."
+    query_empty_source: "--query react --source '' exited 0 at the r2 base and emitted ECC candidates."
+    query_empty_title: "--query react --title '' exited 0 at the r2 base because the incompatible option was ignored."
+    root_cause: "CLI dispatch used truthiness for --task/--title presence and args.source or 'ecc', collapsing explicit empty values into omission."
   implementation:
-    behavior: "Added read-only --query and --resolve modes to the existing stdlib external-capability CLI. Query performs case-insensitive literal AND matching only across committed title, description, and source_path metadata, with optional skill/command/agent filtering, default limit 5 and maximum 10. It reports authority NONE, exact pinned source identity, total matches and truncation without ranking or automatic selection."
-    fail_closed: "Query and exact resolution share validation of harness admission, catalog schema/authority, exact registry provenance/revision, capability surface/title/description, safe source paths, and unique id plus surface/title identity. Unsupported source/surface, stale or malformed relevant ECC metadata, unsafe paths, and duplicate/conflicting identities fail closed."
-    read_only_boundary: "Query/resolve load committed sources.json and catalog.json only. Tests run with PATH empty and hard-fail GitHubClient, urllib.request.urlopen and Path.write_text if invoked, proving no ECC CLI, network, body download, execution, refresh, or repository write is used by the new modes."
-    documentation: "The existing external-plane README owns the bounded query -> reject/refine -> explicit resolve -> minimum pinned-section read procedure. skills/README.md contains only a concise locator."
+    behavior: "Changed only CLI argument presence/default handling: ECC defaults only when --source is omitted; explicit empty/unsupported source reaches existing fail-closed validation; check/query/resolve reject supplied incompatible --task/--title options even when empty."
+    preserved: "Query/resolve schemas, exact pinned resolution, literal matching, authority NONE, refresh authorization, generation/indexing behavior, metadata, documentation and protected owners are unchanged."
+    regression: "Added one offline/no-write regression covering omitted versus explicit ECC success plus explicit-empty source/title/task rejection with no success JSON."
   tdd:
-    red: "PASS as evidence of missing behavior: the focused query test was first run before production implementation and failed with exit 1 because query_harness_entries did not exist."
-    green: "Focused query/resolve regressions passed after the minimum implementation; final external suite passes 25/25."
-  synthetic_receipts:
-    - concern: "React/TypeScript component testing"
-      query: ["react", "testing"]
-      result: "3 matches, 3 rows returned, not truncated, 2349 JSON bytes."
-      candidates:
-        - "ecc:command:react-test"
-        - "ecc:angular-developer"
-        - "ecc:react-testing"
-      selection: "ecc:react-testing | skill | skills/react-testing/SKILL.md"
-      reasoning: "Selected the React component-testing skill under the stated React/TypeScript constraint. angular-developer is a lexical false positive through reactivity/testing and is stack-incompatible; react-test is a command workflow, not the minimum generic HOW surface."
-      inspected_source: "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/react-testing/SKILL.md; relevant React Testing activation/core/library sections only."
-    - concern: "Next.js/Node backend API work"
-      query: ["backend", "api"]
-      result: "4 matches, 4 rows returned, not truncated, 2697 JSON bytes."
-      candidates:
-        - "ecc:command:multi-backend"
-        - "ecc:backend-patterns"
-        - "ecc:quarkus-patterns"
-        - "ecc:springboot-patterns"
-      selection: "ecc:backend-patterns | skill | skills/backend-patterns/SKILL.md"
-      reasoning: "Selected the skill whose committed description and inspected source explicitly cover Node.js, Express and Next.js API routes. Quarkus/Spring Boot are Java-stack candidates and multi-backend is a command workflow."
-      inspected_source: "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/backend-patterns/SKILL.md; activation/API-design sections only."
-    - concern: "Rust ownership"
-      query: ["rust", "ownership"]
-      result: "3 matches, 3 rows returned, not truncated, 2082 JSON bytes."
-      candidates:
-        - "ecc:agent:rust-reviewer"
-        - "ecc:command:rust-review"
-        - "ecc:rust-patterns"
-      selection: "ecc:rust-patterns | skill | skills/rust-patterns/SKILL.md"
-      reasoning: "Selected generic Rust ownership HOW; agent and command candidates are broader workflow surfaces. The selected source covers Rust ownership/borrowing but does not establish Axum-specific API coverage."
-      inspected_source: "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/rust-patterns/SKILL.md; when-to-use/how-it-works/ownership sections only."
+    red: "Focused new regression failed before production correction in six invalid subcases, including both empty-source modes, empty query title and empty task guards."
+    green: "Focused regression passed after the minimal correction."
   verification:
-    external_regressions: "PASS; 25/25, including all 19 pre-task cases plus focused query/CLI/exact-resolution cases."
+    exact_candidate: "9ceb9d17a7a8366feb0e3e277ddd6888dfed3719"
+    external_regressions: "PASS; 26/26, preserving all 25 existing external cases plus the new r2 regression."
     skills_validator: "PASS; native rationalized seven-skill/protocol-v3 validator."
-    skills_regressions: "PASS; 240/240."
-    task_artifact: "PASS for revision-1 .agent/tasks/TASK-0029/task.yaml."
-    python_in_memory_compile: "PASS for both modified Python files without pycache compilation."
-    query_resolve_smoke: "PASS against actual committed metadata; react/testing returned 3 candidates and explicit skill/react-testing resolved exactly at the registry pin."
-    diff_check: "PASS for the qualified candidate."
-    protected_scope: "PASS; candidate changes exactly the four authorized existing paths. Architect remains 16717 bytes and Executor 17359 bytes. Kernels, sources.json, catalog.json, snapshots, product-state owners, Foundation Architecture, profile, documents and standards are byte-identical to the handoff base."
-    source_bytes: "sync_external_capabilities.py 36113 -> 42569; test_sync_external_capabilities.py 23221 -> 32824; external-plane README 2516 -> 4319; skills README 9895 -> 10165. These are source-byte measurements only."
-    metadata_generation: "Existing FakeClient deterministic generation coverage passes unchanged generation behavior; no live upstream refresh/regeneration was run."
-    remote_prepublication: "Fresh origin main observation after candidate creation resolves to authorized base 74fc51dc402f3704a7699e84a12ac627112d7456."
+    skills_regressions: "PASS; canonical existing skills regression file 240/240."
+    additional_full_discovery: "PASS; repo-native skills-directory unittest discovery 320/320. A prior root-cwd discovery invocation was invalid because scripts package imports are cwd-sensitive; it made no repository mutation."
+    task_artifact: "PASS for revision-2 .agent/tasks/TASK-0029/task.yaml."
+    report_artifact: "PASS for revision-2 .agent/tasks/TASK-0029/report.yaml before report commit."
+    python_in_memory_compile: "PASS for both modified Python files with pycache disabled."
+    query_resolve_smoke: "PASS against actual committed metadata for omitted-source and explicit-ecc query/resolve; explicit empty source/title/task negatives exit 2, emit no success JSON, and require no network/write/ECC CLI."
+    diff_check: "PASS for the exact base-to-candidate diff."
+    protected_scope: "PASS; candidate is the direct child of the exact r2 base and changes only skills/scripts/sync_external_capabilities.py plus skills/scripts/test_sync_external_capabilities.py. Architect remains 16717 bytes and Executor 17359 bytes; all other tracked paths are byte-identical to the base."
+    metadata_generation: "Existing FakeClient generation/refresh coverage passes inside the external suite; no live upstream refresh/regeneration was run."
+    remote_prepublication: "Fresh fetch after candidate qualification proves origin/main remains exact authorized base 0d9ddedb7436ba8bf78f61db04cba26677ac0391."
     unrelated_exception: ".DS_Store remains the sole untracked path, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d."
-    local_effect_reconciliation: "Runtime repo_stage refused the authorized candidate because its complete-path guard included the named untracked exception; fresh repo_observer proved zero staging effect. Native git then staged exactly the four authorized tracked paths. A larger read-only verification bundle was rejected before returning evidence, so checks were rerun as bounded read-only commands; no external mutation was involved."
+    local_effect_reconciliation: "Runtime repo_commit rejected the authorized staged state solely because the named untracked exception exists and made no commit. Native Git then committed the exact guarded two-file staged state. No force/reset/stash/cleanup was used."
   topology:
-    candidate: "b966ccdf6dbcd956fc7e5e1c39cd06ea9b03543e"
-    candidate_parent: "74fc51dc402f3704a7699e84a12ac627112d7456"
+    candidate: "9ceb9d17a7a8366feb0e3e277ddd6888dfed3719"
+    candidate_parent: "0d9ddedb7436ba8bf78f61db04cba26677ac0391"
     candidate_paths:
-      - skills/.agent/external-capabilities/README.md
-      - skills/README.md
       - skills/scripts/sync_external_capabilities.py
       - skills/scripts/test_sync_external_capabilities.py
 
@@ -102,22 +85,19 @@ authoritative_verification:
   required: false
   performed: false
   result: NOT_REQUIRED
-  evidence: "TASK-0029 requires Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
+  evidence: "TASK-0029 revision 2 requires Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
 
 pushed: false
 
 acceptance_evidence:
   - criterion_id: AC-1
     status: PASS
-    evidence: "Offline bounded query/CLI tests pass with PATH empty, network and writes hard-disabled. Output exposes exact pin, authority NONE, count/truncation and unchanged catalog rows; invalid inputs fail explicitly and zero matches remain honest."
+    evidence: "The reproduced explicit-empty source successes now fail closed with exit 2 and no success JSON in query and resolve. Supplied empty query title and check/query/resolve task options fail; valid source omission and explicit ecc remain successful against committed metadata."
   - criterion_id: AC-2
     status: PASS
-    evidence: "Exact resolver compatibility remains intact and now fails closed on stale/conflicting/malformed relevant metadata. Three real-pin synthetic receipts record explicit target constraints, false-positive rejection, exact selections and minimum relevant upstream source inspection."
+    evidence: "Offline/no-write regression and external 26/26 prove the correction preserves inert pinned query/resolution, generation behavior and refresh authority. Reused r1 synthetic/documentation evidence is bound to exact r1 report/candidate and unchanged inputs."
   - criterion_id: AC-3
     status: PASS
-    evidence: "Navigation remains in the existing CLI and external-plane README with one concise skills README locator. No new owner/script/taxonomy/cache/manifest/catalog was added; protected owner/product/metadata bytes and both kernels are unchanged."
-  - criterion_id: AC-4
-    status: PASS
-    evidence: "External 25/25, native validator, skills 240/240, task artifact, in-memory compile, real metadata smoke, protected/scope and diff checks all pass. Candidate is the direct child of the exact handoff base and changes only the four allowed existing paths; prepublication remote remains at the base."
+    evidence: "Native validator, canonical skills 240/240, revision-2 task/report artifacts, compile, committed-metadata smoke, protected/scope and diff checks pass. Candidate 9ceb9d17a7a8366feb0e3e277ddd6888dfed3719 changes exactly the two authorized Python files and remote main remains at the r2 base before report authorship."
 
 result: NEEDS_REVIEW
