@@ -1,8 +1,8 @@
 protocol_version: 3
 
 task_id: TASK-0025
-task_revision: 2
-report_revision: 2
+task_revision: 3
+report_revision: 3
 state: REPORTED
 
 task_source:
@@ -13,118 +13,73 @@ execution:
   branch:
     name: main
     role: stable
-  pre_execution_head: "0751a76d17f7d77146bf6123561c5b9a8a7de698"
-  authorized_base_head: "0751a76d17f7d77146bf6123561c5b9a8a7de698"
-  final_execution_head: "4b4a87bcf73f3d49a3cf1e9f4c43d0c5d84f5d6e"
+  authorized_base_head: "8937ce8c9871764839468cf826ab996cf2ed1473"
+  final_execution_head: "8937ce8c9871764839468cf826ab996cf2ed1473"
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  authorized_revision: "e6ca27af764f1e20e6e19f51e8363f80cc8c7e42"
+  authorized_revision: "81fd1d31e21156bb64e15216d1b76b53f1fcfa34"
 
 capability_preflight:
   phase: EXECUTION
   required:
     - exact local and fresh remote Git identity observation
-    - bounded repository filesystem and local verification
-    - exact-path staging and ordinary non-force MAIN_ONLY publication
+    - bounded report-only filesystem mutation and artifact validation
+    - exact-path commit and ordinary non-force MAIN_ONLY publication
     - preservation of the named unrelated .DS_Store exception
   available:
     - Agent Runtime repository/filesystem/terminal surfaces
-    - authenticated GitHub exact-SHA reads
-    - explicit-path Git staging through the bounded local terminal
+    - fresh origin/main resolution at the exact handoff base
+    - exact-path staging and commit
     - ordinary non-force origin/main publication
   missing: []
   passed: true
 
 qualification:
-  recovery_reconciliation: "Local main was safely fast-forwarded from e6ca27af764f1e20e6e19f51e8363f80cc8c7e42 to the exact revision-2 base 0751a76d17f7d77146bf6123561c5b9a8a7de698. The planning commit changed only TASK-0025 task/review artifacts and did not overlap the recovered candidate."
-  candidate_commit: "4b4a87bcf73f3d49a3cf1e9f4c43d0c5d84f5d6e"
-  candidate_parent: "0751a76d17f7d77146bf6123561c5b9a8a7de698"
-  candidate_paths:
-    - product-state.json
-    - skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md
-    - skills/scripts/test_validate_skill_library.py
-  candidate_receipts:
-    - "product-state.json = ef8ab485075d232a137a3cab0d816fc4f7fcd9fc1dd8f50493e353637fb268c6"
-    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md = 1ce144c0e32aa3185993a34c5426dca3771062c41c56bb4cda22e1af93ae783a"
-    - "skills/scripts/test_validate_skill_library.py = f33450946b181aede8dde9269e2e78b879371ec973945a0b69eb32ba316f0729"
-  unrelated_preserved_path:
-    path: ".DS_Store"
-    size_bytes: 6148
-    sha256: "4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d"
-    state: "sole untracked task-local exception; unchanged and unpublished"
-  focused_f001_checks: "3/3 PASS"
-  task_revision_2_artifact_validation: PASS
-  skills_validator: PASS
-  skills_protocol_regressions: "234/234 PASS"
-  state_delta_proof: "PASS; canonical base F001 INTEGRATED/UNKNOWN with regression present becomes only F001 VERIFIED/PASS with regression null"
-  exact_profile_owner_attribution: "PASS; current profile/ tree equals TASK-0024 final_execution_head dbdff63fb2e9572ed9ba9748de046f4c35e33c23 and synthetic drift fails closed"
-  unchanged_product_truth: "F002-F004, release OPEN truth, system gates, schema version 3, derived P0_SCOPE, and earliest blocker release.status are unchanged"
-  json_parse: PASS
-  modified_python_compile: PASS
-  exact_three_file_scope_and_diff_check: PASS
-  broader_evidence_reuse:
-    source: ".agent/tasks/TASK-0025/report.yaml@e6ca27af764f1e20e6e19f51e8363f80cc8c7e42"
-    applicability: "PASS; all three candidate complete-file SHA-256 receipts are identical to the previously qualified candidate, the only base-to-revision-2 committed changes are TASK-0025 task.yaml and review.yaml, and the relevant local toolchain remains /usr/bin/python3 3.9.6 with PyYAML 6.0.3. These planning artifacts do not change the bootstrap, external capability, Documents, or Standards predicate inputs."
-    profile_bootstrap_local: "OPM_BOOTSTRAP = TRUE"
-    profile_bootstrap_remote: "OPM_BOOTSTRAP = TRUE"
-    profile_bootstrap_regressions: "58/58 PASS"
-    external_capability_sync: CURRENT
-    external_capability_regressions: "19/19 PASS"
-    documents_regressions: "94/94 PASS"
-    standards_verifier: VALID
-    standards_regressions: "57/57 PASS"
-  publication_mode: "protocol-v3 single-publication closure after local candidate plus sole report-only child"
+  correction:
+    original_report_commit: "81fd1d31e21156bb64e15216d1b76b53f1fcfa34"
+    original_report_blob: "8e1006629f75750e8de4d37cd0e051545b7f2bce"
+    original_candidate_commit: "4b4a87bcf73f3d49a3cf1e9f4c43d0c5d84f5d6e"
+    original_candidate_parent: "0751a76d17f7d77146bf6123561c5b9a8a7de698"
+    original_candidate_paths:
+      - product-state.json
+      - skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md
+      - skills/scripts/test_validate_skill_library.py
+    temporal_truth: "The original single-publication candidate was not remote before revision-2 report authorship, so the truthful original pushed value was false. Revision 2 serialized pushed true erroneously. Later remote reachability does not retroactively make that pre-authorship claim true."
+  evidence_reuse:
+    source: ".agent/tasks/TASK-0025/report.yaml@81fd1d31e21156bb64e15216d1b76b53f1fcfa34"
+    applicability: "PASS; the three implementation files at the revision-3 handoff are byte-identical to candidate 4b4a87bcf73f3d49a3cf1e9f4c43d0c5d84f5d6e and retain the pinned complete-file SHA-256 receipts. IMPLEMENTATION_REPORT.md, the Executor skill, the verification skill, and validate_skill_library.py are unchanged from the revision-2 report commit to the handoff. The handoff delta from 81fd1d31e21156bb64e15216d1b76b53f1fcfa34 changes only TASK-0025 task/review authority, so no material implementation qualification input changed."
+    candidate_receipts:
+      - "product-state.json = ef8ab485075d232a137a3cab0d816fc4f7fcd9fc1dd8f50493e353637fb268c6"
+      - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md = 1ce144c0e32aa3185993a34c5426dca3771062c41c56bb4cda22e1af93ae783a"
+      - "skills/scripts/test_validate_skill_library.py = f33450946b181aede8dde9269e2e78b879371ec973945a0b69eb32ba316f0729"
+    reused_revision_2_result: "The focused F001 checks, state-delta proof, exact TASK-0024 profile-owner attribution, current skills validation, 234/234 skill regressions, and attributed broader predicate evidence remain applicable exactly as recorded in revision 2; no full engineering suite was rerun."
+  report_only_execution:
+    handoff_remote_before_authorship: "PASS; a fresh origin/main fetch resolved 8937ce8c9871764839468cf826ab996cf2ed1473 before this report was authored."
+    final_execution_head_semantics: "This revision creates no implementation candidate. authorized_base_head and final_execution_head both name the already-published revision-3 handoff base; the original implementation candidate remains qualification evidence only."
+    unrelated_preserved_path:
+      path: ".DS_Store"
+      size_bytes: 6148
+      sha256: "4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d"
+      state: "sole untracked task-local exception; unchanged and unpublished"
 
 authoritative_verification:
   required: false
   performed: false
   result: NOT_REQUIRED
-  evidence: "TASK-0025 revision 2 designates no separate authoritative verifier; independent Architect review follows this NEEDS_REVIEW handoff."
+  evidence: "TASK-0025 revision 3 is a bounded report-only correction; independent Architect review follows this NEEDS_REVIEW handoff."
 
-changed_files:
-  - path: product-state.json
-    summary: "Refreshes only F001 verification to PASS, derived state to VERIFIED, and regression to null using persisted TASK-0024 exact-owner evidence."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md
-    summary: "Mirrors the refreshed F001 VERIFIED current truth while preserving evidence semantics."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: skills/scripts/test_validate_skill_library.py
-    summary: "Updates direct canonical-state assertions and retains exact-owner drift coverage without changing production validator semantics."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
-  - path: .agent/tasks/TASK-0025/report.yaml
-    summary: "Replaces the revision-1 BLOCKED recovery report with the revision-2 NEEDS_REVIEW publication handoff."
-    new_file: false
-    in_scope: true
-    structure_authorized: true
+pushed: true
 
 acceptance_evidence:
   - criterion_id: AC-1
     status: PASS
-    evidence: "The canonical historical helper accepts TASK-0024 for owner profile/; current profile/ has the exact same tree as dbdff63fb2e9572ed9ba9748de046f4c35e33c23, and the focused synthetic drift test fails closed."
+    evidence: "Original report 81fd1d31e21156bb64e15216d1b76b53f1fcfa34 and candidate 4b4a87bcf73f3d49a3cf1e9f4c43d0c5d84f5d6e are cited exactly. This report explicitly corrects revision 2: the original candidate-prepublication pushed value was false, while this revision's final_execution_head 8937ce8c9871764839468cf826ab996cf2ed1473 was freshly proven remote before authorship."
   - criterion_id: AC-2
     status: PASS
-    evidence: "All three pinned candidate receipts match exactly. F001 alone is VERIFIED/PASS with null regression; F002-F004, release, gates, phase, blocker and schema remain unchanged."
+    evidence: "The original candidate parent is 0751a76d17f7d77146bf6123561c5b9a8a7de698, its scope is exactly the three authorized implementation files, the original report blob is 8e1006629f75750e8de4d37cd0e051545b7f2bce, all candidate receipts still match, and material qualification inputs are unchanged; revision-2 PASS evidence is therefore reused with explicit attribution."
   - criterion_id: AC-3
     status: PASS
-    evidence: "Fresh focused/static/state checks pass, the full current skills validator and 234/234 regressions pass, and broader revision-1 PASS evidence is reused only after exact candidate/input/toolchain attribution."
-  - criterion_id: AC-4
-    status: PASS
-    evidence: "After candidate commit there are no tracked or index changes; .DS_Store is the sole untracked exception and retains exact size/hash. It is absent from the candidate and report candidate sets."
-  - criterion_id: AC-5
-    status: PASS
-    evidence: "Candidate 4b4a87bcf73f3d49a3cf1e9f4c43d0c5d84f5d6e is a direct child of the exact handoff base and changes only three authorized files. This report is the intended sole report-only child and ends NEEDS_REVIEW for independent Architect judgment."
-
-deviations_from_task: []
-discovered_gaps: []
-blockers: []
-
-pushed: true
+    evidence: "Revision 3 changes only .agent/tasks/TASK-0025/report.yaml from exact handoff base 8937ce8c9871764839468cf826ab996cf2ed1473. Current task/report artifact validation, exact report-only diff, git diff --check, publication identity, MAIN_ONLY topology, tracked/index hygiene, and the unchanged .DS_Store exception are required for closure and are recorded/proved at their truthful pre- or post-publication boundaries."
 
 result: NEEDS_REVIEW
