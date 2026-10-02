@@ -1,0 +1,131 @@
+protocol_version: 3
+task_id: TASK-0026
+task_revision: 1
+state: APPROVED
+origin:
+  type: user_request
+  task_id: ""
+  gap_id: CHAT-TASK-LAUNCH-AMBIGUITY-AND-CONTEXT-BASELINE
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "8eb53c7a35288d32a7bbf7deecf421fed8d6407b"
+architect_analysis_skills:
+  - architect
+  - verification
+execution_skills:
+  required:
+    - executor
+    - verification
+  recommended: []
+external_skills:
+  architect_analysis:
+    - "ecc:agent:planner @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:agents/planner.md; advisory planning HOW only"
+  execution_required: []
+  execution_recommended: []
+authority_sources:
+  - source: "explicit current operator request and correction"
+    role: "Urgent chat/task label disambiguation and bounded ChatGPT execution; the current Codex Architect is a specific exception, not admission of Codex to normal roles."
+    precedence: 1
+  - source: ".agent/tasks/TASK-0025/report.yaml@8eb53c7a35288d32a7bbf7deecf421fed8d6407b"
+    role: "qualified predecessor evidence; exact accepted review is published with this task at the handoff base"
+    precedence: 2
+  - source: "profile/.agent/bootstrap/bootstrap.json@8eb53c7a35288d32a7bbf7deecf421fed8d6407b"
+    role: "operator presentation, exact four execution surfaces and locator-only prompt owner"
+    precedence: 3
+  - source: "skills/.agent/case-router.yaml@8eb53c7a35288d32a7bbf7deecf421fed8d6407b"
+    role: "accepted three-route authority-NONE navigation; legacy EXECUTE is an alias"
+    precedence: 4
+  - source: "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md@8eb53c7a35288d32a7bbf7deecf421fed8d6407b"
+    role: "unchanged exact-owner evidence and regression semantics"
+    precedence: 5
+structure_authority:
+  status: RESOLVED
+  source: "current canonical owners, two existing renderer call sites, accepted T1 router and explicit operator request"
+  rationale: "Correct operator presentation in existing files and gather a compact context baseline. Reuse native Python validators and tests. No new context store, launcher engine, generic role policy or engineering HOW is needed."
+objective: "Disambiguate chat reuse from task continuation, align stale profile navigation with accepted T1 routing, and record a reproducible context baseline before deeper slimming. This is the first bounded maintenance slice of the operator-requested Foundation simplification programme, not release progression."
+scope:
+  required_changes:
+    - "Fresh-bind the exact handoff base and safely fast-forward the local mirror. Resolve the published TASK-0025 r3 ACCEPTED review. Permit only the pinned .DS_Store exception; any unexpected dirty tracked/index state, additional untracked path, ref divergence, conflict or Git operation is BLOCKED."
+    - "Replace task_launch's ambiguous continuation axis with two independent presentation axes: chat_action is NEW CHAT or CONTINUE CHAT; task_action is NEW TASK or CONTINUE TASK. Render TASK LAUNCH — {chat_action} · {task_action} · {surface} · {model} · effort: {effort}. Update the existing JSON owner, renderer/validation and fixtures together. Bare NEW/CONTINUE, crossed axes, unsupported values/surfaces and malformed launch configuration fail closed. Preserve the exact four surface/model/effort mappings and the seven locator-only prompt inputs/template. These labels create no task, chat registry, authority or lifecycle state."
+    - "Update only profile launch presentation and stale router descriptions in ARCHITECT_PROFILE.md and README.md. Route MATERIAL_JUDGMENT to Architect, READ_ONLY_RESEARCH to Executor Researcher, and TASK_EXECUTION to Executor; EXECUTE remains the legacy alias. Link canonical owners instead of copying governance. Preserve the current ChatGPT role policy, dormant/conditional Codex execution-surface preferences and all other operator configuration. The current supervisory Codex exception belongs to this task authority only. Prefer a fresh ChatGPT chat for a new task/revision or interruption recovery; chat selection and task identity remain independent presentation choices."
+    - "In the existing report, record before/after UTF-8 bytes and line counts for eight inventory paths: profile/ARCHITECT_PROFILE.md, skills/architect/SKILL.md, skills/executor/SKILL.md, skills/protocols/TASK_PROTOCOL.md, skills/contracts/FOUNDATION_ARCHITECTURE.md, skills/.agent/external-capabilities/catalog.json, documents/DOCUMENT_MODEL.md and standards/STANDARD_MODEL.md. Identify exact source commits and measurement method. For each of the three entry routes, record its selected role/capability/navigation locators and JSON payload byte count using the existing reconstruction fixtures with fixed input identities. Mark fixture measurements as synthetic and inventory size as inventory, not actual loaded context; neither measures ChatGPT tokens, time limits or hidden tool overhead. Measure catalog size without preloading its body. Add no baseline file, framework or persistent context state."
+    - "Changing profile/ invalidates TASK-0024 exact-owner verification. Change only F001 verification PASS to UNKNOWN with an inspectable reason, VERIFIED to INTEGRATED, and null regression to the required VERIFIED-to-INTEGRATED evidence-backed record. Retain immutable historical evidence and mirror current truth in AGENT_FOUNDATION_PRODUCT_STATE.md. Keep F002-F004, frozen four-feature inventory, release OPEN truth, all system gates, schema 3, protocol 3, P0_SCOPE and blocker release.status unchanged. Current task tests/report must not self-attest F001 PASS."
+    - "Extend existing bootstrap tests for all four chat/task pairs across all four surfaces, rejecting ambiguous/crossed/unknown values and malformed fixtures, preserving locator prompts and bounded three-route reconstruction. In the existing skills test file, update only canonical-state expectations and the now-stale live TASK-0024 profile attribution; retain matching historical-fixture PASS and synthetic owner-drift rejection. Preserve production validate_skill_library.py byte-for-byte."
+    - "Qualify with the existing local bootstrap validator, full bootstrap regression file, skills validator and full skills regression file, explicit current task/report artifact validation, JSON parse, modified-Python in-memory compile, state-transition/protected-file/scope checks and git diff --check. Use bounded output and existing recoverable Runtime jobs; poll a yielded job by its exact ID and reconcile any unknown consequence before retry. Avoid a monolithic blocking call for the entire task. No Documents/Standards/external suite repeat is needed absent changed relevant inputs. Historical remote resolver evidence may cover only demonstrably unchanged remote path/pin predicates; do not relabel it as fresh whole-profile verification."
+    - "Create one immutable implementation candidate with only the eight authorized existing paths, then its sole report-only direct child. Prefer the eligible protocol-v3 single-publication path; when the candidate is still local at report authorship, serialize pushed false. Fresh remote publication proof is resolved after push outside that report. If a required remote-dependent predicate actually needs the candidate published first, use the existing two-publication path. Final local main/origin/main/fresh remote main must equal the report commit with MAIN_ONLY topology, tracked/index cleanliness and precisely the unchanged unpublished .DS_Store exception. Finish NEEDS_REVIEW; stop before successor work."
+  allowed_existing_files_or_components:
+    - profile/ARCHITECT_PROFILE.md
+    - profile/README.md
+    - profile/.agent/bootstrap/bootstrap.json
+    - profile/.agent/bootstrap/validate.py
+    - profile/.agent/bootstrap/test_bootstrap.py
+    - product-state.json
+    - skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md
+    - skills/scripts/test_validate_skill_library.py
+  expected_files_are_restrictive: true
+invariants:
+  - "Exactly Architect and Executor remain the organizational roles under existing ChatGPT policy; do not generalize the operator's current Codex exception."
+  - "Foundation owns authority/routing/proof, ECC supplies admitted generic HOW, target repos own product/stack/rules, and Runtime is transport."
+  - "Chat/task launch labels are non-authoritative presentation; exact task/base binding and all acceptance/evidence semantics remain unchanged."
+  - "Preserve .DS_Store as the sole untracked regular file, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d; no stage-all, deletion, move, modification, ignore change or publication."
+forbidden_changes:
+  - "Modify Task Protocol, Architect/Executor skills, role/provider admission, execution-surface/model/effort mapping, Case Router, Foundation Architecture, authority lock, external pins/catalog, Documents, Standards, Runtime/host/dependencies or production validate_skill_library.py."
+  - "Broader context refactoring, T2 ECC resolver, rule activation, feature-doc/readiness doctrine, slice planner, universal phases/stack matrix, generic HOW duplication, new service/store/registry/loader/scheduler or release advancement."
+  - "Rewrite historical task/report/review evidence, alter current task authority, create branches/tags/releases, force push, conceal unrelated state or start the next task."
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Chat action and task action are independent, unambiguous operator presentation."
+    evidence_required: "All 16 surface/pair combinations render exact labels; invalid/ambiguous/crossed inputs and malformed configuration reject; surface mappings and locator prompt contract are unchanged."
+  - id: AC-2
+    requirement: "Profile navigation matches accepted T1 without role-policy expansion."
+    evidence_required: "Both profile documents identify the three canonical routes and legacy alias; existing role/provider policy remains intact and protected governance bytes are unchanged."
+  - id: AC-3
+    requirement: "Context baseline is compact, reproducible and honestly scoped."
+    evidence_required: "Eight-path before/after inventory and three-route fixed-fixture payload/locator measurements with exact identities/method; explicit synthetic-versus-inventory distinction and no token/time/context-overhead claim or new persistent machinery."
+  - id: AC-4
+    requirement: "Product truth reflects changed profile ownership without self-attestation."
+    evidence_required: "F001 UNKNOWN/INTEGRATED with exact evidence-backed regression; unchanged other feature/release/system/phase/blocker truth; stale current-owner attribution fails while matching historical fixture and drift regressions remain effective."
+  - id: AC-5
+    requirement: "Qualified candidate and report close under exact bounded authority."
+    evidence_required: "Required native validators/regressions/static/scope/state checks PASS; candidate direct child of handoff base contains only the eight existing paths; report is its sole report-only child with truthful pre-authorship publication state; fresh external remote/local closure and unchanged named .DS_Store exception."
+verification:
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0026/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "Modify the existing canonical owners and tests; add only this task's Executor report."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+blocking_decisions: []
+execution_ready: true
