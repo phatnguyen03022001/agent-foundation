@@ -78,7 +78,7 @@ This gate creates no complexity score, token budget, duration estimate, task poi
 
 ## Material-design-readiness and proportional execution
 
-The material-design-readiness gate applies before consequential implementation: identify applicable target product/design authority and resolve only material missing decisions that could change correctness, compatibility, security, ownership, irreversible behavior, or acceptance. The gate excludes trivial, mechanical, reversible, or well-specified work from extra ceremony.
+Before authorizing consequential feature implementation, read and apply [Task Protocol — Material-design-readiness gate](../protocols/TASK_PROTOCOL.md#material-design-readiness-gate). That owner defines the scoped target-owned design/research evidence boundary and proportional exception; do not restate it here.
 
 Choose the existing protocol-v3 lane proportionally: `DIRECT` for small reversible low-risk work, `BOUNDED` for normal task execution, and `HIGH_ASSURANCE` only when stronger evidence/independence is materially required. Read the Task Protocol lane section rather than duplicating its semantics.
 
