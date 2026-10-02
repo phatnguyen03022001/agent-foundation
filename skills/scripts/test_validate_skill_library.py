@@ -3674,7 +3674,7 @@ class Task0021GlobalProgressionTests(unittest.TestCase):
         self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "release.status")
         self.assertEqual(
             {feature["id"]: feature["lifecycle"]["derived_state"] for feature in state["product_scope"]["features"]["registered"]},
-            {"F001": "INTEGRATED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
+            {"F001": "VERIFIED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
         )
 
     def test_exact_global_leaf_inventory_and_current_aggregate_truth(self) -> None:
@@ -4029,7 +4029,7 @@ class Task0022ProgressionConsumptionTests(unittest.TestCase):
                 feature["id"]: feature["lifecycle"]["derived_state"]
                 for feature in state["product_scope"]["features"]["registered"]
             },
-            {"F001": "INTEGRATED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
+            {"F001": "VERIFIED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
         )
 
     def test_later_phase_fixtures_reuse_t4_resolver_and_earlier_blockers_win(self) -> None:
@@ -4117,28 +4117,22 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
         gate["evidence_refs"] = [] if refs is None else refs
         gate["reason"] = reason
 
-    def test_canonical_schema3_preserves_exact_t3_gates_conservative_states_and_f001_regression(self) -> None:
+    def test_canonical_schema3_preserves_exact_t3_gates_and_f001_verification(self) -> None:
         state = self.load_state()
         self.assertEqual(self.validate_state(state), [])
         self.assertEqual(state["schema_version"], 3)
         expected_states = {
-            "F001": "INTEGRATED",
+            "F001": "VERIFIED",
             "F002": "INTEGRATED",
             "F003": "VERIFIED",
             "F004": "INTEGRATED",
         }
-        expected_f001_regression = {
-            "from_state": "VERIFIED",
-            "to_state": "INTEGRATED",
-            "reason": "TASK-0015 final_execution_head f09c2df5e1affdd843af91d3dc70375269d255ab predates the three current profile/ bootstrap changes in TASK-0024; no persisted result verifies these exact current owner bytes.",
-            "evidence_refs": [
-                ".agent/tasks/TASK-0015/report.yaml",
-                ".agent/tasks/TASK-0024/task.yaml",
-                "profile/.agent/bootstrap/bootstrap.json",
-                "profile/.agent/bootstrap/test_bootstrap.py",
-                "profile/.agent/bootstrap/validate.py",
-            ],
-        }
+        expected_f001_verification_refs = [
+            ".agent/tasks/TASK-0024/report.yaml",
+            "profile/.agent/bootstrap/bootstrap.json",
+            "profile/.agent/bootstrap/test_bootstrap.py",
+            "profile/.agent/bootstrap/validate.py",
+        ]
         for feature in state["product_scope"]["features"]["registered"]:
             self.assertEqual(
                 [gate["name"] for gate in feature["lifecycle"]["gates"]],
@@ -4146,9 +4140,14 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
             )
             self.assertEqual(feature["lifecycle"]["derived_state"], expected_states[feature["id"]])
             if feature["id"] == "F001":
-                self.assertEqual(feature["lifecycle"]["regression"], expected_f001_regression)
-            else:
-                self.assertIsNone(feature["lifecycle"]["regression"])
+                verification = next(
+                    gate for gate in feature["lifecycle"]["gates"]
+                    if gate["name"] == "verification"
+                )
+                self.assertEqual(verification["status"], "PASS")
+                self.assertEqual(verification["evidence_refs"], expected_f001_verification_refs)
+                self.assertIsNone(verification["reason"])
+            self.assertIsNone(feature["lifecycle"]["regression"])
             self.assertNotIn(feature["lifecycle"]["derived_state"], {"RELEASE_READY", "LIVE"})
 
     def test_all_seven_lifecycle_thresholds_are_derived_from_ordered_pass_prefix(self) -> None:
@@ -4408,6 +4407,76 @@ class Task0020Revision2EvidenceParserTests(unittest.TestCase):
             )
         finally:
             VALIDATOR_MODULE.errors.clear()
+
+    def test_task0024_profile_result_requires_exact_current_owner_bytes(self) -> None:
+        repository_root = ROOT.parent
+        report_ref = ".agent/tasks/TASK-0024/report.yaml"
+        report_path = repository_root / report_ref
+        self.assertTrue(self.covers(report_ref, "profile/", repository_root))
+
+        report_execution_line = next(
+            line
+            for line in report_path.read_text(encoding="utf-8").splitlines()
+            if line.strip().startswith("final_execution_head:")
+        )
+        final_execution_head = report_execution_line.split('"')[1]
+        self.assertEqual(len(final_execution_head), 40)
+        self.assertTrue(all(char in "0123456789abcdef" for char in final_execution_head))
+        with tempfile.TemporaryDirectory(
+            prefix=".task-0025-owner-drift-",
+            dir=repository_root,
+        ) as temp_name:
+            evidence_root = Path(temp_name)
+            subprocess.run(["git", "init", "-q"], cwd=evidence_root, check=True)
+            source_git_dir = Path(
+                subprocess.check_output(
+                    ["git", "-C", str(repository_root), "rev-parse", "--absolute-git-dir"],
+                    text=True,
+                ).strip()
+            )
+            alternates = evidence_root / ".git" / "objects" / "info" / "alternates"
+            alternates.parent.mkdir(parents=True, exist_ok=True)
+            alternates.write_text(
+                str(source_git_dir / "objects"),
+                encoding="utf-8",
+            )
+            archive = subprocess.run(
+                [
+                    "git",
+                    "-C",
+                    str(repository_root),
+                    "archive",
+                    "--format=tar",
+                    final_execution_head,
+                    "profile",
+                ],
+                check=True,
+                stdout=subprocess.PIPE,
+            ).stdout
+            subprocess.run(
+                ["tar", "-xf", "-"],
+                cwd=evidence_root,
+                input=archive,
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            subprocess.run(
+                ["git", "-C", str(evidence_root), "add", "profile"],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            temp_report = evidence_root / report_ref
+            temp_report.parent.mkdir(parents=True, exist_ok=True)
+            temp_report.write_bytes(report_path.read_bytes())
+
+            self.assertTrue(self.covers(report_ref, "profile/", evidence_root))
+            drifted_owner_file = evidence_root / "profile/.agent/bootstrap/bootstrap.json"
+            drifted_owner_file.write_bytes(
+                drifted_owner_file.read_bytes() + b"synthetic owner-byte drift"
+            )
+            self.assertFalse(self.covers(report_ref, "profile/", evidence_root))
 
     def test_architect_profile_false_fail_exploit_is_rejected(self) -> None:
         _, root, report_ref = self.synthetic_repo(
