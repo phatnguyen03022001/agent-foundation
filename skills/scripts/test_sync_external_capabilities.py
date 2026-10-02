@@ -201,24 +201,59 @@ class ExternalCapabilitySyncTests(unittest.TestCase):
         positions = [architecture.index(token) for token in ordered]
         self.assertEqual(positions, sorted(positions))
         self.assertIn("ECC is a reusable L2 harness source, never L0 authority", architecture)
+        self.assertIn(
+            "only when ECC is materially insufficient or inapplicable;",
+            architecture,
+        )
+        self.assertIn(
+            "Load only the minimum relevant surface for the current task.",
+            architecture,
+        )
+        self.assertIn(
+            "are never activated merely because ECC is indexed or selected.",
+            architecture,
+        )
         self.assertIn("The ECC CLI is an optional resolution convenience", architecture)
+        self.assertIn(
+            "no global install, update, repair, or configuration is required.",
+            architecture,
+        )
         self.assertIn("Matt skills, Superpowers, and Awesome retain", architecture)
 
+        capability_owner = (
+            "[Foundation Architecture — Capability control]"
+            "(../contracts/FOUNDATION_ARCHITECTURE.md#capability-control)"
+        )
+        self.assertIn(capability_owner, architect)
         self.assertIn(
-            "generic engineering HOW defaults to the minimum relevant surface from the exact-pinned ECC harness",
+            "after target truth is known and before loading reusable HOW",
             architect,
         )
-        self.assertIn("never gain Architect authority", architect)
         self.assertIn(
-            "Apply exact target-repository truth and repo-native conventions first",
+            "Exact-pinned ECC generic HOW is preferred after target-native conventions; "
+            "another exact admitted capability is justified only for a material gap.",
+            architect,
+        )
+        self.assertIn("ECC supplies reusable HOW, never authority.", architect)
+
+        self.assertIn(capability_owner, executor)
+        self.assertIn(
+            "after target truth establishes a material need",
             executor,
         )
         self.assertIn(
-            "load only the minimum relevant skill, command, or agent surface from the exact-pinned ECC harness",
+            "load only the minimum exact-pinned capability",
             executor,
         )
-        self.assertIn("never overrides current task authority", executor)
-        self.assertIn("The ECC CLI is optional", executor)
+        self.assertIn(
+            "Exact-pinned ECC is default generic HOW after repo-native conventions; "
+            "another admitted capability requires a material ECC gap.",
+            executor,
+        )
+        self.assertIn(
+            "Never install/update/repair/configure ECC merely for routing.",
+            executor,
+        )
 
     def test_github_client_adds_authorization_when_environment_token_exists(self) -> None:
         token = "test-token-value"
