@@ -1,8 +1,8 @@
 protocol_version: 3
 
 task_id: TASK-0028
-task_revision: 1
-report_revision: 1
+task_revision: 2
+report_revision: 2
 state: REPORTED
 
 task_source:
@@ -13,125 +13,96 @@ execution:
   branch:
     name: main
     role: stable
-  authorized_base_head: "f73e478d5c536a5c6901f36bbc291295c26fe011"
-  final_execution_head: "4b6bf8e6ac3d1d73aa29afae3824a3bf867ba66a"
+  authorized_base_head: "8633343130f9a226a3247cf52cf9603d9c40935d"
+  final_execution_head: "a6793acd6bec95091c03b99988f886c1a91f0aae"
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  authorized_revision: "fd25147f99b82edaea27d821ffcdbd59a8ae54db"
+  authorized_revision: "426c878b6c82822938dfc984f03f7555382eb4c2"
 
 capability_preflight:
   phase: EXECUTION
   required:
-    - exact local and fresh remote Git identity observation
+    - fresh local and remote Git identity observation
     - bounded repository text mutation
     - native repository verification execution
     - exact-path commit and ordinary non-force MAIN_ONLY publication
   available:
-    - Agent Runtime repository/filesystem and keyed terminal surfaces
-    - native Git exact-path staging and commit in the designated working copy
-    - fresh GitHub origin/main observation
+    - Agent Runtime 0.5.1 repository, filesystem, and keyed terminal surfaces
+    - native Git guarded fast-forward, exact-path staging, commit, and remote observation
+    - native Python repository validators and unittest suites
   missing: []
   passed: true
 
 qualification:
-  external_how:
-    source: "affaan-m/ECC"
-    revision: "bf70150eb2df8070024e5bdf08e4aa08959e2735"
-    path: "skills/context-budget/SKILL.md"
-    use: "bounded inventory, deduplication, and demand-loading concepts only"
-  tdd:
-    red: "All three TASK-0028 focused regressions failed before the Executor owner map/reference enforcement existed."
-    green: "The same focused TASK-0028 class passed 3/3 after the bounded Executor, validator, and regression changes."
+  inherited_r1:
+    report_commit: "426c878b6c82822938dfc984f03f7555382eb4c2"
+    report_revision: 1
+    candidate_commit: "4b6bf8e6ac3d1d73aa29afae3824a3bf867ba66a"
+    review_commit: "8633343130f9a226a3247cf52cf9603d9c40935d"
+    review_state: REVISION_REQUIRED
+    use: "Only exact unchanged relevant-input evidence is reused. The reduced kernels and r1 production implementation remain unchanged by r2."
+  consumer_regression:
+    focused_red: "REPRODUCED at r2 base 8633343130f9a226a3247cf52cf9603d9c40935d: the stale Architect literal assertion failed before editing."
+    focused_green: "PASS after the bounded consumer correction; the candidate captures the exact qualified test content."
+    external_regressions: "PASS; 19/19 existing cases."
+    semantics: "The repaired test preserves target-native precedence, ECC default generic HOW, material-gap fallback, minimum exact-pinned loading, no authority transfer or upstream activation, and optional CLI without installation/configuration dependence through FOUNDATION_ARCHITECTURE plus explicit Architect/Executor owner references and read triggers."
   verification:
-    exact_candidate: "4b6bf8e6ac3d1d73aa29afae3824a3bf867ba66a"
-    skills_validator: "PASS on the exact candidate."
-    skills_regressions: "PASS on the exact candidate; 240/240."
-    focused_regressions: "PASS on the exact candidate; 3/3."
-    task_artifact: "PASS for .agent/tasks/TASK-0028/task.yaml."
-    python_in_memory_compile: "PASS for modified validate_skill_library.py and test_validate_skill_library.py without pycache compilation."
-    owner_links_and_anchors: "PASS through the native Markdown-link validator plus focused required-link, missing-reference, and misdirected-reference regressions."
-    protected_scope: "PASS; candidate changes exactly skills/executor/SKILL.md, skills/scripts/validate_skill_library.py, and skills/scripts/test_validate_skill_library.py. All other tracked paths, including product-state.json, Architect, Task Protocol, Foundation Architecture, Implementation Report, Execution Continuity, and Executor Engineering HOW, are byte-identical to the authorized base."
-    diff_check: "PASS for f73e478d5c536a5c6901f36bbc291295c26fe011..4b6bf8e6ac3d1d73aa29afae3824a3bf867ba66a."
-    unchanged_input_reuse: "TASK-0026 bootstrap and TASK-0027 protected-owner inputs were not rerun; the exact candidate diff proves every non-authorized tracked path is unchanged from the handoff base, so their relevant immutable evidence remains reusable only for those unchanged inputs."
-    remote_prepublication: "Fresh GitHub main remained f73e478d5c536a5c6901f36bbc291295c26fe011 after candidate qualification and before report authorship."
-    local_mirror_reconciliation: "The typed fast-forward/staging helpers rejected the task-authorized .DS_Store exception before mutation. Fresh repository observation proved no effect; guarded native Git fast-forward and explicit-path staging preserved the named exception and exact authority."
+    exact_candidate: "a6793acd6bec95091c03b99988f886c1a91f0aae"
+    skills_validator: "PASS; native rationalized seven-skill/protocol-v3 validator."
+    skills_regressions: "PASS; 240/240 existing cases."
+    task_artifact: "PASS for revision-2 .agent/tasks/TASK-0028/task.yaml."
+    report_artifact: "PASS for revision-2 .agent/tasks/TASK-0028/report.yaml before report commit."
+    python_in_memory_compile: "PASS for modified skills/scripts/test_sync_external_capabilities.py without pycache compilation."
+    protected_scope: "PASS; candidate changes only skills/scripts/test_sync_external_capabilities.py. Architect, Executor, production scripts, protected semantic owners, product truth, external metadata, profile/bootstrap, routing, Documents and Standards are byte-identical to the r2 base."
+    diff_check: "PASS for the candidate diff and report worktree."
+    remote_prepublication: "Fresh origin/main remained at authorized base 8633343130f9a226a3247cf52cf9603d9c40935d after candidate creation and before report authorship."
+    local_mirror_reconciliation: "The Runtime fast-forward helper rejected the task-authorized untracked exception without effect. Guarded native Git then fast-forwarded exactly from r1 report 426c878b6c82822938dfc984f03f7555382eb4c2 to the r2 handoff while preserving the exception."
     unrelated_exception: ".DS_Store remains the sole untracked path, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d."
   inventory:
-    measurement_scope: "Exact UTF-8 source bytes only; these are not ChatGPT token, latency, or context-window measurements."
-    executor_kernel:
-      base_bytes: 28681
-      candidate_bytes: 17359
-      reduction_bytes: 11322
-      reduction_percent: 39.475611
-      required_max_bytes: 20076
-    changed_file_inventory:
-      base_bytes: 391038
-      candidate_bytes: 387512
-      delta_bytes: -3526
+    measurement_scope: "Exact UTF-8 source bytes only; not ChatGPT token, latency, or context-window measurements."
+    original_r1_base: "f73e478d5c536a5c6901f36bbc291295c26fe011"
+    original_total_bytes: 413093
+    final_total_bytes: 410733
+    delta_bytes: -2360
     files:
       - path: skills/executor/SKILL.md
-        base_bytes: 28681
-        candidate_bytes: 17359
-        delta_bytes: -11322
+        original_bytes: 28681
+        final_bytes: 17359
       - path: skills/scripts/validate_skill_library.py
-        base_bytes: 129787
-        candidate_bytes: 132101
-        delta_bytes: 2314
+        original_bytes: 129787
+        final_bytes: 132101
       - path: skills/scripts/test_validate_skill_library.py
-        base_bytes: 232570
-        candidate_bytes: 238052
-        delta_bytes: 5482
-  topic_owner_map:
-    - topic: repository binding, Git authority, terminal lifecycle and local divergence
-      owner: "skills/protocols/TASK_PROTOCOL.md#core-bindings; #artifact-ownership-and-authority; #executor-binding-terminal-vs-whole-task-lifecycle; #githublocal-drift"
-      read_trigger: "Before task entry/rebinding, Git mutation, terminal handoff, local mutation, publication retry, or mirror closure."
-    - topic: phase capability and consequence freshness
-      owner: "skills/protocols/TASK_PROTOCOL.md#phase-specific-capability-preflight; #consequence-based-execution-guards"
-      read_trigger: "Immediately before the current phase mutation or a consequence depending on mutable state."
-    - topic: publication topology and cleanup safety
-      owner: "skills/protocols/TASK_PROTOCOL.md#protocol-v3-candidatereport-publication-closure; #local-hygiene-contract"
-      read_trigger: "Before publication-topology selection or recursive cleanup."
-    - topic: target truth and capability/surface routing
-      owner: "skills/contracts/FOUNDATION_ARCHITECTURE.md#target-repository-product-authority; #capability-control; #execution-surface-and-publication-control"
-      read_trigger: "Before implementation HOW, capability loading, or execution/publication surface selection."
-    - topic: report identity, evidence, and optional timing
-      owner: "skills/contracts/IMPLEMENTATION_REPORT.md#ownership-and-commit-identity; #required-evidence; #backward-compatible-operational-timing-evidence"
-      read_trigger: "Before report authorship/evidence serialization; timing only when explicitly requested."
-    - topic: slice, carrier, recovery, and optional performance attribution
-      owner: "skills/contracts/EXECUTION_CONTINUITY.md#execution-slice; #carrier-and-long-running-execution; #recovery; #optional-performance-attribution"
-      read_trigger: "Before recoverable consequence dispatch, long/survival-sensitive execution, recovery mutation, or an explicit performance audit."
-    - topic: construction/acquisition and process/resource lifecycle HOW
-      owner: "skills/executor/references/ENGINEERING_HOW.md#repository-construction-and-acquisition; #processresource-ownership-boundary"
-      read_trigger: "When repository construction/acquisition is needed or before lifecycle-mutating a process/resource."
-  executor_local_obligations:
-    - "Preserve READ_ONLY_RESEARCH authority NONE versus exact TASK_EXECUTION binding and truthful terminal identity."
-    - "Prove exact handoff/base/task/required-skills/structure/Git gates and current-phase capability before mutation."
-    - "Keep restrictive scope and LOCAL/FOLLOW_UP/BLOCKING judgment; discovery itself grants nothing."
-    - "Safely reconcile the designated canonical working copy and preserve env/secret plus cleanup guards."
-    - "Retain complete Executor-local execution-bundle mechanics, effect-aware carrier selection, and no-blind-retry recovery."
-    - "Produce bounded truthful Executor evidence for success or authorized blocking outcomes and stop before Architect review/promotion/release authority."
+        original_bytes: 232570
+        final_bytes: 238052
+      - path: skills/scripts/test_sync_external_capabilities.py
+        original_bytes: 22055
+        final_bytes: 23221
+    kernel_invariants:
+      architect_bytes: 16717
+      executor_bytes: 17359
+      kernels_byte_identical_to_r2_base: true
 
 authoritative_verification:
   required: false
   performed: false
   result: NOT_REQUIRED
-  evidence: "TASK-0028 requires native Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
+  evidence: "TASK-0028 revision 2 requires Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
 
 pushed: false
 
 acceptance_evidence:
   - criterion_id: AC-1
     status: PASS
-    evidence: "Executor kernel is 17359 bytes versus 28681 at base, a reduction of 11322 bytes / 39.475611 percent and below the 20076-byte ceiling. Combined changed-file inventory decreases from 391038 to 387512 bytes. Candidate adds no tracked shard/store/cache/loader or new file."
+    evidence: "Candidate changes only the permitted external consumer test. Architect remains 16717 bytes and Executor remains 17359 bytes, both byte-identical to the r2 base. The cumulative four-file inventory is 410733 bytes versus original 413093, down 2360 bytes; production/protected paths are unchanged."
   - criterion_id: AC-2
     status: PASS
-    evidence: "The kernel contains explicit exact-owner/read-trigger links, retained local pre-mutation/recovery/bundling/report guards, and full execution-bundle mechanics. Native link validation and focused 3/3 regressions prove required references resolve and missing/misdirected references fail."
+    evidence: "The original focused failure was reproduced, then the corrected focused test passed and the complete external-capability regression file passed 19/19. Assertions now prove semantics at the governing architecture owner plus explicit current Architect/Executor reference and read-trigger content instead of stale duplicated kernel prose."
   - criterion_id: AC-3
     status: PASS
-    evidence: "All non-authorized tracked paths are byte-identical to the base, including product-state.json and protected semantic owners. Native skills validation, full 240/240 regressions, focused 3/3 regressions, task artifact validation, and in-memory Python compile pass on exact candidate 4b6bf8e6ac3d1d73aa29afae3824a3bf867ba66a."
+    evidence: "Native skills validation passed, all 240 existing skills regressions passed, revision-2 task/report artifact validation passed, modified-test in-memory compilation passed, and diff/scope checks passed. Reused r1 evidence is explicitly bound to report 426c878b6c82822938dfc984f03f7555382eb4c2 and candidate 4b6bf8e6ac3d1d73aa29afae3824a3bf867ba66a."
   - criterion_id: AC-4
     status: PASS
-    evidence: "Candidate is the direct child of exact handoff base and changes exactly the three authorized existing paths. Fresh remote main remained at the base before report authorship, single-publication prerequisites are satisfied, and the exact .DS_Store exception remains untouched. This report truthfully records pushed false before publication."
+    evidence: "Candidate a6793acd6bec95091c03b99988f886c1a91f0aae is the direct child of exact r2 handoff base and is test-only. Fresh remote main remained at the base before report authorship; single-publication prerequisites are satisfied and this report truthfully records pushed false before publication while preserving the named .DS_Store exception."
 
 result: NEEDS_REVIEW
