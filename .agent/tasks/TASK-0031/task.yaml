@@ -1,0 +1,129 @@
+protocol_version: 3
+task_id: TASK-0031
+task_revision: 1
+state: APPROVED
+origin:
+  type: user_request
+  task_id: TASK-0030
+  gap_id: FEATURE-DESIGN-RESEARCH-BEFORE-CODE
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "af2ab9d8365a5a7bc1264b7211ce8dc5257dd376"
+architect_analysis_skills:
+  - architect
+  - verification
+  - simplicity
+execution_skills:
+  required:
+    - executor
+    - verification
+  recommended: []
+external_skills:
+  architect_analysis:
+    - "ecc:agent:planner @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:agents/planner.md; only relevant requirements/codebase/risk and incremental planning HOW; no role/model/phase activation"
+    - "ecc:search-first @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/search-first/SKILL.md; relevant need analysis, existing-solution research and evaluation HOW only; quick bounded mode, no automatic researcher dispatch or installation"
+  execution_required:
+    - "ecc:agent:planner @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:agents/planner.md; only relevant requirements, architecture, risk, edge and verifiable-outcome planning HOW adapted to current authority"
+    - "ecc:search-first @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/search-first/SKILL.md; minimum relevant research-before-code/evaluation sections only; no upstream agent, installer, MCP/global config or dependency activation"
+  execution_recommended: []
+authority_sources:
+  - source: "operator-authorized thin-Foundation programme: scale by feature, target-owned feature docs and material stack/third-party choices before implementation"
+    role: "one material feature-design authority gate; Foundation owns WHAT/BOUNDARY/PROOF, target design truth and effective rules, ECC generic HOW and Runtime transport; explicit maintenance override of release-first selection without changing product state"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0030/report.yaml@af2ab9d8365a5a7bc1264b7211ce8dc5257dd376 and its ACCEPTED review published with this task"
+    role: "target-owned scoped rules and exact provenance remain accepted and protected; their adoption does not authorize implementation or dependencies"
+    precedence: 2
+  - source: "skills/protocols/TASK_PROTOCOL.md#material-design-readiness-gate and skills/architect/SKILL.md#material-design-readiness-and-proportional-execution at af2ab9d8365a5a7bc1264b7211ce8dc5257dd376"
+    role: "existing proportional pre-code gate and role consumer; make material feature/specification/research proof explicit at that owner instead of adding another framework or duplicating role prose"
+    precedence: 3
+  - source: "documents/DOCUMENT_MODEL.md sections 2, 3, 8-15 and existing target-document templates at af2ab9d8365a5a7bc1264b7211ce8dc5257dd376"
+    role: "existing feature/acceptance traceability, native concern ownership, unknown/build-buy and structural closure semantics; Documents V1 is consumed only when the target adopts it, never imposed on every target"
+    precedence: 4
+  - source: "operator feedback: unknowns discovered after premature authority freeze cause avoidable BLOCKED churn"
+    role: "design completion or structural DOCS_READY cannot prove environment/implementation uncertainty resolved; preserve material boundary unknowns and route bounded discovery/probes under existing authority rather than inventing exact implementation facts. Detailed slice/envelope semantics remain a later JIT outcome."
+    precedence: 5
+structure_authority:
+  status: RESOLVED
+  source: "inspected existing one-paragraph Task Protocol readiness gate, duplicated Architect readiness paragraph, Documents V1 feature/unknown/build-buy/closure owners and exact ECC planning/research entries"
+  rationale: "Existing owners already cover the component semantics. The missing small delta is an explicit consumption gate for material feature design/research evidence before code, including its limits. Extend that existing gate, replace the duplicated Architect paragraph with a shorter owner link/read trigger and add a concise README locator; no new document model, planner, registry, phase machine or feature template."
+objective: "Make target-owned material feature design and applicable stack/third-party research precede consequential implementation, without confusing documentation closure with environment proof or increasing Architect context."
+scope:
+  required_changes:
+    - "Fresh-resolve exact handoff, safely fast-forward the designated mirror and bind TASK-0030 ACCEPTED review. Permit precisely the pinned .DS_Store exception; unexpected edits/paths, divergence, conflicts or Git-operation state are BLOCKED."
+    - "Extend only the existing Material-design-readiness gate section in Task Protocol. For consequential feature implementation, require applicable target-owned design evidence sufficient to determine the feature's observable scope/behavior/acceptance and material architecture/contracts/ownership constraints, including frontend/backend/data boundaries where relevant. Resolve concerns through existing target owners and cross-references, not a new Foundation checklist/taxonomy or a mandatory per-feature filename. Preserve the existing proportional exception for trivial, mechanical, reversible or well-specified work; require completeness for the current material feature/scope rather than exhaustive future-project documentation."
+    - "Make material stack, build/buy and third-party decisions evidence-backed before code that relies on them. Reuse current target-native choices when adequate; research only missing material choices using ECC HOW and relevant primary/official technical evidence with resolvable source/version or observation identity where material. Record the chosen outcome, alternatives/rationale and material compatibility, dependency, cost, trust/permission or exit constraints in their existing target-owned design/decision owners as applicable. A vendor recommendation, loaded HOW or local dependency availability does not authorize purchase, account setup, installation, contract change or implementation. Missing evidence stays unknown and required material decisions return to Architect through the existing gate. This task specifies evidence boundaries only; it does not choose an actual product stack/vendor or duplicate research methodology."
+    - "Separate documented design from implementation readiness: target documentation closure is scoped and target-defined. Documents V1 structural DOCS_READY, when adopted, establishes only its documented structural predicate; it cannot prove prose correctness, real-environment capability, task authority, feature/gate verification or absence of material boundary-changing implementation unknowns. Known material design decisions must be resolved before dependent implementation; still-open environment/boundary unknowns remain explicit and need bounded discovery/probe evidence or an already authorized bounded component/mutation scope before consequential dependent implementation. Do not force every non-material implementation detail or unrelated future feature to be resolved first, and do not freeze exact files/defects by guessing. Keep authority, capability and unknown execution effects distinct. Add no authority_mode/material_unknowns fields or adaptive lifecycle semantics."
+    - "Use Documents V1 only as an applicable target-owned model: its feature behavior/acceptance, decisions, relations, unknowns and build/buy semantics remain at Documents' existing owners. Preserve the filename-neutral target authority seam and proportional rules. No universal eight-file requirement, DOCS_READY mandate for every project, phase matrix, release/readiness state, feature checklist, schema or new task field is introduced. Generic feature design, technology evaluation and engineering HOW stay in ECC."
+    - "Replace only Architect's existing readiness-summary paragraph under Material-design-readiness and proportional execution with a concise exact link to Task Protocol's existing gate and a clear read trigger before authorizing consequential feature implementation. Preserve the surrounding lane/positive-authority text, all existing owner-map links/read triggers, all other role bytes and provider policy. Architect final size must be <=16717 bytes; Executor stays byte-identical at 17359. Add only a concise gate locator in skills README, without another normative copy."
+    - "Persist three compact concrete synthetic walkthroughs in the report, with explicit given facts, evidence locators and conclusions: (1) a documented feature has resolved observable acceptance, applicable FE/BE/data contracts and existing scoped rules, so its material design predicate is satisfied for the declared scope without loading unrelated features; (2) an integration feature has not resolved a material third-party compatibility/permission or dependency choice, so dependent implementation is not authorized by documentation presence or an ECC recommendation, and the next bounded work is research/design; (3) structurally closed target docs coexist with an unprobed environment fact that could change the implementation boundary, so normal dependent implementation is not justified solely by DOCS_READY and the uncertainty must be probed or governed inside existing explicit bounded authority. Include a contrasting small mechanical well-specified change that does not acquire feature-design ceremony. These are synthetic inputs, not actual product decisions, another repository binding or live vendor/capability claims."
+    - "Keep the three-file net UTF-8 addition <=4000 bytes relative to handoff base and Architect <=16717. No generic HOW bodies or document concern inventories are copied. Run native skills validator, full existing skills 240/240 and external 26/26 because the changed gate/role are existing consumer inputs; current task/report artifact validation; new owner-link/anchor resolution; exact kernel-edit boundary and protected/scope/inventory checks; git diff --check. No source-code/test mutation, live upstream metadata refresh, native Documents/Standards suite reruns or dependencies absent relevant input invalidation. Do not add tests that merely mirror new prose."
+    - "Commit the qualified candidate as the direct child of exact handoff base, then its sole report-only child. Preserve protocol-v3 publication eligibility and truthful candidate-prepublication pushed state. After ordinary non-force MAIN_ONLY publication, fresh external closure has local main, origin/main and remote main equal the report commit, one worktree, tracked/index cleanliness and pinned .DS_Store. Finish NEEDS_REVIEW and stop before slice planning, continuation redesign, dogfood or successor execution."
+  allowed_existing_files_or_components:
+    - skills/protocols/TASK_PROTOCOL.md
+    - skills/architect/SKILL.md
+    - skills/README.md
+  expected_files_are_restrictive: true
+invariants:
+  - "Only Task Protocol's existing readiness section, Architect's one existing readiness-summary paragraph and skills README's concise locator may change. Preserve all unrelated semantics and owner links. Architect <=16717 bytes; Executor byte-identical at 17359."
+  - "Foundation owns material authority/readiness consumption and proof; target owns actual feature design, architecture, stack, dependencies and effective scoped rules; ECC owns generic planning/research/engineering HOW; Runtime is transport. No new reusable role/provider admission; Codex supervision is only this operator exception."
+  - "All scripts/tests, Foundation Architecture/other contracts, Documents/model/templates, Standards, external registry/pins/snapshots/catalog, profile/bootstrap/router/rationalization remain byte-identical. Existing Task Protocol v3 schemas, execution lanes, artifact/publication/lifecycle/authority/capability/unknown-effect semantics remain unchanged outside the authorized gate clarification."
+  - "Product-state.json stays byte-identical: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, system gates unchanged, derived P0_SCOPE and blocker release.status. Task acceptance creates no feature/gate/release verification."
+  - "Preserve sole untracked regular .DS_Store: 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. No stage-all, deletion, move, modification, ignore change or publication."
+forbidden_changes:
+  - "New feature/rule templates, schemas, manifests, concern inventories, registries, planners, wrappers, shards, state fields, authority modes, lifecycle/phases, installers or source/index changes; universal Documents V1/DOCS_READY mandates; generic HOW copying or bulk context loading."
+  - "Modify other role bytes/owners/code/tests/product state/Documents/Standards/profile/pins/Runtime/host/dependencies/current task-review authority; make actual target/vendor/dependency/product decisions, mutate another repository, dispatch agents, buy/install/configure services, or implement future slice/continuation/dogfood work."
+  - "Force push, branch/tag/release creation, history rewriting or unrelated cleanup."
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Material feature design and research evidence precede consequential dependent code."
+    evidence_required: "Existing gate consumes scoped target-owned behavior/acceptance/contracts and resolved applicable material stack/third-party decisions with reconstructible primary evidence; no generic HOW, filename or universal docs model is imposed; positive and unresolved-design synthetic cases demonstrate the boundary."
+  - id: AC-2
+    requirement: "Design closure cannot hide material execution uncertainty or create authority."
+    evidence_required: "Structural DOCS_READY versus real environment/authority/capability/unknown-effect distinctions remain explicit; concrete docs-closed/environment-unknown case chooses bounded probe or existing explicit bounded authority, while a mechanical well-specified case preserves proportional execution."
+  - id: AC-3
+    requirement: "Owner routing improves while Architect remains small."
+    evidence_required: "One readiness owner at Task Protocol, one shorter role locator/read trigger and concise README locator; Architect <=16717, Executor unchanged, total three-file net addition <=4000, protected owner/product/metadata bytes unchanged and new relative links/anchors resolve."
+  - id: AC-4
+    requirement: "Related qualification and exact publication close safely."
+    evidence_required: "Native validator, existing skills 240/240 and external 26/26, task/report artifacts and kernel-boundary/scope/inventory/diff checks PASS; candidate direct child of exact base, sole report-only child, truthful pushed state and fresh remote/local MAIN_ONLY closure with pinned exception."
+verification:
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0031/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "Extend existing gate and navigation only; add the task report without new design machinery."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+blocking_decisions: []
+execution_ready: true
