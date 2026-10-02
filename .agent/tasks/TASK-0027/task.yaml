@@ -1,0 +1,121 @@
+protocol_version: 3
+task_id: TASK-0027
+task_revision: 1
+state: APPROVED
+origin:
+  type: user_request
+  task_id: TASK-0026
+  gap_id: ARCHITECT-KERNEL-CONTEXT-DUPLICATION
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "682688bef429c6630d6a1a87cf00fc0b525a44a8"
+architect_analysis_skills:
+  - architect
+  - verification
+execution_skills:
+  required:
+    - executor
+    - verification
+  recommended: []
+external_skills:
+  architect_analysis:
+    - "ecc:context-budget @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/context-budget/SKILL.md; bounded inventory/deduplication concepts only"
+  execution_required:
+    - "ecc:context-budget @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/context-budget/SKILL.md; bounded inventory/deduplication concepts only"
+  execution_recommended: []
+authority_sources:
+  - source: "current operator-authorized Foundation slimming programme and explicit role-policy correction"
+    role: "bounded context reduction; the current Codex Architect exception is not general role admission; this maintenance slice explicitly overrides release-first selection without changing product truth"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0026/report.yaml@682688bef429c6630d6a1a87cf00fc0b525a44a8"
+    role: "reproduced baseline: Architect kernel 24338 UTF-8 bytes; accepted review is published with this task at the handoff base"
+    precedence: 2
+  - source: "skills/protocols/TASK_PROTOCOL.md@682688bef429c6630d6a1a87cf00fc0b525a44a8"
+    role: "protected cross-role authority, lifecycle, evidence, continuation and release owner"
+    precedence: 3
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md@682688bef429c6630d6a1a87cf00fc0b525a44a8"
+    role: "protected L0/L1/L2 ownership and demand-loading semantics"
+    precedence: 4
+structure_authority:
+  status: RESOLVED
+  source: "existing Architect kernel, protected Protocol/Architecture/Review/Continuity/HOW owners, native doctrine checks and reproduced TASK-0026 baseline"
+  rationale: "Deduplicate one role entry file into its existing owners. Architect and Executor reductions are independently reviewable outcomes, so this task changes only Architect; no new reference shard, loader or registry is justified."
+objective: "Reduce the Architect role entry body's inventory by at least 30 percent while preserving all governing semantics, Architect-specific decision guards and recoverable owner discovery. This task delivers only the Architect slice."
+scope:
+  required_changes:
+    - "Fresh-resolve the handoff base, safely fast-forward the local mirror and bind the published TASK-0026 ACCEPTED review. Permit exactly the pinned .DS_Store exception; unexpected tracked/index edits, untracked paths, divergent refs, conflicts or Git-operation state are BLOCKED."
+    - "Rewrite only Architect SKILL.md as a concise role procedure with explicit phase/need-to-owner links. Retain routing/target binding, terminal identity, ordered product-truth discovery and earliest-blocker override handling, exact FIT/SPLIT_REQUIRED/CAPABILITY_BLOCKED task-decomposition meanings, material WHAT/BOUNDARY/PROOF judgment, narrow micro-maintenance eligibility, task creation, independent review/capability preflight and durable judgment, and exact continuation boundaries. Preserve frontmatter identity and the rationalized skill taxonomy."
+    - "Replace duplicated cross-role, artifact, timing, continuity and generic HOW exposition with links to its existing protected semantic owner/section. Existing Task Protocol, Foundation Architecture, Architect Review, Execution Continuity and simplicity/verification owners remain unchanged. Do not relocate a uniquely Architect-owned obligation to an owner that does not already contain it. Keep enough local guard and an explicit read trigger to resolve governing sections at the same exact Foundation commit before the relevant decision/consequence; a bare link does not waive required authority. Demand-load only material sections, expanding when evidence is missing or contradictory."
+    - "Adapt the existing skills regressions to prove semantics through the correct owner when duplicated wording is removed. Preserve every material assertion and all negative authority/evidence cases. Add focused tests for required owner-link discovery and rejection of missing/misdirected required references. Production validator edits are permitted only if needed in its existing architecture-delegation/role-marker checks to enforce those references; no task/report/state parsing, normalization, evidence attribution, authority or runtime behavior changes. Do not retain deleted prose in comments, giant expected strings, caches or another file to manufacture a size reduction."
+    - "In this task's compact report, map each removed/condensed topic to its exact existing owner/section and read trigger; identify the Architect-local obligations that remain. Measure exact base/candidate UTF-8 bytes for the kernel and any changed validator/tests, plus net changed-file inventory. Architect kernel must be at most 17036 bytes, down from 24338; the combined changed-file inventory must also decrease. These are source inventory measures, not real ChatGPT token/latency/headroom claims. Correctness is not traded for the size target; unresolved semantic preservation is BLOCKED."
+    - "Use ECC inventory, overlap detection and on-demand classification only within this scope. Its Claude-specific context sizes, token/tool-schema estimates, global scans, installation/configuration or hooks are inapplicable here. Retain target-native validation and exact pinned source resolution; ECC supplies HOW, not authority."
+    - "Run the skills validator, full existing skills regression file including the focused new cases, explicit current task/report artifact validation, modified-Python in-memory compile, canonical link/anchor checks, exact protected-file/scope checks and git diff --check. Attribute unchanged bootstrap/reconstruction evidence to TASK-0026 only after proving its relevant inputs are unchanged; no full bootstrap, Documents, Standards or external suite repeat absent invalidation. Use bounded recoverable Runtime jobs and reconcile unknown effects rather than blind retry."
+    - "Commit the qualified implementation directly after the handoff base, then its sole report-only child. Apply existing protocol-v3 publication semantics; candidate-local report authorship records pushed false. Resolve fresh remote closure outside the report after ordinary non-force publication. Final local main, origin/main and fresh remote main equal the report commit; preserve MAIN_ONLY, tracked/index cleanliness and precisely the pinned .DS_Store exception. Finish NEEDS_REVIEW and stop before successor work."
+  allowed_existing_files_or_components:
+    - skills/architect/SKILL.md
+    - skills/scripts/test_validate_skill_library.py
+    - skills/scripts/validate_skill_library.py
+  expected_files_are_restrictive: true
+invariants:
+  - "Exactly the existing roles and role/provider policy remain; current Codex supervision is a specific operator exception only."
+  - "One canonical owner per rule; Foundation remains authority/routing/proof, target owns product/stack/rules, ECC supplies generic HOW and Runtime is transport."
+  - "Keep product-state.json byte-identical: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, all gates unchanged, P0_SCOPE and blocker release.status. No feature verification refresh or advancement."
+  - "Preserve the sole untracked regular .DS_Store: 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. No stage-all, deletion, move, modification, ignore change or publication."
+forbidden_changes:
+  - "Modify Executor skill, profile/bootstrap/launch mappings, Task Protocol, Foundation Architecture, existing contracts/HOW owners, product state, Case Router, rationalization, external pins/catalog, Documents, Standards, Runtime/host/dependencies or previous task/report/review artifacts."
+  - "Codex role admission, new role/skill/domain, reference shards, mandatory indirection/loader, context store/registry/cache/service, universal phases or stack matrix, generic HOW duplication, weakened proof, release changes or next-task execution."
+  - "Branch/tag/release creation, force push, unrelated cleanup, or current task-authority edits."
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Architect entry inventory shrinks without hidden relocation."
+    evidence_required: "Exact kernel bytes <=17036 and lower combined changed-file inventory; no new shard/store or copied removed bodies."
+  - id: AC-2
+    requirement: "Every governing obligation survives at its correct existing owner."
+    evidence_required: "Compact topic/owner/read-trigger map, retained local decision guards, resolvable exact-commit links/anchors and effective missing/misdirected-reference regressions."
+  - id: AC-3
+    requirement: "Role, product, routing and evidence behavior remain unchanged."
+    evidence_required: "Protected owners and product truth byte-identical; native validator/full regressions PASS; no parsing, attribution or authority weakening; justified unchanged-input reuse."
+  - id: AC-4
+    requirement: "Bounded candidate/report publication is exact and recoverable."
+    evidence_required: "Required artifact/static/scope checks PASS; candidate only within the three allowed existing paths; sole report-only child, truthful pre-authorship pushed state, fresh external remote/local closure and preserved named .DS_Store exception."
+verification:
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0027/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "Deduplicate the existing Architect owner; add only this task's report."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+blocking_decisions: []
+execution_ready: true
