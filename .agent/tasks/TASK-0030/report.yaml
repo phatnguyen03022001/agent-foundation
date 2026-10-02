@@ -1,0 +1,104 @@
+protocol_version: 3
+
+task_id: TASK-0030
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0030/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "cbc269c1e43ebc43f0d6d6a6162bb1ac6fb55561"
+  final_execution_head: "e25449a0a48f8d74799514c6bd6f9408a36869f6"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "afacb9379376bfc534d5bd96e044ca07ac15618f"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - fresh local and remote Git identity observation
+    - bounded repository documentation mutation
+    - native Python repository verification
+    - exact-path commit and ordinary non-force MAIN_ONLY publication
+  available:
+    - Agent Runtime 0.5.1 repository, filesystem, remote-observation, and keyed terminal surfaces
+    - native Git explicit-path staging/commit and ff-only synchronization
+    - native Python 3.14.6 validator and unittest surfaces
+  missing: []
+  passed: true
+
+qualification:
+  rule_sources:
+    upstream: "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735"
+    registry: "skills/.agent/external-capabilities/sources.json pins ECC as MIT harness_source and indexes only skills, commands, agents plus declared metadata; rule paths are not catalog entries."
+    inspected:
+      - "rules/README.md blob 0a9f48e456a4efedb6d1296407c554bb89800642: Structure, Rules vs Skills, Rule Priority."
+      - "rules/common/coding-style.md blob 2f5d1c066186259e939ec6f915fae64d4df8cc8b: Core Principles and Input Validation."
+      - "rules/typescript/coding-style.md blob 090c0a173fe728494b28967fd9b360b20ad045f5: React Props and Input Validation."
+      - "rules/golang/coding-style.md blob d7d6c31ac0911bfee86f21a7ee21e672d0fb0a5d: Formatting, Design Principles, Error Handling."
+  synthetic_walkthroughs:
+    - id: MIXED_TS_GO
+      synthetic_target: "Frontend component is React/TypeScript; backend component is Go. Both are already governed by target-native stack and dependency contracts."
+      accepted: "Use applicable common principles only where compatible; TypeScript React Props guidance is eligible only for the frontend scope; Go design/error guidance is eligible only for the backend scope."
+      rejected_or_out_of_scope: "Do not carry React props, TypeScript tooling, or TypeScript validation guidance into Go. Upstream common/language priority informs evaluation but does not override target scope."
+      negative_missing_evidence: "A loaded TypeScript rule body or local copy alone lacks target approval, backend scope, and mutation authority."
+    - id: TARGET_NATIVE_VALIDATOR
+      synthetic_target: "A TypeScript target already has an approved schema-validation mechanism and dependency contract that does not include Zod."
+      accepted: "Retain the boundary-validation concern where compatible with target truth."
+      adapted_or_rejected: "Reject the Zod-specific dependency/mechanism recommendation; do not add a dependency or replace the target-native validation contract without separate authority."
+      negative_missing_evidence: "The upstream TypeScript Input Validation section cannot by itself authorize dependency or contract mutation."
+    - id: NEW_CONTEXT_RECONSTRUCTION
+      synthetic_target: "A new-context consumer receives an existing target-owned scoped adoption record."
+      reconstructible_positive: "Exact upstream repository/commit/path/section plus target component/language/concern scope, accepted or adapted meaning, material deviations/rejections, and applicable target approval/proof are sufficient to reconstruct the chosen effective rule without latest-upstream assumptions or sibling inheritance."
+      negative_cases: "A mere local copy, indexed metadata, loaded upstream content, or source path without scoped target approval does not prove adoption and never grants target mutation authority."
+  verification:
+    exact_candidate: "e25449a0a48f8d74799514c6bd6f9408a36869f6"
+    skills_validator: "PASS; python3 -B skills/scripts/validate_skill_library.py."
+    skills_regressions: "PASS; python3 -B skills/scripts/test_validate_skill_library.py ran 240/240."
+    external_regressions: "PASS; python3 -B skills/scripts/test_sync_external_capabilities.py ran 26/26 including offline/no-write and authority-separation coverage."
+    task_artifact: "PASS; TASK-0030 revision-1 task artifact validated."
+    link_anchor: "PASS; skills/README.md relative link resolves to skills/.agent/external-capabilities/README.md#scoped-target-owned-rule-adoption."
+    inventory_ceiling: "PASS; three authorized documentation files total 39068 bytes at base and 42343 bytes at candidate, net +3275 <= 4000."
+    diff_check: "PASS; git diff --check before candidate commit."
+    protected_scope: "PASS; candidate is the direct child of the exact base and changes only the three authorized documentation paths. Architect remains 16717 bytes and Executor 17359 bytes; scripts/tests, Task Protocol, other contracts, product-state, source registry/pins/snapshots/catalog, profile, Documents and Standards are unchanged."
+    remote_prepublication: "Fresh remote observation after candidate commit proves origin/main remains exact authorized base cbc269c1e43ebc43f0d6d6a6162bb1ac6fb55561."
+    unrelated_exception: ".DS_Store remains the sole untracked path, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d."
+    local_effect_reconciliation: "Runtime repo_fast_forward and repo_stage fail closed because the pinned untracked exception exists. Native git fetch plus ff-only synchronization and explicit three-path staging/commit preserved it. A multi-file patch sequence stopped after one successful write when the next tool action was blocked; fresh repository/file observations reconciled the effect before a changed bounded retry."
+  topology:
+    candidate: "e25449a0a48f8d74799514c6bd6f9408a36869f6"
+    candidate_parent: "cbc269c1e43ebc43f0d6d6a6162bb1ac6fb55561"
+    candidate_paths:
+      - skills/contracts/FOUNDATION_ARCHITECTURE.md
+      - skills/.agent/external-capabilities/README.md
+      - skills/README.md
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0030 requires Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
+
+pushed: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Foundation Architecture now separates advisory external rules from explicit target-owned adoption, requires scoped target approval/provenance, preserves target-native precedence, and grants no implicit task/mutation/activation authority. Synthetic positive/negative cases exercise those boundaries."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Exact-pinned mixed TypeScript/Go and native-validator walkthroughs keep rule use contextual and demand-loaded, reject cross-scope and dependency assumptions, and reconstruct effective target meaning without latest-upstream or sibling-rule assumptions."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Only the three authorized documentation owners changed; net addition is 3275 bytes. No rule corpus, schema, registry, loader, test, script, source metadata, product state, kernel, Documents or Standards changes were introduced; the new relative anchor resolves."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Native validator, skills 240/240, external 26/26, task validation, link, inventory, protected-scope and diff checks pass. Candidate e25449a0a48f8d74799514c6bd6f9408a36869f6 is the direct child of exact base and remote main is still the base before report authorship."
+
+result: NEEDS_REVIEW
