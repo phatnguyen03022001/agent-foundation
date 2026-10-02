@@ -3059,7 +3059,7 @@ class Task0054PlatformCompliantExecutionPublicationTests(unittest.TestCase):
             "pushed: false",
             "candidate-prepublication state",
             "not remotely visible before report authorship",
-            "never predicts",
+            "must not encode a same-commit post-publication predicate",
         ):
             self.assertIn(marker, contract)
 
@@ -5027,6 +5027,85 @@ class Task0027ArchitectKernelReductionTests(unittest.TestCase):
         result = self.run_validator(root)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("missing required Architect owner reference", result.stdout + result.stderr)
+
+
+class Task0028ExecutorKernelReductionTests(unittest.TestCase):
+    REQUIRED_OWNER_LINKS = (
+        "[Task Protocol — Core bindings](../protocols/TASK_PROTOCOL.md#core-bindings)",
+        "[Task Protocol — Artifact ownership and authority](../protocols/TASK_PROTOCOL.md#artifact-ownership-and-authority)",
+        "[Task Protocol — Executor-binding terminal vs whole-task lifecycle](../protocols/TASK_PROTOCOL.md#executor-binding-terminal-vs-whole-task-lifecycle)",
+        "[Task Protocol — Phase-specific capability preflight](../protocols/TASK_PROTOCOL.md#phase-specific-capability-preflight)",
+        "[Task Protocol — Consequence-based execution guards](../protocols/TASK_PROTOCOL.md#consequence-based-execution-guards)",
+        "[Task Protocol — GitHub/local drift](../protocols/TASK_PROTOCOL.md#githublocal-drift)",
+        "[Task Protocol — Local Hygiene Contract](../protocols/TASK_PROTOCOL.md#local-hygiene-contract)",
+        "[Task Protocol — Protocol-v3 candidate/report publication closure](../protocols/TASK_PROTOCOL.md#protocol-v3-candidatereport-publication-closure)",
+        "[Foundation Architecture — Target repository product authority](../contracts/FOUNDATION_ARCHITECTURE.md#target-repository-product-authority)",
+        "[Foundation Architecture — Capability control](../contracts/FOUNDATION_ARCHITECTURE.md#capability-control)",
+        "[Foundation Architecture — Execution surface and publication control](../contracts/FOUNDATION_ARCHITECTURE.md#execution-surface-and-publication-control)",
+        "[Implementation Report — Ownership and commit identity](../contracts/IMPLEMENTATION_REPORT.md#ownership-and-commit-identity)",
+        "[Implementation Report — Required evidence](../contracts/IMPLEMENTATION_REPORT.md#required-evidence)",
+        "[Implementation Report — Backward-compatible operational timing evidence](../contracts/IMPLEMENTATION_REPORT.md#backward-compatible-operational-timing-evidence)",
+        "[Execution Continuity — Execution Slice](../contracts/EXECUTION_CONTINUITY.md#execution-slice)",
+        "[Execution Continuity — Optional performance attribution](../contracts/EXECUTION_CONTINUITY.md#optional-performance-attribution)",
+        "[Execution Continuity — Carrier and long-running execution](../contracts/EXECUTION_CONTINUITY.md#carrier-and-long-running-execution)",
+        "[Execution Continuity — Recovery](../contracts/EXECUTION_CONTINUITY.md#recovery)",
+        "[Executor Engineering HOW — Repository construction and acquisition](references/ENGINEERING_HOW.md#repository-construction-and-acquisition)",
+        "[Executor Engineering HOW — Process/resource ownership boundary](references/ENGINEERING_HOW.md#processresource-ownership-boundary)",
+    )
+
+    def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
+        temp = tempfile.TemporaryDirectory()
+        root = Path(temp.name) / "repo"
+        shutil.copytree(ROOT, root)
+        self.addCleanup(temp.cleanup)
+        return temp, root
+
+    def run_validator(self, root: Path) -> subprocess.CompletedProcess[str]:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        original_root = VALIDATOR_MODULE.ROOT
+        try:
+            VALIDATOR_MODULE.ROOT = root
+            VALIDATOR_MODULE.errors.clear()
+            VALIDATOR_MODULE.warnings.clear()
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                returncode = VALIDATOR_MODULE.main()
+        finally:
+            VALIDATOR_MODULE.ROOT = original_root
+        return subprocess.CompletedProcess(
+            args=["python3", str(root / VALIDATOR)],
+            returncode=returncode,
+            stdout=stdout.getvalue(),
+            stderr=stderr.getvalue(),
+        )
+
+    def test_required_owner_links_are_explicit_and_focused(self) -> None:
+        executor = (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("## Owner map and read triggers", executor)
+        self.assertIn("| Need | Existing owner / section | Read trigger |", executor)
+        for link in self.REQUIRED_OWNER_LINKS:
+            self.assertIn(link, executor)
+
+    def test_validator_rejects_missing_required_executor_owner_link(self) -> None:
+        _, root = self.fixture()
+        path = root / "executor" / "SKILL.md"
+        text = path.read_text(encoding="utf-8")
+        link = self.REQUIRED_OWNER_LINKS[0]
+        path.write_text(text.replace(link, "Task Protocol core binding owner", 1), encoding="utf-8")
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("missing required Executor owner reference", result.stdout + result.stderr)
+
+    def test_validator_rejects_misdirected_required_executor_owner_link(self) -> None:
+        _, root = self.fixture()
+        path = root / "executor" / "SKILL.md"
+        text = path.read_text(encoding="utf-8")
+        link = self.REQUIRED_OWNER_LINKS[11]
+        wrong = "[Implementation Report — Ownership and commit identity](../protocols/TASK_PROTOCOL.md#ownership-and-commit-identity)"
+        path.write_text(text.replace(link, wrong), encoding="utf-8")
+        result = self.run_validator(root)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("missing required Executor owner reference", result.stdout + result.stderr)
 
 
 if __name__ == "__main__":

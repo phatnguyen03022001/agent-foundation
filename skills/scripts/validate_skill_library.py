@@ -1419,6 +1419,35 @@ def validate_foundation_architecture_contract() -> None:
         if reference not in architect_text:
             error(f"architect/SKILL.md: missing required Architect owner reference {reference!r}")
 
+
+
+    executor_owner_references = (
+        "[Task Protocol — Core bindings](../protocols/TASK_PROTOCOL.md#core-bindings)",
+        "[Task Protocol — Artifact ownership and authority](../protocols/TASK_PROTOCOL.md#artifact-ownership-and-authority)",
+        "[Task Protocol — Executor-binding terminal vs whole-task lifecycle](../protocols/TASK_PROTOCOL.md#executor-binding-terminal-vs-whole-task-lifecycle)",
+        "[Task Protocol — Phase-specific capability preflight](../protocols/TASK_PROTOCOL.md#phase-specific-capability-preflight)",
+        "[Task Protocol — Consequence-based execution guards](../protocols/TASK_PROTOCOL.md#consequence-based-execution-guards)",
+        "[Task Protocol — GitHub/local drift](../protocols/TASK_PROTOCOL.md#githublocal-drift)",
+        "[Task Protocol — Local Hygiene Contract](../protocols/TASK_PROTOCOL.md#local-hygiene-contract)",
+        "[Task Protocol — Protocol-v3 candidate/report publication closure](../protocols/TASK_PROTOCOL.md#protocol-v3-candidatereport-publication-closure)",
+        "[Foundation Architecture — Target repository product authority](../contracts/FOUNDATION_ARCHITECTURE.md#target-repository-product-authority)",
+        "[Foundation Architecture — Capability control](../contracts/FOUNDATION_ARCHITECTURE.md#capability-control)",
+        "[Foundation Architecture — Execution surface and publication control](../contracts/FOUNDATION_ARCHITECTURE.md#execution-surface-and-publication-control)",
+        "[Implementation Report — Ownership and commit identity](../contracts/IMPLEMENTATION_REPORT.md#ownership-and-commit-identity)",
+        "[Implementation Report — Required evidence](../contracts/IMPLEMENTATION_REPORT.md#required-evidence)",
+        "[Implementation Report — Backward-compatible operational timing evidence](../contracts/IMPLEMENTATION_REPORT.md#backward-compatible-operational-timing-evidence)",
+        "[Execution Continuity — Execution Slice](../contracts/EXECUTION_CONTINUITY.md#execution-slice)",
+        "[Execution Continuity — Optional performance attribution](../contracts/EXECUTION_CONTINUITY.md#optional-performance-attribution)",
+        "[Execution Continuity — Carrier and long-running execution](../contracts/EXECUTION_CONTINUITY.md#carrier-and-long-running-execution)",
+        "[Execution Continuity — Recovery](../contracts/EXECUTION_CONTINUITY.md#recovery)",
+        "[Executor Engineering HOW — Repository construction and acquisition](references/ENGINEERING_HOW.md#repository-construction-and-acquisition)",
+        "[Executor Engineering HOW — Process/resource ownership boundary](references/ENGINEERING_HOW.md#processresource-ownership-boundary)",
+    )
+    executor_text = (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8")
+    for reference in executor_owner_references:
+        if reference not in executor_text:
+            error(f"executor/SKILL.md: missing required Executor owner reference {reference!r}")
+
     role_requirements = {
         "architect/SKILL.md": ("../contracts/FOUNDATION_ARCHITECTURE.md", "Capability control and reusable HOW"),
         "executor/SKILL.md": ("../contracts/FOUNDATION_ARCHITECTURE.md", "Capability HOW and acquisition"),
@@ -1922,21 +1951,15 @@ def validate_protocol_docs() -> None:
         "default hot path", "explicitly requests", "No timing-enabled or telemetry-mode field",
     ])
     require_tokens(ROOT / "executor" / "SKILL.md", [
-        "inspect existing repository patterns before choosing implementation HOW",
         "implementation judgment belongs to Executor by default",
         "smallest sufficient repo-native implementation",
         "LOCAL needs no Architect approval",
         "automatic pre-mutation blockers",
-        "active task/repository binding remains immutable", "explicit terminal handoff/result",
-        "previous evidence finalized", "no outstanding mutation authority carried forward",
-        "fresh repository-local task", "fresh exact handoff", "fresh exact base HEAD",
-        "authority for repository A never grants authority for repository B",
-        "report/review/verifier/promotion/release lineage remains repository-local",
-        "Operational timing is omitted from the default Executor hot path",
-        "Normal reports are evidence indexes", "changed-file enumeration may be omitted",
-        "omission never means PASS, permission, or hidden success",
-        "Sparse reports remain evidence-backed rather than self-attested",
-        "explicitly requests", "No timing-enabled or telemetry-mode field",
+        "active task/repository binding remains immutable",
+        "EXECUTION BUNDLE",
+        "maximal contiguous mechanically derivable suffix",
+        "one `terminal_exec` invocation",
+        "Omit reconstructible execution transcript",
     ])
     require_tokens(ROOT / "README.md", [
         "PROGRAM", "presentation only", "ordered repository-local tasks",
