@@ -1,11 +1,11 @@
 protocol_version: 3
 task_id: TASK-0028
-task_revision: 1
+task_revision: 2
 state: APPROVED
 origin:
-  type: user_request
-  task_id: TASK-0027
-  gap_id: EXECUTOR-KERNEL-CONTEXT-DUPLICATION
+  type: task_gap
+  task_id: TASK-0028
+  gap_id: STALE-EXTERNAL-HOW-DOCTRINE-CONSUMER
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
 target:
@@ -19,7 +19,7 @@ execution_base:
   require_exact_match: true
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  revision: "fd25147f99b82edaea27d821ffcdbd59a8ae54db"
+  revision: "426c878b6c82822938dfc984f03f7555382eb4c2"
 architect_analysis_skills:
   - architect
   - verification
@@ -30,54 +30,45 @@ execution_skills:
   recommended: []
 external_skills:
   architect_analysis:
-    - "ecc:context-budget @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/context-budget/SKILL.md; bounded inventory/deduplication concepts only"
-  execution_required:
-    - "ecc:context-budget @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/context-budget/SKILL.md; bounded inventory/deduplication concepts only"
+    - "Operator-invoked Superpowers 6.4.2 systematic-debugging and verification-before-completion; advisory review HOW only, not normative Foundation authority"
+  execution_required: []
   execution_recommended: []
 authority_sources:
-  - source: "current operator-authorized Foundation slimming programme and explicit role-policy correction"
-    role: "bounded Executor context reduction; current Codex Architect supervision is a specific exception, not general role admission; this maintenance slice explicitly overrides release-first selection without changing product truth"
+  - source: "current operator-authorized Foundation slimming programme and role-policy correction"
+    role: "bounded correction of a reproduced related consumer; current Codex Architect supervision remains an exception; maintenance overrides release-first selection without changing product truth"
     precedence: 1
-  - source: ".agent/tasks/TASK-0027/report.yaml@fd25147f99b82edaea27d821ffcdbd59a8ae54db"
-    role: "qualified Architect-only reduction; its ACCEPTED review is published with this task at the handoff base; unchanged Executor baseline is independently measured as 28681 UTF-8 bytes"
+  - source: ".agent/tasks/TASK-0028/report.yaml@426c878b6c82822938dfc984f03f7555382eb4c2 and its r1 REVISION_REQUIRED review published with this task"
+    role: "preserve the qualified kernel implementation while closing the separately reproduced consumer gap; r1 task authority remains reconstructible at f73e478d5c536a5c6901f36bbc291295c26fe011"
     precedence: 2
-  - source: "skills/protocols/TASK_PROTOCOL.md@fd25147f99b82edaea27d821ffcdbd59a8ae54db and existing Architecture/Report/Continuity owners"
-    role: "protected authority, materiality, scope, evidence, publication and recovery semantics; Executor-local bundling remains owned by Executor"
+  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md, current Architect/Executor owner references and test_sync_external_capabilities.py at 426c878b6c82822938dfc984f03f7555382eb4c2"
+    role: "existing target-first/ECC/minimum-loading/no-authority-transfer/optional-CLI semantics and the exact stale test consumer; no new generic HOW or role policy"
     precedence: 3
-  - source: "operator feedback on material unknowns and premature authority freeze"
-    role: "programme steering for later feature/slice authoring: classify material boundary uncertainty, use target/ECC probes or an explicitly bounded component/mutation envelope before freezing implementation; distinguish authority gaps, capability gaps and unknown effects; prove a missing primitive before adding schema. This task preserves current semantics and does not implement that later outcome."
-    precedence: 4
 structure_authority:
   status: RESOLVED
-  source: "existing Executor kernel and protected Task Protocol, Foundation Architecture, Implementation Report, Execution Continuity and Executor Engineering HOW owners"
-  rationale: "One independently reviewable role-entry reduction follows the accepted Architect slice. Existing owners already contain shared obligations; no new shard, loader, registry or runtime layer is justified."
-objective: "Reduce the Executor role entry inventory by at least 30 percent while preserving all governing semantics, Executor-local safety/recovery/bundling obligations and demand-loaded owner discovery. Deliver only the Executor kernel slice."
+  source: "fresh external regression failure and exact historical-role replay at 634ff01c103bbfdacb1be35d996dba61aa1ff343, f73e478d5c536a5c6901f36bbc291295c26fe011 and 4b6bf8e6ac3d1d73aa29afae3824a3bf867ba66a"
+  rationale: "The single stale doctrine test reads both role kernels directly. Existing owner composition already provides the intended semantics; only this test consumer needs correction. The mutation boundary is known, so no adaptive envelope, new schema, shard or loader is justified."
+objective: "Close TASK-0028's inherited and newly invalidated external doctrine-consumer qualification gap without changing the reduced kernels, production behavior or authority."
 scope:
   required_changes:
-    - "Fresh-resolve the handoff base, safely fast-forward the designated local mirror, and resolve the published TASK-0027 ACCEPTED review. Permit precisely the pinned .DS_Store exception; unexpected edits/untracked paths, divergent refs, conflicts or Git-operation state are BLOCKED."
-    - "Condense only Executor SKILL.md into a role procedure and explicit need/phase-to-existing-owner links with read triggers. Preserve frontmatter/taxonomy, READ_ONLY_RESEARCH authority NONE versus exact task execution, immutable active binding/sequential rebinding, truthful terminal identity, exact handoff/base/task/required-skills/structure/Git pre-mutation gates, current-phase capability preflight, restrictive scope and LOCAL/FOLLOW_UP/BLOCKING judgment, safe canonical working-copy reconciliation, cleanup guards, env/secret safeguards, and bounded report production/terminal stop. Do not convert uncertainty or an internal companion file into automatic escalation when current positive scope already covers it; discovery itself grants nothing."
-    - "Delegate only semantics already present at protected owners: cross-role authority/lifecycle and consequence freshness to Task Protocol; target truth/capability resolution to Foundation Architecture; report identity/evidence/optional timing to Implementation Report; attempt/slice/carrier recovery and optional performance attribution to Execution Continuity; existing engineering construction/acquisition HOW to Executor Engineering HOW. Keep a concise local guard and read the material owner section at the same exact Foundation revision before its governed consequence. Expand only when required evidence is missing, stale, contradictory or another boundary is implicated. A bare link does not waive proof. Never relocate a uniquely Executor-owned obligation to an owner lacking it."
-    - "Retain Executor-local execution-bundle mechanics in the kernel: maximal mechanically derivable suffix after semantic/authority/capability resolution; attributable jobs/JOIN; all safe-parallel predicates and serial mutation boundaries; stop on failed/ambiguous postconditions; permitted controller-return conditions; correctness -> survivability/recoverability -> boundedness -> round-trip minimization. Preserve the one terminal_exec mapping only for a confidently bounded, non-interactive, synchronously safe Agent Runtime bundle, concrete reasons for splitting, and selected-capability/effect-aware durable carrier choice for long or survival-sensitive work. Never reinterpret minimum round trips as one dispatch for an entire uncertain task, permit blind retry, or change Runtime/host semantics."
-    - "Preserve exact single-publication eligibility, truthful candidate-prepublication pushed state, sole report-only child and fresh external closure through correct owner references/read triggers. Keep report production for authorized/capable blocking outcomes and preservation of immutable publication checkpoints. Do not transfer report ownership to Architect or review/promotion/release authority to Executor. Optional timing/performance details load only when explicitly requested."
-    - "Adapt existing skills regressions to correct-owner composition only when duplicated wording moves out of the kernel; preserve every material assertion and negative authority/evidence/recovery case. Add focused discovery and missing/misdirected-owner-reference failures. Production validator edits, if necessary, are limited to existing architecture-delegation/role-marker reference enforcement; no parsing, normalization, attribution, task/report/state, authority or runtime changes. Do not copy removed prose into tests/comments/caches or protected files to manufacture a reduction."
-    - "Report a compact condensed-topic/exact-owner/read-trigger map and retained local obligations. Measure exact base/candidate UTF-8 bytes for the kernel and any changed validator/tests, including net changed-file inventory. Executor must shrink from 28681 to at most 20076 bytes, and the combined changed-file inventory must decrease. Source bytes are not measured ChatGPT tokens, latency or context headroom. Semantic preservation takes priority; unresolved preservation is BLOCKED."
-    - "Use only ECC bounded inventory/overlap/demand-loading HOW. Ignore its Claude-specific context sizes, token/tool-schema estimates, global scans, installers/configuration/hooks. Resolve the exact admitted pin; target-native verification and current task authority govern."
-    - "Run native skills validator, full existing skills regressions including focused new cases, current task/report artifact validation, modified-Python in-memory compile, exact owner-link/anchor checks, protected-file/scope checks and git diff --check. Reuse TASK-0026 bootstrap and TASK-0027 protected-owner evidence only after proving relevant inputs unchanged; no unrelated full suites absent invalidation. Derive bounded recoverable verification jobs before dispatch, retain keyed identity when necessary, and reconcile any unknown effect before a mutation retry."
-    - "Commit the qualified implementation as a direct child of the handoff base, then its sole report-only child. Apply protected protocol-v3 publication semantics, recording pushed false when candidate-local report authorship precedes publication. Fresh-resolve remote closure outside the report after ordinary non-force publication. Final local main, origin/main and fresh remote main equal the report commit; preserve MAIN_ONLY, one worktree, tracked/index cleanliness and the exact .DS_Store exception. Finish NEEDS_REVIEW and stop before successor work."
+    - "Fresh-resolve the exact handoff and safely fast-forward the designated mirror to its planning base. Resolve the r1 report and REVISION_REQUIRED review. Preserve precisely the pinned .DS_Store exception; unexpected edits/paths, divergence, conflicts or Git-operation state are BLOCKED."
+    - "Reproduce the existing failing test_foundation_routes_generic_how_target_then_ecc_without_authority_transfer before editing. Correct only that test and directly necessary local test support in test_sync_external_capabilities.py to assert governing semantics through their existing correct owners plus explicit current role references/read triggers. Preserve target-native precedence over ECC, ECC as default generic HOW, material-gap fallback, minimum exact-pinned loading, no authority transfer or upstream activation, and optional CLI without installation/configuration dependence. Do not restore duplicated kernel bodies, append stale role prose to an assertion subject, delete material proof, or treat a bare owner link as sufficient semantics. Leave the other eighteen existing external tests unchanged."
+    - "Keep Architect 16717-byte and Executor 17359-byte kernels and every production script byte-identical to this revision's base. Reuse r1 implementation proof only for exact unchanged relevant inputs, with exact r1 report/candidate attribution. Fresh related-suite qualification is mandatory because kernel input changes invalidated the old external doctrine test despite its own unchanged bytes."
+    - "Run the repaired focused doctrine test, the full external-capability regression file (all nineteen existing cases; added meaningful cases only if necessary), native skills validator, full skills regressions (all 240 existing cases), current r2 task/report artifact validation, modified-test in-memory compile and git diff --check. No live upstream refresh, external metadata regeneration, bootstrap/Documents/Standards repeat or dependency installation absent new input invalidation. Use bounded recoverable jobs, retain selected-carrier identity when necessary and reconcile unknown effects before any mutation retry."
+    - "Persist a compact r2 report in the existing report.yaml, binding task_revision 2 and report_revision 2. Attribute inherited r1 evidence to its exact immutable report/candidate; record the fresh failing-to-passing consumer result and current full-suite results. Measure cumulative inventory from original r1 base f73e478d5c536a5c6901f36bbc291295c26fe011 across Architect-independent affected files: Executor, skills validator, skills regressions and external regressions. Original total is 413093 bytes; final total must remain lower, with Executor <=20076 and actually unchanged at 17359. Source-byte reduction is not a ChatGPT token/time measurement."
+    - "Commit the qualified test-only implementation as a direct child of this r2 handoff base; replace the existing Executor report only in its sole report-only child. Apply protected protocol-v3 single-publication eligibility and truthful candidate-prepublication pushed state. After ordinary non-force publication, fresh-resolve external closure; local main, origin/main and fresh remote main equal the r2 report commit, with MAIN_ONLY, one worktree and the exact named .DS_Store exception. Finish NEEDS_REVIEW and stop; no ECC resolver or successor execution."
   allowed_existing_files_or_components:
-    - skills/executor/SKILL.md
-    - skills/scripts/test_validate_skill_library.py
-    - skills/scripts/validate_skill_library.py
+    - skills/scripts/test_sync_external_capabilities.py
+    - .agent/tasks/TASK-0028/report.yaml
   expected_files_are_restrictive: true
 invariants:
-  - "Exactly the existing roles/provider policy remain; this session's Codex supervision is an operator exception only. Foundation owns authority/routing/proof, target owns product/stack/rules, ECC supplies generic HOW and Runtime is transport."
-  - "Product-state.json stays byte-identical: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, all gates unchanged, P0_SCOPE and blocker release.status. Task acceptance does not refresh feature verification."
-  - "Preserve the accepted Architect kernel and all existing semantic owners. One canonical owner per rule; no hidden relocation or proof weakening."
-  - "Preserve the sole untracked regular .DS_Store: 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. No stage-all, deletion, move, modification, ignore change or publication."
+  - "Candidate changes only the permitted test consumer. The report path is an authorized Executor output only in the separate report-only child; Architect review/task authority remain untouched by Executor. Historical r1 task/report/review identities remain immutable at their original SHAs."
+  - "All existing production, kernels, protocol/contracts, external sources/snapshots/catalog, profile/bootstrap, routing, Documents and Standards remain byte-identical to the r2 base. Product truth stays unchanged: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, all gates unchanged, P0_SCOPE and blocker release.status."
+  - "Foundation owns authority/routing/proof; target owns product/stack/rules; ECC supplies generic HOW; Runtime is transport. Existing roles/provider policy and the specific Codex exception remain unchanged."
+  - "Preserve sole untracked regular .DS_Store: 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. No stage-all, deletion, move, modification, ignore change or publication."
 forbidden_changes:
-  - "Modify Architect, Task Protocol, Foundation Architecture, Implementation Report, Execution Continuity, Executor Engineering HOW, other skills/contracts, profile/bootstrap/launch mappings, product state, Case Router, rationalization, external pins/catalog, Documents, Standards, Runtime/host/dependencies or historical/current task authority."
-  - "Generic Codex role admission, new role/skill/domain, reference shards/loaders/context stores/registries/services, universal phase/stack matrix, generic HOW duplication, new uncertainty/authority schema or lifecycle, feature-planning implementation, weakened verification, release changes or successor execution."
-  - "Branch/tag/release creation, force push, unrelated cleanup, or rewriting Executor evidence owned by previous tasks."
+  - "Modify either kernel, production validator/sync/runtime code, skills regressions, protected semantic owners, external pins/metadata, product state, profile/bootstrap, routing, Documents, Standards, dependencies, host/shared Runtime lifecycle or current task/review authority."
+  - "Reintroduce duplicated HOW, weaken or skip acceptance assertions, add a loader/cache/store/framework/schema/role/phase matrix, alter accepted TASK-0027 history, or claim new feature/gate/release verification."
+  - "Branch/tag/release creation, force push, unrelated cleanup, r1 commit rewriting or successor work."
 gap_policy:
   local_auto_fix: true
   scope_expansion: forbidden
@@ -88,30 +79,29 @@ gap_policy:
   blocking_gap_behavior: BLOCKED
 acceptance_criteria:
   - id: AC-1
-    requirement: "Executor entry inventory shrinks without hidden relocation."
-    evidence_required: "Exact kernel bytes <=20076 and lower combined changed-file inventory; no new shard/store or copied removed bodies."
+    requirement: "The reduced kernels and production semantics are preserved."
+    evidence_required: "Exact unchanged kernel/production/protected bytes; Executor 17359 bytes; cumulative four-file total <413093 bytes; no hidden prose relocation."
   - id: AC-2
-    requirement: "Governing obligations survive at their correct owners and local mechanics remain executable."
-    evidence_required: "Topic/owner/read-trigger map, retained pre-mutation/local/recovery/bundling/report guards, exact-commit links/anchors and effective missing/misdirected-reference regressions."
+    requirement: "The related consumer verifies correct current owner composition."
+    evidence_required: "Existing focused failure reproduced, then focused and all nineteen existing external regressions PASS; same material target/ECC/authority/CLI predicates remain effective through real owner content and role references/read triggers."
   - id: AC-3
-    requirement: "Role, authority, product, routing and evidence behavior remain unchanged."
-    evidence_required: "Protected owners/product truth byte-identical; native validator and full regressions PASS; no parsing/attribution/authority/Runtime weakening; justified unchanged-input reuse."
+    requirement: "Revision qualification and evidence attribution are complete."
+    evidence_required: "Native validator, all 240 existing skills cases, r2 task/report artifacts, in-memory compile and diff/scope checks PASS; fresh consumer inputs/results and correctly attributed unchanged r1 evidence."
   - id: AC-4
-    requirement: "Bounded candidate/report publication is exact and recoverable."
-    evidence_required: "Required artifact/static/scope checks PASS; only allowed candidate paths; sole report-only child, truthful pre-authorship pushed state, fresh remote/local closure and preserved named .DS_Store exception."
+    requirement: "Exact test-only candidate/report publication closes safely."
+    evidence_required: "Candidate direct child of r2 handoff base and test-only; sole report-only child with report/task revision 2; truthful pushed state; fresh remote/local MAIN_ONLY closure and pinned exception."
 verification:
   authoritative_verification:
     required: false
     mechanism: ""
     expected_signal: ""
 structure_policy:
-  expected_new_files:
-    - .agent/tasks/TASK-0028/report.yaml
+  expected_new_files: []
   unlisted_new_files:
     allowed: false
     max: 0
     within: []
-    purpose: "Deduplicate the existing Executor entry; add only this task's report."
+    purpose: "Correct one existing test consumer and replace only the existing Executor report."
   allow_new_top_level_directories: false
   allow_new_shared_modules: false
 git_authority:

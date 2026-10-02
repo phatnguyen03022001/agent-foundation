@@ -1,0 +1,32 @@
+protocol_version: 3
+task_id: TASK-0028
+task_revision: 1
+review_revision: 1
+state: REVISION_REQUIRED
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0028/report.yaml
+  commit: "426c878b6c82822938dfc984f03f7555382eb4c2"
+  report_revision: 1
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: NOT_PROVEN
+  verifier_evidence: NOT_PROVEN
+notes:
+  - "Fresh GitHub inspection resolves report blob 62070eee4e458609dcfe0a5853d5f5aaf1e45dab at exact report commit 426c878b6c82822938dfc984f03f7555382eb4c2, matching the local report. Its sole parent is candidate 4b6bf8e6ac3d1d73aa29afae3824a3bf867ba66a, a direct child of authorized base f73e478d5c536a5c6901f36bbc291295c26fe011. The candidate changes exactly the three authorized implementation paths; the report child changes only report.yaml. Fresh main resolves to the report, with only main exposed."
+  - "Independent qualification reproduces native skills validator PASS, full skills 240/240 PASS, task/report validation PASS, modified-Python in-memory compilation and candidate diff check PASS. Twenty required owner-map references and all twenty-one anchored links independently resolve at the candidate. Executor-local pre-mutation, scope, secret/cleanup, recovery, bundle, carrier, reporting and terminal guards survive at their correct current owners. Production-validator changes are confined to role reference/marker checks; one existing skills-test wording assertion now checks the protected report owner's equivalent publication prohibition."
+  - "Exact inventories reproduce Executor 28681 -> 17359 bytes, validator 129787 -> 132101, and skills regressions 232570 -> 238052. Kernel reduction is 11322 bytes / 39.475611 percent, below 20076. Combined changed-file inventory is 391038 -> 387512, down 3526 bytes. No hidden role-body relocation is present. These are source bytes, not measured ChatGPT context or latency. Protected owners and product truth are unchanged."
+  - "Material qualification gap: test_sync_external_capabilities.py is an unchanged consumer of both changed role kernels. Its test_foundation_routes_generic_how_target_then_ecc_without_authority_transfer still demands duplicated old prose directly inside each kernel. Fresh complete external regression execution yields 18/19 PASS, with that test FAIL. Matching guards are now at the protected owner and referenced locally, so the stale test does not prove a runtime authority regression; it does prove that this related consumer remains unqualified. Unchanged test-file bytes do not establish unchanged test inputs."
+  - "Exact historical role-input replay against the unchanged consumer proves PASS at 634ff01c103bbfdacb1be35d996dba61aa1ff343 before TASK-0027, FAIL at TASK-0028 base f73e478d5c536a5c6901f36bbc291295c26fe011, and FAIL at candidate 4b6bf8e6ac3d1d73aa29afae3824a3bf867ba66a. TASK-0027 first removed the Architect literal; TASK-0028 also removed four Executor literals that the same test would later reach. The earlier Architect review and task scope missed this consumer. Executor did not have authority to edit it; this review does not attribute the inherited failure solely to TASK-0028 or claim that the report falsely stated external PASS."
+  - "Required correction is one consumer-test repair under TASK-0028 revision 2: preserve exact current kernels and production code; assert the same target-first/ECC/minimum-loading/no-authority-transfer/optional-CLI semantics through their actual current owner and explicit role references/read triggers. Restore attributable related-suite qualification rather than reintroduce duplicated prose or delete material assertions. No successor task is authorized before independent r2 review."
+  - "Publication lineage and operational closure PASS: pushed false is truthful candidate-prepublication evidence, with later reachability independently proven. Local HEAD/origin/main match the report, one worktree remains, tracked/index state is clean and the sole untracked .DS_Store retains 6148 bytes / SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. Review uses only the current operator-appointed Codex Architect exception and advisory operator-invoked Superpowers verification/debugging HOW. No product gate, release advancement or reusable role admission is granted."
