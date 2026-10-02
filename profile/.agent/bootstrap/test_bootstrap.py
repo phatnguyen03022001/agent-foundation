@@ -530,11 +530,58 @@ class BootstrapContractTests(unittest.TestCase):
             "Communicate with the operator in Vietnamese. Persist repository artifacts in English.",
         )
 
-    def test_task_launch_fixtures_render_from_surface_contract(self) -> None:
+    def test_task_launch_fixtures_render_all_chat_task_pairs_from_surface_contract(self) -> None:
         fixtures = self.bootstrap["task_launch"]["fixtures"]
-        for surface_id, expected in fixtures.items():
-            with self.subTest(surface=surface_id):
-                self.assertEqual(validate.render_task_launch(self.bootstrap, surface_id, "NEW"), expected)
+        rendered = 0
+        for surface_id, chat_fixtures in fixtures.items():
+            for chat_action, task_fixtures in chat_fixtures.items():
+                for task_action, expected in task_fixtures.items():
+                    with self.subTest(
+                        surface=surface_id,
+                        chat_action=chat_action,
+                        task_action=task_action,
+                    ):
+                        self.assertEqual(
+                            validate.render_task_launch(
+                                self.bootstrap,
+                                surface_id,
+                                chat_action,
+                                task_action,
+                            ),
+                            expected,
+                        )
+                        rendered += 1
+        self.assertEqual(rendered, 16)
+
+    def test_task_launch_rejects_bare_crossed_and_unknown_action_axes(self) -> None:
+        invalid_pairs = (
+            ("NEW", "NEW TASK"),
+            ("NEW CHAT", "CONTINUE"),
+            ("NEW TASK", "NEW CHAT"),
+            ("CONTINUE TASK", "CONTINUE CHAT"),
+            ("UNKNOWN CHAT", "NEW TASK"),
+            ("NEW CHAT", "UNKNOWN TASK"),
+        )
+        for chat_action, task_action in invalid_pairs:
+            with self.subTest(chat_action=chat_action, task_action=task_action):
+                with self.assertRaisesRegex(ValueError, "action"):
+                    validate.render_task_launch(
+                        self.bootstrap,
+                        "CHATGPT_LOCAL",
+                        chat_action,
+                        task_action,
+                    )
+
+    def test_task_launch_malformed_action_configuration_fails_closed(self) -> None:
+        bootstrap = copy.deepcopy(self.bootstrap)
+        bootstrap["task_launch"]["chat_actions"] = ["NEW", "CONTINUE"]
+        with self.assertRaisesRegex(ValueError, "chat_actions"):
+            validate.validate_contract(bootstrap, self.lock)
+
+        bootstrap = copy.deepcopy(self.bootstrap)
+        del bootstrap["task_launch"]["fixtures"]["CHATGPT_LOCAL"]["NEW CHAT"]["NEW TASK"]
+        with self.assertRaisesRegex(ValueError, "fixture"):
+            validate.validate_contract(bootstrap, self.lock)
 
     def test_fresh_context_reconstruction_is_bounded_and_chat_free(self) -> None:
         target_binding = {"repository": "owner/repo", "branch": "dev"}

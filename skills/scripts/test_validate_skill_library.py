@@ -3674,7 +3674,7 @@ class Task0021GlobalProgressionTests(unittest.TestCase):
         self.assertEqual(VALIDATOR_MODULE._resolve_agent_foundation_earliest_blocker(state), "release.status")
         self.assertEqual(
             {feature["id"]: feature["lifecycle"]["derived_state"] for feature in state["product_scope"]["features"]["registered"]},
-            {"F001": "VERIFIED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
+            {"F001": "INTEGRATED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
         )
 
     def test_exact_global_leaf_inventory_and_current_aggregate_truth(self) -> None:
@@ -4029,7 +4029,7 @@ class Task0022ProgressionConsumptionTests(unittest.TestCase):
                 feature["id"]: feature["lifecycle"]["derived_state"]
                 for feature in state["product_scope"]["features"]["registered"]
             },
-            {"F001": "VERIFIED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
+            {"F001": "INTEGRATED", "F002": "INTEGRATED", "F003": "VERIFIED", "F004": "INTEGRATED"},
         )
 
     def test_later_phase_fixtures_reuse_t4_resolver_and_earlier_blockers_win(self) -> None:
@@ -4117,22 +4117,29 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
         gate["evidence_refs"] = [] if refs is None else refs
         gate["reason"] = reason
 
-    def test_canonical_schema3_preserves_exact_t3_gates_and_f001_verification(self) -> None:
+    def test_canonical_schema3_records_f001_verification_regression_without_self_attestation(self) -> None:
         state = self.load_state()
         self.assertEqual(self.validate_state(state), [])
         self.assertEqual(state["schema_version"], 3)
         expected_states = {
-            "F001": "VERIFIED",
+            "F001": "INTEGRATED",
             "F002": "INTEGRATED",
             "F003": "VERIFIED",
             "F004": "INTEGRATED",
         }
-        expected_f001_verification_refs = [
-            ".agent/tasks/TASK-0024/report.yaml",
-            "profile/.agent/bootstrap/bootstrap.json",
-            "profile/.agent/bootstrap/test_bootstrap.py",
-            "profile/.agent/bootstrap/validate.py",
-        ]
+        expected_f001_reason = (
+            "TASK-0026 changes profile-owned bytes, so TASK-0024 persisted verification "
+            "no longer covers the exact current profile/ owner bytes."
+        )
+        expected_f001_regression = {
+            "from_state": "VERIFIED",
+            "to_state": "INTEGRATED",
+            "reason": "TASK-0026 changes profile-owned bytes after the TASK-0024 verified candidate.",
+            "evidence_refs": [
+                ".agent/tasks/TASK-0024/report.yaml",
+                "profile/.agent/bootstrap/bootstrap.json",
+            ],
+        }
         for feature in state["product_scope"]["features"]["registered"]:
             self.assertEqual(
                 [gate["name"] for gate in feature["lifecycle"]["gates"]],
@@ -4144,10 +4151,15 @@ class Task0020FeatureLifecycleTests(unittest.TestCase):
                     gate for gate in feature["lifecycle"]["gates"]
                     if gate["name"] == "verification"
                 )
-                self.assertEqual(verification["status"], "PASS")
-                self.assertEqual(verification["evidence_refs"], expected_f001_verification_refs)
-                self.assertIsNone(verification["reason"])
-            self.assertIsNone(feature["lifecycle"]["regression"])
+                self.assertEqual(verification["status"], "UNKNOWN")
+                self.assertEqual(
+                    verification["evidence_refs"],
+                    [".agent/tasks/TASK-0024/report.yaml"],
+                )
+                self.assertEqual(verification["reason"], expected_f001_reason)
+                self.assertEqual(feature["lifecycle"]["regression"], expected_f001_regression)
+            else:
+                self.assertIsNone(feature["lifecycle"]["regression"])
             self.assertNotIn(feature["lifecycle"]["derived_state"], {"RELEASE_READY", "LIVE"})
 
     def test_all_seven_lifecycle_thresholds_are_derived_from_ordered_pass_prefix(self) -> None:
@@ -4412,7 +4424,7 @@ class Task0020Revision2EvidenceParserTests(unittest.TestCase):
         repository_root = ROOT.parent
         report_ref = ".agent/tasks/TASK-0024/report.yaml"
         report_path = repository_root / report_ref
-        self.assertTrue(self.covers(report_ref, "profile/", repository_root))
+        self.assertFalse(self.covers(report_ref, "profile/", repository_root))
 
         report_execution_line = next(
             line

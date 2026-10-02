@@ -88,7 +88,7 @@ The model/effort mapping above is exact for these operator routes. Runtime avail
 
 The bootstrap-known Foundation control-plane locator resolves [skills/contracts/FOUNDATION_ARCHITECTURE.md](../skills/contracts/FOUNDATION_ARCHITECTURE.md) at the exact Foundation authority-set identity. It defines L0/L1/L2 ownership and never replaces this operator profile or target authority.
 
-The bootstrap-known Case Router is static navigation only. `BOOTSTRAP` is a pre-router primitive; the only admitted reusable CASE is `EXECUTE → executor`. Router resolution uses the exact active Foundation authority-set revision and fails closed for an unresolvable SHA, missing path, malformed artifact, or unknown case; it never falls back to a mutable ref.
+The bootstrap-known [Case Router](../skills/.agent/case-router.yaml) is static navigation only. `BOOTSTRAP` is a pre-router primitive. Its canonical routes are `MATERIAL_JUDGMENT → Architect`, `READ_ONLY_RESEARCH → Executor` with Researcher specialization, and `TASK_EXECUTION → Executor`; `EXECUTE` remains only a legacy alias to `TASK_EXECUTION`. Router resolution uses the exact active Foundation authority-set revision and fails closed for an unresolvable SHA, missing path, malformed artifact, or unknown case; it never falls back to a mutable ref. Role, binding, capability, and navigation semantics remain owned by the router and Foundation `skills/` contracts rather than duplicated here.
 
 Architect is always ChatGPT for this operator. Any delegated ChatGPT or Codex session is an Executor under the Foundation `skills/` authority at the same exact active revision. Labels such as coder, verifier, red-team, researcher, review-advisory, or ecosystem-evolution describe Executor specializations only; they are not additional organizational roles. Final canonical acceptance remains Architect judgment. The existing generic Architect micro-maintenance exception remains owned by the Foundation `skills/` domain; when implementation is likely to materially pollute vision or authority context, prefer dispatching it to an Executor rather than broadening self-execution here.
 
@@ -172,13 +172,13 @@ Use this order when the response has a task outcome or next work:
 ```text
 RESULT — <current result>
 EXPLAIN — <brief Vietnamese explanation>
-TASK LAUNCH — NEW|CONTINUE · <execution surface> · <model from surface> · effort: <effort from surface>
+TASK LAUNCH — <NEW CHAT|CONTINUE CHAT> · <NEW TASK|CONTINUE TASK> · <execution surface> · <model from surface> · effort: <effort from surface>
 PROMPT
 <standalone English locator/instruction rendered from canonical inputs>
 END — <truthful identity>
 ```
 
-Omit `TASK LAUNCH` and `PROMPT` when no next work exists. `TASK LAUNCH` is presentation only: `NEW|CONTINUE` plus one of `CHATGPT_GITHUB`, `CHATGPT_LOCAL`, `CODEX_CLOUD`, or `CODEX_LOCAL`, with model/effort derived from that surface's exact routing contract.
+Omit `TASK LAUNCH` and `PROMPT` when no next work exists. `TASK LAUNCH` is presentation only: choose `NEW CHAT` or `CONTINUE CHAT` independently from `NEW TASK` or `CONTINUE TASK`, then one of `CHATGPT_GITHUB`, `CHATGPT_LOCAL`, `CODEX_CLOUD`, or `CODEX_LOCAL`, with model/effort derived from that surface's exact routing contract. These labels create no chat registry, task identity, lifecycle state, or authority. Prefer a fresh ChatGPT chat for a new task/revision or interruption recovery; chat selection and canonical task identity remain independent choices.
 
 `PROMPT` is English by current operator preference. Its canonical inputs are the exact repository, branch, task path, task revision, base HEAD, phase, and execution surface. It locates authority; it does not duplicate the full canonical task, generic protocol boilerplate, or an independently maintained model/effort rule. It instructs the Executor to communicate with the operator in Vietnamese and persist repository artifacts in English.
 

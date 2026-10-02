@@ -54,14 +54,11 @@
               },
               {
                 "name": "verification",
-                "status": "PASS",
+                "status": "UNKNOWN",
                 "evidence_refs": [
-                  ".agent/tasks/TASK-0024/report.yaml",
-                  "profile/.agent/bootstrap/bootstrap.json",
-                  "profile/.agent/bootstrap/test_bootstrap.py",
-                  "profile/.agent/bootstrap/validate.py"
+                  ".agent/tasks/TASK-0024/report.yaml"
                 ],
-                "reason": null
+                "reason": "TASK-0026 changes profile-owned bytes, so TASK-0024 persisted verification no longer covers the exact current profile/ owner bytes."
               },
               {
                 "name": "release_readiness",
@@ -76,8 +73,16 @@
                 "reason": "Release is OPEN; production acceptance cannot be established before release readiness."
               }
             ],
-            "derived_state": "VERIFIED",
-            "regression": null
+            "derived_state": "INTEGRATED",
+            "regression": {
+              "from_state": "VERIFIED",
+              "to_state": "INTEGRATED",
+              "reason": "TASK-0026 changes profile-owned bytes after the TASK-0024 verified candidate.",
+              "evidence_refs": [
+                ".agent/tasks/TASK-0024/report.yaml",
+                "profile/.agent/bootstrap/bootstrap.json"
+              ]
+            }
           }
         },
         {

@@ -49,10 +49,12 @@ A fresh Architect should resolve only the context required for the current decis
 2. Read profile/.agent/bootstrap/bootstrap.json at F. Its repository-root-relative authority lock contains only independently versioned external authorities; Foundation-internal domains inherit F.
 3. Bind the target only from the explicit current request or an exact active binding, then fresh-resolve that repository on GitHub; never infer it from stale chat history, memory, `cwd`, or a local directory name. If no exact target is available, ask the operator.
 4. Resolve the bootstrap-known Case Router from `skills/.agent/case-router.yaml` at F before ordinary capability selection. BOOTSTRAP is pre-router, not a CASE.
-5. Select only the admitted `EXECUTE` CASE, which routes to `executor`, then resolve each Foundation-internal capability by its domain/path at F; only external routes use an independent lock revision. Missing/unresolvable/malformed inputs and unknown cases fail closed with no mutable-ref fallback.
+5. Select one canonical route: `MATERIAL_JUDGMENT` routes to Architect, `READ_ONLY_RESEARCH` routes to Executor with Researcher specialization, and `TASK_EXECUTION` routes to Executor; `EXECUTE` is only the legacy alias for `TASK_EXECUTION`. Resolve each selected Foundation-internal capability/navigation locator by its canonical owner/path at F; only external routes use an independent lock revision. Missing/unresolvable/malformed inputs and unknown cases fail closed with no mutable-ref fallback.
 6. Load ARCHITECT_PROFILE.md and, only when materially relevant, ARCHITECT_CALIBRATION.md.
 7. Expand context only when required evidence is missing, stale, contradictory, or explicitly requested.
 ```
+
+The bootstrap task-launch presentation keeps chat reuse and task continuation separate: `NEW CHAT|CONTINUE CHAT` is independent from `NEW TASK|CONTINUE TASK`. Prefer a fresh ChatGPT chat for a new task/revision or interruption recovery. These labels are presentation only; canonical task identity still comes from the exact task/revision/base binding.
 
 The bootstrap files are static locators and validation inputs, not a registry, daemon, cache, execution engine, or duplicated copy of support-repository semantics. Do not preload every Foundation domain or external repository, all calibration, raw chat history, historical tasks, or broad repository context by default.
 

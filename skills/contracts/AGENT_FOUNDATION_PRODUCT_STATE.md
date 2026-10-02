@@ -111,12 +111,12 @@ The current evidence-derived projection is:
 
 | Feature | Scope | Spec | Impl | Integration | Verification | Release readiness | Production acceptance | Derived |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `F001` | PASS | PASS | PASS | PASS | PASS | UNKNOWN | UNKNOWN | `VERIFIED` |
+| `F001` | PASS | PASS | PASS | PASS | UNKNOWN | UNKNOWN | UNKNOWN | `INTEGRATED` |
 | `F002` | PASS | PASS | PASS | PASS | UNKNOWN | UNKNOWN | UNKNOWN | `INTEGRATED` |
 | `F003` | PASS | PASS | PASS | PASS | PASS | UNKNOWN | UNKNOWN | `VERIFIED` |
 | `F004` | PASS | PASS | PASS | PASS | UNKNOWN | UNKNOWN | UNKNOWN | `INTEGRATED` |
 
-F001's profile-bootstrap result is persisted in `.agent/tasks/TASK-0024/report.yaml`, whose `execution.final_execution_head` is `dbdff63fb2e9572ed9ba9748de046f4c35e33c23`. Its recognized local and remote bootstrap evidence both record `OPM_BOOTSTRAP = TRUE`. The current `profile/` tree is byte-equivalent to that commit, and the canonical historical-evidence helper accepts the report for owner `profile/`. F001 is therefore `VERIFIED` with verification `PASS`; its verification references include the persisted report and current profile bootstrap artifacts, and its regression is null. This refresh consumes persisted result evidence; current terminal output, TASK-0025, and task/review status do not self-attest verification.
+F001's prior profile-bootstrap result remains immutably persisted in `.agent/tasks/TASK-0024/report.yaml`, whose `execution.final_execution_head` is `dbdff63fb2e9572ed9ba9748de046f4c35e33c23`. Its recognized local and remote bootstrap evidence both record `OPM_BOOTSTRAP = TRUE`, but TASK-0026 changes current `profile/` bytes after that verified candidate. The historical result therefore no longer covers the exact current owner bytes. F001 verification is `UNKNOWN`, its derived state is `INTEGRATED`, and its `VERIFIED → INTEGRATED` regression records the stale TASK-0024 evidence plus the current bootstrap owner as inspectable evidence. TASK-0026 tests or report output qualify this task only and do not self-attest F001 verification `PASS`.
 
 F002 is intentionally not VERIFIED. T3 changes `skills/` bytes, including this contract, the validator, and its regressions. No pre-existing persisted result independently covers those final bytes.
 

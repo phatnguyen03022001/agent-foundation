@@ -582,23 +582,45 @@ def validate_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
         raise ValueError("task_launch must be an object")
     template = task_launch.get("line_template")
     fixtures = task_launch.get("fixtures")
-    continuations = task_launch.get("continuations")
+    chat_actions = task_launch.get("chat_actions")
+    task_actions = task_launch.get("task_actions")
     prompt_inputs = task_launch.get("prompt_inputs")
     prompt_template = task_launch.get("prompt_template")
     if not isinstance(template, str) or not isinstance(prompt_template, str) or not isinstance(fixtures, dict):
         raise ValueError("task_launch requires one line_template, one prompt_template, and fixtures")
-    if continuations != ["NEW", "CONTINUE"]:
-        raise ValueError("task_launch continuations must be exactly NEW and CONTINUE")
+    if chat_actions != ["NEW CHAT", "CONTINUE CHAT"]:
+        raise ValueError("task_launch chat_actions must be exactly NEW CHAT and CONTINUE CHAT")
+    if task_actions != ["NEW TASK", "CONTINUE TASK"]:
+        raise ValueError("task_launch task_actions must be exactly NEW TASK and CONTINUE TASK")
     if not isinstance(prompt_inputs, list) or len(prompt_inputs) != len(set(prompt_inputs)):
         raise ValueError("task_launch prompt_inputs must be unique")
     by_id = {surface["id"]: surface for surface in surfaces}
-    for surface_id, expected in fixtures.items():
-        if surface_id not in by_id:
-            raise ValueError(f"fixture has unknown execution surface: {surface_id}")
-        if render_task_launch(bootstrap, surface_id, "NEW") != expected:
-            raise ValueError(f"TASK LAUNCH fixture mismatch: {surface_id}")
     if set(fixtures) != set(EXPECTED_SURFACES):
         raise ValueError("TASK LAUNCH fixtures must cover all execution surfaces")
+    for surface_id, chat_fixtures in fixtures.items():
+        if surface_id not in by_id:
+            raise ValueError(f"fixture has unknown execution surface: {surface_id}")
+        if not isinstance(chat_fixtures, dict) or set(chat_fixtures) != set(chat_actions):
+            raise ValueError(f"TASK LAUNCH fixture chat-action coverage mismatch: {surface_id}")
+        for chat_action, task_fixtures in chat_fixtures.items():
+            if not isinstance(task_fixtures, dict) or set(task_fixtures) != set(task_actions):
+                raise ValueError(
+                    f"TASK LAUNCH fixture task-action coverage mismatch: {surface_id}/{chat_action}"
+                )
+            for task_action, expected in task_fixtures.items():
+                if not isinstance(expected, str):
+                    raise ValueError(
+                        f"TASK LAUNCH fixture must be a string: {surface_id}/{chat_action}/{task_action}"
+                    )
+                if render_task_launch(
+                    bootstrap,
+                    surface_id,
+                    chat_action,
+                    task_action,
+                ) != expected:
+                    raise ValueError(
+                        f"TASK LAUNCH fixture mismatch: {surface_id}/{chat_action}/{task_action}"
+                    )
 
 def normalize_surface(bootstrap: dict[str, Any], controller: str, location: str) -> dict[str, Any]:
     surfaces = bootstrap.get("execution_surfaces")
@@ -629,22 +651,39 @@ def surface_by_id(bootstrap: dict[str, Any], surface_id: str) -> dict[str, Any]:
     return dict(matches[0])
 
 
-def render_task_launch(bootstrap: dict[str, Any], surface_id: str, continuation: str) -> str:
+def render_task_launch(
+    bootstrap: dict[str, Any],
+    surface_id: str,
+    chat_action: str,
+    task_action: str,
+) -> str:
     task_launch = bootstrap.get("task_launch")
     if not isinstance(task_launch, dict):
         raise ValueError("task_launch must be an object")
-    if continuation not in task_launch.get("continuations", []):
-        raise ValueError(f"unknown continuation: {continuation}")
+    chat_actions = task_launch.get("chat_actions")
+    task_actions = task_launch.get("task_actions")
+    if chat_actions != ["NEW CHAT", "CONTINUE CHAT"]:
+        raise ValueError("task_launch chat_actions must be exactly NEW CHAT and CONTINUE CHAT")
+    if task_actions != ["NEW TASK", "CONTINUE TASK"]:
+        raise ValueError("task_launch task_actions must be exactly NEW TASK and CONTINUE TASK")
+    if chat_action not in chat_actions:
+        raise ValueError(f"unknown chat action: {chat_action}")
+    if task_action not in task_actions:
+        raise ValueError(f"unknown task action: {task_action}")
     surface = surface_by_id(bootstrap, surface_id)
     template = task_launch.get("line_template")
     if not isinstance(template, str):
         raise ValueError("task_launch line_template must be a string")
-    return template.format(
-        continuation=continuation,
-        surface=surface_id,
-        model=surface["model"],
-        effort=surface["effort"],
-    )
+    try:
+        return template.format(
+            chat_action=chat_action,
+            task_action=task_action,
+            surface=surface_id,
+            model=surface["model"],
+            effort=surface["effort"],
+        )
+    except (KeyError, IndexError, ValueError) as exc:
+        raise ValueError("malformed task_launch line_template") from exc
 
 
 def render_task_prompt(bootstrap: dict[str, Any], inputs: dict[str, Any]) -> str:
