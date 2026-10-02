@@ -14,7 +14,7 @@ import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -712,39 +712,6 @@ def require_capability_entry(entry: dict[str, Any]) -> dict[str, Any]:
     return entry
 
 
-def resolve_harness_entry(
-    registry: dict[str, Any],
-    catalog: dict[str, Any],
-    *,
-    source_id: str,
-    surface: str,
-    title: str,
-) -> dict[str, Any]:
-    sources = {source["id"]: source for source in validate_registry(registry)}
-    source = sources.get(source_id)
-    if not isinstance(source, dict) or source.get("kind") != "harness_source":
-        raise SourceError(f"{source_id}: source is not an admitted harness source")
-    if catalog.get("authority") != "NONE" or not isinstance(catalog.get("entries"), list):
-        raise SourceError("external catalog must remain inert authority NONE metadata")
-
-    matches = [
-        entry for entry in catalog["entries"]
-        if isinstance(entry, dict)
-        and entry.get("kind") == "capability"
-        and entry.get("source") == source_id
-        and entry.get("surface") == surface
-        and entry.get("title") == title
-        and entry.get("revision") == source["snapshot_revision"]
-        and isinstance(entry.get("source_path"), str)
-        and entry["source_path"]
-    ]
-    if len(matches) != 1:
-        raise SourceError(
-            f"{source_id}: expected exactly one pinned harness entry for {surface}:{title}"
-        )
-    return deepcopy(matches[0])
-
-
 def provenance(source: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": source["id"],
@@ -754,6 +721,164 @@ def provenance(source: dict[str, Any]) -> dict[str, Any]:
         "kind": source["kind"],
         "license": source["license"],
     }
+
+
+def _valid_source_path(value: Any) -> bool:
+    if not isinstance(value, str) or not value or "\\" in value:
+        return False
+    path = PurePosixPath(value)
+    return (
+        not path.is_absolute()
+        and all(part not in {"", ".", ".."} for part in value.split("/"))
+    )
+
+
+def _validated_harness_catalog_entries(
+    registry: dict[str, Any],
+    catalog: dict[str, Any],
+    *,
+    source_id: str,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    sources = {source["id"]: source for source in validate_registry(registry)}
+    source = sources.get(source_id)
+    if not isinstance(source, dict) or source.get("kind") != "harness_source":
+        raise SourceError(f"{source_id}: source is not an admitted harness source")
+    if (
+        catalog.get("schema_version") != 1
+        or catalog.get("authority") != "NONE"
+        or not isinstance(catalog.get("generated_from"), list)
+        or not isinstance(catalog.get("entries"), list)
+    ):
+        raise SourceError("external catalog must remain schema-1 inert authority NONE metadata")
+
+    source_provenance = [
+        item
+        for item in catalog["generated_from"]
+        if isinstance(item, dict) and item.get("id") == source_id
+    ]
+    if source_provenance != [provenance(source)]:
+        raise SourceError(f"{source_id}: catalog provenance does not match the registry pin")
+
+    entries: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    seen_identities: set[tuple[str, str]] = set()
+    for entry in catalog["entries"]:
+        if not isinstance(entry, dict):
+            raise SourceError("external catalog contains malformed entry metadata")
+        if entry.get("source") != source_id:
+            continue
+        entry_id = entry.get("id")
+        surface = entry.get("surface")
+        title = entry.get("title")
+        description = entry.get("description")
+        source_path = entry.get("source_path")
+        if (
+            entry.get("kind") != "capability"
+            or entry.get("revision") != source["snapshot_revision"]
+            or not isinstance(entry_id, str)
+            or not entry_id
+            or surface not in {"skill", "command", "agent"}
+            or not isinstance(title, str)
+            or not title
+            or not isinstance(description, str)
+            or not _valid_source_path(source_path)
+        ):
+            raise SourceError(f"{source_id}: malformed or stale harness catalog metadata")
+        identity = (surface, title)
+        if entry_id in seen_ids or identity in seen_identities:
+            raise SourceError(f"{source_id}: conflicting harness catalog identity")
+        seen_ids.add(entry_id)
+        seen_identities.add(identity)
+        entries.append(entry)
+    return source, entries
+
+
+def query_harness_entries(
+    registry: dict[str, Any],
+    catalog: dict[str, Any],
+    *,
+    source_id: str,
+    terms: list[str],
+    surface: str | None,
+    limit: int,
+) -> dict[str, Any]:
+    if not isinstance(terms, list) or not terms or any(
+        not isinstance(term, str) or not term.strip() for term in terms
+    ):
+        raise SourceError("query requires one or more non-empty literal terms")
+    if surface is not None and surface not in {"skill", "command", "agent"}:
+        raise SourceError("query surface must be skill, command, or agent")
+    if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 10:
+        raise SourceError("query limit must be an integer from 1 to 10")
+
+    source, entries = _validated_harness_catalog_entries(
+        registry,
+        catalog,
+        source_id=source_id,
+    )
+    needles = [term.casefold() for term in terms]
+    matches = []
+    for entry in entries:
+        if surface is not None and entry["surface"] != surface:
+            continue
+        haystack = "\n".join(
+            (entry["title"], entry["description"], entry["source_path"])
+        ).casefold()
+        if all(needle in haystack for needle in needles):
+            matches.append(entry)
+    matches.sort(
+        key=lambda entry: (
+            entry["surface"],
+            entry["title"].casefold(),
+            entry["title"],
+            entry["id"],
+        )
+    )
+    return {
+        "authority": "NONE",
+        "source": {
+            "id": source["id"],
+            "repository": source["repository"],
+            "revision": source["snapshot_revision"],
+        },
+        "query": {
+            "terms": list(terms),
+            "surface": surface,
+            "limit": limit,
+        },
+        "total_matches": len(matches),
+        "truncated": len(matches) > limit,
+        "entries": [deepcopy(entry) for entry in matches[:limit]],
+    }
+
+
+def resolve_harness_entry(
+    registry: dict[str, Any],
+    catalog: dict[str, Any],
+    *,
+    source_id: str,
+    surface: str,
+    title: str,
+) -> dict[str, Any]:
+    if surface not in {"skill", "command", "agent"}:
+        raise SourceError("resolution surface must be skill, command, or agent")
+    if not isinstance(title, str) or not title:
+        raise SourceError("resolution requires a non-empty exact title")
+    _, entries = _validated_harness_catalog_entries(
+        registry,
+        catalog,
+        source_id=source_id,
+    )
+    matches = [
+        entry
+        for entry in entries
+        if entry["surface"] == surface and entry["title"] == title
+    ]
+    if len(matches) != 1:
+        raise SourceError(
+            f"{source_id}: expected exactly one pinned harness entry for {surface}:{title}"
+        )
+    return deepcopy(matches[0])
 
 
 def build_snapshot(source: dict[str, Any], client: GitHubClient) -> dict[str, Any]:
@@ -897,14 +1022,21 @@ def main(argv: list[str] | None = None) -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--check", action="store_true", help="regenerate in memory and compare with committed metadata")
     mode.add_argument("--refresh", action="store_true", help="advance tracking refs and rewrite only registry/snapshots/catalog")
+    mode.add_argument("--query", nargs="+", metavar="TERM", help="search committed harness metadata using literal terms")
+    mode.add_argument("--resolve", action="store_true", help="resolve one exact committed harness surface/title")
     parser.add_argument("--task", help="repository-relative approved task path required for --refresh")
+    parser.add_argument("--source", help="harness source id; defaults to ecc for read-only modes")
+    parser.add_argument("--surface", help="optional query surface; required for --resolve")
+    parser.add_argument("--title", help="exact catalog title required for --resolve")
+    parser.add_argument("--limit", type=int, help="query result limit; default 5, maximum 10")
     args = parser.parse_args(argv)
-    client = GitHubClient()
     try:
         registry = load_json(REGISTRY_PATH)
+        read_only_options = (args.source, args.surface, args.title, args.limit)
         if args.check:
-            if args.task:
-                raise SourceError("--task is only valid with --refresh")
+            if args.task or any(value is not None for value in read_only_options):
+                raise SourceError("--check does not accept task/query/resolve options")
+            client = GitHubClient()
             outputs = build_outputs(registry, client)
             mismatches = compare_outputs(outputs)
             if mismatches:
@@ -915,8 +1047,42 @@ def main(argv: list[str] | None = None) -> int:
             print("EXTERNAL_CAPABILITY_SYNC = CURRENT")
             return 0
 
+        if args.query is not None:
+            if args.task or args.title:
+                raise SourceError("--query does not accept --task or --title")
+            catalog = load_json(CATALOG_PATH)
+            result = query_harness_entries(
+                registry,
+                catalog,
+                source_id=args.source or "ecc",
+                terms=args.query,
+                surface=args.surface,
+                limit=5 if args.limit is None else args.limit,
+            )
+            print(canonical_json(result), end="")
+            return 0
+
+        if args.resolve:
+            if args.task or args.limit is not None:
+                raise SourceError("--resolve does not accept --task or --limit")
+            if not args.surface or not args.title:
+                raise SourceError("--resolve requires --surface and --title")
+            catalog = load_json(CATALOG_PATH)
+            result = resolve_harness_entry(
+                registry,
+                catalog,
+                source_id=args.source or "ecc",
+                surface=args.surface,
+                title=args.title,
+            )
+            print(canonical_json(result), end="")
+            return 0
+
+        if any(value is not None for value in read_only_options):
+            raise SourceError("--refresh does not accept query/resolve options")
         if not args.task:
             raise SourceError("--refresh requires --task")
+        client = GitHubClient()
         load_authorized_task(args.task)
         new_registry = refreshed_registry(registry, client)
         outputs = build_outputs(new_registry, client)

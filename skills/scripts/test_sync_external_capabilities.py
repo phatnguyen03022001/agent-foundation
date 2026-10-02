@@ -185,6 +185,27 @@ class ExternalCapabilitySyncTests(unittest.TestCase):
                 return source
         self.fail(source_id)
 
+    def fake_catalog(self) -> dict:
+        outputs = sync.build_outputs(self.registry, FakeClient())
+        return json.loads(outputs["skills/.agent/external-capabilities/catalog.json"])
+
+    def query_catalog(self, count: int = 6) -> dict:
+        catalog = self.fake_catalog()
+        template = next(
+            entry for entry in catalog["entries"] if entry["id"] == "ecc:good"
+        )
+        catalog["entries"] = [
+            entry for entry in catalog["entries"] if entry["id"] != "ecc:good"
+        ]
+        for index in range(count):
+            entry = copy.deepcopy(template)
+            entry["id"] = f"ecc:react-testing-{index}"
+            entry["title"] = f"react-testing-{index}"
+            entry["description"] = "React component testing patterns."
+            entry["source_path"] = f"skills/react-testing-{index}/SKILL.md"
+            catalog["entries"].append(entry)
+        return catalog
+
     def test_foundation_routes_generic_how_target_then_ecc_without_authority_transfer(self) -> None:
         architecture = (
             ROOT / "skills" / "contracts" / "FOUNDATION_ARCHITECTURE.md"
@@ -424,6 +445,226 @@ class ExternalCapabilitySyncTests(unittest.TestCase):
                 source_id="ecc",
                 surface="agent",
                 title="run",
+            )
+
+    def test_ecc_query_returns_bounded_deterministic_inert_metadata(self) -> None:
+        query = getattr(sync, "query_harness_entries", None)
+        self.assertIsNotNone(query, "query_harness_entries must expose bounded discovery")
+        catalog = self.query_catalog()
+        result = query(
+            self.registry,
+            catalog,
+            source_id="ecc",
+            terms=["ReAcT", "testing"],
+            surface="skill",
+            limit=5,
+        )
+        self.assertEqual(result["authority"], "NONE")
+        self.assertEqual(
+            result["source"],
+            {
+                "id": "ecc",
+                "repository": "affaan-m/ECC",
+                "revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+            },
+        )
+        self.assertEqual(
+            result["query"],
+            {"terms": ["ReAcT", "testing"], "surface": "skill", "limit": 5},
+        )
+        self.assertEqual(result["total_matches"], 6)
+        self.assertTrue(result["truncated"])
+        self.assertEqual(len(result["entries"]), 5)
+        self.assertEqual(
+            [entry["title"] for entry in result["entries"]],
+            [f"react-testing-{index}" for index in range(5)],
+        )
+        self.assertEqual(
+            result["entries"][0],
+            next(
+                entry
+                for entry in catalog["entries"]
+                if entry["id"] == "ecc:react-testing-0"
+            ),
+        )
+
+    def test_ecc_query_reports_zero_and_multiple_matches_without_selection(self) -> None:
+        catalog = self.query_catalog(count=2)
+        multiple = sync.query_harness_entries(
+            self.registry,
+            catalog,
+            source_id="ecc",
+            terms=["react"],
+            surface=None,
+            limit=5,
+        )
+        self.assertEqual(multiple["total_matches"], 2)
+        self.assertFalse(multiple["truncated"])
+        self.assertNotIn("selected", multiple)
+
+        empty = sync.query_harness_entries(
+            self.registry,
+            catalog,
+            source_id="ecc",
+            terms=["does-not-exist"],
+            surface="skill",
+            limit=5,
+        )
+        self.assertEqual(empty["total_matches"], 0)
+        self.assertEqual(empty["entries"], [])
+        self.assertFalse(empty["truncated"])
+
+    def test_ecc_query_rejects_invalid_input(self) -> None:
+        catalog = self.query_catalog()
+        cases = [
+            {"terms": [], "surface": None, "limit": 5},
+            {"terms": [""], "surface": None, "limit": 5},
+            {"terms": ["react"], "surface": "unknown", "limit": 5},
+            {"terms": ["react"], "surface": None, "limit": 0},
+            {"terms": ["react"], "surface": None, "limit": 11},
+        ]
+        for case in cases:
+            with self.subTest(case=case):
+                with self.assertRaises(sync.SourceError):
+                    sync.query_harness_entries(
+                        self.registry,
+                        catalog,
+                        source_id="ecc",
+                        **case,
+                    )
+        with self.assertRaises(sync.SourceError):
+            sync.query_harness_entries(
+                self.registry,
+                catalog,
+                source_id="awesome",
+                terms=["testing"],
+                surface=None,
+                limit=5,
+            )
+
+    def test_ecc_query_and_resolution_fail_closed_on_bad_relevant_metadata(self) -> None:
+        base = self.query_catalog(count=2)
+        mutations = []
+
+        stale_provenance = copy.deepcopy(base)
+        next(
+            item
+            for item in stale_provenance["generated_from"]
+            if item["id"] == "ecc"
+        )["revision"] = "0" * 40
+        mutations.append(stale_provenance)
+
+        stale_entry = copy.deepcopy(base)
+        next(
+            item for item in stale_entry["entries"] if item["source"] == "ecc"
+        )["revision"] = "0" * 40
+        mutations.append(stale_entry)
+
+        unsafe_path = copy.deepcopy(base)
+        next(
+            item for item in unsafe_path["entries"] if item["source"] == "ecc"
+        )["source_path"] = "../escape.md"
+        mutations.append(unsafe_path)
+
+        malformed = copy.deepcopy(base)
+        next(
+            item for item in malformed["entries"] if item["source"] == "ecc"
+        )["description"] = None
+        mutations.append(malformed)
+
+        duplicate = copy.deepcopy(base)
+        duplicate["entries"].append(copy.deepcopy(
+            next(item for item in duplicate["entries"] if item["source"] == "ecc")
+        ))
+        mutations.append(duplicate)
+
+        for catalog in mutations:
+            with self.subTest(catalog=catalog):
+                with self.assertRaises(sync.SourceError):
+                    sync.query_harness_entries(
+                        self.registry,
+                        catalog,
+                        source_id="ecc",
+                        terms=["react"],
+                        surface=None,
+                        limit=5,
+                    )
+                with self.assertRaises(sync.SourceError):
+                    sync.resolve_harness_entry(
+                        self.registry,
+                        catalog,
+                        source_id="ecc",
+                        surface="skill",
+                        title="react-testing-0",
+                    )
+
+    def test_query_and_resolve_cli_are_offline_read_only(self) -> None:
+        catalog = self.query_catalog(count=2)
+
+        def fake_load(path):
+            if path == sync.REGISTRY_PATH:
+                return copy.deepcopy(self.registry)
+            if path == sync.CATALOG_PATH:
+                return copy.deepcopy(catalog)
+            raise AssertionError(path)
+
+        with mock.patch.dict(os.environ, {"PATH": ""}, clear=False):
+            with mock.patch.object(sync, "load_json", side_effect=fake_load):
+                with mock.patch.object(
+                    sync, "GitHubClient", side_effect=AssertionError("network forbidden")
+                ):
+                    with mock.patch.object(
+                        sync.urllib.request,
+                        "urlopen",
+                        side_effect=AssertionError("network forbidden"),
+                    ):
+                        with mock.patch.object(
+                            Path,
+                            "write_text",
+                            side_effect=AssertionError("write forbidden"),
+                        ):
+                            with mock.patch("builtins.print") as printer:
+                                self.assertEqual(
+                                    sync.main([
+                                        "--query",
+                                        "react",
+                                        "testing",
+                                        "--surface",
+                                        "skill",
+                                        "--limit",
+                                        "1",
+                                    ]),
+                                    0,
+                                )
+                                query_payload = json.loads(printer.call_args.args[0])
+                                self.assertEqual(query_payload["total_matches"], 2)
+                                self.assertTrue(query_payload["truncated"])
+
+                            with mock.patch("builtins.print") as printer:
+                                self.assertEqual(
+                                    sync.main([
+                                        "--resolve",
+                                        "--source",
+                                        "ecc",
+                                        "--surface",
+                                        "skill",
+                                        "--title",
+                                        "react-testing-0",
+                                    ]),
+                                    0,
+                                )
+                                resolved = json.loads(printer.call_args.args[0])
+                                self.assertEqual(
+                                    resolved["id"],
+                                    "ecc:react-testing-0",
+                                )
+
+    def test_new_cli_modes_preserve_refresh_authorization_gate(self) -> None:
+        with mock.patch.object(sync, "GitHubClient", return_value=FakeClient()):
+            self.assertEqual(sync.main(["--refresh"]), 2)
+            self.assertEqual(
+                sync.main(["--check", "--task", ".agent/tasks/TASK-0029/task.yaml"]),
+                2,
             )
 
     def test_superpowers_preserves_plugin_and_behavioral_surface_facts_without_indexing_them(self) -> None:
