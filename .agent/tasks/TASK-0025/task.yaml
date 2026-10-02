@@ -1,98 +1,71 @@
 protocol_version: 3
-
 task_id: TASK-0025
-task_revision: 2
+task_revision: 3
 state: APPROVED
-
 origin:
   type: architect_revision
-  task_id: "TASK-0025"
-  gap_id: "TASK-0025-UNRELATED-DS-STORE-CLEANLINESS"
-
+  task_id: TASK-0025
+  gap_id: TASK-0025-R2-PREPUBLICATION-REPORT-TRUTH
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
-
 target:
   repository: phatnguyen03022001/agent-foundation
   branch:
     name: main
     role: stable
-
 execution_base:
   mode: handoff_snapshot
   capture: after_final_planning_commit
   require_exact_match: true
-
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  revision: "e6ca27af764f1e20e6e19f51e8363f80cc8c7e42"
-
+  revision: "81fd1d31e21156bb64e15216d1b76b53f1fcfa34"
 architect_analysis_skills:
   - architect
   - verification
-
 execution_skills:
   required:
     - executor
     - verification
   recommended: []
-
 external_skills:
   architect_analysis: []
   execution_required: []
   execution_recommended: []
-
 authority_sources:
-  - source: ".agent/tasks/TASK-0025/report.yaml@e6ca27af764f1e20e6e19f51e8363f80cc8c7e42"
-    role: "immutable revision-1 BLOCKED recovery evidence; no implementation candidate was committed"
+  - source: ".agent/tasks/TASK-0025/report.yaml@81fd1d31e21156bb64e15216d1b76b53f1fcfa34"
+    role: "immutable revision-2 qualification and original candidate/report lineage; its pre-authorship pushed claim requires explicit correction"
     precedence: 1
-  - source: ".agent/tasks/TASK-0025/task.yaml@e6ca27af764f1e20e6e19f51e8363f80cc8c7e42"
-    role: "original F001 refresh boundary; revision 2 explicitly replaces recovery cleanliness and publication/check scheduling only"
+  - source: ".agent/tasks/TASK-0025/task.yaml@0751a76d17f7d77146bf6123561c5b9a8a7de698"
+    role: "original revision-2 implementation boundary and proof inputs; no repeat implementation is authorized"
     precedence: 2
-  - source: ".agent/tasks/TASK-0024/report.yaml@e845fc023a7fba21d639f68300da3f29d9ab4150"
-    role: "persisted exact-owner F001 verification evidence bound to dbdff63fb2e9572ed9ba9748de046f4c35e33c23"
+  - source: "skills/contracts/IMPLEMENTATION_REPORT.md@81fd1d31e21156bb64e15216d1b76b53f1fcfa34"
+    role: "report ownership and truthful pre-authorship publication semantics"
     precedence: 3
-  - source: "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md@e6ca27af764f1e20e6e19f51e8363f80cc8c7e42"
-    role: "unchanged product-state/evidence semantics"
-    precedence: 4
-
 structure_authority:
   status: RESOLVED
-  source: "current operator-authorized recovery plus exact revision-1 report and independent Architect inspection"
-  rationale: "The three-file candidate remains correct and unpublished. Preserve unrelated Finder metadata while replacing global worktree cleanliness with a named, fully observed task-local exception. No implementation or governance redesign is required."
-
-objective: "Recover and publish the exact reviewed three-file F001 state-refresh candidate, then its revision-2 report. Preserve .DS_Store unchanged. This task-scoped cleanliness exception and conditional proof reuse do not change generic governance or product-state semantics."
-
+  source: "independent Architect review of exact report revision 2 and its candidate/report commits"
+  rationale: "Implementation and external publication proof pass. Correct one material report timing contradiction using an append-only report revision; preserve all existing commits and implementation bytes."
+objective: "Publish a compact revision-3 report explicitly correcting revision 2's false pre-authorship publication claim, with no implementation changes or repeated implementation qualification."
 scope:
   required_changes:
-    - "Fresh-resolve canonical GitHub main and prove local HEAD equals the exact revision-2 handoff base. Safely fast-forward the planning-only task/review commit when required, preserving the three recovered edits. Any merge/conflict or unexpected tracked, staged, untracked, or Git-operation state is BLOCKED."
-    - "At recovery entry, permit exactly the three named unstaged candidate edits and the one unrelated untracked .DS_Store. Before publication require the index to contain only the exact candidate paths; after candidate/report closure require no tracked/index changes and no untracked paths except .DS_Store. Record the exception explicitly; never describe the checkout as globally clean."
-    - "Pin current candidate bytes with SHA-256 over each complete file: product-state.json = ef8ab485075d232a137a3cab0d816fc4f7fcd9fc1dd8f50493e353637fb268c6; skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md = 1ce144c0e32aa3185993a34c5426dca3771062c41c56bb4cda22e1af93ae783a; skills/scripts/test_validate_skill_library.py = f33450946b181aede8dde9269e2e78b879371ec973945a0b69eb32ba316f0729. Do not edit these files in revision 2. Any receipt mismatch is BLOCKED and requires fresh Architect qualification."
-    - "Observe .DS_Store as an unrelated untracked regular Apple Desktop Services Store, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. Preserve its path and bytes throughout. Do not stage, publish, delete, move, ignore, or modify it; any changed receipt or additional unrelated path is BLOCKED."
-    - "Verify canonical handoff-base F001 is INTEGRATED/UNKNOWN and the candidate alone changes it to VERIFIED/PASS with null regression. Reprove TASK-0024 exact current profile/ owner-byte attribution. Preserve F002-F004, release, global gates, P0_SCOPE, release.status blocker, schema 3, protocol 3, and all historical TASK-0024 evidence."
-    - "Fresh-run the focused F001 evidence/state/forward-transition/drift checks, explicit revision-2 task validation, current state/skills validator, JSON parse, in-memory Python compile, exact three-file diff/scope and git diff --check. A single bounded deterministic bundle may compose those checks."
-    - "Previously persisted PASS evidence may be reused only after establishing unchanged predicate semantics, exact candidate receipts, relevant source/configuration/toolchain/environment inputs, and sufficient attribution. Record source identity and why each reused result still covers its predicate; an opaque diff receipt alone is insufficient. If applicability cannot be established, rerun only the affected check/suite with bounded output and a recoverable carrier. This is conditional reuse, not a blanket verification waiver."
-    - "Preserve the immutable revision-1 report at e6ca27af764f1e20e6e19f51e8363f80cc8c7e42. The successor may replace the current report path only in the report-only child of the candidate, with task_revision 2, report_revision 2, exact new authorized_base_head, final_execution_head set to the candidate, and result NEEDS_REVIEW. Do not author or modify review.yaml or task.yaml."
-    - "Use protocol-v3 single-publication closure when its exact preconditions hold: immutable verified candidate directly after the handoff base, sole report-only child, then one ordinary non-force publication. Use the existing two-publication path if actual required proof depends on prior remote candidate visibility. Freshly prove final remote identity, parentage, candidate/report path scope, MAIN_ONLY topology, and task-local cleanliness including the preserved exception."
+    - "Resolve the exact handoff base on fresh GitHub main and safely fast-forward the local mirror to it. The base differs from 81fd1d31e21156bb64e15216d1b76b53f1fcfa34 only in Architect-owned TASK-0025 task/review artifacts. Any unexpected ref, diff, dirty tracked/index state, additional untracked path, conflict, or Git operation is BLOCKED."
+    - "Preserve the original product candidate 4b4a87bcf73f3d49a3cf1e9f4c43d0c5d84f5d6e and original report commit 81fd1d31e21156bb64e15216d1b76b53f1fcfa34 unchanged. Resolve their exact identities and scope; reuse revision-2 qualification after proving unchanged relevant inputs. Do not create another implementation candidate, refresh product state, or rerun full engineering suites."
+    - "Replace only the existing report.yaml with task_revision 3, report_revision 3, REPORTED/NEEDS_REVIEW. Cite the original exact report and candidate as qualification evidence. Explicitly record that the original single-publication candidate was not remote before revision-2 report authorship and its truthful original pushed value was false; revision 2's pushed true was erroneous. Do not present later remote reachability as earlier evidence."
+    - "This revision is report-only: authorized_base_head and final_execution_head both equal the exact already-published revision-3 handoff base; there is no new implementation commit. Preserve original candidate identity in qualification evidence rather than confusing it with the current report-only execution HEAD. For this new report, pushed is true only after fresh proof that its named final_execution_head was already remote before authorship; it never attests its own future publication."
+    - "Run only current task/report artifact validation, exact report-only diff and git diff --check, immutable identity/input attribution, and fresh publication/local-hygiene checks needed by this correction. Record reuse source and applicability; stop if a material qualification input changed."
+    - "Commit the report as the sole direct child of the exact handoff base, with no other changed path. Publish by ordinary non-force fast-forward; resolve fresh remote publication proof outside the report after push. Final local main, origin/main and fresh remote main must equal the report commit; preserve MAIN_ONLY topology."
+    - "Carry forward the named .DS_Store exception: sole untracked regular file, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. Preserve its path/bytes and exclude it from publication; final tracked/index state is clean. Do not claim globally clean worktree, stage all, delete, move, modify, or ignore this file."
   allowed_existing_files_or_components:
-    - "product-state.json"
-    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md"
-    - "skills/scripts/test_validate_skill_library.py"
     - ".agent/tasks/TASK-0025/report.yaml"
   expected_files_are_restrictive: true
-
 invariants:
-  - "Only persisted TASK-0024 exact-owner evidence qualifies F001 verification; task/report/review status never self-attests product progress."
-  - "The three candidate file receipts remain exact; .DS_Store remains unchanged and unpublished."
-  - "The named cleanliness exception applies to TASK-0025 revision 2 only and grants no unrelated mutation or generic ignore policy."
-  - "Exactly two organizational roles, existing protocol/schema, T1 routing and minimum-context behavior remain unchanged."
-
+  - "Original implementation bytes, product truth, candidate/report identities, and existing qualification remain unchanged."
+  - "Report content belongs to Executor; review/task authority belongs to Architect."
+  - "The named .DS_Store exception is task-local, unchanged, and unpublished."
 forbidden_changes:
-  - "Any candidate-byte change, any stage-all command, cleanup of unrelated files, ignore configuration, or manipulation that conceals dirty state."
-  - "Modify profile/, Documents, Standards, validator production source, Task Protocol, Case Router, Foundation Architecture, roles, external pins/catalog, or TASK-0024 artifacts."
-  - "Modify current task/review authority, mutate Agent Runtime/host/dependencies/credentials, or create branches/tags/releases/repository metadata."
-  - "Start TASK-0026, T2-T5, release progression, a new role, service, state store, queue, scheduler, planner, or universal manifest."
-
+  - "Any implementation, product-state, profile, skill/protocol/validator, dependency, Runtime, task/review authority, external pin, branch/tag/release, or unrelated file change."
+  - "Amend/rewrite old commits, force push, recreate the qualified candidate, repeat full qualification without a changed relevant input, or start TASK-0026."
 gap_policy:
   local_auto_fix: false
   scope_expansion: forbidden
@@ -101,45 +74,34 @@ gap_policy:
   dependency_change: forbidden
   public_contract_change: revised_contract_required
   blocking_gap_behavior: BLOCKED
-
 acceptance_criteria:
   - id: AC-1
-    requirement: "Persisted TASK-0024 evidence remains attributable to exact current profile/ bytes."
-    evidence_required: "Historical helper returns true, profile/ equals dbdff63fb2e9572ed9ba9748de046f4c35e33c23, and focused synthetic drift fails closed."
+    requirement: "The revision-2 temporal contradiction is explicitly corrected without falsifying current report semantics."
+    evidence_required: "Exact original report/candidate citations; explicit original pre-authorship pushed false correction; revision-3 execution HEAD equals its already-remote handoff base; publication of the new report is proved externally after push."
   - id: AC-2
-    requirement: "The exact reviewed candidate refreshes only F001 truth."
-    evidence_required: "All three file receipts match; F001 PASS/VERIFIED/null regression; unchanged validator semantics and F002-F004/release/gates/phase/blocker."
+    requirement: "The qualified implementation and its proof remain unchanged."
+    evidence_required: "Original candidate parent 0751a76d17f7d77146bf6123561c5b9a8a7de698, exact three-file scope, original report parent and blob 8e1006629f75750e8de4d37cd0e051545b7f2bce, unchanged relevant inputs, and attributed reuse of revision-2 PASS evidence."
   - id: AC-3
-    requirement: "Qualification covers the exact candidate without needless re-execution."
-    evidence_required: "Fresh required focused/static/state checks PASS; each broader result is rerun or explicitly attributed to unchanged relevant inputs and persisted evidence."
-  - id: AC-4
-    requirement: "Task-local cleanliness is exact and unrelated metadata is preserved."
-    evidence_required: "Entry shows only the three authorized candidate edits plus pinned .DS_Store; final tracked/index state is clean, .DS_Store is the sole untracked exception with the same receipt, and it is absent from both commits."
-  - id: AC-5
-    requirement: "Candidate/report closure is canonical and independent review remains pending."
-    evidence_required: "Candidate is a direct child of exact handoff base and changes only the three candidate files; sole report-only child carries task/report revision 2 and NEEDS_REVIEW; ordinary non-force remote publication is independently observed after push, with synchronized local/origin/fresh main and MAIN_ONLY topology."
-
+    requirement: "Report-only closure and the task-local cleanliness exception are exact."
+    evidence_required: "Task/report validators and diff check PASS; sole report-only direct child of handoff base; fresh non-force remote closure and MAIN_ONLY proof; tracked/index clean with precisely unchanged unpublished .DS_Store."
 verification:
   authoritative_verification:
     required: false
     mechanism: ""
     expected_signal: ""
-
 structure_policy:
   expected_new_files: []
   unlisted_new_files:
     allowed: false
     max: 0
     within: []
-    purpose: "Publish existing exact candidate files and replace the existing report path only."
+    purpose: "Replace the existing Executor-owned report only."
   allow_new_top_level_directories: false
   allow_new_shared_modules: false
-
 git_authority:
   create_branch: false
   commit: true
   push: true
   promote_to_main: false
-
 blocking_decisions: []
 execution_ready: true
