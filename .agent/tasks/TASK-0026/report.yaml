@@ -1,0 +1,218 @@
+protocol_version: 3
+
+task_id: TASK-0026
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0026/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "4c443c0c2d84140686c9ff577a75cc79c1cdc6ab"
+  final_execution_head: "8dc1f5206bbef6bdd797bb8b3ff05cc8fa383a0d"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "8eb53c7a35288d32a7bbf7deecf421fed8d6407b"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - exact local and fresh remote Git identity observation
+    - bounded repository text mutation
+    - recoverable local verification execution
+    - exact-path commit and ordinary non-force MAIN_ONLY publication
+  available:
+    - Agent Runtime repository/filesystem/terminal surfaces
+    - native Git exact-path staging and commit inside the canonical working copy
+    - runtime-restart durable pipe verification
+    - fresh origin/main remote observation
+  missing: []
+  passed: true
+
+qualification:
+  tdd:
+    red: "Observed before production changes: the new 16-combination launch fixture test failed against string fixtures/three-argument rendering, malformed chat_actions was accepted, and canonical F001 state validation rejected stale TASK-0024 owner attribution after profile test-byte drift."
+    green: "The identical focused commands passed after the bounded implementation: 3/3 launch tests and 2/2 product-state/evidence tests."
+  verification:
+    bootstrap_validator: "PASS; OPM_BOOTSTRAP = TRUE."
+    bootstrap_regressions: "PASS; 60/60."
+    skills_validator: "PASS; rationalized 7-skill taxonomy and protocol v3."
+    skills_regressions: "PASS; 234/234."
+    task_artifact: "PASS; explicit TASK-0026 task artifact validation."
+    json_parse: "PASS; profile/.agent/bootstrap/bootstrap.json and product-state.json."
+    python_in_memory_compile: "PASS; modified validate.py, test_bootstrap.py, and test_validate_skill_library.py."
+    state_transition: "PASS; exact base VERIFIED to candidate INTEGRATED for F001."
+    product_state_invariants: "PASS; only F001 lifecycle truth changed; schema 3, F002-F004, release OPEN truth, system gates, P0_SCOPE and release.status blocker remain unchanged."
+    bootstrap_preservation: "PASS; exact four execution surface mappings and seven locator-only prompt inputs/template are unchanged."
+    protected_scope: "PASS; candidate changes exactly the eight authorized existing paths; protected Task Protocol, Architect/Executor skills, Case Router, Foundation Architecture, external-capability plane, Documents, Standards and production validate_skill_library.py are byte-unchanged."
+    diff_check: "PASS."
+    unrelated_exception: ".DS_Store remains the sole untracked path, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d."
+  context_baseline:
+    measurement_scope: "Inventory measurements are file inventory only, not actual loaded context. Route measurements are synthetic reconstruction-fixture JSON payloads. Neither measurement represents ChatGPT tokens, context-window limits, elapsed time, or hidden tool/runtime overhead."
+    measurement_method:
+      inventory: "For each exact commit/path, UTF-8 text blob bytes were measured with git cat-file -s and lines were counted by streaming git show output line-by-line without retaining file bodies in controller context."
+      catalog: "skills/.agent/external-capabilities/catalog.json used the same git cat-file size and streamed line-count method; its body was not preloaded into controller context."
+      route_payload: "Existing BootstrapContractTests reconstruction fixtures were used with fixed identities below; each returned dict was serialized with json.dumps(sort_keys=True,separators=(',', ':'),ensure_ascii=False) and counted as UTF-8 bytes."
+    inventory:
+      - path: profile/ARCHITECT_PROFILE.md
+        before:
+          source_commit: "4c443c0c2d84140686c9ff577a75cc79c1cdc6ab"
+          utf8_bytes: 14148
+          line_count: 199
+        after:
+          source_commit: "8dc1f5206bbef6bdd797bb8b3ff05cc8fa383a0d"
+          utf8_bytes: 14834
+          line_count: 199
+      - path: skills/architect/SKILL.md
+        before:
+          source_commit: "4c443c0c2d84140686c9ff577a75cc79c1cdc6ab"
+          utf8_bytes: 24338
+          line_count: 155
+        after:
+          source_commit: "8dc1f5206bbef6bdd797bb8b3ff05cc8fa383a0d"
+          utf8_bytes: 24338
+          line_count: 155
+      - path: skills/executor/SKILL.md
+        before:
+          source_commit: "4c443c0c2d84140686c9ff577a75cc79c1cdc6ab"
+          utf8_bytes: 28681
+          line_count: 143
+        after:
+          source_commit: "8dc1f5206bbef6bdd797bb8b3ff05cc8fa383a0d"
+          utf8_bytes: 28681
+          line_count: 143
+      - path: skills/protocols/TASK_PROTOCOL.md
+        before:
+          source_commit: "4c443c0c2d84140686c9ff577a75cc79c1cdc6ab"
+          utf8_bytes: 62694
+          line_count: 403
+        after:
+          source_commit: "8dc1f5206bbef6bdd797bb8b3ff05cc8fa383a0d"
+          utf8_bytes: 62694
+          line_count: 403
+      - path: skills/contracts/FOUNDATION_ARCHITECTURE.md
+        before:
+          source_commit: "4c443c0c2d84140686c9ff577a75cc79c1cdc6ab"
+          utf8_bytes: 24584
+          line_count: 176
+        after:
+          source_commit: "8dc1f5206bbef6bdd797bb8b3ff05cc8fa383a0d"
+          utf8_bytes: 24584
+          line_count: 176
+      - path: skills/.agent/external-capabilities/catalog.json
+        before:
+          source_commit: "4c443c0c2d84140686c9ff577a75cc79c1cdc6ab"
+          utf8_bytes: 569747
+          line_count: 13588
+        after:
+          source_commit: "8dc1f5206bbef6bdd797bb8b3ff05cc8fa383a0d"
+          utf8_bytes: 569747
+          line_count: 13588
+      - path: documents/DOCUMENT_MODEL.md
+        before:
+          source_commit: "4c443c0c2d84140686c9ff577a75cc79c1cdc6ab"
+          utf8_bytes: 22394
+          line_count: 288
+        after:
+          source_commit: "8dc1f5206bbef6bdd797bb8b3ff05cc8fa383a0d"
+          utf8_bytes: 22394
+          line_count: 288
+      - path: standards/STANDARD_MODEL.md
+        before:
+          source_commit: "4c443c0c2d84140686c9ff577a75cc79c1cdc6ab"
+          utf8_bytes: 14158
+          line_count: 114
+        after:
+          source_commit: "8dc1f5206bbef6bdd797bb8b3ff05cc8fa383a0d"
+          utf8_bytes: 14158
+          line_count: 114
+    synthetic_route_fixtures:
+      common:
+        fixture_profile_revision: "707acfea1f749591621751785b87ae792355a0eb"
+        target_repository: owner/repo
+        target_branch: dev
+        surface: CHATGPT_LOCAL
+      routes:
+        - route: MATERIAL_JUDGMENT
+          request_identity: request-1
+          role: architect
+          specialization: null
+          capability_locators:
+            - capability: architect
+              owner: skills
+              path: skills/architect/SKILL.md
+          navigation_locators: []
+          json_payload_bytes: 1410
+        - route: READ_ONLY_RESEARCH
+          request_identity: request-1
+          role: executor
+          specialization: researcher
+          capability_locators:
+            - capability: executor
+              owner: skills
+              path: skills/executor/SKILL.md
+          navigation_locators:
+            - key: research_request_contract
+              repository: phatnguyen03022001/agent-foundation
+              revision: "707acfea1f749591621751785b87ae792355a0eb"
+              path: skills/templates/research-request.yaml
+            - key: research_result_contract
+              repository: phatnguyen03022001/agent-foundation
+              revision: "707acfea1f749591621751785b87ae792355a0eb"
+              path: skills/templates/research-result.yaml
+          json_payload_bytes: 1777
+        - route: TASK_EXECUTION
+          request_identity: null
+          task_path: .agent/tasks/TASK-0018/task.yaml
+          task_revision: 1
+          base_head: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          phase: EXECUTION
+          role: executor
+          specialization: null
+          capability_locators:
+            - capability: executor
+              owner: skills
+              path: skills/executor/SKILL.md
+            - capability: task_protocol
+              owner: skills
+              path: skills/protocols/TASK_PROTOCOL.md
+          navigation_locators: []
+          json_payload_bytes: 1805
+  single_publication:
+    eligible: true
+    remote_before_report_authorship: "Fresh origin/main is exactly 4c443c0c2d84140686c9ff577a75cc79c1cdc6ab and the remote exposes only main."
+    candidate_parent: "4c443c0c2d84140686c9ff577a75cc79c1cdc6ab"
+    report_policy: "Candidate remains local at report authorship; pushed is therefore serialized false. Fresh remote publication proof must be resolved after the report commit is published."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0026 requires independent Architect review after the bounded Executor report; no authoritative verifier is designated by the task."
+
+pushed: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "The canonical task_launch owner now has independent exact chat_actions and task_actions; all 16 surface/action combinations render exact labels. Focused and full bootstrap regressions reject bare, crossed, unknown and malformed action/fixture inputs while preserving the four surface mappings and seven-input prompt contract."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "ARCHITECT_PROFILE.md and profile/README.md now present MATERIAL_JUDGMENT to Architect, READ_ONLY_RESEARCH to Executor Researcher, TASK_EXECUTION to Executor, and EXECUTE only as the legacy alias while linking canonical skills/router owners. Existing ChatGPT role policy and dormant Codex routing remain unchanged; protected governance bytes are unchanged."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "This report records exact base-to-candidate byte/line inventory for all eight required paths and fixed synthetic reconstruction measurements for all three entry routes, with exact source/fixture identities and explicit non-token/non-runtime limitations. The external catalog body was not preloaded into controller context."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "F001 verification is UNKNOWN and derived state INTEGRATED with an evidence-backed VERIFIED-to-INTEGRATED regression because TASK-0024 no longer covers exact current profile bytes. Historical TASK-0024 evidence is retained; F002-F004, schema 3, release OPEN, system gates, P0_SCOPE and release.status blocker are unchanged; TASK-0026 does not self-attest F001 PASS."
+  - criterion_id: AC-5
+    status: PASS
+    evidence: "On candidate 8dc1f5206bbef6bdd797bb8b3ff05cc8fa383a0d: bootstrap validator and 60/60 regressions pass; skills validator and 234/234 regressions pass; task artifact, JSON parse, in-memory compile, state-transition, invariant, protected-scope and git diff checks pass. Candidate is the direct child of exact base and changes only the eight authorized existing paths. Report publication closure remains to be proven externally after this report-only child is committed and pushed."
+
+result: NEEDS_REVIEW
