@@ -1,0 +1,35 @@
+protocol_version: 3
+
+task_id: TASK-0025
+task_revision: 1
+review_revision: 1
+state: REVISION_REQUIRED
+
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0025/report.yaml
+  commit: "e6ca27af764f1e20e6e19f51e8363f80cc8c7e42"
+  report_revision: 1
+
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: NOT_PROVEN
+  verifier_evidence: PASS
+
+notes:
+  - "Independent GitHub exact-SHA inspection proves the reviewed commit is a report-only direct child of 66bf111951b6b467d8c78db7985e18ef47f59a5b and current remote main resolves to the exact report commit. Executor's BLOCKED result truthfully preserves the missing candidate/report success lineage. No implementation acceptance or F001 advancement is granted."
+  - "Independent local inspection finds only the three authorized unstaged candidate files and unrelated untracked .DS_Store. The Python changes contain direct canonical-state assertion refreshes plus the required historical-owner drift proof; production validator and profile/ are unchanged. Independent focused lifecycle/evidence reproduction passes 27/27 and the full current skills/protocol regression suite passes 234/234."
+  - "Revision 2 replaces globally clean worktree closure with an explicit task-local predicate: tracked/index cleanliness plus precisely the unchanged, unpublished .DS_Store exception. It grants no deletion, relocation, ignore change, stage-all operation, other unrelated mutation, or generic cleanliness exemption."
+  - "The revision-1 diff receipt has no specified generation method and was not reproduced by standard git diff variants. Revision 2 therefore pins complete candidate files by SHA-256 and requires fresh focused checks plus predicate/input attribution before broader evidence reuse. Unattributable or invalidated evidence must be rerun for the affected predicate."
+  - "Revision 2 changes only recovery/publication/check scheduling, retains the exact F001 WHAT/BOUNDARY and evidence semantics, and authorizes candidate followed by report revision 2. Original report bytes remain immutable at this reviewed commit."
