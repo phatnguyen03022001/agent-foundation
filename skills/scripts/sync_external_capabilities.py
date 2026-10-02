@@ -1034,7 +1034,7 @@ def main(argv: list[str] | None = None) -> int:
         registry = load_json(REGISTRY_PATH)
         read_only_options = (args.source, args.surface, args.title, args.limit)
         if args.check:
-            if args.task or any(value is not None for value in read_only_options):
+            if args.task is not None or any(value is not None for value in read_only_options):
                 raise SourceError("--check does not accept task/query/resolve options")
             client = GitHubClient()
             outputs = build_outputs(registry, client)
@@ -1048,13 +1048,13 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         if args.query is not None:
-            if args.task or args.title:
+            if args.task is not None or args.title is not None:
                 raise SourceError("--query does not accept --task or --title")
             catalog = load_json(CATALOG_PATH)
             result = query_harness_entries(
                 registry,
                 catalog,
-                source_id=args.source or "ecc",
+                source_id="ecc" if args.source is None else args.source,
                 terms=args.query,
                 surface=args.surface,
                 limit=5 if args.limit is None else args.limit,
@@ -1063,7 +1063,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         if args.resolve:
-            if args.task or args.limit is not None:
+            if args.task is not None or args.limit is not None:
                 raise SourceError("--resolve does not accept --task or --limit")
             if not args.surface or not args.title:
                 raise SourceError("--resolve requires --surface and --title")
@@ -1071,7 +1071,7 @@ def main(argv: list[str] | None = None) -> int:
             result = resolve_harness_entry(
                 registry,
                 catalog,
-                source_id=args.source or "ecc",
+                source_id="ecc" if args.source is None else args.source,
                 surface=args.surface,
                 title=args.title,
             )

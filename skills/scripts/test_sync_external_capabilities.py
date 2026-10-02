@@ -659,6 +659,88 @@ class ExternalCapabilitySyncTests(unittest.TestCase):
                                     "ecc:react-testing-0",
                                 )
 
+    def test_cli_distinguishes_omitted_defaults_from_explicit_empty_options(self) -> None:
+        catalog = self.query_catalog(count=2)
+
+        def fake_load(path):
+            if path == sync.REGISTRY_PATH:
+                return copy.deepcopy(self.registry)
+            if path == sync.CATALOG_PATH:
+                return copy.deepcopy(catalog)
+            raise AssertionError(path)
+
+        with mock.patch.dict(os.environ, {"PATH": ""}, clear=False):
+            with mock.patch.object(sync, "load_json", side_effect=fake_load):
+                with mock.patch.object(
+                    sync, "GitHubClient", side_effect=AssertionError("network forbidden")
+                ):
+                    with mock.patch.object(
+                        Path,
+                        "write_text",
+                        side_effect=AssertionError("write forbidden"),
+                    ):
+                        valid_cases = [
+                            ["--query", "react"],
+                            ["--query", "react", "--source", "ecc"],
+                            [
+                                "--resolve",
+                                "--surface",
+                                "skill",
+                                "--title",
+                                "react-testing-0",
+                            ],
+                            [
+                                "--resolve",
+                                "--source",
+                                "ecc",
+                                "--surface",
+                                "skill",
+                                "--title",
+                                "react-testing-0",
+                            ],
+                        ]
+                        for argv in valid_cases:
+                            with self.subTest(valid=argv):
+                                with mock.patch("builtins.print"):
+                                    self.assertEqual(sync.main(argv), 0)
+
+                        invalid_cases = [
+                            ["--query", "react", "--source", ""],
+                            [
+                                "--resolve",
+                                "--source",
+                                "",
+                                "--surface",
+                                "skill",
+                                "--title",
+                                "react-testing-0",
+                            ],
+                            ["--query", "react", "--title", ""],
+                            ["--check", "--task", ""],
+                            ["--query", "react", "--task", ""],
+                            [
+                                "--resolve",
+                                "--surface",
+                                "skill",
+                                "--title",
+                                "react-testing-0",
+                                "--task",
+                                "",
+                            ],
+                        ]
+                        for argv in invalid_cases:
+                            with self.subTest(invalid=argv):
+                                with mock.patch("builtins.print") as printer:
+                                    self.assertEqual(sync.main(argv), 2)
+                                    self.assertFalse(
+                                        any(
+                                            call.args
+                                            and isinstance(call.args[0], str)
+                                            and call.args[0].lstrip().startswith("{")
+                                            for call in printer.call_args_list
+                                        )
+                                    )
+
     def test_new_cli_modes_preserve_refresh_authorization_gate(self) -> None:
         with mock.patch.object(sync, "GitHubClient", return_value=FakeClient()):
             self.assertEqual(sync.main(["--refresh"]), 2)
