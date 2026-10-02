@@ -1,8 +1,8 @@
 protocol_version: 3
 
 task_id: TASK-0025
-task_revision: 1
-report_revision: 1
+task_revision: 2
+report_revision: 2
 state: REPORTED
 
 task_source:
@@ -13,125 +13,118 @@ execution:
   branch:
     name: main
     role: stable
-  pre_execution_head: "66bf111951b6b467d8c78db7985e18ef47f59a5b"
-  authorized_base_head: "66bf111951b6b467d8c78db7985e18ef47f59a5b"
-  final_execution_head: "66bf111951b6b467d8c78db7985e18ef47f59a5b"
+  pre_execution_head: "0751a76d17f7d77146bf6123561c5b9a8a7de698"
+  authorized_base_head: "0751a76d17f7d77146bf6123561c5b9a8a7de698"
+  final_execution_head: "4b4a87bcf73f3d49a3cf1e9f4c43d0c5d84f5d6e"
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  authorized_revision: "d4283602ae61acb306cc4deb923c8d77ac690a8c"
+  authorized_revision: "e6ca27af764f1e20e6e19f51e8363f80cc8c7e42"
 
 capability_preflight:
   phase: EXECUTION
   required:
     - exact local and fresh remote Git identity observation
-    - bounded repository filesystem access and local verification
-    - recoverable long-running verification carrier
-    - ordinary non-force report publication
+    - bounded repository filesystem and local verification
+    - exact-path staging and ordinary non-force MAIN_ONLY publication
+    - preservation of the named unrelated .DS_Store exception
   available:
-    - Agent Runtime 0.5.1 repository/filesystem/terminal surfaces
-    - runtime-restart durable pipe verification carrier
+    - Agent Runtime repository/filesystem/terminal surfaces
     - authenticated GitHub exact-SHA reads
+    - explicit-path Git staging through the bounded local terminal
     - ordinary non-force origin/main publication
   missing: []
   passed: true
 
 qualification:
-  recovery_reconciliation: "Fresh origin/main remained at the authorized base and no candidate/report publication from the interrupted Executor was present. Runtime had zero active sessions/heavy jobs before requalification."
-  recovered_candidate_status: "QUALIFIED_UNCOMMITTED"
-  recovered_candidate_paths:
+  recovery_reconciliation: "Local main was safely fast-forwarded from e6ca27af764f1e20e6e19f51e8363f80cc8c7e42 to the exact revision-2 base 0751a76d17f7d77146bf6123561c5b9a8a7de698. The planning commit changed only TASK-0025 task/review artifacts and did not overlap the recovered candidate."
+  candidate_commit: "4b4a87bcf73f3d49a3cf1e9f4c43d0c5d84f5d6e"
+  candidate_parent: "0751a76d17f7d77146bf6123561c5b9a8a7de698"
+  candidate_paths:
     - product-state.json
     - skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md
     - skills/scripts/test_validate_skill_library.py
-  recovered_candidate_diff_receipt: "b2e1c9a53d91bae33f8911ad1b484d2b2a2f7e05abe5e37c41e8748afd9a4aba"
-  candidate_commit: null
-  candidate_published: false
-  focused_f001_regressions: "32/32 PASS"
+  candidate_receipts:
+    - "product-state.json = ef8ab485075d232a137a3cab0d816fc4f7fcd9fc1dd8f50493e353637fb268c6"
+    - "skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md = 1ce144c0e32aa3185993a34c5426dca3771062c41c56bb4cda22e1af93ae783a"
+    - "skills/scripts/test_validate_skill_library.py = f33450946b181aede8dde9269e2e78b879371ec973945a0b69eb32ba316f0729"
+  unrelated_preserved_path:
+    path: ".DS_Store"
+    size_bytes: 6148
+    sha256: "4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d"
+    state: "sole untracked task-local exception; unchanged and unpublished"
+  focused_f001_checks: "3/3 PASS"
+  task_revision_2_artifact_validation: PASS
   skills_validator: PASS
   skills_protocol_regressions: "234/234 PASS"
-  profile_bootstrap_local: "OPM_BOOTSTRAP = TRUE"
-  profile_bootstrap_remote: "OPM_BOOTSTRAP = TRUE"
-  profile_bootstrap_regressions: "58/58 PASS"
-  external_capability_sync: CURRENT
-  external_capability_regressions: "19/19 PASS"
-  documents_regressions: "94/94 PASS"
-  standards_verifier: "VALID; 57/57 PASS using pre-existing /usr/bin/python3 3.9.6 with PyYAML 6.0.3; no dependency or host mutation"
+  state_delta_proof: "PASS; canonical base F001 INTEGRATED/UNKNOWN with regression present becomes only F001 VERIFIED/PASS with regression null"
+  exact_profile_owner_attribution: "PASS; current profile/ tree equals TASK-0024 final_execution_head dbdff63fb2e9572ed9ba9748de046f4c35e33c23 and synthetic drift fails closed"
+  unchanged_product_truth: "F002-F004, release OPEN truth, system gates, schema version 3, derived P0_SCOPE, and earliest blocker release.status are unchanged"
   json_parse: PASS
   modified_python_compile: PASS
-  protected_history_scope_and_diff_check: PASS
-  validator_source_unchanged: true
-  unrelated_preserved_path: ".DS_Store"
+  exact_three_file_scope_and_diff_check: PASS
+  broader_evidence_reuse:
+    source: ".agent/tasks/TASK-0025/report.yaml@e6ca27af764f1e20e6e19f51e8363f80cc8c7e42"
+    applicability: "PASS; all three candidate complete-file SHA-256 receipts are identical to the previously qualified candidate, the only base-to-revision-2 committed changes are TASK-0025 task.yaml and review.yaml, and the relevant local toolchain remains /usr/bin/python3 3.9.6 with PyYAML 6.0.3. These planning artifacts do not change the bootstrap, external capability, Documents, or Standards predicate inputs."
+    profile_bootstrap_local: "OPM_BOOTSTRAP = TRUE"
+    profile_bootstrap_remote: "OPM_BOOTSTRAP = TRUE"
+    profile_bootstrap_regressions: "58/58 PASS"
+    external_capability_sync: CURRENT
+    external_capability_regressions: "19/19 PASS"
+    documents_regressions: "94/94 PASS"
+    standards_verifier: VALID
+    standards_regressions: "57/57 PASS"
+  publication_mode: "protocol-v3 single-publication closure after local candidate plus sole report-only child"
 
 authoritative_verification:
   required: false
   performed: false
   result: NOT_REQUIRED
-  evidence: "TASK-0025 designates no separate authoritative verifier; independent Architect review would follow only after successful candidate/report closure."
+  evidence: "TASK-0025 revision 2 designates no separate authoritative verifier; independent Architect review follows this NEEDS_REVIEW handoff."
 
 changed_files:
-  - path: ".agent/tasks/TASK-0025/report.yaml"
-    summary: "Truthful recovery BLOCKED report. The fully qualified three-file F001 refresh remains uncommitted and unpublished."
-    new_file: true
+  - path: product-state.json
+    summary: "Refreshes only F001 verification to PASS, derived state to VERIFIED, and regression to null using persisted TASK-0024 exact-owner evidence."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md
+    summary: "Mirrors the refreshed F001 VERIFIED current truth while preserving evidence semantics."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: skills/scripts/test_validate_skill_library.py
+    summary: "Updates direct canonical-state assertions and retains exact-owner drift coverage without changing production validator semantics."
+    new_file: false
+    in_scope: true
+    structure_authorized: true
+  - path: .agent/tasks/TASK-0025/report.yaml
+    summary: "Replaces the revision-1 BLOCKED recovery report with the revision-2 NEEDS_REVIEW publication handoff."
+    new_file: false
     in_scope: true
     structure_authorized: true
 
 acceptance_evidence:
   - criterion_id: AC-1
     status: PASS
-    evidence: "The canonical historical-verification helper accepts .agent/tasks/TASK-0024/report.yaml for owner profile/. Current profile/ is byte-equivalent to TASK-0024 final_execution_head dbdff63fb2e9572ed9ba9748de046f4c35e33c23. The focused drift fixture proves synthetic owner-byte drift makes the same report fail closed."
+    evidence: "The canonical historical helper accepts TASK-0024 for owner profile/; current profile/ has the exact same tree as dbdff63fb2e9572ed9ba9748de046f4c35e33c23, and the focused synthetic drift test fails closed."
   - criterion_id: AC-2
     status: PASS
-    evidence: "Recovered working-tree candidate sets only F001 verification to PASS with TASK-0024 report plus current profile bootstrap artifacts, reason null, derived_state VERIFIED, and regression null. skills/scripts/validate_skill_library.py is byte-identical to the authorized base."
+    evidence: "All three pinned candidate receipts match exactly. F001 alone is VERIFIED/PASS with null regression; F002-F004, release, gates, phase, blocker and schema remain unchanged."
   - criterion_id: AC-3
     status: PASS
-    evidence: "Exact before/after checks prove F002-F004 lifecycle truth, release OPEN/null/UNKNOWN state, system_gates, schema_version 3, derived P0_SCOPE, and earliest blocker release.status are unchanged."
+    evidence: "Fresh focused/static/state checks pass, the full current skills validator and 234/234 regressions pass, and broader revision-1 PASS evidence is reused only after exact candidate/input/toolchain attribution."
   - criterion_id: AC-4
     status: PASS
-    evidence: "AGENT_FOUNDATION_PRODUCT_STATE.md mirrors F001 VERIFIED from persisted TASK-0024 exact-byte evidence. Only direct canonical-state assertions were refreshed; generic lifecycle/evidence/adversarial behavior remains green in the full 234-test regression suite."
+    evidence: "After candidate commit there are no tracked or index changes; .DS_Store is the sole untracked exception and retains exact size/hash. It is absent from the candidate and report candidate sets."
   - criterion_id: AC-5
     status: PASS
-    evidence: "Focused F001 tests pass 32/32; full skills/protocol 234/234; bootstrap local/remote TRUE and 58/58; external CURRENT and 19/19; Documents 94/94; Standards VALID and 57/57; JSON parse, modified-Python compile, exact three-file tracked scope, protected/history checks, and git diff --check pass."
-  - criterion_id: AC-6
-    status: BLOCKED
-    evidence: "The recovery checkout contains the unrelated untracked .DS_Store that the operator explicitly required preserved. TASK-0025 requires a clean worktree for publication closure. Because that predicate cannot be satisfied without deleting or otherwise mutating unrelated state, the qualified three-file candidate was intentionally not committed or published; therefore the required candidate-child/report-child NEEDS_REVIEW lineage cannot be established."
-
-executor_checks:
-  - check_id: CHECK-1
-    result: BLOCKED
-    evidence: "Fresh local HEAD, origin/main, and fresh remote main all equal authorized base 66bf111951b6b467d8c78db7985e18ef47f59a5b; topology is MAIN ONLY with one worktree and no active Git operation. Canonical-base F001 preconditions and TASK-0024 exact-owner attribution were reproduced. The clean-worktree predicate is not satisfiable in recovery because the three interrupted authorized edits and unrelated .DS_Store must be preserved."
-  - check_id: CHECK-2
-    result: PASS
-    evidence: "The recovered F001 refresh and focused exact-owner drift proof are correct; only direct current-state assertions required by the refreshed projection were additionally corrected."
-  - check_id: CHECK-3
-    result: PASS
-    evidence: "Focused 32/32, skills validator PASS, and full skills/protocol 234/234 PASS. validate_skill_library.py remains byte-identical to the base."
-  - check_id: CHECK-4
-    result: PASS
-    evidence: "Bootstrap local/remote TRUE with 58/58 regressions; external sync CURRENT with 19/19 regressions; Documents 94/94; Standards VALID with 57/57 regressions."
-  - check_id: CHECK-5
-    result: PASS
-    evidence: "JSON parse, modified Python in-memory compile, protected/history checks, exact three-file tracked diff, unchanged F002-F004/release/system-gates/phase/blocker, and git diff --check all pass."
-  - check_id: CHECK-6
-    result: BLOCKED
-    evidence: "Fresh remote remained at the authorized base immediately before report authorship. Candidate publication is not permitted because final clean-worktree closure is already known impossible while preserving unrelated .DS_Store. This BLOCKED report is publication evidence only and does not substitute for the candidate/report NEEDS_REVIEW chain."
-
-discovered_gaps:
-  - gap_id: "TASK-0025-UNRELATED-DS-STORE-CLEANLINESS"
-    classification: BLOCKING
-    type: local_state
-    severity: material
-    description: "An unrelated untracked .DS_Store is present in the designated recovery checkout."
-    evidence: "Fresh repo observation reports exactly three authorized tracked modifications plus one untracked .DS_Store; no staged/conflicted paths exist."
-    impact: "The task-required clean-worktree publication and final closure predicate cannot PASS without mutating unrelated state."
-    blocks_current_task: true
-    action_taken: "Preserved .DS_Store and the fully qualified uncommitted F001 candidate; did not commit or publish the candidate."
-    suggested_next_step: "Architect/operator must provide revised authority or independently remove/reconcile the unrelated file before a fresh TASK-0025 publication qualification. Do not infer permission to delete it from this report."
+    evidence: "Candidate 4b4a87bcf73f3d49a3cf1e9f4c43d0c5d84f5d6e is a direct child of the exact handoff base and changes only three authorized files. This report is the intended sole report-only child and ends NEEDS_REVIEW for independent Architect judgment."
 
 deviations_from_task: []
+discovered_gaps: []
+blockers: []
 
-blockers:
-  - "Required clean-worktree publication closure is blocked by preserved unrelated untracked .DS_Store."
+pushed: true
 
-pushed: false
-
-result: BLOCKED
+result: NEEDS_REVIEW
