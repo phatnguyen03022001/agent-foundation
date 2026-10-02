@@ -1,11 +1,11 @@
 protocol_version: 3
 task_id: TASK-0029
-task_revision: 1
+task_revision: 2
 state: APPROVED
 origin:
-  type: user_request
-  task_id: TASK-0028
-  gap_id: BOUNDED-ECC-METADATA-DISCOVERY
+  type: task_gap
+  task_id: TASK-0029
+  gap_id: EXPLICIT-EMPTY-CLI-INPUT-FAIL-CLOSED
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
 target:
@@ -19,7 +19,7 @@ execution_base:
   require_exact_match: true
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  revision: "4db71360c6070f44e9debc4e119a3b9f141f0426"
+  revision: "a53cb2488fa786cb2f9f5a3a689b640372fcbee5"
 architect_analysis_skills:
   - architect
   - verification
@@ -29,58 +29,49 @@ execution_skills:
     - verification
   recommended: []
 external_skills:
-  architect_analysis:
-    - "ecc:agent:planner @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:agents/planner.md; bounded repository-aware planning HOW only, no role/model/phase authority"
+  architect_analysis: []
   execution_required:
-    - "ecc:python-patterns @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/python-patterns/SKILL.md; only relevant Python implementation HOW, adapted to existing stdlib/native conventions"
+    - "ecc:python-patterns @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/python-patterns/SKILL.md; only relevant explicit Python argument/default handling HOW, subordinate to target stdlib conventions"
   execution_recommended: []
 authority_sources:
-  - source: "operator-authorized thin-Foundation programme: exact-fit ECC exploitation after kernel reduction"
-    role: "one bounded discovery/resolution outcome; Foundation owns navigation/authority/proof, target owns product/stack/rules, ECC supplies generic HOW; explicit maintenance override of release-first selection without product-state changes"
+  - source: "operator-authorized thin-Foundation programme and TASK-0029 independent review"
+    role: "one bounded fail-closed correction; current Codex supervision is a session exception only; maintenance overrides release-first selection without product-state changes"
     precedence: 1
-  - source: ".agent/tasks/TASK-0028/report.yaml@4db71360c6070f44e9debc4e119a3b9f141f0426 and its r2 ACCEPTED review published with this task"
-    role: "qualified reduced kernels and repaired external consumer; both kernels remain protected in this slice"
+  - source: ".agent/tasks/TASK-0029/report.yaml@a53cb2488fa786cb2f9f5a3a689b640372fcbee5 and its r1 REVISION_REQUIRED review published with this task"
+    role: "preserve qualified r1 discovery/resolution while closing the exact reproduced CLI gap; r1 authority remains reconstructible at 74fc51dc402f3704a7699e84a12ac627112d7456"
     precedence: 2
-  - source: "skills/contracts/FOUNDATION_ARCHITECTURE.md#capability-control and #generic-engineering-harness-seam at 4db71360c6070f44e9debc4e119a3b9f141f0426"
-    role: "existing target-first/minimum-loading/exact-pin and authority-NONE capability boundaries"
+  - source: "main and query_harness_entries/resolve_harness_entry in skills/scripts/sync_external_capabilities.py at b966ccdf6dbcd956fc7e5e1c39cd06ea9b03543e"
+    role: "existing literal query, exact identity and read-only boundaries; default-on-omission must not conceal invalid explicit source or incompatible options"
     precedence: 3
-  - source: "current sources.json/catalog.json and resolve_harness_entry/main in sync_external_capabilities.py at 4db71360c6070f44e9debc4e119a3b9f141f0426"
-    role: "reproduced gap: exact surface/title resolution exists, but native CLI exposes only check/refresh; 454 pinned ECC entries expose title/description/path/surface, without structured language/framework facets"
-    precedence: 4
-  - source: "operator feedback on unknown discovery before authority freeze"
-    role: "later feature/slice authoring must probe material boundary uncertainty or declare a bounded component/mutation envelope; authority/capability/unknown-effect gaps remain distinct. No new uncertainty schema or planning doctrine is implemented here."
-    precedence: 5
 structure_authority:
   status: RESOLVED
-  source: "existing inert external-capability owner, stdlib sync CLI, exact-entry resolver, FakeClient regression suite and linked external-plane README"
-  rationale: "Extend this existing navigation seam rather than add a service, taxonomy, generated stack tags, loader or reference shard. Mechanical metadata discovery and explicit exact selection form one independently reviewable capability-resolution outcome; product applicability remains caller judgment."
-objective: "Make pinned ECC capabilities discoverable from a bounded need query without preloading their bodies, then resolve an explicitly selected exact entry through the existing resolver. Add only a small offline navigation operation and its demand-loading procedure."
+  source: "independent native CLI reproduction at exact r1 candidate/report plus inspection of main's truthiness-based source and option handling"
+  rationale: "The defect and mutation boundary are known: argument dispatch in the existing CLI and negative cases in its existing suite. No new component, adaptive schema, resolver architecture or source metadata is needed."
+objective: "Make explicitly invalid or mode-incompatible CLI inputs fail closed instead of silently treating empty values as omitted, while preserving TASK-0029's bounded inert ECC navigation."
 scope:
   required_changes:
-    - "Fresh-resolve the handoff, safely fast-forward the designated mirror and bind TASK-0028 r2 ACCEPTED review. Permit precisely the pinned .DS_Store exception; unexpected edits/paths, divergence, conflicts or Git-operation state are BLOCKED."
-    - "Extend the existing sync_external_capabilities.py CLI with read-only query and explicit-resolution modes alongside unchanged check/refresh behavior. Query consumes committed registry/catalog metadata only, targets the admitted ECC harness, accepts literal need-search terms and an optional skill/command/agent surface, and searches existing title/description/source_path fields deterministically without synonyms, generated facets, semantic ranking or a stack/phase matrix. Return a small deterministic metadata page (default five rows, maximum ten) plus exact source repository/revision, authority NONE, total match count and visible truncation. Empty/invalid query/filter/limit input fails explicitly. A valid zero-match query returns an honest empty result; multiple/truncated matches remain candidates, never an automatic exact-fit decision."
-    - "Expose explicit surface/title selection through existing resolve_harness_entry behavior, preserving its compatibility and exact unique pinned identity. Read-only modes do not access network, download/read upstream capability bodies, invoke ECC, execute indexed bytes, install/configure/refresh/adopt/load anything or write repository state. Selected rows retain existing catalog entry identity/shape; a successful lookup does not grant applicability, trust, task authority, role admission or execution capability. Unsupported source/surface, duplicate/conflicting identity, stale pin/provenance, malformed relevant ECC metadata or unsafe source paths must fail closed rather than silently emit a misleading partial selection. Preserve existing registry/catalog/snapshot schemas and mutable refresh authorization."
-    - "Document the procedure in the existing external-plane README, with only a concise locator in skills/README.md: resolve exact target truth and current concern; derive a bounded query while retaining known stack/contract constraints; inspect a small metadata page; reject incompatible candidates and refine broad/truncated queries; explicitly resolve a chosen surface/title at the registry pin; read only relevant sections of normally one to three selected capabilities before using their HOW. Selection never activates upstream role/model/hook/session/install conventions. Keep unfamiliar/missing applicability explicit rather than treating a lexical hit or no hit as universal support or proof of absence. Generic engineering methodology stays in ECC; no kernel body or universal target manifest is added."
-    - "Add meaningful focused query/CLI/exact-resolution regressions in the existing external suite. Prove bounded deterministic output and disclosed truncation, case handling and surface separation, honest zero/multiple matches, invalid inputs, wrong/stale/conflicting identity, body/network/write inactivity and preservation of existing sync/refresh gates. Preserve all nineteen existing external cases, including the corrected doctrine consumer, and all 240 existing skills cases; no literal-proof weakening or copied HOW bodies. Keep construction/indexing/generation behavior unchanged except directly necessary CLI dispatch support."
-    - "Persist compact synthetic receipts in this task report, not new target manifests or catalogs: React/TypeScript component testing, Next.js/Node backend API work and Rust ownership concerns. Query the actual committed pin, record a small candidate set and explicit selection/rejection reasoning, resolve selected identities and inspect only materially relevant selected source sections at that pin. The observed React-testing lexical query can also match angular-developer; backend/API can match Java frameworks. Demonstrate that incompatible stack candidates are not automatically selected. Rust language patterns do not prove Axum-specific API coverage. Synthetic facts are test inputs only and do not change Foundation's product/stack or bind another repository."
-    - "Run full external regressions including focused new cases, native skills validator and full skills regressions, current task/report artifact validation, modified-Python in-memory compile, query/resolve smoke checks against committed metadata, exact protected/scope checks and git diff --check. Test query/resolve without an ECC CLI and with network access disabled by the test surface. Prove unchanged metadata generation through existing FakeClient coverage and unchanged generation inputs; no live upstream refresh/regeneration or unrelated full suites absent invalidation. Measure source bytes and actual returned JSON bytes/row counts only; do not claim ChatGPT token, latency or headroom improvements. Derive bounded recoverable jobs and reconcile unknown effects before mutation retries."
-    - "Commit the qualified implementation as a direct child of the handoff base, then its sole report-only child. Apply protected protocol-v3 publication semantics, including truthful pushed false for candidate-local report authorship and fresh remote proof outside the report. Final local main, origin/main and fresh remote main equal the report commit, with MAIN_ONLY, one worktree, tracked/index cleanliness and the exact named .DS_Store exception. Finish NEEDS_REVIEW and stop before successor work."
+    - "Fresh-resolve the exact r2 handoff and safely fast-forward the designated mirror to the final planning base, resolving the exact r1 report and REVISION_REQUIRED review. Permit precisely the pinned .DS_Store exception; unexpected edits/paths, divergence, conflicts or Git-operation state are BLOCKED."
+    - "Before editing, reproduce --resolve --source '' --surface skill --title react-testing and --query react --source '' returning success against the real committed catalog; also reproduce --query react --title '' being ignored. Correct only directly relevant argument default/presence validation in existing main: source defaults to ecc only when omitted, explicit unsupported empty source fails, and supplied mode-incompatible options fail even when their value is empty. Apply the same presence distinction to existing task-option guards for check/query/resolve without changing refresh authorization. Valid omitted-source defaults and explicit ecc requests remain successful; invalid requests emit failure and no success payload."
+    - "Add concise meaningful regression coverage in test_sync_external_capabilities.py for invalid explicit empty source in both new modes, incompatible supplied empty title/task options, valid omission versus explicit ECC, and retained offline/no-write behavior. Preserve all 25 existing external tests and the existing FakeClient generation/refresh proof; do not weaken tests, copy generic HOW or add parser features, schemas or files."
+    - "Run focused RED-to-GREEN cases, full external regressions including all 25 existing cases, native skills validator and all 240 existing skills cases, current r2 task/report artifact validation, modified-Python in-memory compile, actual committed-metadata positive/negative query/resolve smoke, protected/scope and git diff --check. Do not run live upstream refresh/regeneration, bootstrap/Documents/Standards repeats or install dependencies absent new input invalidation. Keep jobs bounded and reconcile unknown effects before mutation retries."
+    - "Replace only the existing report.yaml as task_revision 2 / report_revision 2, recording the exact reproduced input/output contradiction and fresh correction/suite evidence. Unchanged r1 synthetic source-section and documentation proof may be reused only after resolving report a53cb2488fa786cb2f9f5a3a689b640372fcbee5 / candidate b966ccdf6dbcd956fc7e5e1c39cd06ea9b03543e and proving relevant inputs unchanged; no repeated upstream body research is required for this parser repair."
+    - "Commit the qualified two-file implementation as a direct child of the r2 handoff base, then the existing report replacement as its sole report-only child. Follow protocol-v3 publication eligibility and truthful candidate-prepublication pushed state; use ordinary non-force MAIN_ONLY publication with fresh external closure. Final local main, origin/main and fresh remote main equal the r2 report commit, with one worktree, tracked/index cleanliness and the exact named .DS_Store exception. Finish NEEDS_REVIEW and stop before successor work."
   allowed_existing_files_or_components:
     - skills/scripts/sync_external_capabilities.py
     - skills/scripts/test_sync_external_capabilities.py
-    - skills/.agent/external-capabilities/README.md
-    - skills/README.md
+    - .agent/tasks/TASK-0029/report.yaml
   expected_files_are_restrictive: true
 invariants:
-  - "Architect remains byte-identical at 16717 bytes; Executor remains byte-identical at 17359 bytes. Existing roles/provider policy remain unchanged; Codex supervision is only the current operator exception."
-  - "Foundation owns tiny inert navigation/authority/proof. Target owns product/stack/rules, ECC generic HOW and Runtime transport. Query output and semantic selection remain subordinate to exact target/task authority."
-  - "Sources, pins, snapshots, catalog, state distinctions, bootstrap locator and accepted owner contracts remain byte-identical. No false LOADED/ADOPTED/AUTHORIZED transition follows query or exact lookup."
-  - "Product-state.json stays byte-identical: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, all gates unchanged, P0_SCOPE and blocker release.status. Task acceptance cannot self-attest feature/gate verification."
+  - "Candidate changes only the two permitted Python files; report.yaml is an authorized Executor output only in its separate report-only child. Existing r1 task/report/review remain immutable at their recorded commits; current task/review authority is untouched by Executor."
+  - "Both README files, all registry/pin/snapshot/catalog bytes, kernels, contracts/protocols, validator/skills regressions, profile/bootstrap/router, Documents and Standards remain byte-identical to the r2 base. Architect remains 16717 bytes and Executor 17359 bytes."
+  - "Preserve existing valid query/resolve schemas, literal deterministic bounded matching, unique explicit pinned resolution, inert authority NONE and no body/network/ECC/write activation. Existing generation/indexing/check/refresh behavior and authorization remain unchanged except invalid supplied option rejection."
+  - "Foundation owns authority/routing/proof and tiny navigation; target owns product/stack/rules; ECC supplies generic HOW; Runtime is transport. No reusable Codex role admission or new product/feature/gate/release claim."
+  - "Product-state.json remains byte-identical: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, all gates unchanged, P0_SCOPE and blocker release.status."
   - "Preserve sole untracked regular .DS_Store: 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. No stage-all, deletion, move, modification, ignore change or publication."
 forbidden_changes:
-  - "Modify role kernels, production skills validator/skills regressions, Task Protocol, Foundation Architecture or other contracts/HOW owners, source registry/pins/snapshots/catalog, profile/bootstrap, router/rationalization, product state, Documents, Standards, historical/current authority or Runtime/host/dependencies."
-  - "New scripts/shards/services/caches/registries/ontologies/tags, universal phase/stack/feature matrices or target manifests, generic HOW copying, automatic semantic-best recommendations or body preloading, source trust/adoption activation, Codex role admission, rule-adoption/feature-design/uncertainty-schema implementation or successor execution."
-  - "ECC installation/configuration/hooks, global or shared Runtime lifecycle mutation, branch/tag/release creation, force push, unrelated cleanup or metadata refresh."
+  - "Modify documentation, query/resolution architecture or applicability policy, construction/index generation, protected owner/product/metadata bytes, current task/review authority, role/provider policy, Runtime/host/dependencies or other repository paths."
+  - "Add flags, scripts/shards/caches/taxonomies/registries/schema/phase-stack matrices, preload bodies, activate upstream behavior, install/configure ECC, refresh metadata, broaden target rule/design/uncertainty planning or execute a successor."
+  - "Rewrite r1 history, create branch/tag/release, force push or perform unrelated cleanup."
 gap_policy:
   local_auto_fix: true
   scope_expansion: forbidden
@@ -91,30 +82,26 @@ gap_policy:
   blocking_gap_behavior: BLOCKED
 acceptance_criteria:
   - id: AC-1
-    requirement: "Need discovery returns bounded reproducible pinned metadata without activation."
-    evidence_required: "Offline query/CLI positives and negatives PASS, visible count/truncation, exact registry provenance, no body/network/write activity and preserved sync/refresh authorization."
+    requirement: "CLI preserves omission versus explicit invalid input."
+    evidence_required: "Reproduced r1 empty-source successes become nonzero failures with no success JSON for query/resolve; incompatible supplied empty options fail; valid omitted default and explicit ECC requests retain exact pinned output."
   - id: AC-2
-    requirement: "Explicit exact resolution and applicability remain distinct."
-    evidence_required: "Existing unique surface/title resolver compatibility plus fail-closed missing/wrong/stale/conflicting metadata; compact real-pin synthetic receipts with target constraints, false-positive rejection and relevant-section source identity."
+    requirement: "The repair preserves thin inert navigation and existing authority."
+    evidence_required: "Offline/no-write focused proof and all 25 existing plus new external cases PASS; valid output shapes, matching, exact resolution, generation and refresh gates preserved; all protected/documentation bytes unchanged."
   - id: AC-3
-    requirement: "Navigation stays thin and correctly owned."
-    evidence_required: "Existing-owner documentation and concise locator only; no new source file, taxonomy, semantic ranker, body corpus or stack matrix; both kernels and all protected owner/product/metadata bytes unchanged."
-  - id: AC-4
-    requirement: "Native qualification and exact publication close safely."
-    evidence_required: "All existing plus focused regressions, native/artifact/static/scope checks PASS; only allowed candidate paths and sole report-only child; truthful pushed state, fresh remote/local MAIN_ONLY closure and pinned exception."
+    requirement: "Revision qualification and exact publication are complete."
+    evidence_required: "Native validator, 240 existing skills cases, r2 artifacts, compile/smoke/scope/diff PASS; candidate direct child of exact r2 base and only two allowed Python files, sole report-only child with exact revisions, truthful pushed state, fresh remote/local MAIN_ONLY closure and pinned exception."
 verification:
   authoritative_verification:
     required: false
     mechanism: ""
     expected_signal: ""
 structure_policy:
-  expected_new_files:
-    - .agent/tasks/TASK-0029/report.yaml
+  expected_new_files: []
   unlisted_new_files:
     allowed: false
     max: 0
     within: []
-    purpose: "Extend the existing inert resolver seam; add only this task's report."
+    purpose: "Repair existing CLI argument handling/tests and replace the existing report only."
   allow_new_top_level_directories: false
   allow_new_shared_modules: false
 git_authority:
