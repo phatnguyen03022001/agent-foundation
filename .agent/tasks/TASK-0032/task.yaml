@@ -1,0 +1,127 @@
+protocol_version: 3
+task_id: TASK-0032
+task_revision: 1
+state: APPROVED
+origin:
+  type: user_request
+  task_id: TASK-0031
+  gap_id: FEATURE-OUTCOME-AND-BOUNDED-UNCERTAINTY-AUTHORING
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "0408022b00932b965ee7281c043e75fd09420318"
+architect_analysis_skills:
+  - architect
+  - verification
+  - simplicity
+execution_skills:
+  required:
+    - executor
+    - verification
+  recommended: []
+external_skills:
+  architect_analysis:
+    - "ecc:agent:planner @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:agents/planner.md; only target-repository requirements, dependencies/risks, incremental testing and independently verifiable outcome planning HOW; no upstream roles/models/universal phases"
+  execution_required:
+    - "ecc:agent:planner @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:agents/planner.md; minimum relevant requirements/codebase/risk and incremental deliverable planning sections only; advisory HOW, not Foundation authority or automatic agent dispatch"
+  execution_recommended: []
+authority_sources:
+  - source: "operator-authorized thin-Foundation programme: feature outcomes sized for limited ChatGPT turns, and material unknown discovery before implementation authority freezes"
+    role: "one bounded task-authoring seam using existing protocol-v3 authority; Foundation owns WHAT/BOUNDARY/PROOF, target product/stack/rules, ECC engineering HOW and Runtime transport; explicit maintenance override of release-first selection without product-state mutation"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0031/report.yaml@0408022b00932b965ee7281c043e75fd09420318 and its ACCEPTED review published with this task"
+    role: "accepted material design/research gate and explicit docs-versus-environment uncertainty distinction; preserve this gate's governing text"
+    precedence: 2
+  - source: "skills/protocols/TASK_PROTOCOL.md#structure-authority-applicability, #protocol-v3-task-normalizationdefaults and #gap-policy at 0408022b00932b965ee7281c043e75fd09420318"
+    role: "positive component scope, optional restrictive exact-file controls, Executor-local companions and LOCAL fixes already exist; missing scope is not permission and scope-expansion forbidden remains effective"
+    precedence: 3
+  - source: "skills/contracts/IMPLEMENTATION_CONTRACT.md#structure-authority-applicability and skills/architect/SKILL.md#executor-fit-task-decomposition-gate at 0408022b00932b965ee7281c043e75fd09420318"
+    role: "existing material task fields, role-local FIT/SPLIT_REQUIRED/CAPABILITY_BLOCKED judgment and coherent outcome/proof boundary; no new schema or lifecycle required"
+    precedence: 4
+  - source: "operator critique of Runtime BLOCKED churn after unprobed boundary unknowns"
+    role: "address the concrete authoring hazard without claiming an independently audited sole Runtime root cause: pre-author scope/mutation classes before execution, resolve material boundary uncertainty or put it inside explicitly approved component authority, and preserve authority/capability/unknown-effect distinctions"
+    precedence: 5
+structure_authority:
+  status: RESOLVED
+  source: "exact existing v3 positive-scope/defaults/gap owners, accepted design gate, current Executor-fit gate and inspected pinned ECC planner"
+  rationale: "Existing v3 authority already supports local companion files and component-scoped stabilization. Clarify when and how Architect chooses that boundary before task execution, tied to one coherent feature/proof outcome. Add only a small owner delta and navigation at existing sections; do not create adaptive/frozen mode fields, a second task model or new planning machinery."
+objective: "Author one coherent feature outcome with a deliberate bounded uncertainty/implementation boundary, using existing v3 positive component authority so in-scope discovered defects can be resolved without guessing every filename or permitting scope expansion."
+scope:
+  required_changes:
+    - "Fresh-resolve exact handoff, safely fast-forward the designated mirror and bind TASK-0031 ACCEPTED review. Permit precisely the pinned .DS_Store exception; unexpected edits/paths, divergence, conflicts or Git-operation state are BLOCKED."
+    - "Extend only Task Protocol's existing Structure authority applicability section with a concise pre-authoring boundary. Start from applicable target feature/acceptance/contracts and one independently reviewable outcome/proof; FE/BE/data work may share that outcome when required, rather than generating unrelated folder tasks. Use the existing Executor-fit judgment for independent outcomes or unavailable current-phase capabilities. Keep input owners, dependencies, relevant HOW, permitted consequences and terminal proof bounded for the selected outcome; do not preload unrelated features or claim numeric ChatGPT budgets/timing. ECC retains the generic HOW of vertical-slice decomposition."
+    - "Before authoring implementation scope, distinguish resolved material decisions, still-open facts that could change the boundary, and non-material implementation discretion. Resolve boundary-changing facts through existing read-only research or explicitly authorized bounded discovery/probes when necessary. When stabilization can safely proceed despite unknown exact defect/file identities, Architect may pre-author a fixed objective, existing component/ownership boundary, permitted mutation classes, protected invariants, evidence and stop conditions using existing task fields. Material architecture, public/shared contracts, dependencies, ownership, trust/privilege or acceptance-oracle changes remain outside that envelope unless already explicitly authorized. Do not invent exact files, dependencies or architecture to make unknowns disappear."
+    - "Compose that envelope from objective, scope.required_changes, scope.allowed_existing_files_or_components, structure_authority, existing optional restrictive controls, invariants/forbidden_changes, gap_policy, acceptance_criteria and verification; no new formal mode/schema/field. Exact repository, branch, task revision and execution base remain mandatory in all cases. Restrictive exact-file scope stays a hard boundary when explicitly selected and justified by known material consequences; it is not the default for unknown local companions. Preserve explicit new-file/structure restrictions. Omission of exact-file prescription never grants unrelated scope, new components, dependencies or new material authority."
+    - "Apply the existing LOCAL rule to a newly found defect only when it is necessary for current acceptance, fully inside the pre-authored component and permitted mutation class, non-governing and deterministically verifiable. Multiple sequential in-scope defects may be fixed/proven under that same task, with the required gate rerun after relevant changes. Scope-expansion forbidden still stops every out-of-envelope consequence. Test-reliability fixes may preserve and improve proof, never weaken an oracle, skip a gate or redefine acceptance merely to pass. Executor reports discovered local companions and proof for Architect review; it cannot redefine the envelope. Unavailable capability cannot be solved by wider authority, and unknown mutation effects require existing reconciliation before retry."
+    - "Append only a short owner cross-reference from the existing Material-design-readiness gate to Structure authority applicability; leave its three accepted governing paragraphs unchanged. Add a concise skills README locator for bounded task authoring. Both role kernels remain byte-identical, including Architect 16656 and Executor 17359. Existing scope/defaults/gap semantics remain at their owners; do not duplicate an entire normalization table, implementation contract or ECC methodology."
+    - "Persist four concrete synthetic walkthroughs in the report: (1) a target-defined feature outcome spans required FE/API/data contracts and is accepted/proven as one bounded outcome, with unrelated future feature facts excluded; (2) a pre-authored packaging/release-fixture objective discovers two sequential implementation/test-reliability defects in declared components/classes, both LOCAL with proof and no authority revision; (3) the same discovery under explicit restrictive exact-file/structure controls is outside authority and cannot bypass them, while a new dependency/public-contract/privilege change also requires revised authority; (4) an unprobed material fact selects bounded discovery, a missing mandatory environment capability remains capability-blocked, and an unknown mutation effect selects reconciliation instead of scope expansion or blind retry. Record given target facts, exact relevant authorizing field excerpts, discovered consequence, predicate-by-predicate disposition and proof/stop result. Keep the examples synthetic, not actual Runtime audit or product execution."
+    - "For the component-envelope and restrictive counterpart, validate two non-executable synthetic DRAFT task fixtures against the unchanged native v3 artifact validator and show the unchanged normalizer's effective restrictive/default controls. Use only existing supported fields; Git mutations remain false and execution_ready false. Temporary fixture files outside the tracked repository are allowed for this verification; do not publish new task templates or .agent task authorities. Persist the meaningful fixture inputs/source-template identity and validation/default receipts compactly in the report so the comparison is reconstructible. Syntax PASS is not a semantic scope/authority decision; the walkthrough must separately justify LOCAL versus out-of-boundary disposition."
+    - "Keep net UTF-8 addition across the two authorized files <=4000 bytes; generic HOW and field boilerplate are not copied. Run native skills validator, full existing skills 240/240 and external 26/26, task/report artifact validation, the two synthetic artifact/default checks, new relative link/anchor resolution, exact section-edit/protected scope/inventory checks and git diff --check. No source-code/test mutation, live metadata refresh, Runtime/host/dependency change or unrelated Documents/Standards reruns absent new input invalidation. Do not add tests that merely mirror new prose."
+    - "Commit the qualified two-file candidate as direct child of exact handoff base, then its sole report-only child. Apply existing protocol-v3 publication eligibility and truthful candidate-prepublication pushed state. After ordinary non-force MAIN_ONLY publication, fresh closure has local main, origin/main and remote main equal the report commit, one worktree, tracked/index cleanliness and pinned .DS_Store. Finish NEEDS_REVIEW and stop before continuation/recovery redesign, dogfood or successor execution."
+  allowed_existing_files_or_components:
+    - skills/protocols/TASK_PROTOCOL.md
+    - skills/README.md
+  expected_files_are_restrictive: true
+invariants:
+  - "Only Structure authority applicability may receive new normative task-authoring text; Material-design-readiness gate receives one short owner cross-reference only, and skills README a concise locator. Preserve all existing headings/anchors, scope/defaults/gap rules and unrelated semantics."
+  - "Both kernels are byte-identical: Architect 16656, Executor 17359. Current roles/provider policy and Codex exception remain unchanged. Foundation owns authority/proof, target product/architecture/stack/rules, ECC HOW and Runtime transport."
+  - "All scripts/tests, task/report/handoff/review templates and schemas, other contracts, Documents, Standards, metadata/pins, profile/bootstrap/router/rationalization and actual Runtime remain byte-identical. No new field, formal authority mode, task lane, lifecycle or planner service."
+  - "Product-state.json remains byte-identical: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, system gates unchanged, derived P0_SCOPE and blocker release.status. Task acceptance creates no feature/gate/release verification."
+  - "Preserve sole untracked regular .DS_Store: 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. No stage-all, deletion, move, modification, ignore change or publication."
+forbidden_changes:
+  - "Modify role kernels, production/tests/validator, v3 defaults/schema/templates, accepted readiness paragraphs, other owners/product state/pins/profile/Documents/Standards/Runtime/host/dependencies or current task/review authority."
+  - "Add adaptive/frozen authority_mode or material_unknowns fields, a new task schema/model, universal phase/stack/feature checklist, rule corpus, planner/queue/scheduler/store/shard or generic slicing/debugging methodology; make unknown facts into resolved authority or let Executor expand scope."
+  - "Execute synthetic task fixtures, dispatch agents, mutate another repository, audit/change Runtime under this binding, implement continuation/dogfood work, force push, create branch/tag/release, rewrite history or perform unrelated cleanup."
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Feature task authority binds one coherent outcome/proof and deliberate uncertainty boundary."
+    evidence_required: "Existing owner text and concrete feature/probe cases preserve target-native acceptance/contracts, current-phase capability and minimum context, with no generic phase/slice framework or assumptions frozen as fact."
+  - id: AC-2
+    requirement: "Pre-authored component authority permits only proven LOCAL repair and preserves hard stops."
+    evidence_required: "Two sequential in-envelope defects remain LOCAL; restrictive exact-file/structure counterparts and new dependency/contract/privilege consequences stop; unchanged v3 fixture/default validation confirms compatibility without new fields or Executor scope expansion."
+  - id: AC-3
+    requirement: "Authority, capability and unknown-effect consequences stay distinct and ownership remains thin."
+    evidence_required: "Concrete missing-capability and unknown-effect cases do not widen scope or blindly retry; only two allowed files and designated sections change, net <=4000, role/protected owner/product/metadata bytes unchanged and new links resolve."
+  - id: AC-4
+    requirement: "Related qualification and exact publication close safely."
+    evidence_required: "Native validator, skills 240/240, external 26/26, task/report and synthetic artifacts/defaults, section-boundary/inventory/scope/diff PASS; exact-base candidate and sole report-only child, truthful pushed state, fresh MAIN_ONLY closure and pinned exception."
+verification:
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0032/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "Extend existing authority/navigation owners; add only the task report. Synthetic verification fixtures stay outside tracked repository state."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+blocking_decisions: []
+execution_ready: true
