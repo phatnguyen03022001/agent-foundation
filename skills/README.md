@@ -57,7 +57,7 @@ There is one task model, not task-lite/task-compact variants. Navigation:
 - [contracts/IMPLEMENTATION_CONTRACT.md](contracts/IMPLEMENTATION_CONTRACT.md): task artifact obligations;
 - [contracts/IMPLEMENTATION_REPORT.md](contracts/IMPLEMENTATION_REPORT.md): report artifact obligations;
 - [contracts/ARCHITECT_REVIEW.md](contracts/ARCHITECT_REVIEW.md): review artifact obligations;
-- [protocols/TASK_PROTOCOL.md](protocols/TASK_PROTOCOL.md): reusable cross-role semantic authority. Before consequential feature implementation, use its [material-design-readiness gate](protocols/TASK_PROTOCOL.md#material-design-readiness-gate) for the target-owned design/research evidence boundary.
+- [protocols/TASK_PROTOCOL.md](protocols/TASK_PROTOCOL.md): reusable cross-role semantic authority. Before consequential feature implementation, use its [material-design-readiness gate](protocols/TASK_PROTOCOL.md#material-design-readiness-gate) for the target-owned design/research evidence boundary. For bounded task authoring with unknown local companions, use [Structure authority applicability](protocols/TASK_PROTOCOL.md#structure-authority-applicability).
 
 ## External capability discovery
 
