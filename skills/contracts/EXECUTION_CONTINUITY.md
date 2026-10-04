@@ -126,11 +126,19 @@ There is no background heartbeat. Do not keep a large known-valid dirty worktree
 
 ## Recovery
 
-A successor Architect or Executor may inspect attempt data before recovering interrupted work. `INTERRUPTED_UNKNOWN` is only a hint.
+A fresh chat may recover only the same exact task. Re-resolve repository, task/revision, original execution base, current task/user authority, then only material owners, checkpoint/candidate/verifier identities, and any retained keyed operation needed next. Memory, elapsed time, a lease, checkpoint, or locator has authority `NONE` and proves no PASS. Preserve the original base as lineage; never reset, rebase, or rebind to recreate initial entry.
 
-Recovery still requires fresh independent inspection of canonical remote truth, local HEAD, index/worktree state, local Git checkpoints, and current task/revision/base authority where those facts govern the resumed consequence. If a current slice exists, the successor first resolves the selected carrier's retained identity and typed result when available, then inspects any external effect that result does not prove. `INTENT_RECORDED` without later trustworthy evidence is treated as `MAY_HAVE_BEEN_DISPATCHED / OUTCOME_UNKNOWN`.
+Freshly inspect material remote truth, local HEAD/index/worktree, checkpoints, operation state, and writer ownership. Resolve retained carrier identity/typed result first, then reconcile any external effect it does not prove. Effect present means no duplicate; effect absent permits retry only with unchanged original preconditions and current authority; unknown remains unresolved. Lease expiry does not prove writer death; unknown/overlapping writer or unattributed work stops competing mutation.
 
-Attempt data cannot authorize cleanup, mutation, continuation, publication, rebinding, task creation, review, acceptance, or release. Fresh Git/postcondition inspection remains mandatory, and unknown outcome never becomes retry permission.
+A controllable non-authoritative locator needs only exact task/original base, checkpoint/candidate, retained operation when needed, exact proof locator, unresolved effect/gap, and next consequence. Derive it from artifacts/carriers, not transcript or copied scope/output. Example: `task=TASK-0033@r1;base=<sha>;candidate=<sha>;op=<key>;proof=<locator>;gap=<effect>;next=<consequence>`. Unexpected death may leave none; continue only if fresh inspection proves them.
+
+Reuse proof only after exact candidate/content, predicate, verifier/profile, and material input/toolchain applicability are re-established. Poll recoverable in-flight work instead of restarting it for a new chat. Missing/truncated/stale result evidence may need safe read-only re-verification; material invalidation reruns only affected proof. Digest-only reuse, mutation replay, or full-suite-per-chat is invalid. Refresh capability when material. Published report/`NEEDS_REVIEW` ends Executor recovery; later lifecycle uses its own authority.
+
+Synthetic walkthroughs (`authority; inputs/freshness; disposition -> next`):
+1. **Long verify** — Carrier + Task Protocol evidence-validity; task/base, candidate, verifier/profile, retained key/result + current authority/toolchain; poll/reuse -> report, else affected read-only reverify.
+2. **Dirty/checkpoint** — Recovery + Task Protocol handoff/base; fresh HEAD/index/worktree/checkpoint, remote and writer evidence + current recovery authority; covered attributable work may continue, unknown/overlapping writer stops -> preserve state/revised authority.
+3. **Lost commit/push ack** — Execution Slice + Task Protocol consequence/GitHub-drift; intended effect, local commit/ref + fresh remote; effect-present no duplicate, effect-absent retry only with unchanged preconditions/authority, unknown/stale remote stops -> reconcile or stop.
+4. **Terminal/stale proof** — Task Protocol Executor-terminal + phase-capability; report lineage, verifier locator + current capability; terminal report stops Executor, stale/missing verifier selects affected safe reverify, missing mandatory carrier/capability is capability-blocked -> independent later authority or stop; no self-review/successor dispatch.
 
 ## Evidence and domain boundary
 

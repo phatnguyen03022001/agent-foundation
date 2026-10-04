@@ -52,7 +52,7 @@ There is one task model, not task-lite/task-compact variants. Navigation:
 - [contracts/FOUNDATION_ARCHITECTURE.md](contracts/FOUNDATION_ARCHITECTURE.md): three-layer Foundation and L1 control/continuity contract;
 - [contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md](contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md): target-owned T1 product-capability, dependency, cross-cutting, telemetry, and extraction boundaries for agent-foundation itself;
 - [contracts/AGENT_FOUNDATION_PRODUCT_STATE.md](contracts/AGENT_FOUNDATION_PRODUCT_STATE.md): target-owned T2 product-scope, stable feature-registry, and truthful release-scope contract for agent-foundation itself;
-- [contracts/EXECUTION_CONTINUITY.md](contracts/EXECUTION_CONTINUITY.md): local-only lease/checkpoint truth model and recovery boundary;
+- [contracts/EXECUTION_CONTINUITY.md](contracts/EXECUTION_CONTINUITY.md): local-only lease/checkpoint truth model and bounded same-task interrupted-chat recovery/locator boundary;
 - [scripts/execution_attempt.py](scripts/execution_attempt.py): stdlib-only local Git-metadata attempt operations;
 - [contracts/IMPLEMENTATION_CONTRACT.md](contracts/IMPLEMENTATION_CONTRACT.md): task artifact obligations;
 - [contracts/IMPLEMENTATION_REPORT.md](contracts/IMPLEMENTATION_REPORT.md): report artifact obligations;

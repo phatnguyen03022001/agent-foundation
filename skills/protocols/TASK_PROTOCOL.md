@@ -53,7 +53,7 @@ Repository-local execution-attempt telemetry is `LOCAL_MUTABLE` operational evid
 
 Producer state is only `RUNNING` or explicit `TERMINAL`. Observer classification is only `TERMINAL_CONFIRMED`, `ACTIVE_LEASE`, or `INTERRUPTED_UNKNOWN`. Lease expiry never manufactures failed/dead/terminal state or an exact death timestamp. No background heartbeat, daemon, polling service, scheduler, or automatic recovery is implied.
 
-After an interrupted or ambiguous attempt, a successor must still refresh the mutable evidence required by the next consequence: canonical remote truth, local HEAD, index/worktree, local checkpoints, and current task/revision/base authority. A `RUNNING` attempt may carry at most one unresolved consequence-bearing Execution Slice with `authority NONE`. Its caller-known intent is persisted before dispatch; `INTENT_RECORDED` or an acknowledgement without trustworthy consequence evidence means the request may have been dispatched and therefore recovers as `OUTCOME_UNKNOWN`. Attempt/slice telemetry may guide inspection but cannot authorize cleanup, continuation, mutation, retry, publication, rebinding, review, acceptance, promotion, or release.
+After an interrupted or ambiguous attempt, a successor must still refresh the mutable evidence required by the next consequence: canonical remote truth, local HEAD, index/worktree, local checkpoints, and current task/revision/base authority. A `RUNNING` attempt may carry at most one unresolved consequence-bearing Execution Slice with `authority NONE`. Its caller-known intent is persisted before dispatch; `INTENT_RECORDED` or an acknowledgement without trustworthy consequence evidence means the request may have been dispatched and therefore recovers as `OUTCOME_UNKNOWN`. Attempt/slice telemetry may guide inspection but cannot authorize cleanup, continuation, mutation, retry, publication, rebinding, review, acceptance, promotion, or release. See [Execution Continuity — Recovery](../contracts/EXECUTION_CONTINUITY.md#recovery) for interrupted-chat recovery.
 
 An ambiguous response to a mutating operation is never evidence of failure, non-dispatch, or safe retry. `OUTCOME_UNKNOWN` requires fresh consequence-specific reconciliation before repetition; retry is legal only when attributable fresh state establishes the intended effect is absent while original preconditions still hold, or the exact selected tool contract proves replay safe. Missing or inconclusive reconciliation remains unresolved.
 
@@ -192,6 +192,8 @@ Any external repository used as normative authority must resolve to an immutable
 
 Before mutation Executor verifies supported protocol, `handoff_type == EXECUTOR`, repository/branch identity, live HEAD equality with `base_head`, exact task identity at that commit, task binding, `execution_ready`, pinned skills, structure authority, current-phase capability availability, and applicable mutation authority. Any mismatch is `BLOCKED`.
 
+That equality gate is initial entry only. Same-task interrupted work may resume only with current authority for resumed state/operations, fresh attributable local/remote/operation evidence, and one authorized writer. Interruption waives no dirty/ahead or restrictive-task rule. Preserve the original base; never substitute a checkpoint. Otherwise preserve state and follow [Recovery](../contracts/EXECUTION_CONTINUITY.md#recovery).
+
 A handoff authorizes only its repository. Rebinding to another repository always requires a fresh exact handoff and fresh exact base HEAD; prior handoff, task, Git authority, capability evidence, or lifecycle state cannot be reused as authority.
 
 Operator-facing `PROMPT TO COPY` is an authority locator, not another authority artifact. Normal content is target owner/repo, branch, exact task ID/revision/path, exact base HEAD, current phase when needed, and a concise instruction to resolve canonical authority, preflight, execute, verify, report, and stop. Do not duplicate scope, invariants, forbidden changes, acceptance criteria, capabilities, Git/release authority, verification detail, or unconditional protocol boilerplate already available from canonical artifacts unless access to canonical authority is genuinely unavailable.
@@ -217,6 +219,8 @@ Use `handoff_snapshot`:
 3. Refresh the target branch and capture exact HEAD `H`.
 4. Emit the handoff with `target.base_head=H`.
 5. Executor reads the task from `H` and requires live HEAD to equal `H` before mutation.
+
+These steps define initial entry. Recovery preserves `H` as lineage; never rewind, reset, rebase, or rebind merely to recreate equality.
 
 No artifact needs to contain the SHA of the commit containing itself.
 
