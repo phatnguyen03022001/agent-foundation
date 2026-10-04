@@ -1,8 +1,8 @@
 protocol_version: 3
 
 task_id: TASK-0034
-task_revision: 1
-report_revision: 1
+task_revision: 2
+report_revision: 2
 state: REPORTED
 
 task_source:
@@ -13,201 +13,151 @@ execution:
   branch:
     name: main
     role: stable
-  authorized_base_head: "941318c43a165c05768174645f534bb10ccac66f"
-  final_execution_head: "c25fca257491d70e5bd4a9a57a59ad057244c2b4"
+  authorized_base_head: "d90057509d0c757ad9910bbb16a6460ec2338bfd"
+  final_execution_head: "794ea4dcd8265fbf6f9da0c4a744cbf2bcf93f4b"
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  authorized_revision: "3b58588b19b7a9ddbfd0e78558da4c3f650e5c53"
+  authorized_revision: "30cdf86b08649cf739543710d3c0c0164e0891c6"
 
 capability_preflight:
   phase: EXECUTION
   required:
-    - fresh canonical GitHub/local identity with FF-only mirror synchronization and pinned .DS_Store preservation
-    - native Python plus disposable local Git fixture execution
-    - bounded test-file mutation, explicit-path commit and ordinary non-force MAIN_ONLY publication
+    - fresh canonical GitHub/local identity with FF-only synchronization and exact pinned .DS_Store preservation
+    - native Python and the existing TemporaryDirectory disposable Git fixture
+    - exact-path candidate/report commits and ordinary non-force MAIN_ONLY publication
   available:
     - Agent Runtime 0.5.1 terminal/filesystem/local/remote repository capabilities
     - Python 3.14.6 and Git 2.55.0
-    - existing TemporaryDirectory mock-repository harness with fake origin binding
-    - exact-path native Git staging/commit compatible with the pinned untracked exception
-    - repo_publish compare-and-swap publication capability
+    - existing run-owned TemporaryDirectory mock repository and fake origin binding
+    - native explicit-path Git fallback authorized for the pinned unrelated exception
   missing: []
   passed: true
 
 qualification:
+  revision_correction:
+    gap_id: R34-KEYED-RECOVERY-PROOF
+    supersedes: "TASK-0034 report revision 1 AC-2 PASS only for the keyed-recovery predicate found insufficient by the revision-1 REVISION_REQUIRED review."
+    immutable_r1_evidence: ".agent/tasks/TASK-0034/report.yaml @ 30cdf86b08649cf739543710d3c0c0164e0891c6 remains addressable for unaffected revision-1 evidence."
+    correction: "The existing case-B method now issues a real controlled same-key/spec recovery request that returns the retained original result with no second underlying execution, and rejects a same-key conflicting specification without replacement effect."
+
   candidate_scope:
     changed_path: skills/scripts/test_execution_attempt.py
+    r2_handoff_base: "d90057509d0c757ad9910bbb16a6460ec2338bfd"
+    original_r1_base: "941318c43a165c05768174645f534bb10ccac66f"
     base_bytes: 33426
-    candidate_bytes: 40962
-    net_added_bytes: 7536
-    diff_lines: "153 additions / 0 deletions"
-    methods_before: 33
+    candidate_bytes: 41392
+    net_added_bytes: 7966
+    cumulative_cap_bytes: 8000
+    methods_before_original_r1: 33
     methods_after: 35
-    append_only: true
+    cumulative_task0034_additions: 2
+    r2_diff_lines: "46 additions / 57 deletions"
+    r2_method_body_only: true
     imports_changed: false
-    existing_helpers_or_tests_changed: false
+    other_tests_or_helpers_changed: false
     protected_production_paths_changed: false
-    note: "Exact staged diff is one append hunk before the existing __main__ launcher; no production helper, validator, owner, schema, template, pin, product-state or Runtime byte changed."
-  fixture_case_a:
-    outcome: "One pre-authored fixture component declares inputs_match_oracle, pathlib.Path/unittest stdlib choices, fixture_implementation/test_reliability mutation classes and an immutable two-file oracle."
-    trace:
-      - "Initial deterministic gate FAIL: a.txt and b.txt both violate the unchanged oracle."
-      - "Slice ordinal 1 records expected_state_filesystem intent before repair A; repair A changes only a.txt; gate remains FAIL attributable only to b.txt."
-      - "The acknowledgement/result is intentionally omitted. The persisted on-disk attempt is reloaded; OUTCOME_UNKNOWN forbids retry while fresh file inspection proves a.txt already equals its exact oracle."
-      - "Fresh EFFECT_PRESENT reconciliation preserves repair A without duplicate write; checkpoint follows observation and only then clears the slice."
-      - "Slice ordinal 2 retains the same attempt/task/revision/base binding; repair B is observed SUCCEEDED, checkpointed and cleared; the unchanged gate then PASSes."
-    duplicate_counts: "a.txt=1, b.txt=1"
-    authority_preserved: "attempt authority NONE; execution_base remains the fixture's original base; authority.json bytes remain unchanged."
+    note: "Exact r2 delta changes only the body of test_integration_replay_safe_result_stays_separate_from_external_effect; case A, the old 33 tests, helpers, imports and all production owners remain byte-identical."
+
   fixture_case_b:
-    outcome: "Replay-safe retained process result is qualified separately from an independently reconciled external effect."
+    outcome: "Controlled keyed process recovery is executable proof separate from external-effect reconciliation."
+    selected_contract:
+      operation_key: key-1
+      specification: spec-v1
+      writer_attempt_id: "the active fixture attempt_id"
+      retained_result: result-1
+      boundary: "Recovery mode requires existing retention; missing retention raises retained unavailable and mismatched key/spec/writer/result raises conflict. The fixture-local predicate creates no installed Runtime replay-safety authority."
     trace:
-      - "A runtime_start slice with a fixed operation key/specification is persisted before one fake carrier call; its retained result records the same key/spec and writer_attempt_id."
-      - "The actual on-disk record is reloaded. fresh=false reconciliation is rejected with record bytes unchanged."
-      - "Fresh UNRESOLVED remains OUTCOME_UNKNOWN/no-retry. Fresh retained-result inspection proves same key/spec/writer only for the controlled fixture contract; REPLAY_SAFE_CONTRACT then yields RETRY_ALLOWED."
-      - "Checkpoint-before-clear is exercised. The fake carrier call count remains one; the helper classification itself grants no task or Runtime authority."
-      - "A subsequent slice simulates a separate publication effect. The retained carrier result contains no remote-ref proof; fresh external marker inspection reconciles EFFECT_PRESENT and dispatch count remains one."
-      - "After checkpoint/clear, terminal NEEDS_REVIEW rejects both heartbeat reopening and a new execution slice."
-    authority_preserved: "original execution_base retained; attempt/slices authority NONE; writer ownership is explicit in the retained controlled result."
+      - "The original request is observed as (recover=false, spec-v1), executes the underlying fixture once, and persists key-1/spec-v1/writer_attempt_id/result-1."
+      - "The real on-disk attempt record is reloaded with its original execution_base, authority NONE and slice identity. fresh=false reconciliation rejects with record bytes unchanged."
+      - "Fresh UNRESOLVED remains no-retry and the request ledger still contains only the original request, so stale or unresolved telemetry admits no recovery request."
+      - "Fresh retained bytes must exactly match the selected key/spec/writer/result before REPLAY_SAFE_CONTRACT is accepted."
+      - "The actual recovery request is observed as (recover=true, spec-v1), reads and returns the retained result-1, producing two total requests but exactly one underlying execution."
+      - "The controlled conflicting request (recover=true, spec-v2) raises conflict; retained bytes remain unchanged, underlying execution count remains one and the current keyed slice remains the original operation."
+      - "Checkpoint occurs before clearing the keyed slice."
+      - "A separate publication-like marker has no proof in the retained process result; fresh EFFECT_PRESENT reconciliation observes it independently and dispatch count remains one."
+      - "After checkpoint/clear, terminal NEEDS_REVIEW rejects heartbeat reopening and a new execution slice."
+    observed_requests:
+      original: [false, spec-v1]
+      recovery: [true, spec-v1]
+      conflict: [true, spec-v2]
+      total: 3
+    underlying_executions: 1
     live_runtime_or_provider_fault_injected: false
-  metadata_smoke:
-    source:
-      id: ecc
-      repository: affaan-m/ECC
-      revision: "bf70150eb2df8070024e5bdf08e4aa08959e2735"
-      authority: NONE
-    react_query:
-      argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--query", "React", "--limit", "3"]
-      total_matches: 21
-      truncated: true
-      returned: ["ecc:agent:react-build-resolver", "ecc:agent:react-reviewer", "ecc:agent:vue-reviewer"]
-      selected_exact_fit: "ecc:agent:react-reviewer"
-    go_query:
-      argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--query", "go-reviewer", "--surface", "agent", "--limit", "3"]
-      total_matches: 2
-      truncated: false
-      returned: ["ecc:agent:django-reviewer", "ecc:agent:go-reviewer"]
-      selected_exact_fit: "ecc:agent:go-reviewer"
-    exact_resolves:
-      - argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--resolve", "--surface", "agent", "--title", "react-reviewer"]
-        id: "ecc:agent:react-reviewer"
-        source_path: agents/react-reviewer.md
-      - argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--resolve", "--surface", "agent", "--title", "go-reviewer"]
-        id: "ecc:agent:go-reviewer"
-        source_path: agents/go-reviewer.md
-    zero_match:
-      argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--query", "__task0034_zero_match__", "--limit", "3"]
-      total_matches: 0
-      truncated: false
-      interpretation: "Truthful zero result only; it is not absence of all capabilities or routing authority."
-    explicit_empty_rejection:
-      argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--query", "React", "--source", "", "--limit", "3"]
-      exit_code: 2
-      error: "EXTERNAL_CAPABILITY_SYNC = ERROR: : source is not an admitted harness source"
-    selection_rationale: "Conditional React/TypeScript frontend concern selects react-reviewer; conditional Go backend concern selects go-reviewer. The noisy Django match is not selected. Metadata remains inert/advisory and creates no install, activation or task permission."
-    applicable_bodies_loaded: 0
-    certified_boundary: "This smoke certifies committed agent-foundation metadata query/resolve behavior only, not an installed upstream ECC CLI or universal semantic routing."
-  authority_countercases:
-    restrictive_scope:
-      inputs:
-        - "TASK-0034 scope.allowed_existing_files_or_components contains only skills/scripts/test_execution_attempt.py."
-        - "expected_files_are_restrictive=true; dependency_change=forbidden; public_contract_change requires revised contract; privilege expansion is outside scope."
-      owner_excerpt: "An explicit restrictive exact-file or structure control is a hard boundary when selected for known material consequences."
-      predicates:
-        exact_file_or_structure_authority: FAIL
-        dependency_public_contract_or_privilege_remains_local: FAIL
-        local_auto_fix_eligible: FAIL
-      consequence: "A necessary companion edit outside the restrictive boundary stops rather than being adopted; dependency/public-contract/privilege change is not LOCAL."
-      next: "Preserve evidence and request revised Architect authority; do not mutate the companion or dependency/contract/privilege surface."
-    unresolved_material_choice:
-      inputs:
-        - "Conditional target facts are React/TypeScript frontend plus Go backend."
-        - "A dependent implementation assumes a still-unresolved material third-party choice."
-        - "ECC metadata entries are resolved but no scoped target adoption/approval exists."
-      owner_excerpt: "Any material stack, build/buy, or third-party choice that dependent code assumes must be resolved before that code."
-      adoption_excerpt: "Discovered or loaded external rules remain advisory until governing target authority explicitly approves both their applicable scope and integration."
-      predicates:
-        documentation_closure_authorizes_dependent_code: FAIL
-        material_choice_resolved: FAIL
-        external_rule_adopted: FAIL
-        installation_or_dependency_permission_created: FAIL
-      consequence: "Dependent implementation stops; target-native rules remain primary and advisory ECC metadata stays unadopted."
-      next: "Perform bounded relevant research/target decision work under Architect authority; no install, dependency mutation or dependent implementation."
-    expired_lease_writer_capability_terminal:
-      inputs:
-        - "Lease is expired but writer ownership is unknown or overlapping."
-        - "A mandatory current-phase capability is unavailable."
-        - "A canonical terminal report/NEEDS_REVIEW exists."
-      recovery_excerpt: "Lease expiry proves no writer death; unknown/overlap/unattributed work stops competing mutation."
-      capability_excerpt: "Unavailable mandatory current-phase capability returns CURRENT_PHASE_CAPABILITY_UNAVAILABLE before mutation."
-      terminal_excerpt: "Published report/NEEDS_REVIEW ends Executor recovery; later lifecycle uses its own authority."
-      predicates:
-        lease_authorizes_takeover: FAIL
-        writer_exclusivity_proven: FAIL
-        missing_capability_may_be_bypassed: FAIL
-        terminal_report_reopens_executor: FAIL
-      consequence: "No takeover or competing mutation; capability remains blocked; terminal evidence routes to independent later authority."
-      next: "Preserve state/checkpoint, resolve writer/capability under fresh authority, or stop; do not self-review or dispatch successor work."
-  accepted_review_locators:
-    - ".agent/tasks/TASK-0026/review.yaml @ 634ff01c103bbfdacb1be35d996dba61aa1ff343 — ACCEPTED r1"
-    - ".agent/tasks/TASK-0027/review.yaml @ f73e478d5c536a5c6901f36bbc291295c26fe011 — ACCEPTED r1"
-    - ".agent/tasks/TASK-0028/review.yaml @ 74fc51dc402f3704a7699e84a12ac627112d7456 — ACCEPTED r2"
-    - ".agent/tasks/TASK-0029/review.yaml @ cbc269c1e43ebc43f0d6d6a6162bb1ac6fb55561 — ACCEPTED r2"
-    - ".agent/tasks/TASK-0030/review.yaml @ 73d11481297be7476edec5737e067196234819b8 — ACCEPTED r1"
-    - ".agent/tasks/TASK-0031/review.yaml @ acaf8c8db87c5fa103db394f559c3f92be544953 — ACCEPTED r1"
-    - ".agent/tasks/TASK-0032/review.yaml @ b6e4881dff6695d449160e10999d68cc83310267 — ACCEPTED r1"
-    - ".agent/tasks/TASK-0033/review.yaml @ 941318c43a165c05768174645f534bb10ccac66f — ACCEPTED r2"
-  source_byte_comparison:
-    immutable_baseline: "634ff01c103bbfdacb1be35d996dba61aa1ff343"
-    architect: "24338 -> 16656 bytes"
-    executor: "28681 -> 17359 bytes"
-    interpretation: "Source-byte comparison only. It is not ChatGPT token usage, elapsed time, total active context, proof that the whole library shrank, or performance telemetry."
+
+  preserved_r1_predicates:
+    fixture_case_a: "Preserved byte-identical and rerun focused: immutable oracle, two local repairs, lost acknowledgement, OUTCOME_UNKNOWN no-retry, EFFECT_PRESENT reconciliation, checkpoint-before-clear and increasing slice ordinal remain valid."
+    case_b_interruption: "Preserved: persisted reload, stale rejection without mutation, fresh UNRESOLVED/no-retry, original base/authority NONE/writer binding, checkpoint-before-clear, separate external-effect reconciliation and NEEDS_REVIEW terminal no-reopen/no-new-slice."
+    separation: "Recovered process result supplies no remote_ref evidence; the external marker remains independently observed."
+
+  reused_r1_evidence:
+    source_report: ".agent/tasks/TASK-0034/report.yaml @ 30cdf86b08649cf739543710d3c0c0164e0891c6"
+    applicability_proof:
+      - "git diff --name-only 30cdf86b08649cf739543710d3c0c0164e0891c6..d90057509d0c757ad9910bbb16a6460ec2338bfd changed only TASK-0034 task.yaml and review.yaml."
+      - "The qualified r2 worktree delta from d900575 changes only the authorized case-B body."
+      - "Python 3.14.6 and Git 2.55.0 match revision-1 qualification toolchain evidence."
+      - "Architect and Executor source inventories remain 16656 and 17359 bytes respectively; protected owners, product-state, pins and scripts outside the authorized test file are unchanged."
+    ecc_smoke: "Reused unchanged revision-1 ECC metadata smoke for affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735; no unrelated research rerun."
+    authority_countercases:
+      - restrictive_scope
+      - unresolved_material_choice
+      - expired_lease_writer_capability_terminal
+    accepted_review_locators:
+      - "TASK-0026 r1 ACCEPTED @ 634ff01c103bbfdacb1be35d996dba61aa1ff343"
+      - "TASK-0027 r1 ACCEPTED @ f73e478d5c536a5c6901f36bbc291295c26fe011"
+      - "TASK-0028 r2 ACCEPTED @ 74fc51dc402f3704a7699e84a12ac627112d7456"
+      - "TASK-0029 r2 ACCEPTED @ cbc269c1e43ebc43f0d6d6a6162bb1ac6fb55561"
+      - "TASK-0030 r1 ACCEPTED @ 73d11481297be7476edec5737e067196234819b8"
+      - "TASK-0031 r1 ACCEPTED @ acaf8c8db87c5fa103db394f559c3f92be544953"
+      - "TASK-0032 r1 ACCEPTED @ b6e4881dff6695d449160e10999d68cc83310267"
+      - "TASK-0033 r2 ACCEPTED @ 941318c43a165c05768174645f534bb10ccac66f"
+    kernel_inventory:
+      architect_skill_bytes: 16656
+      executor_skill_bytes: 17359
+      interpretation: "Source-byte inventory only; not ChatGPT context, tokens, elapsed time or whole-library size."
+
   material_inputs:
-    - "skills/executor/SKILL.md @ 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53: task entry, restrictive execution, execution bundles, report/terminal rules."
-    - "skills/verification/SKILL.md and skills/adversarial-audit/SKILL.md @ 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53."
-    - "skills/protocols/TASK_PROTOCOL.md @ 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53: core bindings, material-design-readiness, artifact authority, candidate/report closure, capability preflight, consequence guards, GitHub/local drift, structure authority."
-    - "skills/contracts/FOUNDATION_ARCHITECTURE.md @ 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53: target authority, target-owned external-rule adoption, capability control, execution/publication control."
-    - "skills/contracts/EXECUTION_CONTINUITY.md#Recovery and IMPLEMENTATION_REPORT.md ownership/evidence @ 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53."
+    - "skills/executor/SKILL.md, skills/verification/SKILL.md and skills/adversarial-audit/SKILL.md @ 30cdf86b08649cf739543710d3c0c0164e0891c6."
+    - "skills/protocols/TASK_PROTOCOL.md and relevant Execution Continuity / Implementation Report owners unchanged from 30cdf86b08649cf739543710d3c0c0164e0891c6."
     - "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/verification-loop/SKILL.md; Test Suite attribution and Diff Review HOW only."
+
   verification_evidence:
-    candidate: "c25fca257491d70e5bd4a9a57a59ad057244c2b4"
-    candidate_parent: "941318c43a165c05768174645f534bb10ccac66f"
-    focused_integrations: "PASS; two new methods ran 2/2."
-    execution_attempt_regressions: "PASS; python3 -B skills/scripts/test_execution_attempt.py ran 35/35 exactly once for the qualified candidate tree."
+    candidate: "794ea4dcd8265fbf6f9da0c4a744cbf2bcf93f4b"
+    candidate_parent: "d90057509d0c757ad9910bbb16a6460ec2338bfd"
+    focused_integrations: "PASS; changed case B plus preserved case A ran 2/2 once on the qualified candidate tree."
+    execution_attempt_regressions: "PASS; python3 -B skills/scripts/test_execution_attempt.py ran 35/35 once on the qualified candidate tree."
     skills_validator: "PASS; python3 -B skills/scripts/validate_skill_library.py."
-    skills_regressions: "PASS; python3 -B skills/scripts/test_validate_skill_library.py ran 240/240."
-    external_regressions: "PASS; python3 -B skills/scripts/test_sync_external_capabilities.py ran 26/26."
+    skills_regressions: "PASS; python3 -B skills/scripts/test_validate_skill_library.py ran 240/240 once."
+    external_regressions: "PASS; python3 -B skills/scripts/test_sync_external_capabilities.py ran 26/26 once."
     task_artifact: "PASS; validate_skill_library.py --artifact task .agent/tasks/TASK-0034/task.yaml."
-    report_artifact: "PASS; validate_skill_library.py --artifact report .agent/tasks/TASK-0034/report.yaml on this exact report candidate."
+    report_artifact: "PASS; validate_skill_library.py --artifact report .agent/tasks/TASK-0034/report.yaml on these exact report bytes before report commit."
     python_compile: "PASS; in-memory compile of skills/scripts/test_execution_attempt.py."
-    append_import_scope: "PASS; exact diff is one append hunk, 153 additions/0 deletions, 33 -> 35 tests, no import hunk, only the authorized test file differs in the implementation candidate."
-    byte_cap: "PASS; 33426 -> 40962 bytes, net +7536 <=8000."
-    protected_state: "PASS; Architect 16656, Executor 17359, product-state.json, execution_attempt.py, sync_external_capabilities.py and all candidate paths outside the authorized test file remain unchanged from the handoff base."
+    method_only_scope: "PASS; exact prefix/suffix comparison against d900575 proves bytes outside the existing case-B body unchanged; candidate delta names only the authorized test file."
+    byte_cap: "PASS; 33426 -> 41392 bytes, net +7966 <=8000."
+    test_inventory: "PASS; original r1 base has 33 tests, candidate has 35, and the only added method identities are the two TASK-0034 integrations."
+    protected_state: "PASS; Architect 16656, Executor 17359, all production owners/product-state/pins/scripts outside the authorized test file unchanged."
     diff_check: "PASS; git diff --check."
-    remote_prepublication: "Fresh observation after candidate commit proves origin/main remains exact authorized base 941318c43a165c05768174645f534bb10ccac66f."
-    local_topology: "PASS; candidate is the direct child of the exact base; main has one worktree; tracked/index state clean after candidate commit."
+    remote_prepublication: "PASS; fresh observation after candidate commit proves origin/main remains exact authorized base d90057509d0c757ad9910bbb16a6460ec2338bfd."
+    local_topology: "PASS; candidate is the direct child of the exact r2 handoff base; one worktree; tracked/index clean after candidate commit."
     unrelated_exception: ".DS_Store remains sole unrelated untracked regular file, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d."
 
 authoritative_verification:
   required: false
   performed: false
   result: NOT_REQUIRED
-  evidence: "TASK-0034 requires bounded Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
+  evidence: "TASK-0034 r2 requires bounded Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
 
 pushed: false
 
 acceptance_evidence:
   - criterion_id: AC-1
     status: PASS
-    evidence: "Executable case A preserves one pre-authored oracle/envelope across FAIL -> repair A/still FAIL(B) -> repair B/PASS. Lost acknowledgement reloads real persisted attempt state, OUTCOME_UNKNOWN forbids retry, EFFECT_PRESENT prevents duplicate repair, checkpoint precedes clear, and the next slice preserves binding with increasing ordinal. Restrictive/material countercases stop independently rather than weakening the fixture oracle."
+    evidence: "Case B now executes an original request and a real same-key/spec recovery request. Both return the identical retained attributable result while the request ledger reaches two and the underlying execution ledger remains one. A same-key spec-v2 request is rejected with retained bytes, execution count and original operation identity unchanged."
   - criterion_id: AC-2
     status: PASS
-    evidence: "Executable case B rejects stale reconciliation without record mutation, preserves fresh UNRESOLVED no-retry, admits REPLAY_SAFE_CONTRACT only after controlled same-key/spec/writer retained-result proof, checkpoint-clears in order, reconciles a separate external effect independently without duplicate dispatch, and terminal NEEDS_REVIEW cannot reopen RUNNING or admit a new slice. No live Runtime/provider crash claim is inferred."
+    evidence: "Persisted reload, fresh=false rejection without record mutation, fresh UNRESOLVED/no-retry, original base/authority NONE/writer binding, checkpoint-before-clear, independent external EFFECT_PRESENT without duplicate dispatch, and terminal no-reopen/no-new-slice remain executable. Case A and all old tests/helpers/imports are unchanged; cumulative addition is +7966 bytes and no live Runtime correctness claim is inferred."
   - criterion_id: AC-3
     status: PASS
-    evidence: "Committed ECC metadata smoke records exact React/go-reviewer query/resolve args, source/revision, counts/truncation, exact-fit selections, zero match and explicit-empty rejection. Conditional governance cases preserve target-first material-choice/rule/capability/writer authority. Architect 24338 -> 16656 and Executor 28681 -> 17359 are reported only as source-byte comparisons."
-  - criterion_id: AC-4
-    status: PASS
-    evidence: "Implementation candidate changes exactly two appended integration methods in the existing test file, +7536 bytes, with all old tests/helpers and protected state preserved. Focused 2/2, full attempt 35/35, skills 240/240, external 26/26, native validator, task/report artifact validation, compile, scope/inventory and diff checks pass. Candidate is the exact-base direct child and this report is prepared as its sole report-only child for one non-force MAIN_ONLY publication."
+    evidence: "Focused 2/2, attempt 35/35, skills 240/240, external 26/26, native/task/report validators, compile, method-only scope, inventory and diff checks pass. Candidate is the exact-base direct child and this report is prepared as its sole report-only child for one ordinary non-force MAIN_ONLY publication. Fresh post-publication remote closure is intentionally an Executor terminal proof, not a self-attestation inside the prepublication report."
 
 result: NEEDS_REVIEW
