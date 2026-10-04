@@ -1,0 +1,32 @@
+protocol_version: 3
+task_id: TASK-0033
+task_revision: 1
+review_revision: 1
+state: REVISION_REQUIRED
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0033/report.yaml
+  commit: "74f32c7ccbd8a002149f33ab654b3ccb873c81d2"
+  report_revision: 1
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: FAIL
+  verifier_evidence: PASS
+notes:
+  - "Exact remote/local report content resolves blob 5da40bbefb6b9b435536f8af67bf1e932a8d18b7 at 74f32c7ccbd8a002149f33ab654b3ccb873c81d2; exact r1 task blob is 66610875a1d29ef3fd177d991f42f657a725afca at b6e4881dff6695d449160e10999d68cc83310267. Candidate 34278bea9b3a998f33bcd86a8bb99357e281e5a0 has the exact authorized base as its sole parent and changes only the three authorized files; the report is its sole report-only child. Fresh canonical main equals the report and only main is exposed."
+  - "AC-1 governing binding predicates PASS: initial entry still requires exact handoff/base; interrupted same-task work needs current recovery authority covering attributable state/operations, fresh local/remote evidence and one writer, with strict task controls preserved. Original base remains lineage, unknown writer/work cannot be adopted, and terminal report closes Executor recovery. Minimum locators remain authority NONE. The report's four examples are conditional sketches, not live Runtime interruption or cross-chat execution proof."
+  - "AC-2 FAIL / R33-REPLAY-SAFE: Recovery line 135 says 'Digest-only reuse, mutation replay, or full-suite-per-chat is invalid.' This unqualified mutation-replay prohibition conflicts with unchanged L0 Task Protocol line 58 and Execution Continuity Operations line 87, which permit retry when the exact selected tool contract establishes REPLAY_SAFE_CONTRACT. Recovery line 131's abbreviated retry summary also omits that preserved alternative. Execution Continuity Evidence and domain boundary still correctly makes mutation replay subject to the no-blind-retry rule, rather than absolutely forbidden. A recovery reader following the new blanket sentence can incorrectly stop a contract-proven safe same-key replay. This is a material compatibility defect in the new summary, not an observed installed Runtime failure."
+  - "Independent read-only counterexample: execution_attempt.retry_is_legal({result_classification: RETRY_ALLOWED, reconciliation_result: REPLAY_SAFE_CONTRACT}) returns true; the corresponding EFFECT_ABSENT_PRECONDITIONS_HOLD case also returns true, while EFFECT_PRESENT/EFFECT_PRESENT and OUTCOME_UNKNOWN/UNRESOLVED return false. reconcile_slice already maps fresh REPLAY_SAFE_CONTRACT to RETRY_ALLOWED. No target attempt, Runtime process, publication or mutating retry was executed for this proof. Fix the new summary, not the unchanged helper, carrier contract or no-blind-retry guard."
+  - "Other AC-2 predicates remain supported: retained operation lookup precedes independent external-effect reconciliation, immutable proof requires exact applicability, missing evidence stays unknown/affected read-only reverify and unavailable mandatory capability remains capability-blocked. Required correction is limited to preserving the existing replay-safe alternative with current authority/freshness and forbidding only blind/unsupported replay. Add its concrete conditional inputs and negative counterparts to the r2 report."
+  - "AC-3 mechanical scope/qualification PASS: independently ran native skills validator, skills 240/240, external 26/26, execution-attempt 33/33 and exact current task/report artifact validators. Exact section comparison confines changes to Recovery, the three named protocol sections and the README locator. Inventory reproduces README 10761 -> 10804, Continuity 16211 -> 18472 and Protocol 67839 -> 68528 / net +2993 <=3000. Kernels 16656/17359 and all other protected/product/code/template/pin owners are unchanged; new anchors and base-to-report diff checks pass. Passing structural/primitive suites does not prove that the new prose preserves AC-2 semantics."
+  - "Publication closure PASS: pushed=false is candidate-prepublication evidence; remote reachability is independently established. Local HEAD/origin/main equal the report, one worktree and clean tracked/index state remain, and sole untracked regular .DS_Store is 6148 bytes / SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. Explicit-path native Git closure is evidenced; this review does not certify Runtime repo-helper guard behavior. Product projection remains P0_SCOPE / release.status, with no product/gate/release PASS. Current role/provider policy is unchanged; Codex supervision is this session's operator exception only."
