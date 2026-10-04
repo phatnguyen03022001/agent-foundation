@@ -1,0 +1,121 @@
+protocol_version: 3
+task_id: TASK-0033
+task_revision: 1
+state: APPROVED
+origin:
+  type: user_request
+  task_id: TASK-0032
+  gap_id: BOUNDED-CHAT-INTERRUPTION-RECOVERY
+architect_binding:
+  target_repository: phatnguyen03022001/agent-foundation
+target:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+execution_base:
+  mode: handoff_snapshot
+  capture: after_final_planning_commit
+  require_exact_match: true
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  revision: "a7c5ba804a76f9c399f0085fe95bc39138d7000c"
+architect_analysis_skills:
+  - architect
+  - verification
+  - simplicity
+execution_skills:
+  required:
+    - executor
+    - verification
+  recommended: []
+external_skills:
+  architect_analysis:
+    - "ecc:verification-loop @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/verification-loop/SKILL.md; attributable test-result and changed-file review HOW only, adapted to target-native verification and scoped material proof"
+  execution_required:
+    - "ecc:verification-loop @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/verification-loop/SKILL.md; minimum Test Suite result-attribution and Diff Review sections only; no upstream command/coverage/time/role/hook/session policy adoption"
+  execution_recommended: []
+authority_sources:
+  - source: "operator-authorized thin-Foundation programme, item 7: survivable execution and bounded continuation for fragile limited ChatGPT turns"
+    role: "current durable maintainer objective; Foundation owns authority/proof, target product/stack/rules, ECC generic HOW and Runtime transport; explicit maintenance override of release-first selection without product-state mutation"
+    precedence: 1
+  - source: ".agent/tasks/TASK-0032/report.yaml@a7c5ba804a76f9c399f0085fe95bc39138d7000c and its ACCEPTED review published with this task"
+    role: "accepted coherent feature outcome and pre-authored component/mutation envelope; authority/capability/effects stay distinct and restrictive task controls remain hard boundaries"
+    precedence: 2
+  - source: "skills/contracts/EXECUTION_CONTINUITY.md#execution-slice, #carrier-and-long-running-execution, #recovery and #evidence-and-domain-boundary at a7c5ba804a76f9c399f0085fe95bc39138d7000c"
+    role: "existing local authority-NONE telemetry, intent-before-dispatch, installed typed carrier recovery and external-effect reconciliation; no second continuity store or new Runtime machinery"
+    precedence: 3
+  - source: "skills/protocols/TASK_PROTOCOL.md#canonical-handoffs-and-compact-prompt-locators, #execution-base-without-self-reference, #execution-attempt-continuity, #evidence-validity-and-consequence-boundary-invalidation and #pre-authorized-continuation at a7c5ba804a76f9c399f0085fe95bc39138d7000c"
+    role: "exact initial-entry binding, one content writer, scoped freshness and immutable proof applicability; chat continuation, interrupted task recovery and later independent lifecycle continuation are distinct"
+    precedence: 4
+structure_authority:
+  status: RESOLVED
+  source: "inspected existing continuity, handoff/base, evidence, role and publication owners at exact reviewed report"
+  rationale: "Existing primitives already recover keyed operations and forbid blind retry. Add only the missing bounded use boundary for resuming an unfinished exact task across chat interruption, with compact locators and attributable partial-state/proof checks. Keep established rules at their owners; no new mode, field, engine, recovery document or provider admission."
+objective: "Make interrupted ChatGPT task recovery bounded and evidence-based, using existing exact authority, recovery carriers and proof instead of replaying work or loading the full Foundation context."
+scope:
+  required_changes:
+    - "Fresh-resolve the exact handoff/task and TASK-0032 ACCEPTED review; safely FF-only synchronize the designated local mirror when behind. Allow precisely the pinned .DS_Store exception; divergence, unrelated edits, conflicts or Git-operation state stop without adoption, reset, cleanup or publication."
+    - "Use the existing Recovery section of EXECUTION_CONTINUITY.md for the minimal interrupted-chat procedure. A fresh chat re-resolves exact repository/task/revision/original execution base and current authority, then only material target owners, prior checkpoint/candidate/verifier identities and any retained keyed operation needed for the next consequence. Conversation memory, elapsed time, a lease and a locator grant no authority or PASS. Preserve the original base as lineage evidence; never reset/rebase/rebind just to make a resumed state resemble initial entry."
+    - "Clarify the L0 initial-entry versus interrupted-work distinction only in Task Protocol's existing Canonical handoffs and compact prompt locators and Execution base without self-reference sections; its execution-attempt section may receive only a short Recovery owner cross-reference. Initial entry still proves live HEAD equals the exact handoff base. Continuing an unfinished exact task requires current task/user authority covering the resumed state and operations, fresh attributable local/remote/operation evidence, and one authorized writer; interruption alone creates no dirty/ahead adoption exception. Respect explicit clean-state, restrictive file, topology, candidate-parent and other task rules. If these predicates cannot be proved or current authority does not cover recovery, preserve state and return the actual blocker for revised recovery authority. Do not silently substitute a checkpoint as a new handoff base."
+    - "The Recovery owner must make these consequences explicit without copying existing slice/carrier tables: (a) resolve retained process identity/typed effect first and independently reconcile external effects not proven by it; (b) proof of an existing effect avoids duplicate dispatch/commit/push; absent effect permits retry only with original preconditions and existing authority, while unknown remains unresolved; (c) an expired lease is not evidence that the former writer cannot still act; missing writer ownership or unresolved work attribution stops competing mutation; (d) terminal NEEDS_REVIEW/report lineage stops Executor recovery, and review/verification/promotion/release use their own existing authority. No automatic successor dispatch, self-review, task creation or new lifecycle."
+    - "For controllable boundaries, describe a minimum non-authoritative handoff/locator in the existing Recovery owner: exact task/original-base authority locator, current checkpoint/candidate identity, retained operation identity when needed, exact relevant proof locator, unresolved effect/gap and next intended consequence. Derive what is resolvable from existing artifacts rather than copying transcript, scope, full Foundation, outputs or target content. It need not be a tracked file, formal schema or mandatory telemetry call; use existing carriers/attempt/checkpoints only where needed. Unexpected chat death may leave no handoff; fresh inspection remains sufficient only when the same required predicates can still be proved. Missing evidence is not filled from memory."
+    - "Apply existing exact-predicate proof applicability: after re-resolving immutable identities, reuse completed verification only when its candidate/content, predicate, selected verifier/profile and material inputs/toolchain still match. Poll a recoverable in-flight operation rather than restart it merely because the chat changed. A missing/truncated/expired result may require safe read-only re-verification; material invalidation reruns only affected required proof. Do not claim reuse from a digest without resolvable evidence, blanket replay of a mutation, or universal full-suite rerun per chat. Current phase capability is refreshed where material. Detailed debugging/testing HOW stays target/ECC-owned."
+    - "Add a concise skills README locator at its existing Execution Continuity entry. Net UTF-8 addition across the three allowed existing files <=3000 bytes. Prefer short owner references; already sufficient rules are reused unchanged. Kernels stay byte-identical at Architect 16656 / Executor 17359. No new generic methodology, time/tool-call/token budget, schema/template/helper implementation, persistent recovery state or operational timing is introduced. If a required coherent fix actually needs a forbidden owner/schema/runtime change, report that concrete BLOCKING gap rather than invent permission."
+    - "Persist four bounded synthetic recovery walkthroughs: (1) interrupted long verification with retained keyed identity resolves the original result, and immutable completed proof is reused only after exact applicability checks; (2) same-task partial dirty work or a local candidate checkpoint is freshly attributed, with explicit current recovery authority versus its absence and an overlapping/unknown former writer; neither telemetry nor known scope admits unknown work; (3) lost commit/publication acknowledgement reconciles effect-present, effect-absent with unchanged preconditions, unresolved effect and stale remote alternatives separately; (4) published report/NEEDS_REVIEW closes Executor authority, while expired/missing verifier evidence selects safe affected re-verification and missing mandatory carrier/capability stays capability-blocked. Each names exact relevant authority excerpts, current observable inputs, required freshness, disposition and next permitted action/stop. Include a compact locator example without creating another artifact/schema. These are conditional examples, not actual Runtime interruption or product recovery certification."
+    - "Run native skills validator, existing skills 240/240, external 26/26 and execution-attempt 33/33 regressions, current task/report artifact validators, new links/anchors, exact section-edit scope, three-file inventory/kernel/protected-state checks and git diff --check. The existing attempt tests exercise unknown intent/result/reconciliation, carrier selection and checkpoint semantics in disposable fixtures; no new prose-mirroring tests or actual target attempt/Runtime mutation. Report precise commands/results and reconstructible material walkthrough inputs. Documents/Standards inputs stay unchanged; no unrelated rerun absent new material invalidation."
+    - "Commit the qualified authorized-file candidate as direct child of the exact handoff base, then its sole report-only child; apply existing publication eligibility and truthful candidate-prepublication pushed=false. Publish ordinary non-force MAIN_ONLY and fresh-prove local main == origin/main == remote main at the report commit, one worktree, tracked/index clean and pinned .DS_Store. End NEEDS_REVIEW and stop before independent review, real dogfood/adversarial product execution or successor work."
+  allowed_existing_files_or_components:
+    - skills/contracts/EXECUTION_CONTINUITY.md
+    - skills/protocols/TASK_PROTOCOL.md
+    - skills/README.md
+  expected_files_are_restrictive: true
+invariants:
+  - "Continuity normative additions are confined to Recovery; existing intent/carrier/effect, telemetry vocabulary/storage and authority NONE remain unchanged. Only named Task Protocol sections receive the minimal binding distinction/cross-reference, with no weakening of scope, freshness, single-writer, clean-state or terminal/lifecycle rules."
+  - "All role kernels, scripts/tests, schemas/templates/defaults, other contracts, profile/bootstrap/router, external metadata/pins, Documents, Standards and actual Runtime/host/dependencies remain byte-identical. Roles/provider policy is unchanged; Codex exception is this supervision session only."
+  - "Product-state.json remains byte-identical: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, system gates unchanged, derived P0_SCOPE / release.status. This governance task produces no product/gate/release PASS."
+  - "Sole unrelated untracked regular .DS_Store remains 6148 bytes / SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d; no deletion, move, modification, ignore change, stage-all or publication."
+forbidden_changes:
+  - "Change role/code/test/schema/template/default/pin/product/other-owner/Runtime/host/dependency bytes, current task/review authority or existing rules outside the named sections."
+  - "Add a recovery mode/field/state/store/checklist service/queue/daemon/heartbeat/provider API/browser polling or hidden context; treat a chat/lease/checkpoint as authority, waive explicit task controls or adopt unknown local work."
+  - "Dispatch agents, execute another task/repository or real Runtime dogfood, force push, create branch/tag/release, rewrite history or perform unrelated cleanup."
+gap_policy:
+  local_auto_fix: true
+  scope_expansion: forbidden
+  architecture_change: forbidden
+  spec_change: revised_contract_required
+  dependency_change: forbidden
+  public_contract_change: revised_contract_required
+  blocking_gap_behavior: BLOCKED
+acceptance_criteria:
+  - id: AC-1
+    requirement: "Interrupted-chat recovery uses minimum current evidence and exact existing authority."
+    evidence_required: "Bounded owner delta and cases distinguish initial entry, explicitly covered unfinished-task recovery, unknown/unattributed/competing work and later lifecycle; original base/strict task controls and one writer remain binding."
+  - id: AC-2
+    requirement: "Recovery neither repeats unknown effects nor discards applicable proof."
+    evidence_required: "Concrete keyed-result, commit/publication reconciliation, proof reuse/invalidation/missing-evidence and capability cases preserve exact predicates and explicit stop boundaries; existing attempt regressions pass."
+  - id: AC-3
+    requirement: "Thin owner scope, qualification and publication close safely."
+    evidence_required: "Only three allowed owners/named sections, net <=3000, both kernels/protected inputs unchanged, native 240/26/33 and artifact/link/scope/inventory/diff PASS, exact-base candidate plus sole report-only child and fresh MAIN_ONLY closure with pinned exception."
+verification:
+  authoritative_verification:
+    required: false
+    mechanism: ""
+    expected_signal: ""
+structure_policy:
+  expected_new_files:
+    - .agent/tasks/TASK-0033/report.yaml
+  unlisted_new_files:
+    allowed: false
+    max: 0
+    within: []
+    purpose: "Small deltas at existing continuity/binding owners and navigation; only report is new."
+  allow_new_top_level_directories: false
+  allow_new_shared_modules: false
+git_authority:
+  create_branch: false
+  commit: true
+  push: true
+  promote_to_main: false
+blocking_decisions: []
+execution_ready: true
