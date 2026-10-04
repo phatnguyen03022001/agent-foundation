@@ -843,6 +843,159 @@ class ExecutionAttemptTests(unittest.TestCase):
         )
         self.assertNotIn("death_at", payload)
 
+    def test_integration_successive_local_repairs_survive_lost_ack(self) -> None:
+        t = lambda n: self.t0 + timedelta(seconds=n)
+        c = self.root / "fixture_component"
+        c.mkdir()
+        oracle = {"a.txt": "alpha\n", "b.txt": "beta\n"}
+        authority = {
+            "component": c.name,
+            "outcome": "inputs_match_oracle",
+            "stdlib": ["pathlib.Path", "unittest"],
+            "allowed_mutations": ["fixture_implementation", "test_reliability"],
+            "oracle": oracle,
+        }
+        ap = c / "authority.json"
+        ap.write_text(json.dumps(authority, sort_keys=True) + "\n", encoding="utf-8")
+        authority_bytes = ap.read_bytes()
+        for name in oracle:
+            (c / name).write_text("broken\n", encoding="utf-8")
+        calls = {name: 0 for name in oracle}
+
+        def gate():
+            return tuple(
+                name for name, expected in sorted(oracle.items())
+                if (c / name).read_text(encoding="utf-8") != expected
+            )
+
+        def repair(name):
+            calls[name] += 1
+            (c / name).write_text(oracle[name], encoding="utf-8")
+
+        self.assertEqual(gate(), ("a.txt", "b.txt"))
+        started = self.start()
+        self.assertEqual((started["execution_base"], started["authority"]), (self.base, "NONE"))
+        first = self.start_slice(
+            operation_class="expected_state_filesystem", carrier="python_stdlib",
+            intent="repair_fixture_a", reconciliation_kind="expected_state_filesystem",
+            postcondition_kind="expected_state",
+        )
+        self.assertEqual(first["current_slice"]["ordinal"], 1)
+        repair("a.txt")
+        self.assertEqual(gate(), ("b.txt",))
+
+        persisted = attempts._read_record(self.root, self.attempt_id)
+        inspected = attempts.inspect_record(persisted, now=t(6))
+        self.assertEqual(inspected["slice_recovery_classification"], "OUTCOME_UNKNOWN")
+        self.assertFalse(attempts.retry_is_legal(inspected["current_slice"]))
+        self.assertEqual((c / "a.txt").read_text(encoding="utf-8"), oracle["a.txt"])
+        attempts.reconcile_slice(
+            self.root, self.attempt_id, self.slice_id, "EFFECT_PRESENT",
+            fresh=True, now=t(7),
+        )
+        self.assertEqual(calls["a.txt"], 1)
+        attempts.checkpoint_attempt(self.root, self.attempt_id, "repair-a-observed", now=t(8))
+        attempts.clear_slice(self.root, self.attempt_id, self.slice_id, now=t(9))
+
+        second_id = "1123456789abcdef0123456789abcdef"
+        second = self.start_slice(
+            operation_class="expected_state_filesystem", carrier="python_stdlib",
+            intent="repair_fixture_b", reconciliation_kind="expected_state_filesystem",
+            postcondition_kind="expected_state", execution_slice_id=second_id, now=t(10),
+        )
+        self.assertEqual((second["current_slice"]["ordinal"], second["execution_base"]), (2, self.base))
+        repair("b.txt")
+        attempts.observe_slice(
+            self.root, self.attempt_id, second_id, "RESULT_SUCCEEDED", now=t(11)
+        )
+        attempts.checkpoint_attempt(self.root, self.attempt_id, "repair-b-observed", now=t(12))
+        attempts.clear_slice(self.root, self.attempt_id, second_id, now=t(13))
+        self.assertEqual((gate(), calls, ap.read_bytes()), ((), {"a.txt": 1, "b.txt": 1}, authority_bytes))
+
+    def test_integration_replay_safe_result_stays_separate_from_external_effect(self) -> None:
+        t = lambda n: self.t0 + timedelta(seconds=n)
+        retained_path = self.root / "retained_result.json"
+        key, spec, carrier_calls = "fixture-key-1", "fixture-spec-v1", []
+
+        def run_carrier():
+            carrier_calls.append((key, spec))
+            retained_path.write_text(
+                json.dumps({
+                    "operation_key": key,
+                    "specification": spec,
+                    "writer_attempt_id": self.attempt_id,
+                }, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+
+        self.start()
+        keyed_id = "2123456789abcdef0123456789abcdef"
+        keyed = self.start_slice(
+            operation_class="runtime_start", carrier="fake_keyed_carrier",
+            intent="run_retained_operation", reconciliation_kind="runtime_start",
+            postcondition_kind="runtime_session_identity", execution_slice_id=keyed_id,
+        )
+        self.assertEqual(keyed["current_slice"]["ordinal"], 1)
+        run_carrier()
+
+        persisted = attempts._read_record(self.root, self.attempt_id)
+        self.assertEqual(
+            (persisted["execution_base"], persisted["authority"], persisted["current_slice"]["execution_slice_id"]),
+            (self.base, "NONE", keyed_id),
+        )
+        before = self.record_path().read_bytes()
+        with self.assertRaisesRegex(ValueError, "fresh attributable state"):
+            attempts.reconcile_slice(
+                self.root, self.attempt_id, keyed_id, "REPLAY_SAFE_CONTRACT",
+                fresh=False, now=t(6),
+            )
+        self.assertEqual(self.record_path().read_bytes(), before)
+        unresolved = attempts.reconcile_slice(
+            self.root, self.attempt_id, keyed_id, "UNRESOLVED", fresh=True, now=t(7)
+        )
+        self.assertFalse(attempts.retry_is_legal(unresolved["current_slice"]))
+        retained = json.loads(retained_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            (retained["operation_key"], retained["specification"], retained["writer_attempt_id"]),
+            (key, spec, self.attempt_id),
+        )
+        replay = attempts.reconcile_slice(
+            self.root, self.attempt_id, keyed_id, "REPLAY_SAFE_CONTRACT", fresh=True, now=t(8)
+        )
+        self.assertTrue(attempts.retry_is_legal(replay["current_slice"]))
+        self.assertEqual(carrier_calls, [(key, spec)])
+        attempts.checkpoint_attempt(self.root, self.attempt_id, "retained-result-observed", now=t(9))
+        attempts.clear_slice(self.root, self.attempt_id, keyed_id, now=t(10))
+
+        marker, dispatches = self.root / "fake_remote_ref.txt", []
+
+        def dispatch():
+            dispatches.append("publish")
+            marker.write_text("report-commit\n", encoding="utf-8")
+
+        external_id = "3123456789abcdef0123456789abcdef"
+        external = self.start_slice(
+            intent="publish_fixture_ref", execution_slice_id=external_id, now=t(11)
+        )
+        self.assertEqual(external["current_slice"]["ordinal"], 2)
+        dispatch()
+        self.assertNotIn("remote_ref", retained)
+        self.assertEqual(marker.read_text(encoding="utf-8"), "report-commit\n")
+        attempts.reconcile_slice(
+            self.root, self.attempt_id, external_id, "EFFECT_PRESENT", fresh=True, now=t(12)
+        )
+        self.assertEqual(dispatches, ["publish"])
+        attempts.checkpoint_attempt(self.root, self.attempt_id, "external-effect-observed", now=t(13))
+        attempts.clear_slice(self.root, self.attempt_id, external_id, now=t(14))
+        terminal = attempts.terminal_attempt(self.root, self.attempt_id, "NEEDS_REVIEW", now=t(15))
+        self.assertEqual(terminal["state"], "TERMINAL")
+        with self.assertRaisesRegex(ValueError, "cannot return to RUNNING"):
+            attempts.heartbeat_attempt(self.root, self.attempt_id, now=t(16))
+        with self.assertRaisesRegex(ValueError, "cannot accept execution slices"):
+            self.start_slice(
+                execution_slice_id="4123456789abcdef0123456789abcdef", now=t(16)
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
