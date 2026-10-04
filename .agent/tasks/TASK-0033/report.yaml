@@ -1,8 +1,8 @@
 protocol_version: 3
 
 task_id: TASK-0033
-task_revision: 1
-report_revision: 1
+task_revision: 2
+report_revision: 2
 state: REPORTED
 
 task_source:
@@ -13,110 +13,118 @@ execution:
   branch:
     name: main
     role: stable
-  authorized_base_head: "b6e4881dff6695d449160e10999d68cc83310267"
-  final_execution_head: "34278bea9b3a998f33bcd86a8bb99357e281e5a0"
+  authorized_base_head: "689bb5594786d6d2292b5ae22136a0f9385806f6"
+  final_execution_head: "77aaf628c48e05de8509290b1c5bfb8cff28e68e"
 
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  authorized_revision: "a7c5ba804a76f9c399f0085fe95bc39138d7000c"
+  authorized_revision: "74f32c7ccbd8a002149f33ab654b3ccb873c81d2"
 
 capability_preflight:
   phase: EXECUTION
   required:
-    - fresh local and remote Git identity observation
-    - bounded documentation mutation
-    - native Python repository verification
+    - fresh local and canonical remote Git identity observation
+    - bounded Recovery-only text mutation
+    - native Python repository verification and read-only retry predicate invocation
     - exact-path commit and ordinary non-force MAIN_ONLY publication
   available:
-    - Agent Runtime 0.5.1 terminal, filesystem and repository observation surfaces
-    - native Git explicit-path staging/commit and ff-only synchronization
+    - Agent Runtime 0.5.1 filesystem, terminal, local repository and remote observation surfaces
+    - native Git explicit-path staging/commit for the pinned untracked exception
     - native Python validator and unittest surfaces
-    - GitHub canonical remote observation and bounded publication
+    - bounded compare-and-swap repository publication
   missing: []
   passed: true
 
 qualification:
+  revision_lineage:
+    reviewed_report:
+      commit: "74f32c7ccbd8a002149f33ab654b3ccb873c81d2"
+      report_revision: 1
+      review_revision: 1
+      review_state: REVISION_REQUIRED
+    correction_gap: R33-REPLAY-SAFE
+    original_r1_base: "b6e4881dff6695d449160e10999d68cc83310267"
+    original_r1_candidate: "34278bea9b3a998f33bcd86a8bb99357e281e5a0"
   external_how:
-    - "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/verification-loop/SKILL.md; Test Suite result attribution and Diff Review only, adapted to target-native commands."
+    - "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/verification-loop/SKILL.md; Test Suite attribution and Diff Review only, subordinate to task-native commands and proof."
   implementation_boundary:
-    execution_continuity: "Changed only the existing Recovery section: exact same-task re-resolution, original-base lineage, writer/effect reconciliation, minimum authority-NONE locator, exact-predicate proof reuse and four bounded synthetic recovery walkthroughs."
-    task_protocol: "Changed only Execution-attempt continuity, Canonical handoffs and compact prompt locators, and Execution base without self-reference to distinguish initial entry from explicitly authorized same-task interrupted recovery."
-    readme: "Changed only the existing Execution Continuity navigation entry."
-    excluded: "No role kernel, script/test, schema/template/default, product-state, other contract owner, profile/bootstrap/router, external metadata/pin, Documents, Standards, Runtime, host or dependency bytes changed."
-  synthetic_walkthroughs:
-    - id: RETAINED_LONG_VERIFICATION
-      authority_excerpts:
-        - "EXECUTION_CONTINUITY.md#carrier-and-long-running-execution"
-        - "TASK_PROTOCOL.md#evidence-validity-and-consequence-boundary-invalidation"
-      observable_inputs:
-        - "Exact task/revision and original base identity."
-        - "Candidate identity, verifier/profile, retained keyed operation identity and resolvable result."
-      required_freshness: "Current task authority and unchanged candidate/content, predicate, verifier/profile and material toolchain."
-      disposition: "Poll the retained operation or reuse completed proof only when exact applicability still holds."
-      next_action: "Proceed to report; if result evidence is missing/stale, rerun only affected safe read-only verification."
-    - id: DIRTY_OR_CHECKPOINT_RECOVERY
-      authority_excerpts:
-        - "EXECUTION_CONTINUITY.md#recovery"
-        - "TASK_PROTOCOL.md#canonical-handoffs-and-compact-prompt-locators"
-        - "TASK_PROTOCOL.md#execution-base-without-self-reference"
-      observable_inputs:
-        - "Fresh local HEAD, index/worktree, checkpoint identity, canonical remote state and writer evidence."
-      required_freshness: "Current recovery authority must cover the resumed state/operations and writer ownership must be attributable."
-      disposition: "Covered same-task work may continue; unknown work or overlapping/unknown former writer stops competing mutation."
-      next_action: "Preserve state and require revised recovery authority when predicates cannot be proved."
-    - id: LOST_COMMIT_OR_PUBLICATION_ACK
-      authority_excerpts:
-        - "EXECUTION_CONTINUITY.md#execution-slice"
-        - "TASK_PROTOCOL.md#consequence-based-execution-guards"
-        - "TASK_PROTOCOL.md#githublocal-drift"
-      observable_inputs:
-        - "Intended effect identity, local commit/ref and fresh canonical remote ref."
-      required_freshness: "Consequence-specific remote state immediately before any retry."
-      disposition: "Effect present prevents duplication; proven absence permits retry only with unchanged original preconditions/current authority; unknown or stale remote remains unresolved."
-      next_action: "Reconcile or stop; never blind retry."
-    - id: TERMINAL_OR_STALE_PROOF
-      authority_excerpts:
-        - "TASK_PROTOCOL.md#executor-binding-terminal-vs-whole-task-lifecycle"
-        - "TASK_PROTOCOL.md#phase-specific-capability-preflight"
-      observable_inputs:
-        - "Published report/NEEDS_REVIEW lineage, verifier evidence locator and current mandatory capability."
-      required_freshness: "Canonical report identity plus material verifier/capability state."
-      disposition: "Terminal report closes Executor recovery; stale/missing verifier evidence selects affected safe re-verification; missing mandatory carrier/capability remains capability-blocked."
-      next_action: "Use independent later-lifecycle authority or stop; no self-review or successor dispatch."
-  compact_locator_example: "task=TASK-0033@r1;base=<sha>;candidate=<sha>;op=<key>;proof=<locator>;gap=<effect>;next=<consequence>"
+    changed: "Only skills/contracts/EXECUTION_CONTINUITY.md#Recovery changed, in the fresh effect/retry summary and proof-reuse replay prohibition."
+    correction: "Recovery now refers to the existing slice reconciliation rule, retains exact contract-proven same-key/spec retained-identity replay, and forbids blind replay rather than every mutation replay."
+    preserved: "EFFECT_PRESENT remains no-duplicate; UNRESOLVED stops; external effects remain independently reconciled; replay-safe recovery grants no new dependency, cleanup, commit, push, publication, lifecycle or successor authority."
+    excluded: "No Task Protocol, README, kernels, helper/tests, schemas/templates/defaults, task/review authority, product state, Runtime, host, dependency, Documents or Standards bytes changed."
+  replay_safe_counterexample:
+    source:
+      path: skills/scripts/execution_attempt.py
+      sha256: "05407b8557f90c71cecff07e2d6f15336437f0dfc3b18ba4b84756808a81a06e"
+      predicate: retry_is_legal
+    positive:
+      selected_contract_condition: "Exact installed selected contract permits replay for the same retained operation/specification; current same-task authority, writer ownership and applicable original preconditions are independently proven."
+      reconciliation_result: REPLAY_SAFE_CONTRACT
+      result_classification: RETRY_ALLOWED
+      observed_retry_is_legal: true
+      consequence: "Replay may recover the original operation/result under its exact retained identity; it proves no independent remote publication or other external effect."
+    contrasts:
+      - condition: "Exact contract or retained same-key/specification identity proof is missing."
+        disposition: "No replay-safe claim; stop."
+      - condition: "EFFECT_PRESENT without separate replay-safe permission."
+        disposition: "No duplicate consequence."
+      - condition: "UNRESOLVED / OUTCOME_UNKNOWN."
+        disposition: "Stop; no retry."
+      - condition: "EFFECT_ABSENT_PRECONDITIONS_HOLD / RETRY_ALLOWED with original preconditions still valid."
+        disposition: "Retry predicate permits retry, subject to current task authority and independent preconditions."
+      - condition: "Effect absent but original preconditions are invalid."
+        disposition: "Retry is not authorized by the telemetry classification; stop."
+    real_target_retry_executed: false
+  retry_predicate:
+    note: "retry_is_legal checks telemetry classification only. Current authority, exact installed carrier/contract applicability, same-key/spec retained identity, writer ownership and fresh original preconditions are separate governing predicates."
+    cases:
+      - reconciliation_result: REPLAY_SAFE_CONTRACT
+        result_classification: RETRY_ALLOWED
+        observed: true
+      - reconciliation_result: EFFECT_ABSENT_PRECONDITIONS_HOLD
+        result_classification: RETRY_ALLOWED
+        observed: true
+      - reconciliation_result: EFFECT_PRESENT
+        result_classification: EFFECT_PRESENT
+        observed: false
+      - reconciliation_result: UNRESOLVED
+        result_classification: OUTCOME_UNKNOWN
+        observed: false
   verification_evidence:
-    candidate: "34278bea9b3a998f33bcd86a8bb99357e281e5a0"
-    candidate_parent: "b6e4881dff6695d449160e10999d68cc83310267"
+    candidate: "77aaf628c48e05de8509290b1c5bfb8cff28e68e"
+    candidate_parent: "689bb5594786d6d2292b5ae22136a0f9385806f6"
     skills_validator: "PASS; python3 -B skills/scripts/validate_skill_library.py."
     skills_regressions: "PASS; python3 -B skills/scripts/test_validate_skill_library.py ran 240/240."
     external_regressions: "PASS; python3 -B skills/scripts/test_sync_external_capabilities.py ran 26/26."
     execution_attempt_regressions: "PASS; python3 -B skills/scripts/test_execution_attempt.py ran 33/33."
     task_artifact: "PASS; python3 -B skills/scripts/validate_skill_library.py --artifact task .agent/tasks/TASK-0033/task.yaml."
-    report_artifact: "PASS on the exact report candidate; python3 -B skills/scripts/validate_skill_library.py --artifact report .agent/tasks/TASK-0033/report.yaml."
-    sections_links_scope: "PASS; normative continuity delta is confined to Recovery; Task Protocol delta is confined to the three authorized sections; README changes only its existing Execution Continuity locator; new Recovery anchors resolve."
-    inventory: "PASS; README 10761 -> 10804, Execution Continuity 16211 -> 18472, Task Protocol 67839 -> 68528 bytes; net UTF-8 addition +2993 <=3000."
-    protected_scope: "PASS; Architect 16656 and Executor 17359 bytes are byte-identical; product-state.json and every tracked path outside the three authorized files are unchanged."
-    diff_check: "PASS; git diff --check on the exact candidate."
-    remote_prepublication: "Fresh remote observation after candidate commit proves canonical main remains exact authorized base b6e4881dff6695d449160e10999d68cc83310267."
+    report_artifact: "PASS; python3 -B skills/scripts/validate_skill_library.py --artifact report .agent/tasks/TASK-0033/report.yaml on this exact report candidate."
+    recovery_scope: "PASS; exact r2-base comparison shows only Recovery differs in the sole candidate path."
+    r2_inventory: "PASS; EXECUTION_CONTINUITY.md 18472 -> 18478 bytes, delta +6."
+    cumulative_inventory: "PASS; versus b6e4881dff6695d449160e10999d68cc83310267: skills/README.md 10761 -> 10804 (+43), EXECUTION_CONTINUITY.md 16211 -> 18478 (+2267), TASK_PROTOCOL.md 67839 -> 68528 (+689); net +2999 <=3000."
+    protected_scope: "PASS; Architect 16656 and Executor 17359 bytes remain byte-identical; product-state.json and all tracked paths outside the sole candidate path are unchanged from the r2 base."
+    owner_reference: "No new anchor or link was added; Recovery textually delegates retry classification to the unchanged slice reconciliation owner immediately above."
+    diff_check: "PASS; git diff --check on the exact candidate delta."
+    remote_prepublication: "Fresh observation after candidate commit proves canonical origin/main remains exact authorized base 689bb5594786d6d2292b5ae22136a0f9385806f6."
     unrelated_exception: ".DS_Store remains the sole untracked path, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d."
 
 authoritative_verification:
   required: false
   performed: false
   result: NOT_REQUIRED
-  evidence: "TASK-0033 requires Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
+  evidence: "TASK-0033 r2 requires Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
 
 pushed: false
 
 acceptance_evidence:
   - criterion_id: AC-1
     status: PASS
-    evidence: "Recovery now re-resolves exact task/original-base/current authority and only material owners/identities, keeps memory/lease/locator authority-NONE, preserves original base lineage, requires attributable current state and one writer, and keeps strict task controls binding across same-task interrupted recovery."
+    evidence: "Recovery no longer has a blanket mutation-replay ban. It delegates retry classification to the existing slice reconciliation owner, requires current authority/original preconditions, exact installed contract and retained same-key/spec identity for replay-safe claims, preserves EFFECT_PRESENT no-duplicate and UNRESOLVED stop semantics, and keeps independent external effects separate. The read-only predicate produced true/true/false/false for the four required synthetic cases."
   - criterion_id: AC-2
     status: PASS
-    evidence: "Recovery resolves retained typed results before external effects, distinguishes effect-present/absent/unknown, forbids competing mutation on unknown writer ownership, preserves exact-predicate proof reuse/invalidation, and the four bounded walkthroughs cover retained verification, dirty/checkpoint work, lost commit/push acknowledgement, terminal lineage, stale verifier evidence and missing capability. Existing execution-attempt regressions pass 33/33."
+    evidence: "Candidate changes only the specified Recovery clauses in one existing owner. r2 adds 6 bytes and cumulative r1+r2 addition across the original three owners is +2999 <=3000. Architect/Executor kernels, product state, Task Protocol, README, scripts/tests, schemas/templates/defaults, pins, roles and Runtime remain unchanged by r2."
   - criterion_id: AC-3
     status: PASS
-    evidence: "Exact candidate 34278bea9b3a998f33bcd86a8bb99357e281e5a0 is the direct child of exact base and changes only the three allowed files. Net addition is +2993 bytes; role kernels/product-state/protected paths and pinned .DS_Store remain unchanged. Native validator, skills 240/240, external 26/26, execution-attempt 33/33, task/report artifacts, section/link/scope/inventory checks and diff-check pass."
+    evidence: "Exact candidate 77aaf628c48e05de8509290b1c5bfb8cff28e68e is the direct child of exact r2 base. Native validator, skills 240/240, external 26/26, execution-attempt 33/33, task artifact, predicate cases, Recovery-only scope, inventory and diff-check pass. Report artifact validation is performed on this report candidate before its sole report-only commit."
 
 result: NEEDS_REVIEW
