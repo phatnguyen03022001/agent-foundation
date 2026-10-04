@@ -1,0 +1,213 @@
+protocol_version: 3
+
+task_id: TASK-0034
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0034/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "941318c43a165c05768174645f534bb10ccac66f"
+  final_execution_head: "c25fca257491d70e5bd4a9a57a59ad057244c2b4"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "3b58588b19b7a9ddbfd0e78558da4c3f650e5c53"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - fresh canonical GitHub/local identity with FF-only mirror synchronization and pinned .DS_Store preservation
+    - native Python plus disposable local Git fixture execution
+    - bounded test-file mutation, explicit-path commit and ordinary non-force MAIN_ONLY publication
+  available:
+    - Agent Runtime 0.5.1 terminal/filesystem/local/remote repository capabilities
+    - Python 3.14.6 and Git 2.55.0
+    - existing TemporaryDirectory mock-repository harness with fake origin binding
+    - exact-path native Git staging/commit compatible with the pinned untracked exception
+    - repo_publish compare-and-swap publication capability
+  missing: []
+  passed: true
+
+qualification:
+  candidate_scope:
+    changed_path: skills/scripts/test_execution_attempt.py
+    base_bytes: 33426
+    candidate_bytes: 40962
+    net_added_bytes: 7536
+    diff_lines: "153 additions / 0 deletions"
+    methods_before: 33
+    methods_after: 35
+    append_only: true
+    imports_changed: false
+    existing_helpers_or_tests_changed: false
+    protected_production_paths_changed: false
+    note: "Exact staged diff is one append hunk before the existing __main__ launcher; no production helper, validator, owner, schema, template, pin, product-state or Runtime byte changed."
+  fixture_case_a:
+    outcome: "One pre-authored fixture component declares inputs_match_oracle, pathlib.Path/unittest stdlib choices, fixture_implementation/test_reliability mutation classes and an immutable two-file oracle."
+    trace:
+      - "Initial deterministic gate FAIL: a.txt and b.txt both violate the unchanged oracle."
+      - "Slice ordinal 1 records expected_state_filesystem intent before repair A; repair A changes only a.txt; gate remains FAIL attributable only to b.txt."
+      - "The acknowledgement/result is intentionally omitted. The persisted on-disk attempt is reloaded; OUTCOME_UNKNOWN forbids retry while fresh file inspection proves a.txt already equals its exact oracle."
+      - "Fresh EFFECT_PRESENT reconciliation preserves repair A without duplicate write; checkpoint follows observation and only then clears the slice."
+      - "Slice ordinal 2 retains the same attempt/task/revision/base binding; repair B is observed SUCCEEDED, checkpointed and cleared; the unchanged gate then PASSes."
+    duplicate_counts: "a.txt=1, b.txt=1"
+    authority_preserved: "attempt authority NONE; execution_base remains the fixture's original base; authority.json bytes remain unchanged."
+  fixture_case_b:
+    outcome: "Replay-safe retained process result is qualified separately from an independently reconciled external effect."
+    trace:
+      - "A runtime_start slice with a fixed operation key/specification is persisted before one fake carrier call; its retained result records the same key/spec and writer_attempt_id."
+      - "The actual on-disk record is reloaded. fresh=false reconciliation is rejected with record bytes unchanged."
+      - "Fresh UNRESOLVED remains OUTCOME_UNKNOWN/no-retry. Fresh retained-result inspection proves same key/spec/writer only for the controlled fixture contract; REPLAY_SAFE_CONTRACT then yields RETRY_ALLOWED."
+      - "Checkpoint-before-clear is exercised. The fake carrier call count remains one; the helper classification itself grants no task or Runtime authority."
+      - "A subsequent slice simulates a separate publication effect. The retained carrier result contains no remote-ref proof; fresh external marker inspection reconciles EFFECT_PRESENT and dispatch count remains one."
+      - "After checkpoint/clear, terminal NEEDS_REVIEW rejects both heartbeat reopening and a new execution slice."
+    authority_preserved: "original execution_base retained; attempt/slices authority NONE; writer ownership is explicit in the retained controlled result."
+    live_runtime_or_provider_fault_injected: false
+  metadata_smoke:
+    source:
+      id: ecc
+      repository: affaan-m/ECC
+      revision: "bf70150eb2df8070024e5bdf08e4aa08959e2735"
+      authority: NONE
+    react_query:
+      argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--query", "React", "--limit", "3"]
+      total_matches: 21
+      truncated: true
+      returned: ["ecc:agent:react-build-resolver", "ecc:agent:react-reviewer", "ecc:agent:vue-reviewer"]
+      selected_exact_fit: "ecc:agent:react-reviewer"
+    go_query:
+      argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--query", "go-reviewer", "--surface", "agent", "--limit", "3"]
+      total_matches: 2
+      truncated: false
+      returned: ["ecc:agent:django-reviewer", "ecc:agent:go-reviewer"]
+      selected_exact_fit: "ecc:agent:go-reviewer"
+    exact_resolves:
+      - argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--resolve", "--surface", "agent", "--title", "react-reviewer"]
+        id: "ecc:agent:react-reviewer"
+        source_path: agents/react-reviewer.md
+      - argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--resolve", "--surface", "agent", "--title", "go-reviewer"]
+        id: "ecc:agent:go-reviewer"
+        source_path: agents/go-reviewer.md
+    zero_match:
+      argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--query", "__task0034_zero_match__", "--limit", "3"]
+      total_matches: 0
+      truncated: false
+      interpretation: "Truthful zero result only; it is not absence of all capabilities or routing authority."
+    explicit_empty_rejection:
+      argv: ["python3", "-B", "skills/scripts/sync_external_capabilities.py", "--query", "React", "--source", "", "--limit", "3"]
+      exit_code: 2
+      error: "EXTERNAL_CAPABILITY_SYNC = ERROR: : source is not an admitted harness source"
+    selection_rationale: "Conditional React/TypeScript frontend concern selects react-reviewer; conditional Go backend concern selects go-reviewer. The noisy Django match is not selected. Metadata remains inert/advisory and creates no install, activation or task permission."
+    applicable_bodies_loaded: 0
+    certified_boundary: "This smoke certifies committed agent-foundation metadata query/resolve behavior only, not an installed upstream ECC CLI or universal semantic routing."
+  authority_countercases:
+    restrictive_scope:
+      inputs:
+        - "TASK-0034 scope.allowed_existing_files_or_components contains only skills/scripts/test_execution_attempt.py."
+        - "expected_files_are_restrictive=true; dependency_change=forbidden; public_contract_change requires revised contract; privilege expansion is outside scope."
+      owner_excerpt: "An explicit restrictive exact-file or structure control is a hard boundary when selected for known material consequences."
+      predicates:
+        exact_file_or_structure_authority: FAIL
+        dependency_public_contract_or_privilege_remains_local: FAIL
+        local_auto_fix_eligible: FAIL
+      consequence: "A necessary companion edit outside the restrictive boundary stops rather than being adopted; dependency/public-contract/privilege change is not LOCAL."
+      next: "Preserve evidence and request revised Architect authority; do not mutate the companion or dependency/contract/privilege surface."
+    unresolved_material_choice:
+      inputs:
+        - "Conditional target facts are React/TypeScript frontend plus Go backend."
+        - "A dependent implementation assumes a still-unresolved material third-party choice."
+        - "ECC metadata entries are resolved but no scoped target adoption/approval exists."
+      owner_excerpt: "Any material stack, build/buy, or third-party choice that dependent code assumes must be resolved before that code."
+      adoption_excerpt: "Discovered or loaded external rules remain advisory until governing target authority explicitly approves both their applicable scope and integration."
+      predicates:
+        documentation_closure_authorizes_dependent_code: FAIL
+        material_choice_resolved: FAIL
+        external_rule_adopted: FAIL
+        installation_or_dependency_permission_created: FAIL
+      consequence: "Dependent implementation stops; target-native rules remain primary and advisory ECC metadata stays unadopted."
+      next: "Perform bounded relevant research/target decision work under Architect authority; no install, dependency mutation or dependent implementation."
+    expired_lease_writer_capability_terminal:
+      inputs:
+        - "Lease is expired but writer ownership is unknown or overlapping."
+        - "A mandatory current-phase capability is unavailable."
+        - "A canonical terminal report/NEEDS_REVIEW exists."
+      recovery_excerpt: "Lease expiry proves no writer death; unknown/overlap/unattributed work stops competing mutation."
+      capability_excerpt: "Unavailable mandatory current-phase capability returns CURRENT_PHASE_CAPABILITY_UNAVAILABLE before mutation."
+      terminal_excerpt: "Published report/NEEDS_REVIEW ends Executor recovery; later lifecycle uses its own authority."
+      predicates:
+        lease_authorizes_takeover: FAIL
+        writer_exclusivity_proven: FAIL
+        missing_capability_may_be_bypassed: FAIL
+        terminal_report_reopens_executor: FAIL
+      consequence: "No takeover or competing mutation; capability remains blocked; terminal evidence routes to independent later authority."
+      next: "Preserve state/checkpoint, resolve writer/capability under fresh authority, or stop; do not self-review or dispatch successor work."
+  accepted_review_locators:
+    - ".agent/tasks/TASK-0026/review.yaml @ 634ff01c103bbfdacb1be35d996dba61aa1ff343 — ACCEPTED r1"
+    - ".agent/tasks/TASK-0027/review.yaml @ f73e478d5c536a5c6901f36bbc291295c26fe011 — ACCEPTED r1"
+    - ".agent/tasks/TASK-0028/review.yaml @ 74fc51dc402f3704a7699e84a12ac627112d7456 — ACCEPTED r2"
+    - ".agent/tasks/TASK-0029/review.yaml @ cbc269c1e43ebc43f0d6d6a6162bb1ac6fb55561 — ACCEPTED r2"
+    - ".agent/tasks/TASK-0030/review.yaml @ 73d11481297be7476edec5737e067196234819b8 — ACCEPTED r1"
+    - ".agent/tasks/TASK-0031/review.yaml @ acaf8c8db87c5fa103db394f559c3f92be544953 — ACCEPTED r1"
+    - ".agent/tasks/TASK-0032/review.yaml @ b6e4881dff6695d449160e10999d68cc83310267 — ACCEPTED r1"
+    - ".agent/tasks/TASK-0033/review.yaml @ 941318c43a165c05768174645f534bb10ccac66f — ACCEPTED r2"
+  source_byte_comparison:
+    immutable_baseline: "634ff01c103bbfdacb1be35d996dba61aa1ff343"
+    architect: "24338 -> 16656 bytes"
+    executor: "28681 -> 17359 bytes"
+    interpretation: "Source-byte comparison only. It is not ChatGPT token usage, elapsed time, total active context, proof that the whole library shrank, or performance telemetry."
+  material_inputs:
+    - "skills/executor/SKILL.md @ 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53: task entry, restrictive execution, execution bundles, report/terminal rules."
+    - "skills/verification/SKILL.md and skills/adversarial-audit/SKILL.md @ 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53."
+    - "skills/protocols/TASK_PROTOCOL.md @ 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53: core bindings, material-design-readiness, artifact authority, candidate/report closure, capability preflight, consequence guards, GitHub/local drift, structure authority."
+    - "skills/contracts/FOUNDATION_ARCHITECTURE.md @ 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53: target authority, target-owned external-rule adoption, capability control, execution/publication control."
+    - "skills/contracts/EXECUTION_CONTINUITY.md#Recovery and IMPLEMENTATION_REPORT.md ownership/evidence @ 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53."
+    - "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/verification-loop/SKILL.md; Test Suite attribution and Diff Review HOW only."
+  verification_evidence:
+    candidate: "c25fca257491d70e5bd4a9a57a59ad057244c2b4"
+    candidate_parent: "941318c43a165c05768174645f534bb10ccac66f"
+    focused_integrations: "PASS; two new methods ran 2/2."
+    execution_attempt_regressions: "PASS; python3 -B skills/scripts/test_execution_attempt.py ran 35/35 exactly once for the qualified candidate tree."
+    skills_validator: "PASS; python3 -B skills/scripts/validate_skill_library.py."
+    skills_regressions: "PASS; python3 -B skills/scripts/test_validate_skill_library.py ran 240/240."
+    external_regressions: "PASS; python3 -B skills/scripts/test_sync_external_capabilities.py ran 26/26."
+    task_artifact: "PASS; validate_skill_library.py --artifact task .agent/tasks/TASK-0034/task.yaml."
+    report_artifact: "PASS; validate_skill_library.py --artifact report .agent/tasks/TASK-0034/report.yaml on this exact report candidate."
+    python_compile: "PASS; in-memory compile of skills/scripts/test_execution_attempt.py."
+    append_import_scope: "PASS; exact diff is one append hunk, 153 additions/0 deletions, 33 -> 35 tests, no import hunk, only the authorized test file differs in the implementation candidate."
+    byte_cap: "PASS; 33426 -> 40962 bytes, net +7536 <=8000."
+    protected_state: "PASS; Architect 16656, Executor 17359, product-state.json, execution_attempt.py, sync_external_capabilities.py and all candidate paths outside the authorized test file remain unchanged from the handoff base."
+    diff_check: "PASS; git diff --check."
+    remote_prepublication: "Fresh observation after candidate commit proves origin/main remains exact authorized base 941318c43a165c05768174645f534bb10ccac66f."
+    local_topology: "PASS; candidate is the direct child of the exact base; main has one worktree; tracked/index state clean after candidate commit."
+    unrelated_exception: ".DS_Store remains sole unrelated untracked regular file, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0034 requires bounded Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
+
+pushed: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "Executable case A preserves one pre-authored oracle/envelope across FAIL -> repair A/still FAIL(B) -> repair B/PASS. Lost acknowledgement reloads real persisted attempt state, OUTCOME_UNKNOWN forbids retry, EFFECT_PRESENT prevents duplicate repair, checkpoint precedes clear, and the next slice preserves binding with increasing ordinal. Restrictive/material countercases stop independently rather than weakening the fixture oracle."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "Executable case B rejects stale reconciliation without record mutation, preserves fresh UNRESOLVED no-retry, admits REPLAY_SAFE_CONTRACT only after controlled same-key/spec/writer retained-result proof, checkpoint-clears in order, reconciles a separate external effect independently without duplicate dispatch, and terminal NEEDS_REVIEW cannot reopen RUNNING or admit a new slice. No live Runtime/provider crash claim is inferred."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Committed ECC metadata smoke records exact React/go-reviewer query/resolve args, source/revision, counts/truncation, exact-fit selections, zero match and explicit-empty rejection. Conditional governance cases preserve target-first material-choice/rule/capability/writer authority. Architect 24338 -> 16656 and Executor 28681 -> 17359 are reported only as source-byte comparisons."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Implementation candidate changes exactly two appended integration methods in the existing test file, +7536 bytes, with all old tests/helpers and protected state preserved. Focused 2/2, full attempt 35/35, skills 240/240, external 26/26, native validator, task/report artifact validation, compile, scope/inventory and diff checks pass. Candidate is the exact-base direct child and this report is prepared as its sole report-only child for one non-force MAIN_ONLY publication."
+
+result: NEEDS_REVIEW
