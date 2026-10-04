@@ -914,79 +914,68 @@ class ExecutionAttemptTests(unittest.TestCase):
 
     def test_integration_replay_safe_result_stays_separate_from_external_effect(self) -> None:
         t = lambda n: self.t0 + timedelta(seconds=n)
-        retained_path = self.root / "retained_result.json"
-        key, spec, carrier_calls = "fixture-key-1", "fixture-spec-v1", []
+        store = self.root / "retained_result.json"
+        key, spec, result = "key-1", "spec-v1", "result-1"
+        reqs, runs = [], []
 
-        def run_carrier():
-            carrier_calls.append((key, spec))
-            retained_path.write_text(
-                json.dumps({
-                    "operation_key": key,
-                    "specification": spec,
-                    "writer_attempt_id": self.attempt_id,
-                }, sort_keys=True) + "\n",
-                encoding="utf-8",
-            )
+        def request(req_spec, recover=False):
+            reqs.append((recover, req_spec))
+            expected = dict(operation_key=key, specification=req_spec, writer_attempt_id=self.attempt_id, result=result)
+            if store.exists():
+                saved = json.loads(store.read_text(encoding="utf-8"))
+                if saved != expected:
+                    raise ValueError("conflict")
+                return saved["result"]
+            if recover:
+                raise ValueError("retained unavailable")
+            runs.append(req_spec)
+            store.write_text(json.dumps(expected, sort_keys=True) + "\n", encoding="utf-8")
+            return result
 
         self.start()
-        keyed_id = "2123456789abcdef0123456789abcdef"
-        keyed = self.start_slice(
-            operation_class="runtime_start", carrier="fake_keyed_carrier",
-            intent="run_retained_operation", reconciliation_kind="runtime_start",
-            postcondition_kind="runtime_session_identity", execution_slice_id=keyed_id,
-        )
+        kid = "2123456789abcdef0123456789abcdef"
+        keyed = self.start_slice(operation_class="runtime_start", carrier="fake_keyed_carrier", intent="run_retained_operation",
+                                 reconciliation_kind="runtime_start", postcondition_kind="runtime_session_identity", execution_slice_id=kid)
         self.assertEqual(keyed["current_slice"]["ordinal"], 1)
-        run_carrier()
-
-        persisted = attempts._read_record(self.root, self.attempt_id)
-        self.assertEqual(
-            (persisted["execution_base"], persisted["authority"], persisted["current_slice"]["execution_slice_id"]),
-            (self.base, "NONE", keyed_id),
-        )
+        first = request(spec)
+        p = attempts._read_record(self.root, self.attempt_id)
+        self.assertEqual((p["execution_base"], p["authority"], p["current_slice"]["execution_slice_id"]), (self.base, "NONE", kid))
         before = self.record_path().read_bytes()
         with self.assertRaisesRegex(ValueError, "fresh attributable state"):
-            attempts.reconcile_slice(
-                self.root, self.attempt_id, keyed_id, "REPLAY_SAFE_CONTRACT",
-                fresh=False, now=t(6),
-            )
+            attempts.reconcile_slice(self.root, self.attempt_id, kid, "REPLAY_SAFE_CONTRACT", fresh=False, now=t(6))
         self.assertEqual(self.record_path().read_bytes(), before)
-        unresolved = attempts.reconcile_slice(
-            self.root, self.attempt_id, keyed_id, "UNRESOLVED", fresh=True, now=t(7)
-        )
-        self.assertFalse(attempts.retry_is_legal(unresolved["current_slice"]))
-        retained = json.loads(retained_path.read_text(encoding="utf-8"))
-        self.assertEqual(
-            (retained["operation_key"], retained["specification"], retained["writer_attempt_id"]),
-            (key, spec, self.attempt_id),
-        )
-        replay = attempts.reconcile_slice(
-            self.root, self.attempt_id, keyed_id, "REPLAY_SAFE_CONTRACT", fresh=True, now=t(8)
-        )
-        self.assertTrue(attempts.retry_is_legal(replay["current_slice"]))
-        self.assertEqual(carrier_calls, [(key, spec)])
+        u = attempts.reconcile_slice(self.root, self.attempt_id, kid, "UNRESOLVED", fresh=True, now=t(7))
+        self.assertEqual((attempts.retry_is_legal(u["current_slice"]), reqs), (False, [(False, spec)]))
+        retained = json.loads(store.read_text(encoding="utf-8"))
+        self.assertEqual(retained, dict(operation_key=key, specification=spec, writer_attempt_id=self.attempt_id, result=first))
+        safe = attempts.reconcile_slice(self.root, self.attempt_id, kid, "REPLAY_SAFE_CONTRACT", fresh=True, now=t(8))
+        self.assertTrue(attempts.retry_is_legal(safe["current_slice"]))
+        recovered = request(spec, True)
+        self.assertEqual((recovered, reqs, runs), (first, [(False, spec), (True, spec)], [spec]))
+        before2 = store.read_bytes()
+        with self.assertRaisesRegex(ValueError, "conflict"):
+            request("spec-v2", True)
+        self.assertEqual((store.read_bytes(), reqs, runs, attempts._read_record(self.root, self.attempt_id)["current_slice"]["execution_slice_id"]),
+                         (before2, [(False, spec), (True, spec), (True, "spec-v2")], [spec], kid))
         attempts.checkpoint_attempt(self.root, self.attempt_id, "retained-result-observed", now=t(9))
-        attempts.clear_slice(self.root, self.attempt_id, keyed_id, now=t(10))
+        attempts.clear_slice(self.root, self.attempt_id, kid, now=t(10))
 
-        marker, dispatches = self.root / "fake_remote_ref.txt", []
+        marker, effects = self.root / "fake_remote_ref.txt", []
 
         def dispatch():
-            dispatches.append("publish")
+            effects.append("publish")
             marker.write_text("report-commit\n", encoding="utf-8")
 
-        external_id = "3123456789abcdef0123456789abcdef"
-        external = self.start_slice(
-            intent="publish_fixture_ref", execution_slice_id=external_id, now=t(11)
-        )
-        self.assertEqual(external["current_slice"]["ordinal"], 2)
+        eid = "3123456789abcdef0123456789abcdef"
+        ext = self.start_slice(intent="publish_fixture_ref", execution_slice_id=eid, now=t(11))
+        self.assertEqual(ext["current_slice"]["ordinal"], 2)
         dispatch()
         self.assertNotIn("remote_ref", retained)
         self.assertEqual(marker.read_text(encoding="utf-8"), "report-commit\n")
-        attempts.reconcile_slice(
-            self.root, self.attempt_id, external_id, "EFFECT_PRESENT", fresh=True, now=t(12)
-        )
-        self.assertEqual(dispatches, ["publish"])
+        attempts.reconcile_slice(self.root, self.attempt_id, eid, "EFFECT_PRESENT", fresh=True, now=t(12))
+        self.assertEqual(effects, ["publish"])
         attempts.checkpoint_attempt(self.root, self.attempt_id, "external-effect-observed", now=t(13))
-        attempts.clear_slice(self.root, self.attempt_id, external_id, now=t(14))
+        attempts.clear_slice(self.root, self.attempt_id, eid, now=t(14))
         terminal = attempts.terminal_attempt(self.root, self.attempt_id, "NEEDS_REVIEW", now=t(15))
         self.assertEqual(terminal["state"], "TERMINAL")
         with self.assertRaisesRegex(ValueError, "cannot return to RUNNING"):
