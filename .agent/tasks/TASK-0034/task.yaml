@@ -1,11 +1,11 @@
 protocol_version: 3
 task_id: TASK-0034
-task_revision: 1
+task_revision: 2
 state: APPROVED
 origin:
   type: user_request
-  task_id: TASK-0033
-  gap_id: THIN-FOUNDATION-ADVERSARIAL-ADOPTION-QUALIFICATION
+  task_id: TASK-0034
+  gap_id: R34-KEYED-RECOVERY-PROOF
 architect_binding:
   target_repository: phatnguyen03022001/agent-foundation
 target:
@@ -19,7 +19,7 @@ execution_base:
   require_exact_match: true
 skill_library:
   repository: phatnguyen03022001/agent-foundation
-  revision: "3b58588b19b7a9ddbfd0e78558da4c3f650e5c53"
+  revision: "30cdf86b08649cf739543710d3c0c0164e0891c6"
 architect_analysis_skills:
   - architect
   - verification
@@ -33,53 +33,51 @@ execution_skills:
   recommended: []
 external_skills:
   architect_analysis:
-    - "ecc:verification-loop @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/verification-loop/SKILL.md; relevant attributable-test/diff-review HOW only"
+    - "ecc:verification-loop @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/verification-loop/SKILL.md; attributable-test/diff-review HOW only"
   execution_required:
-    - "ecc:verification-loop @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/verification-loop/SKILL.md; Test Suite result attribution and Diff Review only; target-native commands govern, with no upstream timing/coverage/role/hook/session activation"
+    - "ecc:verification-loop @ affaan-m/ECC/bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/verification-loop/SKILL.md; Test Suite attribution and Diff Review only. Target-native commands govern; no upstream timing/coverage/role/hook/session activation."
   execution_recommended: []
 authority_sources:
-  - source: "operator-authorized thin-Foundation programme, final dogfood/adversarial qualification item"
-    role: "one bounded adoption-evidence outcome for current ChatGPT workflow; explicit maintenance override of release-first selection, not product verification or Runtime mutation authority"
+  - source: "operator-authorized thin-Foundation programme and TASK-0034 r1 REVISION_REQUIRED review published with this task"
+    role: "one test-only correction of R34-KEYED-RECOVERY-PROOF; explicit maintenance override remains, no product or live Runtime authority"
     precedence: 1
-  - source: ".agent/tasks/TASK-0033/report.yaml@3b58588b19b7a9ddbfd0e78558da4c3f650e5c53 and its ACCEPTED r2 review published with this task"
-    role: "corrected recovery, exact-contract safe replay, no-blind-retry, original-base/writer/proof/terminal boundaries; keep production owners unchanged"
+  - source: ".agent/tasks/TASK-0034/report.yaml@30cdf86b08649cf739543710d3c0c0164e0891c6 and task.yaml@941318c43a165c05768174645f534bb10ccac66f"
+    role: "immutable r1 qualification evidence and original <=8000-byte / exactly-two-method boundary; r2 reuses only re-established unaffected proof, not the failed AC-2 claim"
     precedence: 2
-  - source: "skills/protocols/TASK_PROTOCOL.md#material-design-readiness-gate, #structure-authority-applicability and skills/contracts/FOUNDATION_ARCHITECTURE.md#target-owned-adoption-of-external-rules at 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53"
-    role: "accepted target-first feature/research/rule ownership and pre-authored component envelope; synthetic gates remain judgment, not new validator authority"
+  - source: "skills/contracts/EXECUTION_CONTINUITY.md#Recovery and #slice-intent--observation--reconciliation--clear; TASK-0033 r2 ACCEPTED review at 941318c43a165c05768174645f534bb10ccac66f"
+    role: "fresh exact-contract/key/spec/writer evidence precedes safe replay; unknown no-retry and process/external-effect separation remain unchanged"
     precedence: 3
-  - source: "skills/scripts/test_execution_attempt.py, execution_attempt.py and sync_external_capabilities.py at 3b58588b19b7a9ddbfd0e78558da4c3f650e5c53"
-    role: "existing disposable unittest fixtures, persistence/reconciliation/checkpoint APIs and offline bounded ECC metadata query/resolve; no new harness or production mechanism needed"
+  - source: "skills/scripts/test_execution_attempt.py and execution_attempt.py at 30cdf86b08649cf739543710d3c0c0164e0891c6"
+    role: "existing disposable integration method and persistence APIs only; helper telemetry does not establish recoverability authority"
     precedence: 4
 structure_authority:
   status: RESOLVED
-  source: "inspected existing 33-case attempt harness, 26-case ECC metadata harness and accepted governing owners"
-  rationale: "Qualify the accepted workflow with two small integration cases in the current attempt harness plus a compact evidence report. Reuse existing fixtures/helpers and committed metadata. Two cases jointly prove the same failure-survival boundary; production changes or a new audit/fixture framework are unnecessary and forbidden."
-objective: "Qualify the thin Foundation workflow under successive in-scope defects, interrupted effects and bounded ECC/target-authority selection, with executable fixture evidence and explicit limits on claims."
+  source: "independent exact r1 source/test inspection and isolated same-key/spec mock witness"
+  rationale: "The missing proof fits inside the existing case B method. Keep case A, old 33 tests/helpers/imports and every production owner byte-identical. No new method, shared helper or Runtime mechanism is needed."
+objective: "Correct the existing case B integration so an actual controlled same-key/spec recovery returns the retained original result without repeating its underlying execution, with truthful bounded qualification evidence."
 scope:
   required_changes:
-    - "Fresh-resolve exact task/handoff and TASK-0033 r2 ACCEPTED review; FF-only synchronize the designated canonical mirror when safely behind. Permit precisely pinned .DS_Store. Identity/remote drift, unknown or unrelated local edits, conflicts and Git-operation state block without adoption/reset/rebase/stash/cleanup. Preflight native Python, existing disposable Git-test capability and authorized publication before mutation."
-    - "Add exactly two meaningful integration test methods inside the existing ExecutionAttemptTests class in skills/scripts/test_execution_attempt.py. Preserve all existing 33 tests and helper bodies byte-for-byte; use existing imports/fixtures and only a strictly necessary stdlib import if required. Net test-file addition <=8000 UTF-8 bytes. No new test file, helper module, framework, production state/validator/scope engine or per-prose assertions. This is qualification coverage, not a source bug fix; do not fabricate a production RED phase or weaken old assertions."
-    - "Integration case A: use the existing temporary mock repository to declare a single tiny feature outcome/oracle and resolved target-native stdlib choices before dependent fixture implementation. Pre-author one existing fixture component, permitted implementation/test-reliability mutation classes and invariant oracle; authorize fixture-local repairs needed for that outcome, not unrelated components/dependencies/contracts. Create two deliberately defective fixture inputs whose actual deterministic acceptance gate reveals them successively: initial FAIL, repair A leaves FAIL attributable to B, repair B yields PASS under the same unchanged oracle/envelope. Exact local fixture filenames are Executor discretion inside that run-owned component. Record effect intent before one repair, perform the fixture-local change, omit acknowledgement/result as a controlled fault, then reload persisted attempt data and freshly inspect the exact file postcondition. Prove OUTCOME_UNKNOWN itself permits no retry; reconcile EFFECT_PRESENT, preserve the already-present effect without duplicate repair, checkpoint after observation and clear only when legal. Process the next consequence with the same task/revision/base/attempt binding and increasing slice ordinal. No second unresolved slice, scope revision or acceptance weakening is needed for these declared fixture-local repairs."
-    - "Integration case B: persist an unresolved keyed-operation slice, simulate a lost result and reload its actual on-disk record through the existing helper, rather than merely constructing a hand-written result dictionary. Exercise fresh=false rejection with unchanged record, fresh UNRESOLVED with no retry, then fresh REPLAY_SAFE_CONTRACT yielding RETRY_ALLOWED for a controlled test-local retained same-key/specification result. The fixture contract establishes recoverability; the helper does not establish authority or actual installed Runtime replay safety. Exercise checkpoint-before-clear and a subsequent independently reconciled external-effect slice: the retained process result cannot certify that separate effect. Resolve present effect without duplicate dispatch. Terminalize NEEDS_REVIEW and prove it cannot reopen RUNNING or admit a new slice. Keep original base, authority NONE and writer ownership explicit. A tiny in-method fake carrier/result or call-count observation is allowed solely for this controlled test, without a reusable controller/store/registry."
-    - "Ephemeral fixture authority is explicit: only this task's existing unittest-created run-owned root may contain mock task/design/data/implementation/test files and Git metadata needed for those tests. They are generated mock repositories with fake origin binding, not clones/worktrees of a real GitHub target or new canonical tasks. Fixture-local filesystem mutations and native Git operations follow the existing test harness; no fixture remote network publication, real provider session, live Runtime restart/kill, host setup, dependency acquisition or production takeover is allowed. No target attempt is created in agent-foundation's own .git. Cleanup uses existing test-owned TemporaryDirectory lifecycle; preserve material diagnostic evidence with identity if needed."
-    - "Run bounded read-only native ECC smoke against committed metadata without --refresh/install/activation. For conditional target facts React/TypeScript frontend plus Go backend, use literal --query React --limit 3 and --query go-reviewer --surface agent --limit 3, then --resolve --surface agent --title react-reviewer and go-reviewer. Broad queries can return noisy/multiple candidates; do not choose the first result, confuse Django with Go, or infer capability absence from a zero literal-term match. Resolve the exact-fit entries from target concern/stack facts. Include one zero-match query and explicit-empty --source or --title rejection; both are truthful results, not default/admission/permission. Record exact arguments, source/catalog identity, counts/truncation, selected entry identities and relevant constraint rationale; load at most three applicable bodies only if the predicate needs them. The smoke certifies this repository's metadata CLI, not an installed upstream ECC CLI or all-stack semantic routing."
-    - "In the report, pair the executable fixture trace with three concrete conditional authority countercases using current owner text: (1) the same companion edit outside restrictive exact-file/structure authority stops even if necessary, and a dependency/public-contract/privilege change is not LOCAL; (2) a material third-party choice is unresolved, so design/docs closure cannot authorize dependent implementation; external rule/advisory metadata stays unadopted until scoped target approval, native rules win and no install/dependency permission is created; (3) an expired lease with unknown/overlapping writer cannot authorize takeover, mandatory capability unavailable remains capability-blocked and a terminal report routes to independent later authority. Supply given inputs, exact relevant field/owner excerpts, discovered consequence, predicate-by-predicate result and next permitted action/stop. Do not create fake automatic enforcement for semantic judgments not owned by the native helpers."
-    - "Produce one compact qualification dossier in report.yaml: exact new candidate/test identities and reproducible fixture cases; native metadata CLI receipts; relevant accepted Task26-33 review/owner locators, without reloading every historical report; outcome/proof/context boundary; findings and residual limits. Reproduce Architect 24338 -> 16656 and Executor 28681 -> 17359 source-byte comparison using immutable baseline 634ff01c103bbfdacb1be35d996dba61aa1ff343 and current candidate. Record the material role/owner/HOW inputs actually needed for this bounded task; do not call source bytes ChatGPT tokens, time, actual total context, or proof the entire library shrank. No timing/performance telemetry is requested. Separate real repository/test execution, controlled persistent-record fault simulation, conditional governance/stack examples and untested live Runtime/provider/production claims. No universal lifecycle, phase-stack matrix, exhaustive capability claim or product/release PASS."
-    - "Run the two new integration methods and full execution-attempt 35/35 suite, native skills validator, existing skills 240/240, external 26/26, current task/report artifact validation, Python in-memory compile, exact append/import/scope/protected-state checks, source/test inventory and git diff --check. Run each full suite once for the qualified candidate; repeat only after relevant new changes/failures/invalidation. If a genuine production/owner defect is exposed, preserve attributable FAIL evidence and report the exact BLOCKING gap; do not patch forbidden production code/docs or make the tests pass by weakening the oracle."
-    - "Commit the qualified test-only candidate as direct child of exact handoff base, then its sole report-only child. Apply existing single-publication eligibility and truthful candidate-prepublication pushed=false. Ordinary non-force MAIN_ONLY publication requires fresh local main == origin/main == remote main at report commit, one worktree, tracked/index cleanliness and pinned .DS_Store. End NEEDS_REVIEW and stop before self-review, further implementation, product/gate transitions, release or successor work. Failed qualification remains FAIL and uses the current truthful blocking/report path when necessary."
+    - "Fresh-resolve this exact r2 task/handoff and r1 REVISION_REQUIRED review. Safely FF-only synchronize the canonical designated mirror if behind; allow precisely pinned .DS_Store. Identity/remote drift, unrelated edits, conflicts or Git-operation state stop without reset/rebase/stash/adoption/cleanup. Preflight native Python, existing disposable Git fixtures and explicit-path ordinary non-force publication before mutation."
+    - "Change only the body of test_integration_replay_safe_result_stays_separate_from_external_effect in skills/scripts/test_execution_attempt.py. Keep its existing method identity and the other 34 methods, imports, helpers and surrounding file bytes unchanged. Preserve exactly 35 tests / two cumulative TASK-0034 additions. Test-file cumulative net addition versus original r1 base 941318c43a165c05768174645f534bb10ccac66f remains <=8000 UTF-8 bytes; current r1 addition is 7536. Compact only this authorized method as needed; do not relax the cap or original assertions."
+    - "Within that method, model a tiny explicit fixture-local selected keyed contract: the original request executes once and retains attributable key/spec/writer/result; a later request with the exact same key/spec uses the retained original result rather than running the underlying effect again. Make initial-request and recovery-request observations distinguishable from underlying execution count. After persisted-record reload, fresh selected-contract/identity predicates and replay-safe qualification, exercise the actual same-key/spec recovery request, assert its result equals the original retained result, at least two total requests and exactly one underlying execution. Stale or unresolved telemetry admits no recovery request. Do not prove replay safety merely by supplying REPLAY_SAFE_CONTRACT to reconcile_slice or by inspecting equal JSON."
+    - "Include a conflicting specification for the retained key as a controlled negative request: reject it without running a replacement effect, changing the retained result or silently creating/adopting another operation. Require the fixture's original key/spec/writer/retention predicates for the positive recovery. Unavailable or unattributable retention cannot justify a recovery claim. Keep this contract explicitly controlled and test-local; no inference about installed Runtime replay safety or new target authority. A small nested function/counters and a retained file under the existing TemporaryDirectory are allowed; no reusable registry/store/controller or new module."
+    - "Preserve the existing real on-disk unresolved slice/reload, fresh=false rejection with unchanged record, fresh UNRESOLVED/no-retry, original base/authority NONE/writer binding, checkpoint-before-clear, independently reconciled external effect with no duplicate dispatch and NEEDS_REVIEW terminal no-reopen/no-new-slice checks. The recovered process result must still supply no proof of the separate external marker. Keep case A's immutable oracle, two local repairs/lost acknowledgement and all previous helper regressions byte-identical."
+    - "Run the changed focused case and the preserved case A, then full attempt 35/35, native skills validator, skills 240/240, external 26/26, current task/report validators, in-memory compile, exact method-only scope/protected-state/inventory and diff checks for the qualified r2 candidate. Each full suite runs once per qualified candidate; repeat only after relevant change/failure/invalidation. This is a missing qualification-proof correction, not a production bug fix: do not fabricate a production RED or patch production to pass. Establish that assertions observe actual recovered-result/effect counts and reject conflict; retain any genuine FAIL rather than weakening the oracle."
+    - "Report task_revision=2 and report_revision=2 at the existing canonical report path. Identify R34-KEYED-RECOVERY-PROOF, corrected method/candidate and observed original/recovery/conflict requests, retained identity/result and underlying execution count; describe the controlled predicate boundary and separate external-effect evidence. State that r1's AC-2 PASS was insufficient and is superseded for that predicate; immutable r1 evidence remains addressable at 30cdf86b08649cf739543710d3c0c0164e0891c6. Reuse unaffected r1 ECC smoke, three conditional authority cases, accepted-review locators and kernel inventory only after proving their exact inputs/owners/toolchain applicability unchanged; do not rerun unrelated research or load all historical reports. Preserve honest separation of actual repo tests, controlled persistent-record faults, conditional examples and untested live Runtime/provider/production claims."
+    - "Ephemeral authority is only the existing run-owned unittest temporary mock root, fixture files and fake-origin Git metadata. No real clone/worktree, canonical new task, live provider/Runtime crash/restart/kill, host/dependency acquisition, network fixture publication, sibling mutation or attempt in agent-foundation's own .git. Use existing TemporaryDirectory lifecycle; preserve attributable diagnostics if necessary."
+    - "Commit the qualified method-only candidate as direct child of the exact r2 handoff base, then its sole report-only child. Preserve single-publication eligibility and truthful candidate-prepublication pushed=false. Ordinary non-force MAIN_ONLY publication with fresh remote guards must yield local main == origin/main == fresh remote main at the report commit, one worktree, clean tracked/index and pinned .DS_Store. Native explicit-path Git is authorized if Runtime repo guards reject the pinned unrelated exception; do not remove it to satisfy a helper. End NEEDS_REVIEW and stop before self-review, successor, product/gate/release changes."
   allowed_existing_files_or_components:
     - skills/scripts/test_execution_attempt.py
   expected_files_are_restrictive: true
 invariants:
-  - "Production role/protocol/contract/validator/helper bytes remain unchanged, including the accepted TASK-0033 replay-safe correction. Tests never make telemetry into task/cleanup/retry/publication authority or claim mechanical enforcement of missing semantic predicates."
-  - "Existing 33 attempt tests and helpers remain unchanged; add exactly two integration methods plus only necessary stdlib import, <=8000 bytes. All scripts/tests outside that one file, schema/templates/defaults, external metadata/pins, profile/bootstrap/router, Documents/Standards and actual Runtime/host/dependencies remain byte-identical."
-  - "Architect 16656 and Executor 17359 remain byte-identical. Current roles/provider policy remains unchanged; Codex supervision is only this operator-authorized session exception. No automatic agents/orchestrator/ECC hooks/install."
-  - "Product-state.json remains byte-identical: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, all system gates unchanged, derived P0_SCOPE / release.status. Task qualification is not project verification or delivery readiness."
-  - "Preserve sole unrelated untracked regular .DS_Store: 6148 bytes / SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d; no stage-all, deletion, move, edit, ignore change or publication."
+  - "Only existing case B method body may differ from r2 base. All other tests/helpers/imports, production owners/protocols/contracts/validators/scripts, schemas/templates/defaults, metadata/pins/profile/bootstrap/router, Documents/Standards and Runtime/host/dependencies stay byte-identical. Cumulative test addition <=8000 from 941318c43a165c05768174645f534bb10ccac66f; no third integration method."
+  - "Architect 16656 / Executor 17359 and current ChatGPT-only reusable role/provider policy remain unchanged; Codex supervision is only this operator-authorized session exception. Foundation governs authority/routing/proof, ECC generic HOW, target product/stack/rules and Runtime transport."
+  - "Product-state.json unchanged: F001/F002/F004 INTEGRATED, F003 VERIFIED, release OPEN, all system gates unchanged, derived P0_SCOPE / release.status. Qualification is not feature/system/release PASS or live interruption certification."
+  - "Preserve sole unrelated untracked regular .DS_Store at 6148 bytes / SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. No stage-all, deletion, move, edit, ignore change or publication."
 forbidden_changes:
-  - "Modify any production owner/helper/validator/kernel/profile/state/schema/template/pin/Runtime/host/dependency or current task/review authority; alter existing tests to hide a finding."
-  - "Add a new test/fixture/qualification framework, permanent mock target, workflow controller, store/queue/daemon, universal phase/stack model or generic HOW copy. Execute an external rule/hook/installer or infer upstream ECC activation from metadata."
-  - "Force a live GPT Chat/Runtime crash, restart/kill services, create a real clone/worktree, publish fixture refs, mutate sibling repositories, dispatch agents, force push, create branch/tag/release, rewrite history or perform unrelated cleanup."
+  - "Modify another method/helper/import or any production owner/schema/profile/pin/state/Runtime/host/dependency/task/review authority; weaken existing assertions or broaden cumulative cap."
+  - "Create new framework/controller/store/module/method, automatic agent/orchestrator, generic HOW copy, universal lifecycle/phase-stack matrix, external activation/install or implicit mutation authority."
+  - "Create branches/tags/releases/real clones/worktrees, force push or rewrite history, publish mock fixtures, reset/rebase/stash/cleanup unrelated state or self-review/start successor work."
 gap_policy:
   local_auto_fix: true
   scope_expansion: forbidden
@@ -90,30 +88,26 @@ gap_policy:
   blocking_gap_behavior: BLOCKED
 acceptance_criteria:
   - id: AC-1
-    requirement: "One pre-authored fixture outcome survives two necessary local defects and lost acknowledgement without duplicate repair or broader authority."
-    evidence_required: "Executable gate FAIL -> A repair/still FAIL -> B repair/PASS preserves the oracle; on-disk intent/reload/unknown/effect-present/checkpoint/next-slice trace retains exact binding and no duplicate consequence. Restrictive/material countercases stop through explicit separate governance reasoning."
+    requirement: "Existing case B independently establishes the controlled keyed recovery contract and resolves R34-KEYED-RECOVERY-PROOF."
+    evidence_required: "Original plus actual same-key/spec recovery requests return the identical retained attributable result with one underlying execution; conflicting same-key specification rejects without replacement effect or retained-result mutation. Selected fixture contract and fresh retained identity predicates precede replay-safe telemetry; subsequent actual recovery proves result/effect behavior."
   - id: AC-2
-    requirement: "Replay-safe interrupted recovery preserves freshness, external-effect separation and terminal authority."
-    evidence_required: "Persisted-record integration rejects stale reconciliation, keeps unresolved no-retry, permits contract-proven replay only with separately established fixture predicates, preserves checkpoint/clear ordering, separately reconciles external effect and rejects reopening a terminal attempt. Live Runtime/provider crash correctness is not inferred."
+    requirement: "Unchanged interruption, external-effect and terminal predicates remain valid under the exact narrow test boundary."
+    evidence_required: "On-disk reload/freshness/no-retry/checkpoint/external/terminal checks preserved; case A and old 33 methods/helpers/imports exact; two cumulative additions, <=8000 bytes, kernels/protected/product/pins unchanged; no live Runtime correctness inference."
   - id: AC-3
-    requirement: "Bounded target/ECC selection and thinness evidence are honest and reproducible."
-    evidence_required: "Exact committed metadata query/resolve/zero/explicit-empty receipts remain inert, noisy matches require exact-fit selection, conditional material-choice/rule/capability/writer cases preserve target-first authority and source-byte comparisons do not become token/time/all-stack/product claims."
-  - id: AC-4
-    requirement: "Qualification stays test-only and closes canonical evidence safely."
-    evidence_required: "Exactly two new methods / <=8000 bytes with old tests/protected state preserved; 35/35, 240/240, 26/26, native/artifact/compile/scope/inventory/diff PASS; exact-base candidate/report-only child and fresh MAIN_ONLY closure with pinned exception; truthful stop."
+    requirement: "Qualified r2 proof and publication close honestly for independent review."
+    evidence_required: "Focused 2/2, full 35/35, 240/240, 26/26, native/task/report/compile/scope/inventory/diff PASS; exact input applicability for unaffected r1 reuse; candidate exact-base child/report-only child; fresh non-force MAIN_ONLY pinned-exception closure; r2 NEEDS_REVIEW stop."
 verification:
   authoritative_verification:
     required: false
     mechanism: ""
     expected_signal: ""
 structure_policy:
-  expected_new_files:
-    - .agent/tasks/TASK-0034/report.yaml
+  expected_new_files: []
   unlisted_new_files:
     allowed: false
     max: 0
     within: []
-    purpose: "Extend the existing test harness only; publish one evidence report. Ephemeral test-owned mock files stay outside tracked target state."
+    purpose: "Only one existing test method and the existing task report are changed in their respective implementation/report phases; ephemeral test roots are disposable."
   allow_new_top_level_directories: false
   allow_new_shared_modules: false
 git_authority:

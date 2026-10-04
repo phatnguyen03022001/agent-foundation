@@ -1,0 +1,33 @@
+protocol_version: 3
+task_id: TASK-0034
+task_revision: 1
+review_revision: 1
+state: REVISION_REQUIRED
+reviewed_report:
+  repository: phatnguyen03022001/agent-foundation
+  path: .agent/tasks/TASK-0034/report.yaml
+  commit: "30cdf86b08649cf739543710d3c0c0164e0891c6"
+  report_revision: 1
+independence:
+  reviewer_role: ARCHITECT
+  separate_session_from_executor: true
+  exact_report_identity_verified: true
+contract_compliance:
+  protocol_version: PASS
+  identity: PASS
+  execution_base: PASS
+  skill_rules: PASS
+  scope: PASS
+  structure_policy: PASS
+  git_authority: PASS
+  acceptance_criteria: FAIL
+  verifier_evidence: PASS
+notes:
+  - "Exact remote task blob 440f56989a3f6c049f1a2ed5d7d49287aa768b08 and report blob f0c404084e2796df90acef3446a097e9cc59ca34 match the local committed identities. Candidate c25fca257491d70e5bd4a9a57a59ad057244c2b4 is the sole-parent direct child of authorized base 941318c43a165c05768174645f534bb10ccac66f and changes only skills/scripts/test_execution_attempt.py; report 30cdf86b08649cf739543710d3c0c0164e0891c6 is its sole report-only child. Fresh main equals that report; only main is exposed."
+  - "AC-1 PASS within the controlled fixture: immutable declared oracle/stdlib choices/component envelope precede implementation, initial FAIL becomes FAIL(B) after repair A and PASS after repair B. Actual on-disk intent/reload, OUTCOME_UNKNOWN no-retry, fresh EFFECT_PRESENT, one repair per input, checkpoint-before-clear and next ordinal preserve binding. Both faulty inputs are visible initially; this establishes successive in-scope repairs, not live discovery of previously unknown Runtime defects. Restrictive/material countercases are separately reasoned governance examples, not added helper enforcement."
+  - "AC-2 FAIL / R34-KEYED-RECOVERY-PROOF: test_integration_replay_safe_result_stays_separate_from_external_effect lines 915-970 inspects matching key/spec/writer JSON, supplies REPLAY_SAFE_CONTRACT to the telemetry helper, then asserts a list containing the one original carrier call. It never issues a same-key/spec recovery request and never observes the retained original result returned without a second underlying execution. Its run_carrier closure unconditionally executes and rewrites the result on every call. Consequently the fixture does not separately establish the recoverability contract required by r1 scope and AC-2; retry_is_legal only confirms the classification supplied by the test. The report's AC-2 PASS overstates this specific proof."
+  - "Bounded independent witness extracted only that current closure into an isolated TemporaryDirectory, invoked it twice with the same key/spec and observed two body executions with equal retained payload. This demonstrates the mock's missing modeled recovery behavior, not an installed Runtime defect or unsafe real-target retry. The idempotent-looking file content is not observable proof of returning the original keyed process result without another execution. Correct the in-method controlled mock/assertions and report only; production helpers/contracts need no change."
+  - "Other AC-2 predicates PASS: stale reconciliation rejects without record mutation; fresh UNRESOLVED stays no-retry; original base, authority NONE and controlled writer identity are explicit; checkpoint/clear ordering, independent external marker reconciliation without duplicate dispatch and terminal no-reopen/new-slice checks execute. Preserve them in r2. Require an actual same-key/spec recovered result, separate request versus underlying execution observations, and a conflicting-spec negative case that cannot dispatch a replacement effect. These remain test-local predicates, never Runtime/task authority."
+  - "AC-3 PASS: independently repeated all six recorded native ECC metadata argv cases. React returns 21 matches/truncated to 3, go-reviewer returns Django and Go with total 2, exact agent resolves select React and Go, zero returns 0, and explicit empty source exits 2 without defaulting. Committed ECC source pin is bf70150eb2df8070024e5bdf08e4aa08959e2735. Target-native material-choice/rule ownership and writer/capability/terminal countercases preserve the current governing boundaries. All eight accepted review locators resolve. Immutable source inventory reproduces Architect 24338 -> 16656 and Executor 28681 -> 17359 at baseline 634ff01c103bbfdacb1be35d996dba61aa1ff343; these are source bytes only, not actual ChatGPT context/tokens/time or whole-library shrinkage."
+  - "AC-4 mechanical scope/qualification PASS: independent native skills validator, exact task/report artifact validators, execution-attempt 35/35, skills 240/240 and external 26/26 all PASS. Removing only the two new methods reproduces the entire original test file byte-for-byte, including old 33 tests/helpers/imports. Test inventory 33426 -> 40962 / +7536 <=8000, in-memory compile and base-to-report diff check PASS. Production owners/kernels/helpers/metadata/product and all other candidate paths are unchanged. Passing structural and primitive suites does not fill the AC-2 contract-proof gap."
+  - "Publication closure PASS: local HEAD and origin/main equal the reviewed report, fresh remote main resolves it, one worktree remains and tracked/index state is clean. Sole untracked regular .DS_Store is preserved at 6148 bytes / SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d. Native explicit-path non-force Git closure is evidenced; Runtime repo-helper exception handling is not certified. Product remains P0_SCOPE / release.status with no product/system/release PASS. Codex supervision is the operator exception for this session only. Final programme acceptance waits for bounded TASK-0034 r2 independent review; no successor is authorized."
