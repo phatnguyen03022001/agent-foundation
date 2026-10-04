@@ -1,0 +1,120 @@
+protocol_version: 3
+
+task_id: TASK-0031
+task_revision: 1
+report_revision: 1
+state: REPORTED
+
+task_source:
+  path: .agent/tasks/TASK-0031/task.yaml
+
+execution:
+  repository: phatnguyen03022001/agent-foundation
+  branch:
+    name: main
+    role: stable
+  authorized_base_head: "73d11481297be7476edec5737e067196234819b8"
+  final_execution_head: "6b0fe1ee59875aa7cbf586bb9e7d0004abfb8baf"
+
+skill_library:
+  repository: phatnguyen03022001/agent-foundation
+  authorized_revision: "af2ab9d8365a5a7bc1264b7211ce8dc5257dd376"
+
+capability_preflight:
+  phase: EXECUTION
+  required:
+    - fresh local and remote Git identity observation
+    - bounded repository documentation mutation
+    - native Python repository verification
+    - exact-path commit and ordinary non-force MAIN_ONLY publication
+  available:
+    - Agent Runtime repository/filesystem/remote-observation and keyed terminal surfaces
+    - native Git explicit-path staging/commit and ff-only synchronization
+    - native Python validator and unittest surfaces
+  missing: []
+  passed: true
+
+qualification:
+  external_how:
+    - "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:agents/planner.md; requirements, architecture, risk and verifiable-outcome planning HOW only."
+    - "affaan-m/ECC@bf70150eb2df8070024e5bdf08e4aa08959e2735:skills/search-first/SKILL.md; bounded need analysis and research-before-code/evaluation HOW only."
+  implementation_boundary:
+    task_protocol: "Extended only the existing Material-design-readiness gate. It now consumes scoped target-owned behavior/acceptance and material architecture/contracts/ownership evidence, requires evidence-backed material stack/build-buy/third-party decisions before dependent code, and distinguishes structural documentation closure from environment/authority/capability proof."
+    architect: "Replaced only the existing readiness-summary paragraph with a concise Task Protocol owner link and consequential-feature read trigger."
+    readme: "Extended only the existing Task Protocol navigation bullet with the material-design-readiness locator."
+    excluded: "No schema, template, registry, phase, lifecycle, Documents/Standards model, product-state, source code, test, dependency, external metadata, provider policy or Runtime change."
+  synthetic_walkthroughs:
+    - id: RESOLVED_FEATURE_SCOPE
+      given_facts:
+        - "Synthetic feature FTR-SYNTH-001 has target-owned observable behavior and acceptance for its declared scope."
+        - "Applicable frontend/backend/data boundaries and contracts are resolved under existing target owners; unrelated feature scopes are not inputs."
+      evidence_locators:
+        - "synthetic-target/docs/BEHAVIOR.md#FTR-SYNTH-001"
+        - "synthetic-target/docs/INTERFACES.md#IFC-SYNTH-001"
+        - "synthetic-target/docs/DATA.md#DAT-SYNTH-001"
+        - "synthetic-target/docs/DECISIONS.md#DEC-SYNTH-001"
+      conclusion: "The material-design predicate is satisfied for the declared feature scope, so consequential implementation may rely on those resolved boundaries without loading or documenting unrelated future features."
+    - id: UNRESOLVED_THIRD_PARTY_CHOICE
+      given_facts:
+        - "Synthetic integration feature FTR-SYNTH-002 has documented behavior/acceptance but its material third-party compatibility/permission or dependency choice remains unresolved."
+        - "An ECC recommendation exists as generic HOW, but no target-owned decision has resolvable primary/official compatibility and permission evidence for the material choice."
+      evidence_locators:
+        - "synthetic-target/docs/BEHAVIOR.md#FTR-SYNTH-002"
+        - "synthetic-target/docs/DECISIONS.md#UNK-SYNTH-002"
+        - "MISSING: primary/official provider compatibility-permission evidence bound to the selected source/version"
+      conclusion: "Documentation presence or an ECC recommendation does not authorize dependent implementation, purchase, account setup, installation or contract change. The next bounded work is research/design that resolves the material target-owned choice."
+    - id: DOCS_READY_WITH_ENVIRONMENT_UNKNOWN
+      given_facts:
+        - "Synthetic target has adopted Documents V1 and its current milestone satisfies the deterministic structural DOCS_READY predicate."
+        - "A deployment/runtime environment fact recorded as UNK-SYNTH-003 is unprobed and could change the implementation boundary."
+      evidence_locators:
+        - "documents/DOCUMENT_MODEL.md#13-deterministic-docs_ready-predicate"
+        - "documents/DOCUMENT_MODEL.md#14-documentation-closure-and-reopening"
+        - "documents/DOCUMENT_MODEL.md#15-validator-boundary"
+        - "synthetic-target/docs/DECISIONS.md#UNK-SYNTH-003"
+      conclusion: "DOCS_READY alone does not justify consequential dependent implementation. The boundary-changing uncertainty needs bounded probe evidence or must already fit an explicit authorized bounded component/mutation scope."
+    - id: MECHANICAL_WELL_SPECIFIED_CHANGE
+      given_facts:
+        - "Synthetic change corrects one already-specified documentation typo; behavior, contracts, dependencies, ownership and implementation boundary do not change."
+        - "The edit is small, reversible and deterministically verifiable."
+      evidence_locators:
+        - "synthetic-target/existing-authority#exact-correction"
+      conclusion: "The proportional exception applies; the change does not acquire material feature-design or technology-research ceremony."
+
+verification_evidence:
+  candidate: "6b0fe1ee59875aa7cbf586bb9e7d0004abfb8baf"
+  skills_validator: "PASS; python3 -B skills/scripts/validate_skill_library.py."
+  skills_regressions: "PASS; python3 -B skills/scripts/test_validate_skill_library.py ran 240/240."
+  external_regressions: "PASS; python3 -B skills/scripts/test_sync_external_capabilities.py ran 26/26."
+  task_artifact: "PASS; TASK-0031 revision-1 task document validated with the repository protocol-v3 validator."
+  owner_link_anchor: "PASS; skills/README.md and skills/architect/SKILL.md resolve to the existing skills/protocols/TASK_PROTOCOL.md#material-design-readiness-gate owner."
+  kernel_edit_boundary: "PASS; final candidate diff has exactly one authorized hunk in each of skills/protocols/TASK_PROTOCOL.md, skills/architect/SKILL.md and skills/README.md, with no other tracked path."
+  inventory: "PASS; three authorized files have net +2010 UTF-8 bytes relative to handoff base <=4000; Architect is 16656 bytes <=16717; Executor is byte-identical to base at 17359 bytes."
+  diff_check: "PASS; git diff --check before candidate commit."
+  protected_scope: "PASS; candidate is the direct child of exact base and changes only the three authorized documentation paths. Product state, Documents, Standards, scripts/tests, other roles/contracts, profile/bootstrap/router/rationalization and external registry/pins/snapshots/catalog remain unchanged."
+  remote_prepublication: "Fresh remote observation after candidate commit proves origin/main remains exact authorized base 73d11481297be7476edec5737e067196234819b8."
+  unrelated_exception: ".DS_Store remains the sole untracked path, 6148 bytes, SHA-256 4c5e853159ae29557f919c76c050696da1292ee7f518dd51662a593bf519116d."
+
+authoritative_verification:
+  required: false
+  performed: false
+  result: NOT_REQUIRED
+  evidence: "TASK-0031 requires Executor qualification followed by independent Architect review; no separate authoritative verifier is designated."
+
+pushed: false
+
+acceptance_evidence:
+  - criterion_id: AC-1
+    status: PASS
+    evidence: "The existing Task Protocol gate now requires scoped target-owned behavior/acceptance/contracts plus resolved applicable material stack/build-buy/third-party decisions before dependent code, using reconstructible primary/official evidence where material. RESOLVED_FEATURE_SCOPE and UNRESOLVED_THIRD_PARTY_CHOICE demonstrate the positive and fail-closed boundaries without imposing a filename, generic HOW copy or universal Documents model."
+  - criterion_id: AC-2
+    status: PASS
+    evidence: "The gate explicitly limits Documents V1 DOCS_READY to its structural documentation predicate and keeps environment facts, authority, capability and unknown execution effects distinct. DOCS_READY_WITH_ENVIRONMENT_UNKNOWN requires a bounded probe or already-authorized bounded scope; MECHANICAL_WELL_SPECIFIED_CHANGE preserves proportional execution."
+  - criterion_id: AC-3
+    status: PASS
+    evidence: "Task Protocol remains the single readiness owner; Architect contains one shorter owner link/read trigger and README one concise locator. Architect is 16656 bytes, Executor remains 17359 bytes byte-identical, and three-file net addition is 2010 bytes. No new schema/template/registry/framework/HOW body was added."
+  - criterion_id: AC-4
+    status: PASS
+    evidence: "Native validator, skills 240/240, external 26/26, task artifact, owner links, exact edit boundary, protected scope/inventory and diff checks pass. Candidate 6b0fe1ee59875aa7cbf586bb9e7d0004abfb8baf is the direct child of exact base and remote main is still the base before report authorship."
+
+result: NEEDS_REVIEW
