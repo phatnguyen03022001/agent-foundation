@@ -103,6 +103,116 @@ def load_contract(root: Path = ROOT) -> tuple[dict[str, Any], dict[str, Any]]:
     return bootstrap, lock
 
 
+
+# Version 2 is the active, minimal local-first bootstrap. Version 1 helpers below
+# are retained to interpret historical exact protocol-v3 bootstrap artifacts.
+def validate_active_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
+    required = {
+        "version", "authority_lock", "repository_contract", "case_router",
+        "foundation_control_plane", "target_binding", "capability_routes",
+        "ecc", "execution", "legacy",
+    }
+    if set(bootstrap) != required:
+        raise ValueError("active bootstrap must have only the minimal canonical keys")
+    if bootstrap["repository_contract"] != {
+        "repository": FOUNDATION_REPOSITORY, "topology": "MAIN_ONLY", "working_ref": "main"
+    }:
+        raise ValueError("active bootstrap repository must be agent-foundation MAIN_ONLY")
+    case_router_locator(bootstrap)
+    foundation_control_plane_locator(bootstrap)
+    if bootstrap["target_binding"] != {
+        "source": "EXPLICIT_REQUEST_OR_EXACT_ACTIVE_BINDING", "local_first": True,
+        "verify_origin": True, "preserve_dirty": True, "one_writer": True,
+        "remote_fresh_before_publication": True,
+    }:
+        raise ValueError("active local target binding must preserve scope and authority")
+    if bootstrap["execution"] != {
+        "default": "CHATGPT_LOCAL", "transport": "AGENT_RUNTIME",
+        "models_and_effort": "RUNTIME_SELECTED",
+        "remote_publication": "EXPLICIT_AUTHORITY_ONLY",
+    }:
+        raise ValueError("active execution must be local-first and authority bounded")
+    if bootstrap["legacy"] != {
+        "protocol_version": 3, "contract": "skills/protocols/TASK_PROTOCOL.md",
+        "activation": "EXPLICIT_EXACT_TASK_BINDING_ONLY",
+    }:
+        raise ValueError("protocol-v3 compatibility must be explicit")
+    ecc = bootstrap["ecc"]
+    if ecc != {
+        "repository": "affaan-m/ECC",
+        "revision": "bf70150eb2df8070024e5bdf08e4aa08959e2735",
+        "local_path": "/Users/tienphat/Developer/third-party/ECC",
+        "mode": "READ_ONLY",
+        "fallback": "EXPLICIT_IMMUTABLE_REFERENCE_ONLY",
+    }:
+        raise ValueError("ECC integration must be immutable and read-only")
+    if not isinstance(lock.get("repositories"), dict) or set(lock["repositories"]) != set(EXPECTED_EXTERNAL_REPOSITORIES):
+        raise ValueError("invalid external authority lock")
+    for owner, repo in EXPECTED_EXTERNAL_REPOSITORIES.items():
+        entry = lock["repositories"].get(owner)
+        if not isinstance(entry, dict) or entry.get("repository") != repo or not SHA_RE.fullmatch(str(entry.get("revision", ""))):
+            raise ValueError("invalid external runtime lock")
+    routes = bootstrap["capability_routes"]
+    expected = {
+        "architect": "skills/architect/SKILL.md",
+        "executor": "skills/executor/SKILL.md",
+        "task_protocol": "skills/protocols/TASK_PROTOCOL.md",
+        "verification": "skills/verification/SKILL.md",
+        "security_review": "skills/security-review/SKILL.md",
+        "simplicity": "skills/simplicity/SKILL.md",
+        "engineering_assurance": "standards/STANDARD_MODEL.md",
+        "documentation_closure": "documents/DOCUMENT_MODEL.md",
+    }
+    if not isinstance(routes, list) or {
+        row.get("capability"): (row.get("owner"), row.get("path"))
+        for row in routes if isinstance(row, dict)
+    } != {name: (path.split("/")[0], path) for name, path in expected.items()} or len(routes) != len(expected) or any(set(row) != {"capability", "owner", "path"} for row in routes if isinstance(row, dict)):
+        raise ValueError("active capability routes must match admitted Foundation entrypoints")
+    if bootstrap["authority_lock"] != "profile/.agent/bootstrap/authority.lock.json":
+        raise ValueError("invalid authority lock locator")
+
+
+def bind_local_target(target: dict[str, str], target_root: Path, entry_intent: str,
+                      bootstrap: dict[str, Any], router: dict[str, Any]) -> dict[str, Any]:
+    """Observe explicit local target without remote reads, mutations or permission grants."""
+    if bootstrap.get("version") != 2:
+        raise ValueError("local binding requires active bootstrap")
+    validate_case_router(router)
+    if router != EXPECTED_CASE_ROUTER:
+        raise ValueError("active local binding cannot use historical router")
+    repository, branch = target.get("repository"), target.get("branch")
+    if not isinstance(repository, str) or not REPOSITORY_RE.fullmatch(repository):
+        raise ValueError("explicit owner/repo required")
+    if not isinstance(branch, str) or not branch.strip() or branch != branch.strip():
+        raise ValueError("explicit branch required")
+    root = target_root.resolve(strict=True)
+    def git(*args: str) -> str:
+        result = subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=False)
+        if result.returncode:
+            raise ValueError(f"local git observation failed: {args[0]}")
+        return result.stdout.strip()
+    if Path(git("rev-parse", "--show-toplevel")).resolve() != root:
+        raise ValueError("target is not Git root")
+    origin = git("remote", "get-url", "origin")
+    expected_origins = {f"https://github.com/{repository}.git", f"https://github.com/{repository}",
+                        f"git@github.com:{repository}.git", f"ssh://git@github.com/{repository}.git"}
+    if origin not in expected_origins:
+        raise ValueError("canonical origin mismatch")
+    if git("branch", "--show-current") != branch:
+        raise ValueError("local target branch mismatch")
+    head = git("rev-parse", "HEAD")
+    if not SHA_RE.fullmatch(head):
+        raise ValueError("unresolvable local HEAD")
+    changes = git("status", "--porcelain=v1", "-uall")
+    selection = select_semantic_route(router, entry_intent)
+    caps = select_capability_routes(bootstrap, selection["route"]["capabilities"])
+    return {"authority": "NONE", "repository": repository, "branch": branch, "root": str(root),
+            "head": head, "dirty": bool(changes), "changes": changes.splitlines(),
+            "route": selection["route"]["id"], "specialist": selection["route"]["specialist"],
+            "capabilities": caps, "remote_checked": False}
+
+
+
 def foundation_control_plane_locator(bootstrap: dict[str, Any]) -> dict[str, str]:
     locator = bootstrap.get("foundation_control_plane")
     expected = {
@@ -222,68 +332,44 @@ def case_router_locator(bootstrap: dict[str, Any]) -> dict[str, str]:
 EXPECTED_CASE_ROUTER = {
     "authority": "NONE",
     "routes": [
-        {
-            "id": "MATERIAL_JUDGMENT",
-            "role": "architect",
-            "binding": "generic",
-            "specialization": None,
-            "capabilities": ["architect"],
-            "navigation": [],
-        },
-        {
-            "id": "READ_ONLY_RESEARCH",
-            "role": "executor",
-            "binding": "generic",
-            "specialization": "researcher",
-            "capabilities": ["executor"],
-            "navigation": ["research_request_contract", "research_result_contract"],
-        },
-        {
-            "id": "TASK_EXECUTION",
-            "role": "executor",
-            "binding": "task",
-            "specialization": None,
-            "capabilities": ["executor", "task_protocol"],
-            "navigation": [],
-        },
+        {"id": "READ_ONLY", "specialist": "researcher", "binding": "target", "capabilities": ["executor"], "navigation": []},
+        {"id": "IMPLEMENT", "specialist": "implementer", "binding": "target", "capabilities": ["executor"], "navigation": []},
+        {"id": "DESIGN", "specialist": "architect", "binding": "target", "capabilities": ["architect"], "navigation": []},
+        {"id": "REVIEW", "specialist": "reviewer", "binding": "target", "capabilities": ["verification"], "navigation": []},
+        {"id": "SECURITY", "specialist": "security_reviewer", "binding": "target", "capabilities": ["security_review"], "navigation": []},
+        {"id": "RELEASE", "specialist": "release_operator", "binding": "target", "capabilities": ["executor","task_protocol"], "navigation": []},
+        {"id": "LEGACY_TASK", "specialist": "implementer", "binding": "task", "capabilities": ["executor","task_protocol"], "navigation": []},
+    ],
+    "legacy_aliases": {"MATERIAL_JUDGMENT": "DESIGN", "READ_ONLY_RESEARCH": "READ_ONLY", "TASK_EXECUTION": "LEGACY_TASK", "EXECUTE": "LEGACY_TASK"},
+}
+
+LEGACY_CASE_ROUTER = {
+    "authority": "NONE",
+    "routes": [
+        {"id": "MATERIAL_JUDGMENT", "role": "architect", "binding": "generic", "specialization": None, "capabilities": ["architect"], "navigation": []},
+        {"id": "READ_ONLY_RESEARCH", "role": "executor", "binding": "generic", "specialization": "researcher", "capabilities": ["executor"], "navigation": ["research_request_contract", "research_result_contract"]},
+        {"id": "TASK_EXECUTION", "role": "executor", "binding": "task", "specialization": None, "capabilities": ["executor", "task_protocol"], "navigation": []},
     ],
     "legacy_aliases": {"EXECUTE": "TASK_EXECUTION"},
 }
 
-
 def parse_case_router(content: str) -> dict[str, Any]:
+    """Parse inert capability metadata and historical v3 router inputs."""
     if not isinstance(content, str):
         raise ValueError("malformed Case Router")
     lines = [line for line in content.splitlines() if line.strip()]
-    legacy_execute = [
-        "cases:",
-        "  - id: EXECUTE",
-        "    capabilities:",
-        "      - executor",
-    ]
-    if lines == legacy_execute:
-        return {
-            "authority": "NONE",
-            "routes": [{
-                **EXPECTED_CASE_ROUTER["routes"][2],
-                "capabilities": list(EXPECTED_CASE_ROUTER["routes"][2]["capabilities"]),
-                "navigation": list(EXPECTED_CASE_ROUTER["routes"][2]["navigation"]),
-            }],
-            "legacy_aliases": {"EXECUTE": "TASK_EXECUTION"},
-        }
+    if lines == ["cases:", "  - id: EXECUTE", "    capabilities:", "      - executor"]:
+        return {"authority": "NONE", "routes": [dict(LEGACY_CASE_ROUTER["routes"][2])], "legacy_aliases": {"EXECUTE": "TASK_EXECUTION"}}
     if lines[:2] != ["authority: NONE", "routes:"]:
         raise ValueError("malformed Case Router")
-
     routes: list[dict[str, Any]] = []
     index = 2
     while index < len(lines) and lines[index].startswith("  - id: "):
-        route_id = lines[index][8:]
-        if not route_id:
-            raise ValueError("malformed Case Router")
+        identifier = lines[index][8:]
         index += 1
-
         fields: dict[str, str] = {}
-        for field in ("role", "binding", "specialization"):
+        shape = ("role", "binding", "specialization") if index < len(lines) and lines[index].startswith("    role: ") else ("specialist", "binding")
+        for field in shape:
             prefix = f"    {field}: "
             if index >= len(lines) or not lines[index].startswith(prefix):
                 raise ValueError("malformed Case Router")
@@ -291,62 +377,43 @@ def parse_case_router(content: str) -> dict[str, Any]:
             if not fields[field]:
                 raise ValueError("malformed Case Router")
             index += 1
-
         if index >= len(lines) or lines[index] != "    capabilities:":
             raise ValueError("malformed Case Router")
         index += 1
         capabilities: list[str] = []
         while index < len(lines) and lines[index].startswith("      - "):
-            capability = lines[index][8:]
-            if not capability:
-                raise ValueError("malformed Case Router")
-            capabilities.append(capability)
+            capabilities.append(lines[index][8:])
             index += 1
-        if not capabilities:
+        if not capabilities or any(not item for item in capabilities):
             raise ValueError("malformed Case Router")
-
         if index >= len(lines):
             raise ValueError("malformed Case Router")
-        navigation_line = lines[index]
-        if navigation_line == "    navigation: none":
-            navigation: list[str] = []
+        navigation: list[str] = []
+        if lines[index] == "    navigation: none":
             index += 1
-        elif navigation_line == "    navigation:":
+        elif lines[index] == "    navigation:":
             index += 1
-            navigation = []
             while index < len(lines) and lines[index].startswith("      - "):
-                item = lines[index][8:]
-                if not item:
-                    raise ValueError("malformed Case Router")
-                navigation.append(item)
+                navigation.append(lines[index][8:])
                 index += 1
-            if not navigation:
+            if not navigation or any(not item for item in navigation):
                 raise ValueError("malformed Case Router")
         else:
             raise ValueError("malformed Case Router")
-
-        routes.append({
-            "id": route_id,
-            "role": fields["role"],
-            "binding": fields["binding"],
-            "specialization": None if fields["specialization"] == "none" else fields["specialization"],
-            "capabilities": capabilities,
-            "navigation": navigation,
-        })
-
+        route = {"id": identifier, **fields, "capabilities": capabilities, "navigation": navigation}
+        if route.get("specialization") == "none":
+            route["specialization"] = None
+        routes.append(route)
     if index >= len(lines) or lines[index] != "legacy_aliases:":
         raise ValueError("malformed Case Router")
     index += 1
     aliases: dict[str, str] = {}
     while index < len(lines) and lines[index].startswith("  - from: "):
-        alias = lines[index][10:]
+        old = lines[index][10:]
         index += 1
-        if not alias or index >= len(lines) or not lines[index].startswith("    to: "):
+        if not old or old in aliases or index >= len(lines) or not lines[index].startswith("    to: "):
             raise ValueError("malformed Case Router")
-        target = lines[index][8:]
-        if not target or alias in aliases:
-            raise ValueError("malformed Case Router")
-        aliases[alias] = target
+        aliases[old] = lines[index][8:]
         index += 1
     if index != len(lines):
         raise ValueError("malformed Case Router")
@@ -354,43 +421,32 @@ def parse_case_router(content: str) -> dict[str, Any]:
 
 
 def validate_case_router(router: dict[str, Any]) -> None:
-    legacy_router = {
-        "authority": "NONE",
-        "routes": [EXPECTED_CASE_ROUTER["routes"][2]],
-        "legacy_aliases": {"EXECUTE": "TASK_EXECUTION"},
-    }
-    if router not in (EXPECTED_CASE_ROUTER, legacy_router):
+    legacy_execute = {"authority": "NONE", "routes": [LEGACY_CASE_ROUTER["routes"][2]], "legacy_aliases": {"EXECUTE": "TASK_EXECUTION"}}
+    if router not in (EXPECTED_CASE_ROUTER, LEGACY_CASE_ROUTER, legacy_execute):
         raise ValueError("unauthorized Case Router semantics")
 
 
 def select_semantic_route(router: dict[str, Any], entry_intent: object) -> dict[str, Any]:
     validate_case_router(router)
-    legacy_router = len(router["routes"]) == 1
-    if legacy_router:
+    if router != EXPECTED_CASE_ROUTER:
         if not isinstance(entry_intent, str):
             raise ValueError("legacy Case Router requires explicit EXECUTE task intent")
         route_id = router["legacy_aliases"].get(entry_intent, entry_intent)
-        if route_id != "TASK_EXECUTION":
-            raise ValueError("legacy Case Router supports only EXECUTE task compatibility")
-        return {
-            "route": dict(router["routes"][0]),
-            "disposition": "LEGACY_EXECUTE_COMPATIBILITY",
-        }
+        for route in router["routes"]:
+            if route["id"] == route_id:
+                return {"route": dict(route), "disposition": "LEGACY_EXECUTE_COMPATIBILITY"}
+        raise ValueError("legacy Case Router supports only EXECUTE task compatibility")
     if entry_intent is None:
-        return {
-            "route": dict(router["routes"][0]),
-            "disposition": "DEFAULTED_TO_MATERIAL_JUDGMENT",
-        }
-    if not isinstance(entry_intent, str):
+        route_id, disposition = "READ_ONLY", "SAFE_READ_ONLY_DEFAULT"
+    elif isinstance(entry_intent, str):
+        route_id, disposition = router["legacy_aliases"].get(entry_intent, entry_intent), "EXPLICIT"
+    else:
         raise ValueError("entry intent must identify one unambiguous semantic route")
-    route_id = router["legacy_aliases"].get(entry_intent, entry_intent)
     for route in router["routes"]:
         if route["id"] == route_id:
-            return {"route": dict(route), "disposition": "EXPLICIT"}
-    return {
-        "route": dict(router["routes"][0]),
-        "disposition": "DEFAULTED_TO_MATERIAL_JUDGMENT",
-    }
+            return {"route": dict(route), "disposition": disposition}
+    raise ValueError(f"unknown case: {entry_intent}")
+
 
 
 def resolve_case_router(
@@ -464,6 +520,9 @@ def canonical_artifacts(
     return artifacts
 
 def validate_contract(bootstrap: dict[str, Any], lock: dict[str, Any]) -> None:
+    if bootstrap.get("version") == 2:
+        validate_active_contract(bootstrap, lock)
+        return
     repositories = lock.get("repositories")
     if not isinstance(repositories, dict):
         raise ValueError("authority lock repositories must be an object")
@@ -724,8 +783,14 @@ def select_capability_routes(bootstrap: dict[str, Any], required: list[str]) -> 
 
 
 def required_foundation_paths(bootstrap: dict[str, Any]) -> set[str]:
+    if bootstrap.get("version") == 2:
+        return {
+            "profile/.agent/bootstrap/bootstrap.json",
+            "profile/.agent/bootstrap/authority.lock.json",
+            case_router_locator(bootstrap)["path"],
+            foundation_control_plane_locator(bootstrap)["path"],
+        }
     paths = {
-        "profile/ARCHITECT_PROFILE.md",
         "profile/.agent/bootstrap/bootstrap.json",
         "profile/.agent/bootstrap/authority.lock.json",
         case_router_locator(bootstrap)["path"],
@@ -733,11 +798,7 @@ def required_foundation_paths(bootstrap: dict[str, Any]) -> set[str]:
         external_capability_catalog_locator(bootstrap)["path"],
     }
     paths.update(l1_navigation_locator(bootstrap, key)["path"] for key in L1_NAVIGATION)
-    paths.update(
-        route["path"]
-        for route in bootstrap["capability_routes"]
-        if route["owner"] in INTERNAL_DOMAINS
-    )
+    paths.update(route["path"] for route in bootstrap["capability_routes"] if route["owner"] in INTERNAL_DOMAINS)
     return paths
 
 
@@ -923,11 +984,34 @@ def reconstruct_entry_context(
     resolved: dict[str, dict[str, Any]],
     controller: str | None = None,
     location: str | None = None,
+    local_target_root: Path | None = None,
 ) -> dict[str, Any]:
     if not SHA_RE.fullmatch(profile_revision):
         raise ValueError("authority-set identity must be an exact agent-foundation commit")
     bootstrap, lock = load_contract(root)
     validate_contract(bootstrap, lock)
+    if bootstrap.get("version") == 2:
+        if local_target_root is None:
+            raise ValueError("active local-first bootstrap requires an explicit local target root")
+        if not isinstance(target_binding, dict):
+            raise ValueError("active local-first bootstrap requires explicit target binding")
+        active_router = parse_case_router(
+            (root / case_router_locator(bootstrap)["path"]).read_text(encoding="utf-8")
+        )
+        if active_router != EXPECTED_CASE_ROUTER:
+            raise ValueError("active router must be exact")
+        selected = select_semantic_route(active_router, entry_intent)
+        if selected["route"]["id"] != "LEGACY_TASK" and (
+            not isinstance(request_identity, str) or not request_identity.strip()
+        ):
+            raise ValueError("active local-first bootstrap requires current request identity")
+        result = bind_local_target(target_binding, local_target_root, entry_intent, bootstrap, active_router)
+        if result["route"] == "LEGACY_TASK":
+            task = validate_task_target_binding(target_binding)
+            if task["base_head"] != result["head"]:
+                raise ValueError("legacy task base must match local HEAD before any mutation")
+            result["legacy_task_binding"] = task
+        return result
 
     if not isinstance(target_binding, dict):
         raise ValueError("target binding must be an explicit mapping")
@@ -1004,6 +1088,7 @@ def reconstruct_execution_context(
     target_locator: dict[str, Any],
     case_id: str,
     resolved: dict[str, dict[str, Any]],
+    local_target_root: Path | None = None,
 ) -> dict[str, Any]:
     result = reconstruct_entry_context(
         root=root,
@@ -1012,6 +1097,7 @@ def reconstruct_execution_context(
         request_identity=None,
         entry_intent=case_id,
         resolved=resolved,
+        local_target_root=local_target_root,
     )
     result["bootstrap_trace"] = [
         "PROFILE_REVISION",
@@ -1052,8 +1138,16 @@ def main(argv: list[str] | None = None) -> int:
         bootstrap, lock = load_contract()
         validate_contract(bootstrap, lock)
         validate_local_foundation_control_plane(ROOT, bootstrap)
-        validate_local_external_capability_catalog(ROOT, bootstrap)
-        validate_local_l1_navigation(ROOT, bootstrap)
+        if bootstrap.get("version") != 2:
+            validate_local_external_capability_catalog(ROOT, bootstrap)
+            validate_local_l1_navigation(ROOT, bootstrap)
+        else:
+            router = parse_case_router((ROOT / case_router_locator(bootstrap)["path"]).read_text(encoding="utf-8"))
+            if router != EXPECTED_CASE_ROUTER:
+                raise ValueError("active router must be exact and capability-oriented")
+            for route in bootstrap["capability_routes"]:
+                if not (ROOT / route["path"]).is_file():
+                    raise ValueError(f"missing active capability: {route['path']}")
         if args.remote:
             foundation_revision = current_foundation_revision(ROOT)
             validate_resolution(

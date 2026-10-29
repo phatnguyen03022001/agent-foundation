@@ -852,87 +852,54 @@ class Task0006FoundationArchitectureTests(unittest.TestCase):
     def read(self, relative: str) -> str:
         return (ROOT / relative).read_text(encoding="utf-8")
 
-    def test_three_layer_contract_and_orthogonal_substrates(self) -> None:
+    def test_active_router_has_no_mandatory_layers_or_orchestrator(self) -> None:
         text = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
-        self.assertEqual(
-            re.findall(r"^## L\d+ — .+$", text, flags=re.MULTILINE),
-            ["## L0 — Governance Kernel", "## L1 — Control and Continuity", "## L2 — Capability and Knowledge"],
-        )
+        self.assertIn("Router is static metadata", text)
+        self.assertIn("No queue, daemon, database", text)
+        self.assertNotIn("exactly two organizational roles: Architect and Executor", text)
         self.assertNotIn("## L3", text)
-        for token in ("agent-runtime", "GitHub", "MCP", "native execution tools", "orthogonal substrates"):
-            self.assertIn(token, text)
 
-    def test_two_roles_and_specialization_boundary(self) -> None:
+    def test_specializations_are_optional_and_never_authorize_effects(self) -> None:
         text = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
         for token in (
-            "exactly two organizational roles: Architect and Executor",
-            "Sync and read-only Researcher are Executor specializations",
-            "no independent task, mutation, review, acceptance, rebinding, or architecture authority",
+            "Specialists are optional", "not organizational roles",
+            "A single session may activate several sequentially",
+            "Router is static metadata", "never", "No fabricated PASS",
+            "Separate explicit authority",
         ):
             self.assertIn(token, text)
-        self.assertEqual(VALIDATOR_MODULE.MANDATORY_INTERNAL_ROLES, frozenset({"architect", "executor"}))
 
     def test_capability_state_non_equivalence(self) -> None:
         text = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
         for token in (
-            "INDEXED != LOADED", "PINNED != TRUSTED", "SYNCED != ADOPTED",
-            "ADOPTED != AUTHORIZED", "LOADED != AUTHORIZED", "SNAPSHOT != AUTHORITY",
+            "not a running orchestrator", "authority", "read-only generic HOW",
+            "never execute ECC installer", "not active bootstrap", "No duplicate Foundation",
         ):
             self.assertIn(token, text)
 
     def test_research_and_cross_repository_continuity(self) -> None:
         text = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
         for token in (
-            "one exact target, base, and question", "minimum relevant context",
-            "peer results are not visible", "compact evidence", "not by majority voting",
-            "cannot mutate the owner repository", "create a task automatically", "freshly revalidated",
+            "explicitly bound target", "One authorized writer",
+            "read/edit/build/test/debug", "preserve dirty state",
+            "Unknown effects", "remote branch HEAD",
         ):
             self.assertIn(token, text)
 
-    def test_role_kernels_delegate_l1_l2_detail(self) -> None:
+    def test_specialist_kernels_delegate_to_active_architecture(self) -> None:
         architect = self.read("architect/SKILL.md")
         executor = self.read("executor/SKILL.md")
         protocol = self.read("protocols/TASK_PROTOCOL.md")
         for text in (architect, executor, protocol):
             self.assertIn("FOUNDATION_ARCHITECTURE.md", text)
-        self.assertNotIn("## External normative authority and execution environment", architect)
-        self.assertNotIn("## Repository construction and acquisition", executor)
-        self.assertNotIn("## Execution environment, operator attention, and surface selection", protocol)
-        self.assertNotIn("## Deterministic execution bundling", protocol)
+        self.assertIn("optional design specialist", architect)
+        self.assertIn("bounded worker", executor)
+        self.assertIn("historical compatibility", protocol)
+
 
 class CaseNavigationTests(unittest.TestCase):
     CASE_PATH = Path(".agent/case-router.yaml")
-    CANONICAL_CASE = """authority: NONE
-routes:
-  - id: MATERIAL_JUDGMENT
-    role: architect
-    binding: generic
-    specialization: none
-    capabilities:
-      - architect
-    navigation: none
-  - id: READ_ONLY_RESEARCH
-    role: executor
-    binding: generic
-    specialization: researcher
-    capabilities:
-      - executor
-    navigation:
-      - research_request_contract
-      - research_result_contract
-  - id: TASK_EXECUTION
-    role: executor
-    binding: task
-    specialization: none
-    capabilities:
-      - executor
-      - task_protocol
-    navigation: none
-legacy_aliases:
-  - from: EXECUTE
-    to: TASK_EXECUTION
-"""
-
+    CANONICAL_CASE = (ROOT / ".agent/case-router.yaml").read_text(encoding="utf-8")
     def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
         temp = tempfile.TemporaryDirectory()
         root = Path(temp.name) / "repo"
@@ -986,47 +953,42 @@ legacy_aliases:
 
     def test_unknown_or_duplicate_route_class_fails_closed(self) -> None:
         self.assert_case_rejected(
-            self.CANONICAL_CASE.replace("MATERIAL_JUDGMENT", "VERIFY", 1),
-            "must exactly match canonical route MATERIAL_JUDGMENT",
+            self.CANONICAL_CASE.replace("id: READ_ONLY", "id: UNADMITTED", 1),
+            "must exactly match canonical route READ_ONLY",
         )
         duplicate = self.CANONICAL_CASE.replace(
             "legacy_aliases:",
-            self.CANONICAL_CASE.split("  - id: TASK_EXECUTION", 1)[1]
-            .split("legacy_aliases:", 1)[0]
-            .join(["  - id: TASK_EXECUTION", ""]) + "legacy_aliases:",
+            "  - id: READ_ONLY\n    specialist: researcher\n    binding: target\n"
+            "    capabilities:\n      - executor\n    navigation: none\nlegacy_aliases:",
             1,
         )
-        self.assert_case_rejected(duplicate, "routes must contain exactly three canonical route classes")
+        self.assert_case_rejected(duplicate, "routes must contain exactly seven capability routes")
 
     def test_wrong_route_binding_or_capabilities_fail_closed(self) -> None:
         wrong_binding = self.CANONICAL_CASE.replace(
-            "  - id: READ_ONLY_RESEARCH\n    role: executor\n    binding: generic",
-            "  - id: READ_ONLY_RESEARCH\n    role: executor\n    binding: task",
-            1,
+            "  - id: READ_ONLY\n    specialist: researcher\n    binding: target",
+            "  - id: READ_ONLY\n    specialist: researcher\n    binding: task", 1,
         )
         self.assert_case_rejected(
-            wrong_binding,
-            "routes[1] must exactly match canonical route READ_ONLY_RESEARCH",
+            wrong_binding, "routes[0] must exactly match canonical route READ_ONLY",
         )
         wrong_capability = self.CANONICAL_CASE.replace(
-            "  - id: MATERIAL_JUDGMENT\n    role: architect\n    binding: generic\n"
-            "    specialization: none\n    capabilities:\n      - architect",
-            "  - id: MATERIAL_JUDGMENT\n    role: architect\n    binding: generic\n"
-            "    specialization: none\n    capabilities:\n      - executor",
-            1,
+            "  - id: DESIGN\n    specialist: architect\n    binding: target\n"
+            "    capabilities:\n      - architect",
+            "  - id: DESIGN\n    specialist: architect\n    binding: target\n"
+            "    capabilities:\n      - executor", 1,
         )
         self.assert_case_rejected(
-            wrong_capability,
-            "routes[0] must exactly match canonical route MATERIAL_JUDGMENT",
+            wrong_capability, "routes[2] must exactly match canonical route DESIGN",
         )
 
     def test_legacy_execute_alias_and_authority_are_exact(self) -> None:
         self.assert_case_rejected(
-            self.CANONICAL_CASE.replace("to: TASK_EXECUTION", "to: MATERIAL_JUDGMENT"),
-            "legacy_aliases must map EXECUTE to TASK_EXECUTION exactly once",
+            self.CANONICAL_CASE.replace("to: LEGACY_TASK", "to: DESIGN", 1),
+            "legacy_aliases must match admitted historical aliases exactly once",
         )
         self.assert_case_rejected(
-            self.CANONICAL_CASE.replace("authority: NONE", "authority: EXECUTOR"),
+            self.CANONICAL_CASE.replace("authority: NONE", "authority: IMPLEMENT"),
             "authority must be NONE",
         )
 
@@ -1036,11 +998,9 @@ legacy_aliases:
             "top-level fields must be exactly",
         )
         self.assert_case_rejected(
-            self.CANONICAL_CASE.replace("  - id: TASK_EXECUTION", "    state: RUNNING\n  - id: TASK_EXECUTION", 1),
-            "routes[1] must exactly match canonical route READ_ONLY_RESEARCH",
+            self.CANONICAL_CASE.replace("  - id: IMPLEMENT", "    state: RUNNING\n  - id: IMPLEMENT", 1),
+            "routes[0] must exactly match canonical route READ_ONLY",
         )
-
-
 class Task0004GovernanceTests(unittest.TestCase):
     def read(self, relative: str) -> str:
         return (ROOT / relative).read_text(encoding="utf-8")
@@ -1141,13 +1101,13 @@ class Task0004GovernanceTests(unittest.TestCase):
             self.assertIn(token, combined)
 
     def test_ac7_normative_external_authority_is_immutable(self) -> None:
-        combined = self.read("architect/SKILL.md") + self.read("protocols/TASK_PROTOCOL.md")
+        combined = self.read("contracts/FOUNDATION_ARCHITECTURE.md") + self.read("protocols/TASK_PROTOCOL.md")
         for token in (
-            "external repository used as normative authority",
-            "immutable revision",
-            "before mutation",
-            "research/reference evidence",
-            "does not become normative authority",
+            "immutable commit",
+            "before relying",
+            "ECC",
+            "read-only",
+            "nor an ECC skill can enlarge it",
         ):
             self.assertIn(token, combined)
 
@@ -1164,25 +1124,24 @@ class Task0004GovernanceTests(unittest.TestCase):
         self.assertIn("Supported protocol version: **3**", protocol)
 
     def test_ac9_design_readiness_is_material_and_proportional(self) -> None:
-        combined = self.read("architect/SKILL.md") + self.read("protocols/TASK_PROTOCOL.md")
+        combined = self.read("architect/SKILL.md") + self.read("executor/SKILL.md") + self.read("contracts/FOUNDATION_ARCHITECTURE.md")
         for token in (
-            "material-design-readiness",
-            "applicable target product/design authority",
-            "material missing decisions",
-            "consequential implementation",
-            "trivial, mechanical, reversible, or well-specified",
+            "material uncertainty",
+            "architecture",
+            "security/data boundaries",
+            "Stop for an actual scope",
+            "Small reversible authorized tasks",
         ):
             self.assertIn(token, combined)
 
     def test_ac10_operator_attention_is_constrained_resource(self) -> None:
-        combined = self.read("architect/SKILL.md") + self.read("protocols/TASK_PROTOCOL.md") + self.read("contracts/FOUNDATION_ARCHITECTURE.md")
+        combined = (self.read("architect/SKILL.md") + self.read("executor/SKILL.md") + self.read("protocols/TASK_PROTOCOL.md") + self.read("contracts/FOUNDATION_ARCHITECTURE.md"))
         for token in (
-            "operator attention/manual labor",
-            "constrained resource",
-            "manual command/RPC bridge",
-            "unavailable capability",
-            "destructive/irreversible authority",
-            "material paid-cost approval",
+            "explicit operator request",
+            "No automatic extra chat",
+            "not merely because the request lacks a second chat",
+            "irreversible consequences",
+            "No queue, daemon, database",
         ):
             self.assertIn(token, combined)
 
@@ -1594,9 +1553,9 @@ class Task0011GeneratedProgramTests(unittest.TestCase):
             "authority: NONE",
             "mathematically unique DAG",
             "whole generated program stale",
-            "full regeneration",
-            "just in time",
-            "one active Executor binding",
+            "fully regenerate",
+            "Task authority remains just in time",
+            "historical compatibility",
         ):
             self.assertIn(token, combined)
         for forbidden in (
@@ -2062,23 +2021,16 @@ class Task0024GitHubFirstLocalExecutionTests(unittest.TestCase):
         executor = (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8")
         normalized = executor.lower()
         for token in (
-            "designated canonical local working copy",
-            "exact owner/repo remote identity",
-            "do not infer",
-            "absent or safely empty",
-            "clean/behind",
-            "dirty/ahead/unknown",
-            "identity mismatch",
-            "stale remote",
-            "Before local mutation",
-            "After GitHub publication",
-            "refresh canonical GitHub truth",
-            "fast-forward/equivalent",
-            "final canonical ref",
-            "Temporary/reference/disposable checkouts",
-            "cannot substitute",
-            "phone-only or remote-only",
-            "fail closed",
+            "exact requested target repository",
+            "canonical origin",
+            "never infer identity",
+            "preserve all operator-owned edits",
+            "local working tree is live execution state",
+            "refresh its remote ref",
+            "prove safe ancestry",
+            "never force-push or overwrite diverged state",
+            "unknown-effect mutation requires inspection",
+            "no pass without evidence",
         ):
             self.assertIn(token.lower(), normalized)
 
@@ -2208,7 +2160,7 @@ class Task0025StableAdoptionGateTests(unittest.TestCase):
 
         executor = (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8").lower()
         contract = (ROOT / "contracts" / "IMPLEMENTATION_CONTRACT.md").read_text(encoding="utf-8").lower()
-        self.assertIn("implementation judgment belongs to executor by default", executor)
+        self.assertIn("positive, scoped mutation authority", executor)
         self.assertIn("missing exact-file or local-structure prescription defaults to bounded executor discretion", contract)
         self.assertIn("missing authority fields never default to permission", contract)
 
@@ -2223,20 +2175,14 @@ class Task0025StableAdoptionGateTests(unittest.TestCase):
         )
         combined = "\n".join((ROOT / path).read_text(encoding="utf-8") for path in paths).lower()
         for phrase in (
-            "trust, ownership, compatibility, durability, irreversibility, dependency, cost/topology, or architecture",
-            "implementing an already-frozen api, security, data, migration, dependency, or structure decision",
-            "public/shared contract",
-            "prescribe local how only when the mechanism itself carries a material governing consequence",
-            "executor discretion never expands authority or changes a material consequence",
-            "scope owns semantic/component consequence by default",
-            "structure is local when it consists of internal files or modules",
-            "new or changed top-level ownership",
-            "`local` is necessary for current acceptance criteria",
-            "`follow_up` and `blocking` are consequence-based",
-            "preference-only revision is not warranted",
-            "reject local how only for material consequence or contract/risk violation",
-            "executor owns report content. architect may review it but does not rewrite it.",
+            "positive, scoped mutation authority",
+            "scope",
+            "independent review",
             "missing authority fields never default to permission",
+            "release authority",
+            "one authorized writer",
+            "no pass without evidence",
+            "unknown-effect",
         ):
             self.assertIn(phrase, combined)
 
@@ -2413,9 +2359,9 @@ class Task0025StableAdoptionGateTests(unittest.TestCase):
         self.assertNotIn("/Users/tienphat", generic)
         self.assertNotIn("Developer/<repo-name>", generic)
         generic = generic.lower()
-        self.assertIn("does not prescribe task launch field names", generic)
-        self.assertIn("agent runtime remains an optional capability surface", generic)
-        self.assertIn("mobile/chatgpt+github-only operation is first-class", generic)
+        self.assertIn("local-first", generic)
+        self.assertIn("agent runtime", generic)
+        self.assertIn("no mandatory yaml", generic)
 
 
 class Task0029SparseSerializationTests(unittest.TestCase):
@@ -2646,9 +2592,9 @@ class Task0029SparseSerializationTests(unittest.TestCase):
         report_contract = (ROOT / "contracts" / "IMPLEMENTATION_REPORT.md").read_text(encoding="utf-8").lower()
         review_contract = (ROOT / "contracts" / "ARCHITECT_REVIEW.md").read_text(encoding="utf-8").lower()
 
-        self.assertIn("material identity, what, boundary, proof, and only non-default controls", architect)
+        self.assertIn("optional design specialist", architect)
         self.assertIn("omit controls that equal the protocol-v3 defaults", task_contract)
-        self.assertIn("omit reconstructible execution transcript", executor)
+        self.assertIn("report exact changed scope", executor)
         self.assertIn("expanded-v3 report fields remain valid compatibility input", report_contract)
         self.assertIn("exact reviewed-report identity, material compliance, and final judgment", review_contract)
         self.assertIn("expanded-v3 review fields remain valid compatibility input", review_contract)
@@ -2709,61 +2655,38 @@ class Task0030ControlPlaneAccelerationTests(unittest.TestCase):
 
 
 class Task0049ExecutorFitDecompositionTests(unittest.TestCase):
-    def executor_fit_section(self) -> str:
-        architect = (ROOT / "architect" / "SKILL.md").read_text(encoding="utf-8")
-        heading = "## Executor-fit task-decomposition gate"
-        self.assertIn(heading, architect)
-        section = architect.split(heading, 1)[1].split("\n## ", 1)[0].lower()
-        return section
+    """Active direct-work split/verification boundary; no universal fit ceremony."""
 
-    def test_executor_fit_gate_defines_exact_architect_local_outcomes(self) -> None:
-        section = self.executor_fit_section()
-        self.assertIn("before authorizing a normal canonical task", section)
-        for outcome in ("`fit`", "`split_required`", "`capability_blocked`"):
-            self.assertIn(outcome, section)
-        self.assertIn("architect-local planning judgments", section)
-        self.assertIn("not serialized task fields or lifecycle states", section)
+    def doctrine(self) -> str:
+        return (
+            (ROOT / "contracts/FOUNDATION_ARCHITECTURE.md").read_text(encoding="utf-8")
+            + (ROOT / "architect/SKILL.md").read_text(encoding="utf-8")
+            + (ROOT / "executor/SKILL.md").read_text(encoding="utf-8")
+        ).lower()
 
-    def test_fit_requires_one_coherent_review_and_evidence_boundary(self) -> None:
-        section = self.executor_fit_section()
-        for requirement in (
-            "one coherent material outcome",
-            "one repository/base binding",
-            "one independently reviewable candidate boundary",
-            "one coherent acceptance/evidence boundary",
-            "required current-phase capabilities are currently satisfiable",
-            "no sibling material outcome",
-            "independently rejected",
-        ):
-            self.assertIn(requirement, section)
+    def test_design_selection_is_risk_driven_not_universal_gate(self) -> None:
+        body = self.doctrine()
+        self.assertIn("optional design specialist", body)
+        self.assertIn("material uncertainty", body)
+        self.assertIn("no architect handoff is required", body)
 
-    def test_split_required_targets_independent_outcomes_not_implementation_ceremony(self) -> None:
-        section = self.executor_fit_section()
-        self.assertIn("materially independent sibling outcomes", section)
-        self.assertIn("independently rejectable review/acceptance boundaries", section)
-        self.assertIn("split those outcomes before canonical task authorization", section)
-        for ceremony in ("multiple files", "steps", "components", "tests", "deterministic jobs"):
-            self.assertIn(ceremony, section)
-        self.assertIn("do not by themselves require splitting", section)
+    def test_fit_retains_exact_scope_and_evidence_boundary(self) -> None:
+        body = self.doctrine()
+        for item in ("exact requested target repository", "one authorized writer",
+                     "risk-proportional", "no pass without evidence"):
+            self.assertIn(item, body)
 
-    def test_capability_blocked_does_not_add_scoring_schema_or_control_plane(self) -> None:
-        section = self.executor_fit_section()
-        self.assertIn("required current-phase capability cannot presently be satisfied", section)
-        self.assertIn("capability blocking, not task splitting, scheduling, or provider orchestration", section)
-        for prohibition in (
-            "no complexity score",
-            "token budget",
-            "duration estimate",
-            "task points",
-            "queue",
-            "scheduler",
-            "planner service",
-            "new schema",
-            "task field",
-            "lifecycle state",
-            "additional organizational role",
-        ):
-            self.assertIn(prohibition, section)
+    def test_task_splitting_not_triggered_by_implementation_ceremony(self) -> None:
+        body = self.doctrine()
+        for item in ("no mandatory yaml", "multi-session", "when actually required",
+                     "no automatic extra chat"):
+            self.assertIn(item, body)
+
+    def test_capability_gap_never_creates_orchestrator_or_authority(self) -> None:
+        body = self.doctrine()
+        for item in ("no queue, daemon, database", "read-only work stays read-only",
+                     "cannot", "scope, authority"):
+            self.assertIn(item, body)
 
 
 class Task0052ExecutorProcessOwnershipBoundaryTests(unittest.TestCase):
@@ -2937,19 +2860,19 @@ class Task0054PlatformCompliantExecutionPublicationTests(unittest.TestCase):
         for marker in (
             "required semantic capability",
             "current authority",
-            "authorized available surface",
-            "provider-specific handoff wording",
-            "materially requires that surface identity",
+            "authorized currently available surface",
+            "no architect handoff is required",
+            "capability router",
         ):
             self.assertIn(marker, combined)
 
     def test_scenario_b_narrow_typed_consequence_is_preferred_only_when_equivalent(self) -> None:
         combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
         for marker in (
-            "narrowest explicit bounded action",
-            "machine-checkable",
-            "typed does not mean automatically safe",
-            "equivalent evidence",
+            "consequence-based execution guards",
+            "typed",
+            "evidence",
+            "authority",
         ):
             self.assertIn(marker, combined)
 
@@ -2987,40 +2910,39 @@ class Task0054PlatformCompliantExecutionPublicationTests(unittest.TestCase):
         ):
             self.assertIn(marker, combined)
 
-    def test_scenario_f_immutable_publication_handoff_transfers_publication_not_editing(self) -> None:
+    def test_scenario_f_publication_is_scoped_even_in_one_session(self) -> None:
         combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
         for marker in (
+            "one authorized writer",
+            "explicit authority",
+            "local commits from pushed commits",
+            "require fast-forward safety",
             "immutable publication handoff",
-            "prior writer is terminal",
-            "publication authority transfer",
-            "publish only",
-            "may not edit",
-            "recreate",
-            "amend",
         ):
             self.assertIn(marker, combined)
+        self.assertNotIn("prior writer is terminal", (ROOT / "contracts/FOUNDATION_ARCHITECTURE.md").read_text(encoding="utf-8").lower())
 
     def test_scenario_g_exact_commit_and_content_identity_publication_are_distinct(self) -> None:
-        protocol = self.doctrine("protocols/TASK_PROTOCOL.md")
+        architecture = self.doctrine("protocols/TASK_PROTOCOL.md")
         for marker in (
-            "exact-commit publication",
-            "content-identity publication",
-            "different commit identity",
-            "explicitly permits",
+            "exact commit identity",
+            "distinct from content identity",
+            "content-equivalent but different commit",
+            "without explicit permission",
         ):
-            self.assertIn(marker, protocol)
+            self.assertIn(marker, architecture)
 
-    def test_scenario_h_operator_fallback_is_explicit_last_resort_consequence(self) -> None:
+    def test_scenario_h_missing_capability_is_a_stop_not_implied_manual_authority(self) -> None:
         combined = self.doctrine("protocols/TASK_PROTOCOL.md", "executor/SKILL.md")
         for marker in (
-            "operator fallback",
-            "last-resort consequence",
-            "automation is materially unavailable",
-            "user-only/approval-bound",
-            "preconditions",
-            "post-publication remote proof",
+            "current authority",
+            "current_phase_capability_unavailable",
+            "explicit authority",
+            "post-publication",
+            "remote",
         ):
             self.assertIn(marker, combined)
+        self.assertNotIn("manual fallback is automatically authorized", combined)
 
     def test_protocol_v3_single_publication_closure_preserves_candidate_report_identity(self) -> None:
         combined = self.doctrine(
@@ -3308,15 +3230,11 @@ class Task0016TargetRepositoryAuthorityTests(unittest.TestCase):
         combined = architecture + "\n" + protocol
         for marker in (
             "## Target repository product authority",
-            "canonical owner of product truth and repository-native engineering contracts",
-            "product architecture and domain behavior",
-            "toolchain and dependency contracts",
-            "build, test, lint, typecheck, format, and codegen",
-            "runtime and deployment configuration",
-            "authority class rather than filename",
-            "AGENTS.md",
-            "CLAUDE.md",
-            "absence of a conventional instruction filename is not a blocker",
+            "explicitly bound target owns product truth",
+            "product architecture",
+            "tests, tooling",
+            "A missing conventional filename",
+            "GitHub is the *published source of truth*",
             "`task.yaml` owns the authorized WHAT/BOUNDARY/PROOF for one task",
             "does not replace the target repository's enduring product",
         ):
@@ -3333,13 +3251,11 @@ class Task0016TargetRepositoryAuthorityTests(unittest.TestCase):
             )
         )
         for marker in (
-            "bounded target-truth discovery",
-            "Repository-owned commands and verifier profiles remain primary",
+            "target-owned source", "target-native instructions",
             "ECC examples are advisory patterns",
             "adapt to target-native commands and architecture",
-            "execution transport only",
-            "does not become the owner of target commands",
-            "contradictory or missing product truth",
+            "ECC cannot override scope, product truth or authority",
+            "Do not invent a universal target manifest",
         ):
             self.assertIn(marker, combined)
 
@@ -3348,7 +3264,7 @@ class Task0016TargetRepositoryAuthorityTests(unittest.TestCase):
         engineering = self.read("executor/references/ENGINEERING_HOW.md")
         combined = architecture + "\n" + engineering
         for marker in (
-            "no universal target manifest",
+            "universal target manifest",
             "no single package manager, language, framework",
             "no fixed build, test, lint, typecheck, or codegen command shape",
             "equivalent repository-native evidence",
@@ -3379,7 +3295,8 @@ class Task0018ProductArchitectureBoundaryTests(unittest.TestCase):
             "standards/",
         ):
             self.assertIn(marker, product)
-        self.assertIn("AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md", foundation)
+        self.assertIn("target owns product truth", foundation)
+        self.assertNotIn("AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md", foundation)
         self.assertIn("AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md", readme)
 
     def test_shared_platform_composition_and_private_dependency_boundaries(self) -> None:
@@ -3468,7 +3385,8 @@ class Task0019ProductStateTests(unittest.TestCase):
         ):
             self.assertIn(marker, contract)
         self.assertIn("canonical target-owned T1 product-architecture boundary", architecture)
-        self.assertIn("single canonical generic owner", foundation)
+        self.assertIn("product truth", foundation)
+        self.assertIn("not universal task prerequisites", foundation)
 
     def test_current_product_state_is_exact_frozen_four_feature_inventory(self) -> None:
         state = self.load_state()
@@ -3959,64 +3877,41 @@ class Task0022ProgressionConsumptionTests(unittest.TestCase):
 
     def test_architect_preplanning_read_order_is_exact(self) -> None:
         architect = self.read("architect/SKILL.md")
-        markers = (
-            "1. exact target repository",
-            "2. exact canonical release identity when one exists",
-            "3. release scope status",
-            "4. required release feature set",
-            "5. canonical feature registry",
-            "6. feature states and supporting evidence",
-            "7. global system gates",
-            "8. derived project phase",
-            "9. earliest materially blocking condition",
-            "10. applicable target-native architecture/tooling/verifier contracts",
-        )
-        positions = [architect.index(marker) for marker in markers]
-        self.assertEqual(positions, sorted(positions))
+        self.assertIn("optional design specialist", architect)
+        self.assertIn("Resolve exact target-owned product intent", architect)
+        self.assertIn("universal task-authority issuer", architect)
+        self.assertNotIn("Before authorizing consequential feature implementation", architect)
 
     def test_fresh_target_evidence_preserves_unknown_and_separates_task_lifecycle(self) -> None:
         combined = self.read("contracts/FOUNDATION_ARCHITECTURE.md") + "\n" + self.read("architect/SKILL.md")
         for marker in (
-            "fresh target-owned evidence",
-            "memory, previous chat, task status, report/review status, Runtime state",
-            "Missing, contradictory, stale, or inaccessible",
-            "preserve UNKNOWN",
-            "must not invent",
-            "Task lifecycle and product lifecycle remain distinct",
-            "fresh target-owned evidence remains required",
+            "Target repository product authority",
+            "exact target",
+            "No fabricated PASS",
+            "historical protocol-v3",
+            "No duplicate Foundation engineering HOW",
         ):
             self.assertIn(marker, combined)
 
     def test_default_progression_override_and_bounded_handoff_are_explicit(self) -> None:
         architect = self.read("architect/SKILL.md")
         for marker in (
-            "earliest materially blocking condition",
-            "must not initiate later-phase work merely because it is useful",
-            "explicit higher-priority override",
-            "current, exact, and authoritative",
-            "distinguishable",
-            "one coherent progression objective",
-            "bounded mutation scope",
-            "explicit terminal proof boundary",
-            "independently rejectable",
-            "must not add a task-schema field",
+            "optional design specialist",
+            "Resolve exact target-owned product intent",
+            "material uncertainty",
+            "scope, authority, design, safety",
+            "independent-verification",
         ):
             self.assertIn(marker, architect)
 
     def test_foundation_is_filename_neutral_progression_consumer_not_product_owner(self) -> None:
         architecture = self.read("contracts/FOUNDATION_ARCHITECTURE.md")
         for marker in (
-            "## Target product progression consumption",
-            "filename-neutral",
-            "consume target-owned product progression truth",
-            "verify target-defined derived phase",
-            "select the target-defined earliest blocker",
-            "create bounded task authority",
-            "does not own release scope, feature registry, feature state, system gates, or project phase",
-            "does not require product-state.json",
-            "does not require agent-foundation schema 3",
-            "no universal product manifest",
-            "one language or validator implementation",
+            "Target repository product authority",
+            "The explicitly bound target owns product truth",
+            "A missing conventional filename",
+            "Never infer target from memory/cwd",
+            "not active bootstrap",
         ):
             self.assertIn(marker, architecture)
 
@@ -4060,9 +3955,10 @@ class Task0022ProgressionConsumptionTests(unittest.TestCase):
     def test_stored_projection_must_match_target_derivation_before_planning(self) -> None:
         combined = self.read("contracts/FOUNDATION_ARCHITECTURE.md") + "\n" + self.read("architect/SKILL.md")
         for marker in (
-            "stored and derived truth disagree",
-            "fail closed",
-            "deterministic derivation semantics",
+            "Target repository product authority",
+            "product truth",
+            "No fabricated PASS",
+            "not universal task prerequisites",
         ):
             self.assertIn(marker, combined)
 
@@ -4961,17 +4857,8 @@ class Task0010RationalizationTests(unittest.TestCase):
 
 class Task0027ArchitectKernelReductionTests(unittest.TestCase):
     REQUIRED_OWNER_LINKS = (
-        "[Task Protocol — Core bindings](../protocols/TASK_PROTOCOL.md#core-bindings)",
-        "[Task Protocol — Artifact ownership and authority](../protocols/TASK_PROTOCOL.md#artifact-ownership-and-authority)",
-        "[Task Protocol — Phase-specific capability preflight](../protocols/TASK_PROTOCOL.md#phase-specific-capability-preflight)",
-        "[Foundation Architecture — Target repository product authority](../contracts/FOUNDATION_ARCHITECTURE.md#target-repository-product-authority)",
-        "[Foundation Architecture — Target product progression consumption](../contracts/FOUNDATION_ARCHITECTURE.md#target-product-progression-consumption)",
-        "[Foundation Architecture — Capability control](../contracts/FOUNDATION_ARCHITECTURE.md#capability-control)",
-        "[Architect Review — Review ownership and exact report identity](../contracts/ARCHITECT_REVIEW.md#review-ownership-and-exact-report-identity)",
-        "[Architect Review — Review artifact obligations](../contracts/ARCHITECT_REVIEW.md#review-artifact-obligations)",
-        "[Execution Continuity — Recovery](../contracts/EXECUTION_CONTINUITY.md#recovery)",
-        "[Simplicity — Stable governance and change admission](../simplicity/SKILL.md#stable-governance-and-change-admission)",
-        "[Verification — Acceptance and evidence](../verification/SKILL.md#acceptance-and-evidence)",
+        "[Capability Router](../.agent/case-router.yaml)",
+        "[Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md)",
     )
 
     def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
@@ -5014,43 +4901,25 @@ class Task0027ArchitectKernelReductionTests(unittest.TestCase):
         path.write_text(text.replace(link, "Task Protocol core binding owner", 1), encoding="utf-8")
         result = self.run_validator(root)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("missing required Architect owner reference", result.stdout + result.stderr)
+        self.assertIn("missing active owner reference", result.stdout + result.stderr)
 
     def test_validator_rejects_misdirected_required_architect_owner_link(self) -> None:
         _, root = self.fixture()
         path = root / "architect" / "SKILL.md"
         text = path.read_text(encoding="utf-8")
-        link = self.REQUIRED_OWNER_LINKS[6]
+        link = self.REQUIRED_OWNER_LINKS[1]
         self.assertIn(link, text)
-        wrong = "[Architect Review — Review ownership and exact report identity](../protocols/TASK_PROTOCOL.md#review-ownership-and-exact-report-identity)"
+        wrong = "[Foundation Architecture](../protocols/TASK_PROTOCOL.md#core-bindings)"
         path.write_text(text.replace(link, wrong), encoding="utf-8")
         result = self.run_validator(root)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("missing required Architect owner reference", result.stdout + result.stderr)
+        self.assertIn("missing active owner reference", result.stdout + result.stderr)
 
 
 class Task0028ExecutorKernelReductionTests(unittest.TestCase):
     REQUIRED_OWNER_LINKS = (
-        "[Task Protocol — Core bindings](../protocols/TASK_PROTOCOL.md#core-bindings)",
-        "[Task Protocol — Artifact ownership and authority](../protocols/TASK_PROTOCOL.md#artifact-ownership-and-authority)",
-        "[Task Protocol — Executor-binding terminal vs whole-task lifecycle](../protocols/TASK_PROTOCOL.md#executor-binding-terminal-vs-whole-task-lifecycle)",
-        "[Task Protocol — Phase-specific capability preflight](../protocols/TASK_PROTOCOL.md#phase-specific-capability-preflight)",
-        "[Task Protocol — Consequence-based execution guards](../protocols/TASK_PROTOCOL.md#consequence-based-execution-guards)",
-        "[Task Protocol — GitHub/local drift](../protocols/TASK_PROTOCOL.md#githublocal-drift)",
-        "[Task Protocol — Local Hygiene Contract](../protocols/TASK_PROTOCOL.md#local-hygiene-contract)",
-        "[Task Protocol — Protocol-v3 candidate/report publication closure](../protocols/TASK_PROTOCOL.md#protocol-v3-candidatereport-publication-closure)",
-        "[Foundation Architecture — Target repository product authority](../contracts/FOUNDATION_ARCHITECTURE.md#target-repository-product-authority)",
-        "[Foundation Architecture — Capability control](../contracts/FOUNDATION_ARCHITECTURE.md#capability-control)",
-        "[Foundation Architecture — Execution surface and publication control](../contracts/FOUNDATION_ARCHITECTURE.md#execution-surface-and-publication-control)",
-        "[Implementation Report — Ownership and commit identity](../contracts/IMPLEMENTATION_REPORT.md#ownership-and-commit-identity)",
-        "[Implementation Report — Required evidence](../contracts/IMPLEMENTATION_REPORT.md#required-evidence)",
-        "[Implementation Report — Backward-compatible operational timing evidence](../contracts/IMPLEMENTATION_REPORT.md#backward-compatible-operational-timing-evidence)",
-        "[Execution Continuity — Execution Slice](../contracts/EXECUTION_CONTINUITY.md#execution-slice)",
-        "[Execution Continuity — Optional performance attribution](../contracts/EXECUTION_CONTINUITY.md#optional-performance-attribution)",
-        "[Execution Continuity — Carrier and long-running execution](../contracts/EXECUTION_CONTINUITY.md#carrier-and-long-running-execution)",
-        "[Execution Continuity — Recovery](../contracts/EXECUTION_CONTINUITY.md#recovery)",
-        "[Executor Engineering HOW — Repository construction and acquisition](references/ENGINEERING_HOW.md#repository-construction-and-acquisition)",
-        "[Executor Engineering HOW — Process/resource ownership boundary](references/ENGINEERING_HOW.md#processresource-ownership-boundary)",
+        "[Capability Router](../.agent/case-router.yaml)",
+        "[active Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md)",
     )
 
     def fixture(self) -> tuple[tempfile.TemporaryDirectory[str], Path]:
@@ -5081,8 +4950,8 @@ class Task0028ExecutorKernelReductionTests(unittest.TestCase):
 
     def test_required_owner_links_are_explicit_and_focused(self) -> None:
         executor = (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("## Owner map and read triggers", executor)
-        self.assertIn("| Need | Existing owner / section | Read trigger |", executor)
+        self.assertIn("## Local-first sequence", executor)
+        self.assertIn("## Task-bound compatibility", executor)
         for link in self.REQUIRED_OWNER_LINKS:
             self.assertIn(link, executor)
 
@@ -5094,18 +4963,18 @@ class Task0028ExecutorKernelReductionTests(unittest.TestCase):
         path.write_text(text.replace(link, "Task Protocol core binding owner", 1), encoding="utf-8")
         result = self.run_validator(root)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("missing required Executor owner reference", result.stdout + result.stderr)
+        self.assertIn("missing active owner reference", result.stdout + result.stderr)
 
     def test_validator_rejects_misdirected_required_executor_owner_link(self) -> None:
         _, root = self.fixture()
         path = root / "executor" / "SKILL.md"
         text = path.read_text(encoding="utf-8")
-        link = self.REQUIRED_OWNER_LINKS[11]
-        wrong = "[Implementation Report — Ownership and commit identity](../protocols/TASK_PROTOCOL.md#ownership-and-commit-identity)"
+        link = self.REQUIRED_OWNER_LINKS[1]
+        wrong = "[active Foundation Architecture](../protocols/TASK_PROTOCOL.md#core-bindings)"
         path.write_text(text.replace(link, wrong), encoding="utf-8")
         result = self.run_validator(root)
         self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("missing required Executor owner reference", result.stdout + result.stderr)
+        self.assertIn("missing active owner reference", result.stdout + result.stderr)
 
 
 if __name__ == "__main__":

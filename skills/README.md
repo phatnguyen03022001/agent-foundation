@@ -1,3 +1,5 @@
+> **Active workflow:** [Capability Router](.agent/case-router.yaml) → [Foundation Architecture](contracts/FOUNDATION_ARCHITECTURE.md) → one bounded specialist. No mandatory Architect or YAML artifacts for routine work. The protocol-v3 model below remains available for historical artifacts and explicit task-bound governance.
+
 # Foundation skills
 
 A deliberately curated library of reusable internal agent skills plus deterministic contracts, templates, and protocols for software engineering across repositories. The active internal taxonomy is derived from [`.agent/rationalization.json`](.agent/rationalization.json).

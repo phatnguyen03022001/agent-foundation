@@ -207,74 +207,18 @@ class ExternalCapabilitySyncTests(unittest.TestCase):
         return catalog
 
     def test_foundation_routes_generic_how_target_then_ecc_without_authority_transfer(self) -> None:
-        architecture = (
-            ROOT / "skills" / "contracts" / "FOUNDATION_ARCHITECTURE.md"
-        ).read_text(encoding="utf-8")
-        architect = (ROOT / "skills" / "architect" / "SKILL.md").read_text(encoding="utf-8")
-        executor = (ROOT / "skills" / "executor" / "SKILL.md").read_text(encoding="utf-8")
-
-        ordered = [
-            "exact target-repository truth and repo-native conventions;",
-            "the exact-pinned ECC harness source",
-            "another independently admitted exact external capability",
-            "Foundation-internal generic implementation",
-        ]
-        positions = [architecture.index(token) for token in ordered]
-        self.assertEqual(positions, sorted(positions))
-        self.assertIn("ECC is a reusable L2 harness source, never L0 authority", architecture)
-        self.assertIn(
-            "only when ECC is materially insufficient or inapplicable;",
-            architecture,
-        )
-        self.assertIn(
-            "Load only the minimum relevant surface for the current task.",
-            architecture,
-        )
-        self.assertIn(
-            "are never activated merely because ECC is indexed or selected.",
-            architecture,
-        )
-        self.assertIn("The ECC CLI is an optional resolution convenience", architecture)
-        self.assertIn(
-            "no global install, update, repair, or configuration is required.",
-            architecture,
-        )
-        self.assertIn("Matt skills, Superpowers, and Awesome retain", architecture)
-
-        capability_owner = (
-            "[Foundation Architecture — Capability control]"
-            "(../contracts/FOUNDATION_ARCHITECTURE.md#capability-control)"
-        )
-        self.assertIn(capability_owner, architect)
-        self.assertIn(
-            "after target truth is known and before loading reusable HOW",
-            architect,
-        )
-        self.assertIn(
-            "Exact-pinned ECC generic HOW is preferred after target-native conventions; "
-            "another exact admitted capability is justified only for a material gap.",
-            architect,
-        )
-        self.assertIn("ECC supplies reusable HOW, never authority.", architect)
-
-        self.assertIn(capability_owner, executor)
-        self.assertIn(
-            "after target truth establishes a material need",
-            executor,
-        )
-        self.assertIn(
-            "load only the minimum exact-pinned capability",
-            executor,
-        )
-        self.assertIn(
-            "Exact-pinned ECC is default generic HOW after repo-native conventions; "
-            "another admitted capability requires a material ECC gap.",
-            executor,
-        )
-        self.assertIn(
-            "Never install/update/repair/configure ECC merely for routing.",
-            executor,
-        )
+        architecture = (ROOT / "skills/contracts/FOUNDATION_ARCHITECTURE.md").read_text(encoding="utf-8")
+        architect = (ROOT / "skills/architect/SKILL.md").read_text(encoding="utf-8")
+        executor = (ROOT / "skills/executor/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("explicitly bound target owns product truth", architecture)
+        self.assertIn("Local ECC checkout", architecture)
+        self.assertIn("read-only generic HOW", architecture)
+        self.assertIn("ECC skill can enlarge it", architecture)
+        self.assertIn("No duplicate Foundation engineering HOW", architecture)
+        self.assertIn("ECC installer", architecture)
+        self.assertIn("ECC `intent-driven-development`", architect)
+        self.assertIn("ECC engineering HOW only if needed", executor)
+        self.assertIn("positive, scoped mutation authority", executor)
 
     def test_github_client_adds_authorization_when_environment_token_exists(self) -> None:
         token = "test-token-value"

@@ -1,18 +1,19 @@
 # agent-foundation
 
-`agent-foundation` is the shared physical Git repository and lifecycle boundary for four support domains:
+Minimal governance for ChatGPT's bounded, local-first engineering sessions. MAIN_ONLY; `main` is the sole active branch.
 
-- `profile/` — operator and Architect configuration and bootstrap authority.
-- `skills/` — reusable behavior, task protocol, routing, and work procedure.
-- `documents/` — documentation model and closure semantics.
-- `standards/` — engineering assurance and evidence semantics.
+```text
+Request → Capability Router → Target + authority check → Target-native context
+→ Optional ECC specialist HOW → Local implementation/verification
+→ Local commit (authorized) → Fresh remote check → Push (authorized)
+```
 
-Semantic ownership remains separated across those subtrees. `agent-runtime` remains a separate execution product.
+- [Active Foundation Architecture](skills/contracts/FOUNDATION_ARCHITECTURE.md) — binding, authority, assurance, local/remote distinctions.
+- [Case Router](skills/.agent/case-router.yaml) — intent to specialist navigation, **authority NONE**.
+- [Implementer](skills/executor/SKILL.md) / [Architect](skills/architect/SKILL.md) — optional specialist entrypoints.
+- [Task Protocol](skills/protocols/TASK_PROTOCOL.md) — historical protocol-v3 contract, used only for explicit task-bound/external governance work.
+- [Bootstrap](profile/.agent/bootstrap/bootstrap.json) — thin entrypoint. [Profile](profile/ARCHITECT_PROFILE.md) is optional operator preference, not authority.
 
-Foundation governance is organized by the canonical [three-layer architecture](skills/contracts/FOUNDATION_ARCHITECTURE.md): L0 Governance Kernel, L1 Control and Continuity, and L2 Capability and Knowledge. `agent-runtime`, GitHub, MCP, and native tools are orthogonal substrates rather than additional layers.
+The target repository owns product knowledge, design, commands, tests and durable decisions. `documents/`, `standards/` and `product-state.json` describe optional *Foundation-as-target* models, not generic prerequisites for a new chat.
 
-When this repository is itself the target product, its semantic capability, shared/platform/composition, dependency, cross-cutting, telemetry, and extraction boundaries are owned separately by [Agent Foundation Product Architecture Boundaries](skills/contracts/AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md). The reference architecture is filename-neutral and does not require reorganizing the four physical domains. Current target-owned product scope, feature identity/registry, and release-scope truth are owned separately by [Agent Foundation Product State](skills/contracts/AGENT_FOUNDATION_PRODUCT_STATE.md) and [`product-state.json`](product-state.json).
-
-GitHub `main` is canonical and this repository is `MAIN_ONLY`. Historical source commits are intentionally retained in the ancestry of `main`.
-
-TASK-0001 established physical consolidation and history continuity. TASK-0002 established the Foundation self-identity / `MAIN_ONLY` bootstrap contract at [`profile/.agent/bootstrap/bootstrap.json`](profile/.agent/bootstrap/bootstrap.json). TASK-0003 established the historical support-authority lineage. The active bootstrap now resolves the `skills/`, `standards/`, `documents/`, and `profile/` domains from one exact `agent-foundation` authority-set revision; semantic ownership remains path/domain-specific rather than revision-specific. Historical generated planning snapshots retain authority `NONE` and do not select current internal revisions. `agent-runtime` remains a separate external execution authority. Consolidation is complete: `agent-foundation` is the active canonical support repository; `architect-profile`, `agent-skills`, `agent-documents`, and `agent-standards` are archived/read-only and intentionally retained to preserve historical Git identity and `repo@SHA:path` resolution.
+ECC at `/Users/tienphat/Developer/third-party/ECC` is a read-only engineering-methodology reference, not an installed global agent framework. Agent Runtime is local execution transport. GitHub is authoritative *published* state; the local Git tree is protected *working* state. Historical protocol-v3 task/report/review evidence remains in Git without rewrite or backfill.

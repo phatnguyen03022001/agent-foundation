@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import copy
+import json
 import base64
 import io
 import os
@@ -18,6 +19,10 @@ VALIDATOR = ROOT / "profile" / ".agent" / "bootstrap" / "validate.py"
 PROFILE_REVISION = "707acfea1f749591621751785b87ae792355a0eb"
 
 
+@unittest.skipIf(
+    validate.load_contract(ROOT)[0].get("version") == 2,
+    "archived v1 role/provider contract; active v2 tests run separately",
+)
 class BootstrapContractTests(unittest.TestCase):
     def setUp(self) -> None:
         self.bootstrap, self.lock = validate.load_contract(ROOT)
@@ -907,6 +912,203 @@ class BootstrapContractTests(unittest.TestCase):
         )
         self.assertEqual({route["role"] for route in router["routes"]}, {"architect", "executor"})
         self.assertEqual(router["legacy_aliases"], {"EXECUTE": "TASK_EXECUTION"})
+
+
+
+class ActiveLocalFirstBootstrapTests(unittest.TestCase):
+    """Exercise current v2 against real, isolated local Git working trees."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.bootstrap, cls.lock = validate.load_contract(ROOT)
+        cls.router = validate.parse_case_router(
+            (ROOT / "skills/.agent/case-router.yaml").read_text(encoding="utf-8")
+        )
+
+    def setUp(self):
+        import tempfile
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.repo = Path(self.temp.name) / "demo"
+        self.repo.mkdir()
+        self.git("init", "-q", "-b", "main")
+        self.git("-c", "user.name=Test", "-c", "user.email=test@example.org",
+                 "commit", "-q", "--allow-empty", "-m", "test baseline")
+        self.git("remote", "add", "origin", "https://github.com/sample/demo.git")
+
+    def git(self, *args):
+        done = subprocess.run(["git", *args], cwd=self.repo, text=True,
+                              capture_output=True, check=False)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        return done.stdout.strip()
+
+    def bind(self, intent="READ_ONLY", root=None, repository="sample/demo", branch="main"):
+        return validate.bind_local_target(
+            {"repository": repository, "branch": branch},
+            self.repo if root is None else root,
+            intent, self.bootstrap, self.router,
+        )
+
+    def test_v2_is_minimal_no_model_or_catalog_preload(self):
+        validate.validate_active_contract(self.bootstrap, self.lock)
+        for excluded in ("task_launch", "execution_surfaces", "external_capability_catalog",
+                         "bootstrap_default_topology", "research_request_contract"):
+            self.assertNotIn(excluded, self.bootstrap)
+        self.assertEqual(self.bootstrap["execution"]["models_and_effort"], "RUNTIME_SELECTED")
+        self.assertEqual(validate.required_foundation_paths(self.bootstrap), {
+            "profile/.agent/bootstrap/bootstrap.json",
+            "profile/.agent/bootstrap/authority.lock.json",
+            "skills/.agent/case-router.yaml",
+            "skills/contracts/FOUNDATION_ARCHITECTURE.md",
+        })
+        self.assertNotIn("standards/STANDARD_MODEL.md", validate.required_foundation_paths(self.bootstrap))
+        self.assertNotIn("documents/DOCUMENT_MODEL.md", validate.required_foundation_paths(self.bootstrap))
+
+    def test_active_router_is_strict_static_and_non_authoritative(self):
+        self.assertEqual(self.router, validate.EXPECTED_CASE_ROUTER)
+        self.assertEqual(self.router["authority"], "NONE")
+        self.assertEqual(len(self.router["routes"]), 7)
+        self.assertNotIn("role", self.router["routes"][0])
+
+    def test_read_only_fresh_chat_requires_no_architect(self):
+        data = self.bind()
+        self.assertEqual(data["route"], "READ_ONLY")
+        self.assertEqual(data["specialist"], "researcher")
+        self.assertEqual(data["authority"], "NONE")
+        self.assertFalse(data["remote_checked"])
+        self.assertEqual([x["capability"] for x in data["capabilities"]], ["executor"])
+
+    def test_missing_intent_defaults_safe_read_only_never_design_authority(self):
+        selected = validate.select_semantic_route(self.router, None)
+        self.assertEqual(selected["route"]["id"], "READ_ONLY")
+        self.assertEqual(selected["disposition"], "SAFE_READ_ONLY_DEFAULT")
+
+    def test_unknown_intent_fails_closed(self):
+        with self.assertRaisesRegex(ValueError, "unknown case"):
+            self.bind("UNRECOGNIZED")
+
+    def test_small_implementation_is_direct_with_no_granted_write_authority(self):
+        data = self.bind("IMPLEMENT")
+        self.assertEqual(data["specialist"], "implementer")
+        self.assertEqual(data["authority"], "NONE")
+        self.assertNotIn("architect", [r["capability"] for r in data["capabilities"]])
+        self.assertNotIn("task_protocol", [r["capability"] for r in data["capabilities"]])
+
+    def test_fullstack_design_routes_to_optional_architect(self):
+        data = self.bind("DESIGN")
+        self.assertEqual(data["specialist"], "architect")
+        self.assertEqual(data["authority"], "NONE")
+        # No new session is required to reselect an implementation capability.
+        self.assertEqual(self.bind("IMPLEMENT")["specialist"], "implementer")
+
+    def test_security_sensitive_path_is_advisory_not_mutation_grant(self):
+        data = self.bind("SECURITY")
+        self.assertEqual(data["specialist"], "security_reviewer")
+        self.assertEqual(data["capabilities"][0]["capability"], "security_review")
+        self.assertEqual(data["authority"], "NONE")
+
+    def test_review_is_not_automatically_independent(self):
+        data = self.bind("REVIEW")
+        self.assertEqual(data["specialist"], "reviewer")
+        self.assertNotIn("independent_review", data)
+        self.assertEqual(data["authority"], "NONE")
+
+    def test_untracked_operator_work_is_visible_and_not_overwritten(self):
+        path = self.repo / "keep.txt"
+        path.write_text("operator-owned", encoding="utf-8")
+        before = self.git("status", "--porcelain=v1", "-uall")
+        data = self.bind("IMPLEMENT")
+        self.assertTrue(data["dirty"])
+        self.assertTrue(any("keep.txt" in s for s in data["changes"]))
+        self.assertEqual(path.read_text(encoding="utf-8"), "operator-owned")
+        self.assertEqual(before, self.git("status", "--porcelain=v1", "-uall"))
+
+    def test_remote_divergence_is_not_auto_reconciled_during_binding(self):
+        self.git("update-ref", "refs/remotes/origin/main", self.git("rev-parse", "HEAD"))
+        self.git("-c", "user.name=Test", "-c", "user.email=test@example.org",
+                 "commit", "--allow-empty", "-q", "-m", "local ahead")
+        data = self.bind("IMPLEMENT")
+        self.assertFalse(data["remote_checked"])
+        self.assertEqual(data["head"], self.git("rev-parse", "HEAD"))
+        self.assertNotEqual(data["head"], self.git("rev-parse", "refs/remotes/origin/main"))
+
+    def test_wrong_origin_or_target_ref_blocks_before_mutation(self):
+        with self.assertRaisesRegex(ValueError, "canonical origin mismatch"):
+            self.bind(repository="sample/demo2")
+        with self.assertRaisesRegex(ValueError, "branch mismatch"):
+            self.bind(branch="dev")
+        with self.assertRaisesRegex(ValueError, "canonical origin mismatch"):
+            self.bind(repository="sample/other")
+
+    def test_incorrect_remote_is_not_assumed_from_directory(self):
+        self.git("remote", "set-url", "origin", "https://github.com/another/demo.git")
+        with self.assertRaisesRegex(ValueError, "canonical origin mismatch"):
+            self.bind()
+
+    def test_unauthorized_release_or_destructive_effect_never_granted(self):
+        data = self.bind("RELEASE")
+        self.assertEqual(data["specialist"], "release_operator")
+        self.assertEqual(data["authority"], "NONE")
+        self.assertNotIn("push_authorized", data)
+        self.assertNotIn("destructive_authority", data)
+
+    def test_interrupted_unknown_effect_requires_reconciliation(self):
+        contract = (ROOT / "skills/contracts/EXECUTION_CONTINUITY.md").read_text(encoding="utf-8")
+        self.assertIn("OUTCOME_UNKNOWN` never authorizes blind retry", contract)
+        self.assertIn("OUTCOME_UNKNOWN", contract)
+        self.assertFalse(self.bind("IMPLEMENT")["remote_checked"])
+
+    def test_explicit_legacy_task_does_not_change_protocol_v3_bytes(self):
+        data = self.bind("EXECUTE")
+        self.assertEqual(data["route"], "LEGACY_TASK")
+        self.assertIn("task_protocol", [x["capability"] for x in data["capabilities"]])
+        old_router = subprocess.run(
+            ["git", "show", "2759fe71798244b4747dd70957f0d22f2528e36f:skills/.agent/case-router.yaml"],
+            cwd=ROOT, capture_output=True, text=True, check=True,
+        ).stdout
+        old = validate.parse_case_router(old_router)
+        validate.validate_case_router(old)
+        self.assertEqual(validate.select_semantic_route(old, "EXECUTE")["route"]["id"], "TASK_EXECUTION")
+        self.assertTrue((ROOT / ".agent/tasks/TASK-0034/task.yaml").exists())
+
+    def test_tampered_active_bootstrap_and_router_are_rejected(self):
+        corrupt = copy.deepcopy(self.bootstrap)
+        corrupt["target_binding"]["one_writer"] = False
+        with self.assertRaisesRegex(ValueError, "local target binding"):
+            validate.validate_active_contract(corrupt, self.lock)
+        corrupt = copy.deepcopy(self.bootstrap)
+        corrupt["execution"]["remote_publication"] = "AUTO"
+        with self.assertRaisesRegex(ValueError, "local-first"):
+            validate.validate_active_contract(corrupt, self.lock)
+        malformed = copy.deepcopy(self.router)
+        malformed["routes"][1]["capabilities"] = ["architect"]
+        with self.assertRaisesRegex(ValueError, "unauthorized Case Router semantics"):
+            validate.validate_case_router(malformed)
+
+    def test_reconstruct_entry_context_uses_local_without_remote_fetch(self):
+        with patch.object(validate, "resolve_target_branch", side_effect=AssertionError("network accessed")):
+            value = validate.reconstruct_entry_context(
+                ROOT, "2759fe71798244b4747dd70957f0d22f2528e36f",
+                {"repository": "sample/demo", "branch": "main"},
+                "new-user-request", "IMPLEMENT", {}, local_target_root=self.repo,
+            )
+        self.assertEqual(value["route"], "IMPLEMENT")
+        self.assertFalse(value["remote_checked"])
+
+    def test_active_local_entry_requires_current_request(self):
+        with self.assertRaisesRegex(ValueError, "current request identity"):
+            validate.reconstruct_entry_context(
+                ROOT, "2759fe71798244b4747dd70957f0d22f2528e36f",
+                {"repository": "sample/demo", "branch": "main"},
+                None, "IMPLEMENT", {}, local_target_root=self.repo,
+            )
+        with self.assertRaisesRegex(ValueError, "local target root"):
+            validate.reconstruct_entry_context(
+                ROOT, "2759fe71798244b4747dd70957f0d22f2528e36f",
+                {"repository": "sample/demo", "branch": "main"},
+                "request", "IMPLEMENT", {},
+            )
+
 
 
 if __name__ == "__main__":

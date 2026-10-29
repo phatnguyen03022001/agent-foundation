@@ -100,13 +100,14 @@ class ResearchFanoutTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "exactly three"):
                 research.render_three(paths[:2])
 
-    def test_repository_role_contract_stays_two_role_and_architect_synthesized(self) -> None:
+    def test_repository_specialists_are_optional_and_research_is_non_authoritative(self) -> None:
         architecture = (ROOT / "contracts" / "FOUNDATION_ARCHITECTURE.md").read_text(encoding="utf-8")
         protocol = (ROOT / "protocols" / "TASK_PROTOCOL.md").read_text(encoding="utf-8")
-        self.assertIn("exactly two organizational roles: Architect and Executor", architecture)
-        self.assertIn("Researcher", architecture)
-        self.assertIn("Executor specializations", protocol)
-        self.assertNotIn("Researcher role", architecture)
+        self.assertIn("Specialists are optional", architecture)
+        self.assertIn("Researcher (READ_ONLY)", architecture)
+        self.assertIn("A single session may activate several sequentially", architecture)
+        self.assertIn("protocol-v3 section below is historical compatibility", protocol)
+        self.assertNotIn("exactly two organizational roles: Architect and Executor", architecture)
 
 
 if __name__ == "__main__":

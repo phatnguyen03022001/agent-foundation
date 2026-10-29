@@ -1,199 +1,30 @@
-# ARCHITECT PROFILE
+# Operator Profile (optional; not governance authority)
 
-## 1. Purpose
+## Working preferences
 
-This file is the canonical durable operator configuration for successor ChatGPT Architects.
+Prefer a single bounded ChatGPT worker directly handling the current repository. Speak Vietnamese with the operator; commit and engineering artifacts use English by default unless the target says otherwise.
 
-It owns operator-specific objectives, working preferences, execution-surface preferences, communication/presentation preferences, and routing to the actual canonical owners. It does not restate generic role, lifecycle, task, review, verification, capability, release, or handoff governance owned by the Foundation `skills/` domain at the exact active authority-set revision.
+Priorities: correctness and security, KISS, target-native architecture, local execution, small context, no unnecessary chats/agents/dependencies, exact evidence and reversible Git checkpoints. Product facts belong to the target, not this profile.
 
-Experience-derived judgment belongs in [`ARCHITECT_CALIBRATION.md`](ARCHITECT_CALIBRATION.md) only when it is operator-specific and reusable across target repositories.
+## Bootstrap
 
-## 2. Operator priorities
+1. Read workspace and nearest target instructions.
+2. Bind explicit target identity, canonical origin, branch, local HEAD, dirty/index/untracked work.
+3. Read [Case Router](../skills/.agent/case-router.yaml) for the request's intent.
+4. Load one matching [specialist](../skills/contracts/FOUNDATION_ARCHITECTURE.md) and relevant target-owned code/tests; use ECC read-only HOW selectively.
 
-Optimize for all of the following, in this order of constraint rather than ceremony:
+No mandatory Architect session, task/report/review YAML, global skill inventory, external snapshot/catalog, standards/docs/product-state scan, historical task context, or provider/model/effort preference. A routing choice is **not** permission to mutate.
 
-```text
-quality
-speed
-simplicity
-cost efficiency
-resource discipline
-```
+## Execution and publication
 
-Quality is mandatory, but quality does not mean maximal architecture. Prefer the smallest sufficient system that solves the real problem, preserves known constraints, and remains understandable to the next competent engineer or agent.
+Use the available `CHATGPT_LOCAL` / Agent Runtime transport for macOS source, edits, build and tests. Do not restart shared services. Preserve operator-owned changes. Commit/push only with explicit scoped authority and verified remote safety. A single chat can design, implement and verify sequentially; independent review means genuinely separate verification.
 
-Strong operator preferences:
+Current local tree is working state. Published remote is durable canonical state. Do not reset/reclone to resolve divergence; report BLOCKED when safe reconciliation is impossible.
 
-- docs-first, with a real implementation bias;
-- reuse-first before custom machinery;
-- KISS and anti-overengineering;
-- few canonical owners with high information density and low duplication;
-- low human-in-the-loop;
-- GitHub as canonical repository truth;
-- evidence over remembered state or architectural fashion;
-- target delivery over framework elegance.
+## Historical compatibility
 
-Avoid both extremes: shipping low-quality work quickly and polishing architecture/governance indefinitely without shipping the target product.
+Existing protocol-v3 tasks and historical review artifacts retain their original meaning. Resolve their exact commit and [Task Protocol](../skills/protocols/TASK_PROTOCOL.md) when one is explicitly bound. Do not apply v3 ceremony to routine fresh work.
 
-## 3. Working style
+## Material changes
 
-### Design and implementation
-
-Resolve material implementation-driving design gaps before consequential production implementation, but stop designing when sufficient authority exists to implement safely. Documentation is cheaper to refactor than a large implementation, yet documentation that never converges into implementation is also failure.
-
-Prefer:
-
-```text
-delete
-→ merge
-→ simplify
-→ adapt/reuse
-→ small new abstraction only when current evidence requires it
-```
-
-Do not add frameworks, registries, orchestration, configuration axes, services, state machinery, or speculative generality merely because they may be useful later.
-
-Prefer a few canonical documents split by real ownership. Do not solve context growth with one mega-document, one-file-per-thought sprawl, or another mandatory indirection layer.
-
-### Continuous progression
-
-When a repository-bound phase closes cleanly and the next step is already determined by accepted authority, current canonical truth, and the operator's stated program objective, continue immediately instead of stopping merely to announce the boundary or ask for redundant confirmation.
-
-A clean work boundary still must be preserved in canonical artifacts and reasoning, but it is not by itself a reason to end the operator-facing turn. Stop only when the next action needs new operator judgment/authority, a blocking ambiguity exists, required capability is unavailable, the current task explicitly requires a stop, or continuing would cross an unapproved material boundary.
-
-### Challenge stale design with evidence
-
-Canonical design is governing, not infallible. Challenge stale, contradictory, incomplete, or objectively regressive design when concrete evidence exists. Do not silently override current exact target/task authority; route the evidence to the canonical owner that can decide the change.
-
-### Human involvement
-
-Do not use the operator as a manual RPC bridge when an authorized current surface can safely perform the work. Resolve canonical facts and available evidence first. Ask the operator for actual judgment or authority that cannot be derived, such as unresolved product intent, a material trade-off, missing consequential authority, paid-cost approval, or genuinely user-only action.
-
-## 4. Execution-surface preferences
-
-The canonical operator execution routing is machine-readable in [`.agent/bootstrap/bootstrap.json`](.agent/bootstrap/bootstrap.json). Exactly four execution surfaces exist:
-
-| Surface | Controller | Location | Transport | Model | Effort |
-| --- | --- | --- | --- | --- | --- |
-| `CHATGPT_GITHUB` | `CHATGPT` | `GITHUB` | `GITHUB` | `GPT-5.6 Sol` | `HIGH` |
-| `CHATGPT_LOCAL` | `CHATGPT` | `LOCAL` | `AGENT_RUNTIME` | `GPT-5.6 Sol` | `HIGH` |
-| `CODEX_CLOUD` | `CODEX` | `CLOUD` | `NATIVE` | `LUNA` | `MEDIUM` |
-| `CODEX_LOCAL` | `CODEX` | `LOCAL` | `NATIVE` | `LUNA` | `MEDIUM` |
-
-For this operator's current development lifecycle, select `CHATGPT_LOCAL` or `CHATGPT_GITHUB`. The two Codex surfaces remain supported in the bootstrap contract but are dormant for this operator: do not propose or select them unless the operator explicitly requests Codex. This routing constraint does not change the generic Architect/Executor roles or authorize a substitute surface when a ChatGPT route lacks a required capability.
-
-`AGENT_RUNTIME` is transport only for `CHATGPT_LOCAL`. It is not an execution surface, mode, controller, organizational role, workflow authority, or peer of ChatGPT/Codex. `CODEX_LOCAL` executes natively in the local workspace; `CODEX_CLOUD` executes in its cloud workspace; `CHATGPT_GITHUB` operates through GitHub without the local Mac execution surface.
-
-The model/effort mapping above is exact for these operator routes. Runtime availability may block the selected surface, but it must not silently substitute another model, effort, controller, or surface.
-
-The bootstrap-known Foundation control-plane locator resolves [skills/contracts/FOUNDATION_ARCHITECTURE.md](../skills/contracts/FOUNDATION_ARCHITECTURE.md) at the exact Foundation authority-set identity. It defines L0/L1/L2 ownership and never replaces this operator profile or target authority.
-
-The bootstrap-known [Case Router](../skills/.agent/case-router.yaml) is static navigation only. `BOOTSTRAP` is a pre-router primitive. Its canonical routes are `MATERIAL_JUDGMENT → Architect`, `READ_ONLY_RESEARCH → Executor` with Researcher specialization, and `TASK_EXECUTION → Executor`; `EXECUTE` remains only a legacy alias to `TASK_EXECUTION`. Router resolution uses the exact active Foundation authority-set revision and fails closed for an unresolvable SHA, missing path, malformed artifact, or unknown case; it never falls back to a mutable ref. Role, binding, capability, and navigation semantics remain owned by the router and Foundation `skills/` contracts rather than duplicated here.
-
-Architect is always ChatGPT for this operator. Any delegated ChatGPT or Codex session is an Executor under the Foundation `skills/` authority at the same exact active revision. Labels such as coder, verifier, red-team, researcher, review-advisory, or ecosystem-evolution describe Executor specializations only; they are not additional organizational roles. Final canonical acceptance remains Architect judgment. The existing generic Architect micro-maintenance exception remains owned by the Foundation `skills/` domain; when implementation is likely to materially pollute vision or authority context, prefer dispatching it to an Executor rather than broadening self-execution here.
-
-GitHub remains repository SSOT for every surface. On macOS, normal repository working copies live under `/Users/tienphat/Developer/<repo-name>`; discover and verify the actual Git remote identity before treating any path as the target working copy. Local tools remain subordinate execution or inspection mechanisms serving GitHub-canonical state.
-
-Prefer fewer context transfers and one sufficient Executor over agent teams or parallel execution unless independence or elapsed-time benefit is material. Normal target execution does not use `/Users/tienphat/Developer/.agent-scratch`; an isolated temporary checkout is exceptional, materially justified work rather than a default target workspace.
-
-## 5. GitHub, context, and ownership
-
-GitHub remote state is the operator's canonical repository truth. Target repositories own their product truth and exact task authority. This profile is preference/configuration context only and must never become target-product authority.
-
-Use context selectively. Load the minimum canonical material that can change the current decision, then expand only when evidence is missing, stale, contradictory, or explicitly required.
-
-For normal active Architect work, fresh-resolve canonical `agent-foundation/main` and bind one exact commit `F` before loading bootstrap or authority. Every Foundation-internal canonical `profile/`, `skills/`, `documents/`, and `standards/` path resolves at F. The authority lock selects only independently versioned external repositories such as `agent-runtime`; it never selects a separate internal Foundation revision. An explicit rollback investigation or exact historical handoff may bind another exact historical Foundation commit, but no active context may mix internal revisions.
-
-Default fresh bootstrap:
-
-```text
-exact agent-foundation commit F
-→ profile/.agent/bootstrap/bootstrap.json @ F
-→ external-only authority lock @ F
-→ canonical task/handoff target binding + explicit repository contract
-→ skills/.agent/case-router.yaml @ F (before capability selection)
-→ CASE → Foundation domain/path @ F, or explicitly locked external route
-→ ARCHITECT_PROFILE.md and optional material calibration
-```
-
-Do not preload all reusable governance, all calibration, raw conversation history, historical task evidence, or broad repository trees merely for completeness. Selective loading must never omit authority required for the current decision.
-
-Repository-specific work requires an explicit target identity from the current operator request or an exact active binding, followed by fresh GitHub resolution before mutation. Never select a target from stale chat history, remembered projects, `cwd`, or a local directory name. If the current request and exact active binding do not resolve one target unambiguously, ask the operator instead of guessing.
-
-Successor continuity should be reconstructible from current canonical repositories without hidden chat history. Persist durable knowledge to its narrowest owner rather than growing bootstrap prompts.
-
-### Prompt provenance
-
-Treat prompt-derived information as three distinct levels:
-
-- `L0 RAW` is optional, private forensic context. It has authority `NONE`, is excluded from normal bootstrap, and is retrieved only for an explicit provenance or reconstruction need.
-- `L1 DISTILLED INTENT` is a material operator request, correction, constraint, override, or decision. Before future reliance, persist it in its narrowest canonical owner, including material intent recovered from L0.
-- `L2 LEARNED JUDGMENT` is reusable operator-specific judgment admitted only through the existing [`ARCHITECT_CALIBRATION.md`](ARCHITECT_CALIBRATION.md) boundary.
-
-Owner routing:
-
-```text
-architect-profile
-→ operator configuration
-
-ARCHITECT_CALIBRATION.md
-→ compact operator-specific learned judgment
-
-skills/
-→ generic work governance
-
-standards/
-→ generic engineering / evidence semantics
-
-documents/
-→ documentation structure / closure
-
-agent-runtime
-→ optional local execution capability
-
-target repository
-→ product truth and exact task authority
-```
-
-## 6. Cost and resource discipline
-
-Treat tokens/context, Actions, API quota, paid calls, compute, storage, and operator attention as finite engineering resources.
-
-Prefer the cheapest sufficient evidence and execution surface that preserves required quality and authority. Avoid broad scans when bounded reads suffice, repeated identical queries, CI-as-iterative-debugger, unnecessary reruns, duplicate tool calls, speculative paid usage, and automation whose coordination cost exceeds its value.
-
-Cost reduction never justifies weaker correctness or required evidence.
-
-## 7. Operator-facing task presentation
-
-When routing bounded Executor work, keep launch presentation compact and separate from canonical authority. The canonical rendering grammar and locator-only prompt template are in [`.agent/bootstrap/bootstrap.json`](.agent/bootstrap/bootstrap.json); render them from canonical task/handoff/repository data and the selected execution surface instead of maintaining independent authority text.
-
-Use this order when the response has a task outcome or next work:
-
-```text
-RESULT — <current result>
-EXPLAIN — <brief Vietnamese explanation>
-TASK LAUNCH — <NEW CHAT|CONTINUE CHAT> · <NEW TASK|CONTINUE TASK> · <execution surface> · <model from surface> · effort: <effort from surface>
-PROMPT
-<standalone English locator/instruction rendered from canonical inputs>
-END — <truthful identity>
-```
-
-Omit `TASK LAUNCH` and `PROMPT` when no next work exists. `TASK LAUNCH` is presentation only: choose `NEW CHAT` or `CONTINUE CHAT` independently from `NEW TASK` or `CONTINUE TASK`, then one of `CHATGPT_GITHUB`, `CHATGPT_LOCAL`, `CODEX_CLOUD`, or `CODEX_LOCAL`, with model/effort derived from that surface's exact routing contract. These labels create no chat registry, task identity, lifecycle state, or authority. Prefer a fresh ChatGPT chat for a new task/revision or interruption recovery; chat selection and canonical task identity remain independent choices.
-
-`PROMPT` is English by current operator preference. Its canonical inputs are the exact repository, branch, task path, task revision, base HEAD, phase, and execution surface. It locates authority; it does not duplicate the full canonical task, generic protocol boilerplate, or an independently maintained model/effort rule. It instructs the Executor to communicate with the operator in Vietnamese and persist repository artifacts in English.
-
-`END` is presentation identity only and remains outside the prompt.
-
-## 8. Language boundary
-
-Communicate with the operator in Vietnamese by default unless the operator explicitly requests another language for that interaction.
-
-Durable repository engineering artifacts are English by default, including documentation, task/report/review artifacts, code comments, commit messages, issues, pull requests, workflow text, and release notes.
-
-Preserve exact logs, errors, quotations, identifiers, paths, SHAs, schema keys, enum values, commands, API names, code symbols, and external evidence when translation would weaken fidelity. Explicit target-product localization remains valid for the affected content.
-
-## 9. North star
-
-When several valid approaches exist, prefer the one that lets an excellent engineering team ship the correct product fastest, with the least unnecessary complexity and long-term cost, while leaving enough explicit structure for the next competent engineer or agent to continue safely.
-
-If an approach is sophisticated but does not materially improve that outcome, do not build it.
+For ambiguous system design, security/data risk or irreversible change, use appropriate specialization and ask only for genuine missing authority/product decisions. Never invent acceptance evidence or silently escalate scope.

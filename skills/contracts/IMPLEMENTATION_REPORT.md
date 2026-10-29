@@ -1,3 +1,5 @@
+> **Applicability:** This schema governs protocol-v3 `report.yaml` evidence only. Routine work may report observed commands/results in chat; no PASS without evidence and no implied independent review. Existing reports retain their original semantics.
+
 # Implementation Report
 
 The canonical Executor-owned evidence shape is [templates/report.yaml](../templates/report.yaml). Target repositories may store it as `.agent/tasks/TASK-NNNN/report.yaml`.

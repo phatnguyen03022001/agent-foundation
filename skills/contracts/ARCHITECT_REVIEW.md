@@ -1,3 +1,5 @@
+> **Applicability:** This is the protocol-v3 `review.yaml` and Architect-owned legacy review contract. New direct work does not automatically require a separate Architect or review artifact. If genuinely independent review is required, it must come from an independent reviewer; no session can self-attest independence.
+
 # Architect Review
 
 The canonical Architect-owned review shape is [templates/review.yaml](../templates/review.yaml). For canonical task reviews governed by the current forward-looking durable-review semantics, the final governing Architect judgment is persisted in the target repository as `.agent/tasks/<TASK-ID>/review.yaml`. Legacy protocol-v3 history may legitimately lack this artifact; absence in such history is ambiguous and does not prove acceptance, rejection, or lack of review.

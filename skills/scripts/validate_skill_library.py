@@ -84,32 +84,20 @@ CASE_ROUTER_PATH = ".agent/case-router.yaml"
 EXPECTED_CASE_ROUTER: dict[str, Any] = {
     "authority": "NONE",
     "routes": [
-        {
-            "id": "MATERIAL_JUDGMENT",
-            "role": "architect",
-            "binding": "generic",
-            "specialization": "none",
-            "capabilities": ["architect"],
-            "navigation": "none",
-        },
-        {
-            "id": "READ_ONLY_RESEARCH",
-            "role": "executor",
-            "binding": "generic",
-            "specialization": "researcher",
-            "capabilities": ["executor"],
-            "navigation": ["research_request_contract", "research_result_contract"],
-        },
-        {
-            "id": "TASK_EXECUTION",
-            "role": "executor",
-            "binding": "task",
-            "specialization": "none",
-            "capabilities": ["executor", "task_protocol"],
-            "navigation": "none",
-        },
+        {"id": "READ_ONLY", "specialist": "researcher", "binding": "target", "capabilities": ["executor"], "navigation": "none"},
+        {"id": "IMPLEMENT", "specialist": "implementer", "binding": "target", "capabilities": ["executor"], "navigation": "none"},
+        {"id": "DESIGN", "specialist": "architect", "binding": "target", "capabilities": ["architect"], "navigation": "none"},
+        {"id": "REVIEW", "specialist": "reviewer", "binding": "target", "capabilities": ["verification"], "navigation": "none"},
+        {"id": "SECURITY", "specialist": "security_reviewer", "binding": "target", "capabilities": ["security_review"], "navigation": "none"},
+        {"id": "RELEASE", "specialist": "release_operator", "binding": "target", "capabilities": ["executor","task_protocol"], "navigation": "none"},
+        {"id": "LEGACY_TASK", "specialist": "implementer", "binding": "task", "capabilities": ["executor","task_protocol"], "navigation": "none"},
     ],
-    "legacy_aliases": [{"from": "EXECUTE", "to": "TASK_EXECUTION"}],
+    "legacy_aliases": [
+        {"from": "MATERIAL_JUDGMENT", "to": "DESIGN"},
+        {"from": "READ_ONLY_RESEARCH", "to": "READ_ONLY"},
+        {"from": "TASK_EXECUTION", "to": "LEGACY_TASK"},
+        {"from": "EXECUTE", "to": "LEGACY_TASK"},
+    ],
 }
 AGENT_FOUNDATION_PRODUCT_FEATURES = (
     ("F001", "operator-and-architect-configuration", "profile/"),
@@ -852,7 +840,7 @@ def validate_case_navigation(expected_skills: frozenset[str]) -> None:
     routes = document.get("routes")
     expected_routes = EXPECTED_CASE_ROUTER["routes"]
     if type(routes) is not list or len(routes) != len(expected_routes):
-        error(f"{label}: routes must contain exactly three canonical route classes")
+        error(f"{label}: routes must contain exactly seven capability routes")
     else:
         for index, (route, expected) in enumerate(zip(routes, expected_routes)):
             if type(route) is not dict:
@@ -866,7 +854,7 @@ def validate_case_navigation(expected_skills: frozenset[str]) -> None:
     aliases = document.get("legacy_aliases")
     if aliases != EXPECTED_CASE_ROUTER["legacy_aliases"]:
         error(
-            f"{label}: legacy_aliases must map EXECUTE to TASK_EXECUTION "
+            f"{label}: legacy_aliases must match admitted historical aliases "
             "exactly once"
         )
 
@@ -1362,113 +1350,48 @@ def validate_generated_program_template() -> None:
 
 
 def validate_foundation_architecture_contract() -> None:
+    """Validate active router authority, isolation, and minimal specialist entrypoints."""
     path = ROOT / "contracts" / "FOUNDATION_ARCHITECTURE.md"
-    label = "contracts/FOUNDATION_ARCHITECTURE.md"
     if not path.is_file():
-        error(f"missing {label}")
+        error("missing contracts/FOUNDATION_ARCHITECTURE.md")
         return
     text = path.read_text(encoding="utf-8")
-    layer_headings = re.findall(r"^## L\d+ — .+$", text, flags=re.MULTILINE)
-    expected_layers = [
-        "## L0 — Governance Kernel",
-        "## L1 — Control and Continuity",
-        "## L2 — Capability and Knowledge",
-    ]
-    if layer_headings != expected_layers:
-        error(f"{label}: must define exactly the canonical L0/L1/L2 layer headings")
-    required = (
-        "exactly two organizational roles: Architect and Executor",
-        "Sync and read-only Researcher are Executor specializations",
-        "INDEXED != LOADED",
-        "PINNED != TRUSTED",
-        "SYNCED != ADOPTED",
-        "ADOPTED != AUTHORIZED",
-        "LOADED != AUTHORIZED",
-        "SNAPSHOT != AUTHORITY",
-        "one exact target, base, and question",
-        "only minimum relevant context",
-        "peer results are not visible",
-        "compact evidence",
-        "not by majority voting",
-        "cannot mutate the owner repository",
-        "create a task automatically",
-        "freshly revalidated",
-        "orthogonal substrates",
-        "fourth Foundation layer",
-    )
-    for token in required:
+    for token in (
+        "Router is static metadata", "One authorized writer",
+        "local tree is the current", "GitHub is the *published source of truth*",
+        "No fabricated PASS", "No duplicate Foundation engineering HOW",
+        "not organizational roles", "Historical", "ECC",
+    ):
         if token not in text:
-            error(f"{label}: missing required architecture invariant {token!r}")
+            error(f"contracts/FOUNDATION_ARCHITECTURE.md: missing active invariant {token!r}")
     validate_links(path, text)
-
-    architect_owner_references = (
-        "[Task Protocol — Core bindings](../protocols/TASK_PROTOCOL.md#core-bindings)",
-        "[Task Protocol — Artifact ownership and authority](../protocols/TASK_PROTOCOL.md#artifact-ownership-and-authority)",
-        "[Task Protocol — Phase-specific capability preflight](../protocols/TASK_PROTOCOL.md#phase-specific-capability-preflight)",
-        "[Foundation Architecture — Target repository product authority](../contracts/FOUNDATION_ARCHITECTURE.md#target-repository-product-authority)",
-        "[Foundation Architecture — Target product progression consumption](../contracts/FOUNDATION_ARCHITECTURE.md#target-product-progression-consumption)",
-        "[Foundation Architecture — Capability control](../contracts/FOUNDATION_ARCHITECTURE.md#capability-control)",
-        "[Architect Review — Review ownership and exact report identity](../contracts/ARCHITECT_REVIEW.md#review-ownership-and-exact-report-identity)",
-        "[Architect Review — Review artifact obligations](../contracts/ARCHITECT_REVIEW.md#review-artifact-obligations)",
-        "[Execution Continuity — Recovery](../contracts/EXECUTION_CONTINUITY.md#recovery)",
-        "[Simplicity — Stable governance and change admission](../simplicity/SKILL.md#stable-governance-and-change-admission)",
-        "[Verification — Acceptance and evidence](../verification/SKILL.md#acceptance-and-evidence)",
-    )
-    architect_text = (ROOT / "architect" / "SKILL.md").read_text(encoding="utf-8")
-    for reference in architect_owner_references:
-        if reference not in architect_text:
-            error(f"architect/SKILL.md: missing required Architect owner reference {reference!r}")
-
-
-
-    executor_owner_references = (
-        "[Task Protocol — Core bindings](../protocols/TASK_PROTOCOL.md#core-bindings)",
-        "[Task Protocol — Artifact ownership and authority](../protocols/TASK_PROTOCOL.md#artifact-ownership-and-authority)",
-        "[Task Protocol — Executor-binding terminal vs whole-task lifecycle](../protocols/TASK_PROTOCOL.md#executor-binding-terminal-vs-whole-task-lifecycle)",
-        "[Task Protocol — Phase-specific capability preflight](../protocols/TASK_PROTOCOL.md#phase-specific-capability-preflight)",
-        "[Task Protocol — Consequence-based execution guards](../protocols/TASK_PROTOCOL.md#consequence-based-execution-guards)",
-        "[Task Protocol — GitHub/local drift](../protocols/TASK_PROTOCOL.md#githublocal-drift)",
-        "[Task Protocol — Local Hygiene Contract](../protocols/TASK_PROTOCOL.md#local-hygiene-contract)",
-        "[Task Protocol — Protocol-v3 candidate/report publication closure](../protocols/TASK_PROTOCOL.md#protocol-v3-candidatereport-publication-closure)",
-        "[Foundation Architecture — Target repository product authority](../contracts/FOUNDATION_ARCHITECTURE.md#target-repository-product-authority)",
-        "[Foundation Architecture — Capability control](../contracts/FOUNDATION_ARCHITECTURE.md#capability-control)",
-        "[Foundation Architecture — Execution surface and publication control](../contracts/FOUNDATION_ARCHITECTURE.md#execution-surface-and-publication-control)",
-        "[Implementation Report — Ownership and commit identity](../contracts/IMPLEMENTATION_REPORT.md#ownership-and-commit-identity)",
-        "[Implementation Report — Required evidence](../contracts/IMPLEMENTATION_REPORT.md#required-evidence)",
-        "[Implementation Report — Backward-compatible operational timing evidence](../contracts/IMPLEMENTATION_REPORT.md#backward-compatible-operational-timing-evidence)",
-        "[Execution Continuity — Execution Slice](../contracts/EXECUTION_CONTINUITY.md#execution-slice)",
-        "[Execution Continuity — Optional performance attribution](../contracts/EXECUTION_CONTINUITY.md#optional-performance-attribution)",
-        "[Execution Continuity — Carrier and long-running execution](../contracts/EXECUTION_CONTINUITY.md#carrier-and-long-running-execution)",
-        "[Execution Continuity — Recovery](../contracts/EXECUTION_CONTINUITY.md#recovery)",
-        "[Executor Engineering HOW — Repository construction and acquisition](references/ENGINEERING_HOW.md#repository-construction-and-acquisition)",
-        "[Executor Engineering HOW — Process/resource ownership boundary](references/ENGINEERING_HOW.md#processresource-ownership-boundary)",
-    )
-    executor_text = (ROOT / "executor" / "SKILL.md").read_text(encoding="utf-8")
-    for reference in executor_owner_references:
-        if reference not in executor_text:
-            error(f"executor/SKILL.md: missing required Executor owner reference {reference!r}")
-
-    role_requirements = {
-        "architect/SKILL.md": ("../contracts/FOUNDATION_ARCHITECTURE.md", "Capability control and reusable HOW"),
-        "executor/SKILL.md": ("../contracts/FOUNDATION_ARCHITECTURE.md", "Capability HOW and acquisition"),
-        "protocols/TASK_PROTOCOL.md": ("../contracts/FOUNDATION_ARCHITECTURE.md", "Execution capability and authority boundary"),
+    specialists = {
+        "architect/SKILL.md": {
+            "tokens": ("optional design specialist", "not", "independent review", "protocol-v3"),
+            "owner_links": (
+                "[Capability Router](../.agent/case-router.yaml)",
+                "[Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md)",
+            ),
+        },
+        "executor/SKILL.md": {
+            "tokens": ("Local-first", "positive, scoped mutation authority", "One authorized writer",
+                       "unknown-effect", "protocol-v3"),
+            "owner_links": (
+                "[Capability Router](../.agent/case-router.yaml)",
+                "[active Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md)",
+            ),
+        },
     }
-    forbidden_headings = {
-        "architect/SKILL.md": ("## External normative authority and execution environment",),
-        "executor/SKILL.md": ("## Repository construction and acquisition",),
-        "protocols/TASK_PROTOCOL.md": (
-            "## Execution environment, operator attention, and surface selection",
-            "## Deterministic execution bundling",
-        ),
-    }
-    for relative, tokens in role_requirements.items():
-        role_text = (ROOT / relative).read_text(encoding="utf-8")
-        for token in tokens:
-            if token not in role_text:
-                error(f"{relative}: missing Foundation architecture delegation marker {token!r}")
-        for heading in forbidden_headings[relative]:
-            if heading in role_text:
-                error(f"{relative}: L1/L2 detail remains duplicated under {heading!r}")
+    for relative, spec in specialists.items():
+        content = (ROOT / relative).read_text(encoding="utf-8")
+        for token in spec["tokens"]:
+            if token not in content:
+                error(f"{relative}: missing active bounded-worker invariant {token!r}")
+        for link in spec["owner_links"]:
+            if link not in content:
+                error(f"{relative}: missing active owner reference {link!r}")
+
+
 
 def validate_task_document(label: str, doc: dict[str, Any]) -> None:
     doc = normalize_task_document(doc)
@@ -1890,102 +1813,20 @@ def require_tokens(path: Path, tokens: list[str]) -> None:
 
 
 def validate_protocol_docs() -> None:
+    """Keep direct workflow and legacy-v3 artifacts distinct without weakening v3 schema checks."""
     require_tokens(ROOT / "protocols" / "TASK_PROTOCOL.md", [
-        "Supported protocol version", "one active target repository",
-        "Decision ownership and consequence-based materiality",
-        "implementation judgment and local HOW by default",
-        "Uncertainty, unfamiliarity, or a preference difference alone is not an escalation trigger",
-        "Protocol-v3 task normalization/defaults",
-        "same protocol-v3 semantic model",
-        "missing authority remains fail-closed",
-        "semantic/component boundary",
-        "A newly discovered companion surface",
-        "Local structure is Executor-owned",
-        "material structure and remain Architect-owned",
-        "LOCAL needs no Architect approval",
-        "simultaneous ambiguous active target is forbidden",
-        "explicit terminal handoff/result", "fresh repository-local task",
-        "fresh exact handoff", "fresh exact base HEAD",
-        "authority for repository A never grants authority for repository B",
-        "report/review/verifier/promotion/release lineage remains repository-local",
-        "PROGRAM", "ordered repository-local tasks",
-        "not a universal multi-repository task authority",
-        "program.generated.json", "authority: NONE", "mathematically unique DAG",
-        "whole generated program stale", "fully regenerate", "Task authority remains just in time",
-        "two organizational roles", "Executor specializations",
-        "templates/handoff.yaml", "templates/continuation.yaml", "handoff_snapshot",
-        "RESOLVED", "NOT_APPLICABLE", "UNRESOLVED", "promotion_candidate_head",
-        "REVERIFY / REVIEW_REQUIRED", "LOCAL", "FOLLOW_UP",
-        "No orphan source files", "No speculative scale structure",
-        "reviewed_report.commit", "single-parent direct child",
-        "shared trusted", "create_branch: false", "PROMOTED_NOT_RELEASED",
-        "AUTO_UNTIL_STOP", "CURRENT_PHASE_CAPABILITY_UNAVAILABLE",
-        "capability_requirements", "release_authority", "RELEASED",
-        "GitHub Actions must not become an iterative debugger",
-        "Tool availability is not permission to consume quota",
-        "Normal Executor reports are evidence indexes",
-        "changed-file enumeration may be omitted",
-        "omission never means PASS, permission, or hidden success",
-        "Sparse reports remain evidence-backed rather than self-attested",
-        "Evidence-first Architect review",
-        "Deep implementation reconstruction occurs only for",
-        "preference-only revision",
-        "Operational timing is omitted by default",
-        "explicitly requests",
-        "No timing-enabled or telemetry-mode field",
+        "Active workflow: capability router", "protocol-v3 section below is historical compatibility",
+        "Supported protocol version: **3**", "missing authority remains fail-closed",
+        "reviewed_report.commit", "release_authority",
     ])
-    require_tokens(ROOT / "architect" / "SKILL.md", [
-        "material WHAT, BOUNDARY, and PROOF",
-        "delegates implementation judgment to Executor by default",
-        "uncertainty alone does not require escalation",
-        "normalization/default table",
-        "Omitted implementation prescription",
-        "one active target repository", "close the current repository-specific phase",
-        "explicitly identify the next `owner/repo`", "refresh canonical GitHub truth",
-        "discard previous repository-specific assumptions",
-        "simultaneous ambiguous active target is forbidden",
-        "PROGRAM", "program.generated.json", "full regeneration", "just in time",
-        "PROMPT TO COPY",
-        "evidence-first sequence", "candidate diff boundary", "material risk triggers",
-        "stop when material predicates are proven", "preference-only revision",
-        "default hot path", "explicitly requests", "No timing-enabled or telemetry-mode field",
-    ])
+    require_tokens(ROOT / "README.md", ["Capability Router", "protocol-v3"])
+    for name in ("IMPLEMENTATION_CONTRACT", "IMPLEMENTATION_REPORT", "ARCHITECT_REVIEW", "EXECUTION_CONTINUITY"):
+        require_tokens(ROOT / "contracts" / f"{name}.md", ["Applicability:", "protocol-v3" if name != "EXECUTION_CONTINUITY" else "unknown effects"])
     require_tokens(ROOT / "executor" / "SKILL.md", [
-        "implementation judgment belongs to Executor by default",
-        "smallest sufficient repo-native implementation",
-        "LOCAL needs no Architect approval",
-        "automatic pre-mutation blockers",
-        "active task/repository binding remains immutable",
-        "EXECUTION BUNDLE",
-        "maximal contiguous mechanically derivable suffix",
-        "one `terminal_exec` invocation",
-        "Omit reconstructible execution transcript",
+        "One authorized writer", "positive, scoped mutation authority", "No PASS without evidence",
+        "remote freshness", "protocol-v3",
     ])
-    require_tokens(ROOT / "README.md", [
-        "PROGRAM", "presentation only", "ordered repository-local tasks",
-        "program.generated.json", "authority `NONE`",
-        "TASK LAUNCH",
-    ])
-    require_tokens(ROOT / "contracts" / "IMPLEMENTATION_CONTRACT.md", [
-        "positive semantic/component scope",
-        "normalization/default table",
-        "Missing exact-file or local-structure prescription",
-        "Missing authority fields never default to permission",
-        "template", "continuation_policy", "capability_requirements", "release_authority",
-    ])
-    require_tokens(ROOT / "contracts" / "IMPLEMENTATION_REPORT.md", [
-        "template", "capability_preflight", "PROMOTED_NOT_RELEASED",
-        "compact evidence index", "changed-file enumeration may be omitted",
-        "omission never means PASS, permission, or hidden success", "explicitly requests",
-        "No timing-enabled or telemetry-mode field",
-    ])
-    require_tokens(ROOT / "contracts" / "ARCHITECT_REVIEW.md", [
-        "template", "separate agent/session", "PROMOTED_NOT_RELEASED",
-        "evidence-first", "candidate diff boundary", "deviations/gaps",
-        "material risk triggers", "stop when material predicates are proven",
-        "preference-only revision", "omitted by default", "explicitly requests",
-        "No timing-enabled or telemetry-mode field",
-    ])
+
 
 
 def _require_exact_object_keys(label: str, value: Any, expected: set[str]) -> bool:

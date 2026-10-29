@@ -1,3 +1,5 @@
+> **Historical reference only (protocol-v3).** Generic engineering HOW for new work belongs to read-only ECC methods selected after target-native instructions. This file is not a default capability or routine bootstrap dependency.
+
 # Executor Engineering HOW
 
 This L2 reference owns generic engineering methodology delegated from the Executor authority kernel. It grants no task, repository, mutation, publication, review, acceptance, or infrastructure authority; the active task and Task Protocol remain governing.

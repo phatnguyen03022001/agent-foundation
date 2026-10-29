@@ -1,3 +1,5 @@
+> **Applicability:** This is an explicit protocol-v3 task artifact contract, not a prerequisite for routine authorized direct execution. See [active architecture](FOUNDATION_ARCHITECTURE.md). Existing task authorizations retain their exact original authority and checks.
+
 # Implementation Contract
 
 The canonical Architect-owned task shape is [templates/task.yaml](../templates/task.yaml). Target repositories may copy that template into `.agent/tasks/TASK-NNNN/task.yaml`.

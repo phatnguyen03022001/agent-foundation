@@ -1,29 +1,55 @@
 authority: NONE
 routes:
-  - id: MATERIAL_JUDGMENT
-    role: architect
-    binding: generic
-    specialization: none
+  - id: READ_ONLY
+    specialist: researcher
+    binding: target
+    capabilities:
+      - executor
+    navigation: none
+  - id: IMPLEMENT
+    specialist: implementer
+    binding: target
+    capabilities:
+      - executor
+    navigation: none
+  - id: DESIGN
+    specialist: architect
+    binding: target
     capabilities:
       - architect
     navigation: none
-  - id: READ_ONLY_RESEARCH
-    role: executor
-    binding: generic
-    specialization: researcher
+  - id: REVIEW
+    specialist: reviewer
+    binding: target
+    capabilities:
+      - verification
+    navigation: none
+  - id: SECURITY
+    specialist: security_reviewer
+    binding: target
+    capabilities:
+      - security_review
+    navigation: none
+  - id: RELEASE
+    specialist: release_operator
+    binding: target
     capabilities:
       - executor
-    navigation:
-      - research_request_contract
-      - research_result_contract
-  - id: TASK_EXECUTION
-    role: executor
+      - task_protocol
+    navigation: none
+  - id: LEGACY_TASK
+    specialist: implementer
     binding: task
-    specialization: none
     capabilities:
       - executor
       - task_protocol
     navigation: none
 legacy_aliases:
+  - from: MATERIAL_JUDGMENT
+    to: DESIGN
+  - from: READ_ONLY_RESEARCH
+    to: READ_ONLY
+  - from: TASK_EXECUTION
+    to: LEGACY_TASK
   - from: EXECUTE
-    to: TASK_EXECUTION
+    to: LEGACY_TASK

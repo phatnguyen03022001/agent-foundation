@@ -1,3 +1,11 @@
+# Active workflow: capability router (new sessions)
+
+The default entrypoint is [Foundation Architecture](../contracts/FOUNDATION_ARCHITECTURE.md) and [Case Router](../.agent/case-router.yaml). A fresh routine authorized request is **not** a protocol-v3 task: no mandatory Architect, task.yaml, report.yaml, review.yaml, or cross-chat handoff. The request/target instructions provide positive scoped authority; selected capabilities have authority NONE. One session may implement and verify with evidence, but cannot claim independent review. Commit, push, destructive changes and release require their own explicit authority; preserve dirty local state and reconcile unknown effects before retry.
+
+The **protocol-v3 section below is historical compatibility**, governing only existing exact v3 artifacts or an explicitly chosen externally governed v3 workflow. All role ownership, material design gate, YAML lifecycle, remote refresh, acceptance and task binding obligations below apply **within that legacy lane**, not to arbitrary future direct work. Validators continue to read protocol-v3 artifacts with their original semantics.
+
+---
+
 # Task Protocol
 
 This protocol defines reusable Architect-to-Executor governance across repositories. the Foundation `skills/` domain owns how work is governed; each target repository owns what its product is and stores its live tasks.

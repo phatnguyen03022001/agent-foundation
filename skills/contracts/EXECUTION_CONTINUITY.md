@@ -1,3 +1,5 @@
+> **Applicability:** Optional local attempt telemetry for material interruption/unknown effects and explicit protocol-v3 workflows. It grants no authority, is not started for every task, and never permits blind retries. Routine direct execution can use Git state and direct postcondition checks instead.
+
 # Execution Attempt Continuity
 
 This contract defines the Foundation L1 execution-attempt continuity primitive. Attempt data is local operational telemetry with `authority NONE`; it never changes task, review, acceptance, rebinding, Git, promotion, or release authority.

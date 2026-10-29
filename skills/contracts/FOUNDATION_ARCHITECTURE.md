@@ -1,182 +1,50 @@
-# Foundation Architecture
+# Foundation Architecture — active capability-router contract
 
-This contract is the single canonical generic owner for the Foundation three-layer model and the L1 control-and-continuity semantics that connect governance to reusable capability. It does not replace target-repository authority, the Task Protocol, individual skills, standards, document models, or operator configuration.
+This file governs new Foundation-based sessions. The prior Architect/Executor organizational workflow belongs to **historical protocol-v3 bindings**, not the active default. Prior commits and artifacts remain readable by exact Git identity; no historical claim is retroactively changed.
 
-When `agent-foundation` itself is the bound target, its distinct target-owned T1 product architecture boundaries are defined by [Agent Foundation Product Architecture Boundaries](AGENT_FOUNDATION_PRODUCT_ARCHITECTURE.md). That target contract does not redefine this governance/control-plane architecture.
+## Governance boundary
 
-The Foundation has exactly three conceptual layers. A repository subtree is not automatically a layer, and an execution transport is not a layer.
+```text
+User request → Intent router (authority NONE) → Explicit target + authority check
+→ Target-native instructions/state → Selected ECC HOW + specialist
+→ Proportional evidence → Local Git checkpoint → Authorized remote publication
+```
 
-## L0 — Governance Kernel
+Router is static metadata, not a running orchestrator. It classifies request intent, selects bounded capabilities, asks for exact target/authority and routes genuine escalation. It cannot create scope, mutation, acceptance, release, deployment or destructive authority. No queue, daemon, database, or automatic memory/state synchronization.
 
-L0 owns authority, not engineering methodology.
-
-There are exactly two organizational roles: Architect and Executor.
-
-- Architect owns final governance judgment, task authority, material WHAT/BOUNDARY/PROOF, and final canonical acceptance/revision/block judgment.
-- Executor executes one exact authorized binding and owns implementation evidence. Specialization never increases authority.
-- task.yaml, report.yaml, and review.yaml ownership and lifecycle boundaries remain governed by the [Task Protocol](../protocols/TASK_PROTOCOL.md).
-- Repository rebinding, cross-repository isolation, exact-base binding, authority-versus-capability separation, and minimum freshness/safety invariants remain L0 concerns.
-
-Sync and read-only Researcher are Executor specializations. They are not organizational roles and have no independent task, mutation, review, acceptance, rebinding, or architecture authority.
+Specialists are optional, **not organizational roles**: Researcher (READ_ONLY), Implementer (IMPLEMENT), Architect (DESIGN), Reviewer/Verifier (REVIEW), Security Reviewer (SECURITY), Release Operator (RELEASE). LEGACY_TASK is exclusively for explicit historical protocol-v3 bindings. A single session may activate several sequentially without claiming independent review. Use another session only for genuine independence, concurrent writer isolation, or missing specialty capability.
 
 ## Target repository product authority
 
-The exact currently bound target repository is the canonical owner of product truth and repository-native engineering contracts. Its canonical GitHub remote is durable repository truth; local checkouts and execution state remain subordinate copies under the existing drift rules. Foundation owns governance/control, not the target product; ECC supplies generic engineering HOW after target truth; Agent Runtime supplies execution transport only.
+The explicitly bound target owns product truth, behavior, architecture, tests, tooling, CI/deploy, security and domain decisions. Workspace and nearest target instructions apply. Bind canonical `owner/repo`, branch, actual root and origin before writes. Inspect local HEAD, index, dirty/untracked/ignored work and any in-flight Git operation. A missing conventional filename is not by itself an authority gap. Never infer target from memory/cwd, and never preload `product-state.json`, `documents/`, or `standards/` in an unrelated target. These optional Foundation-as-target models are not universal task prerequisites.
 
-Target-owned truth includes product architecture and domain behavior; public and internal interfaces; exact repository-local task/lifecycle artifacts; applicable agent/operator instructions; source and code-ownership boundaries; language/runtime/toolchain and dependency contracts; build, test, lint, typecheck, format, and codegen commands/configuration; repository-local verification profiles and project-designated authoritative verifier identity; runtime and deployment configuration, migrations, and product configuration; and repository-specific Git topology and delivery conventions.
+The operator's exact request and target policy supply mutation scope; neither a selected specialization nor an ECC skill can enlarge it. One authorized writer per affected scope. Separate explicit authority is required for release, deployment, destructive synchronization, force/rewrite, protected service lifecycle, or other irreversible consequences. Read-only work stays read-only.
 
-Target discovery is bounded and filename-neutral. Resolve by authority class rather than filename, in this order: (1) exact current task/review/continuation authority for the task-scoped WHAT/BOUNDARY/PROOF and explicit scoped overrides; (2) explicit current target product, architecture, domain, and applicable repository-instruction contracts; (3) applicable repo-native manifests, lockfiles, toolchain/runtime pins, scripts/task runners, CI configuration, language-native project files, architecture docs, source/tests, test configuration, deployment descriptors, and other equivalent repository-native evidence; then (4) external generic HOW through the existing harness seam below. More specific current target authority outranks generic Foundation/ECC guidance.
+## Capability control
 
-`AGENTS.md`, `CLAUDE.md`, README instructions, package manifests, Makefiles/task runners, CI files, language-native project files, architecture docs, test configuration, and deployment descriptors are evidence only when they actually exist and apply. Their names do not grant authority. The absence of a conventional instruction filename is not a blocker when equivalent repository-native evidence deterministically resolves the needed product, tooling, or verification contract.
+Load only the selected capability entrypoint and exact relevant target context. Local ECC checkout resolved through bootstrap metadata is the default **read-only generic HOW** if available and its Git revision is observed. Adapt source to target and never execute ECC installer, hooks, Claude-specific agent/session policy, continuous memory, global settings or dependency installation implicitly. Pin an immutable commit before relying on an external surface as normative methodology. ECC missing locally is not authority to fetch/install it; use explicitly approved immutable remote source only when needed, or report the capability gap.
 
-When authority classes conflict, explicit current task/product authority outranks generic repository convention; a current repo-native product/tool contract outranks ECC/Foundation generic HOW; and stale docs or generated artifacts do not override current canonical target truth merely because they contain instructions. A task-scoped override is valid only inside its authorized material scope and does not transfer enduring product ownership to Foundation.
+Selection examples: `intent-driven-development` and `product-capability` for ambiguous cross-boundary scope, `orch-add-feature`/`orch-change-feature`/`orch-fix-defect` for implementation, `contract-first` for shared API boundaries, `tdd-workflow` for code/tests, `verification-loop` for regression, `security-review` for sensitive changes, `production-audit` for shipping risk, `living-docs-governance` for drifting existing docs. `orch-pipeline` is a dependent reference, never an independent agent mandate. ECC approval gates are advice when they conflict with an already explicit operator authorization; they cannot silently insert unrequested ceremony.
 
-### Target-owned adoption of external rules
+`skills/.agent/external-capabilities/` retains optional historical snapshot/catalog tooling. It is not active bootstrap or a prerequisite for local ECC skill selection. No duplicate Foundation engineering HOW is normative.
 
-Discovered or loaded external rules remain advisory until governing target authority explicitly approves both their applicable scope and their integration in an existing target-owned rule, instruction, or decision owner. Resolve target product, stack, instructions, dependencies, architecture, commands, and existing rule owners first. Those target-native contracts and any authorized scoped override control; an upstream rule's own specificity or priority claim may inform evaluation but cannot outrank target authority. Adoption grants no task, mutation, role, release, installation, or other execution authority.
+## Execution surface and publication control
 
-Durable adoption evidence is filename- and schema-neutral. It records enough to reconstruct the effective target rule: exact upstream repository, commit, path, and relevant section identity; applicable target component/language/concern scope; accepted or adapted meaning plus material deviations or rejections; and the current target approval/proof reference when required. Prefer an existing target owner or authorized reference over mirrored generic prose. Scope-limited rules load only when the current concern enters that scope, and unselected siblings do not apply. Reproduced upstream content must preserve applicable license/attribution obligations. Upstream changes never silently rewrite adopted target truth; material source or target changes require target re-evaluation and separately authorized edits.
+Default to target-local read/edit/build/test/debug through available Agent Runtime and repo-native scripts on macOS. Prefer the narrowest explicitly authorized action with equivalent evidence; typed interfaces never imply automatic safety or permission. If there is no sufficient narrower surface, a platform-permitted generic terminal remains a valid fallback only with explicit authority, recoverability, and the same proof obligations. Avoid remote calls during ordinary local steps. The local tree is the current *work surface* and must not be overwritten or reset to simulate remote truth; GitHub is the *published source of truth*. On commit/push, inspect only intended paths, distinguish local commits from pushed commits, observe fresh remote branch HEAD, require fast-forward safety and re-observe publication outcome. Exact commit identity is distinct from content identity: a content-equivalent but different commit is not an authorized substitute without explicit permission. Unknown effects require postcondition reconciliation before retry. Failed or ambiguous publication requires fresh remote reconciliation; never blind retry an OUTCOME_UNKNOWN effect.
 
-ECC methodology, commands, agents, and examples must adapt to target-native commands and architecture rather than replace them, and generic HOW does not require project-local ECC installation or configuration. Agent Runtime is execution transport only and does not become the owner of target commands, dependencies, process lifecycle, deployment semantics, or product configuration merely because it carries a command. Other execution surfaces likewise execute or observe target-native operations without inheriting semantic ownership.
+## Risk-proportional assurance
 
-There is no universal target manifest, no required `AGENTS.md` or `CLAUDE.md`, no single package manager, language, framework, CI provider, or deployment platform, and no fixed build, test, lint, typecheck, or codegen command shape. Continue when the required target behavior is deterministically discoverable from applicable authority; return a blocking authority/spec gap only when safe implementation or required proof depends on contradictory or missing product truth.
+Small reversible authorized tasks: direct execution, focused tests and diff review, concise chat report; no mandatory YAML. Multi-session, high-impact, regulated/external-governed or high-risk tasks: retain explicit task, report, review and continuity artifacts when actually required. Independent review must be performed independently; self-review is only local verification. No fabricated PASS or implicit accepted state.
 
-## Target product progression consumption
+### Recovery
 
-Foundation may consume target-owned product progression truth only after binding the exact target repository and resolving fresh target-owned evidence. This consumption boundary is filename-neutral: resolve semantic authority from applicable target evidence rather than requiring a particular state filename, manifest shape, schema, language, or validator.
-
-Within that boundary, Foundation may consume target-owned release scope, required release features, feature registry, feature states and supporting evidence, system gates, and target-defined progression projections; verify target-defined derived phase when deterministic derivation semantics are exposed; select the target-defined earliest blocker; and create bounded task authority for the selected progression condition. These are governance consumption actions, not product-state authorship.
-
-Foundation does not own release scope, feature registry, feature state, system gates, or project phase. It does not require product-state.json, does not require agent-foundation schema 3, imposes no universal product manifest, and does not require one language or validator implementation. A target may expose equivalent product truth through any current repository-native representation that deterministically establishes the needed semantics.
-
-Missing, contradictory, stale, or inaccessible material product truth does not become progress. Preserve UNKNOWN when the target semantics define that state, or surface the actual authority/specification blocker when the required fact cannot be resolved. Foundation must not invent release identity, required features, feature state, gate PASS, phase, or blocker to make planning proceed.
-
-If a target stores a derived phase or blocker and also exposes deterministic derivation semantics, verify consistency before planning from the stored projection. If stored and derived truth disagree, fail closed on the contradiction; do not choose the convenient value and do not rewrite target product state to manufacture normal progression.
-
-Task lifecycle and product lifecycle remain distinct. Task acceptance, report state, review state, chat history, execution state, and Runtime state do not imply feature verification, gate PASS, release readiness, production acceptance, or project-phase advancement. After execution, fresh target-owned evidence remains required before any product-state transition can be consumed as current truth.
-
-## L1 — Control and Continuity
-
-L1 owns deterministic capability navigation and non-authoritative continuity. It does not own product decisions or implementation methodology.
-
-### Capability control
-
-Capability discovery and reuse use explicit state distinctions:
-
-- INDEXED != LOADED: discoverability does not inject content into active context.
-- PINNED != TRUSTED: immutable identity does not establish quality, safety, or applicability.
-- SYNCED != ADOPTED: local synchronization does not make upstream content canonical.
-- ADOPTED != AUTHORIZED: accepted reusable content does not grant target mutation or lifecycle authority.
-- LOADED != AUTHORIZED: context availability never grants permission.
-- SNAPSHOT != AUTHORITY: a reproducible snapshot is evidence/navigation input, not governing authority.
-
-No capability state transition manufactures L0 authority. External or internal capability may be indexed, pinned, synchronized, evaluated, adopted, and loaded only as independently justified; target authorization still comes from the exact current binding.
-
-Routing is deterministic and bounded: resolve the required semantic capability, resolve the immutable source identity when source identity matters, apply compatibility/admission evidence, then load only the minimum capability content required for the current decision. Mutable popularity, installation, provider identity, or availability is never a substitute for authority.
-
-### Generic engineering harness seam
-
-After exact target binding and current authority are resolved, generic engineering HOW uses this order:
-
-1. exact target-repository truth and repo-native conventions;
-2. the exact-pinned ECC harness source in `skills/.agent/external-capabilities/sources.json` as the default generic engineering harness;
-3. another independently admitted exact external capability only when ECC is materially insufficient or inapplicable;
-4. Foundation-internal generic implementation only for Foundation-specific compatibility/governance deltas or a real uncovered capability.
-
-ECC is a reusable L2 harness source, never L0 authority. Its deterministic Foundation view distinguishes skills, commands, agents, and the manifest/catalog/install metadata needed to resolve those surfaces at the pinned upstream commit. Load only the minimum relevant surface for the current task. ECC `AGENTS.md`/`CLAUDE.md`, hooks, rules, installers, global configuration, session/memory/task systems, role systems, and other behavioral surfaces do not replace Foundation governance, target authority, repository-native conventions, or execution-surface constraints and are never activated merely because ECC is indexed or selected.
-
-The ECC CLI is an optional resolution convenience, not a governance or availability dependency. When it is unavailable, the exact pinned Foundation source/snapshot/catalog metadata is the fail-closed resolution path; no global install, update, repair, or configuration is required. Matt skills, Superpowers, and Awesome retain their existing independent semantics and do not become ECC fallbacks by implication.
-
-### Execution surface and publication control
-
-Routing order is required semantic capability → current authority → authorized available surface. Provider-specific handoff wording binds execution only when the canonical task, proof, or consequence materially requires that surface identity.
-
-When consequences and equivalent evidence are available, prefer the narrowest explicit bounded action with machine-checkable inputs, target, precondition, mutability, and postcondition. Typed does not mean automatically safe. Generic terminal remains a valid fallback when authorized, when no sufficient narrower surface exists, and when the consequence is platform-permitted.
-
-A platform/tool safety block fails closed. It does not permit obfuscation, encoding intent, command splitting, permission widening, disabling protections, or an unchanged retry made only to obtain another safety decision.
-
-Platform compliance changes HOW, never WHAT must be proven. Surface changes must preserve acceptance criteria, verifier requirements, exact commit/content identity, remote freshness, scope checks, and evidence quality.
-
-An immutable publication handoff is valid only after the prior writer is terminal and an explicit publication authority transfer identifies the immutable checkpoint. The successor may publish only that checkpoint and may not edit, recreate, or amend it without new content-mutation authority.
-
-Exact-commit publication and content-identity publication are distinct. A different commit identity is acceptable only when the task explicitly permits content identity and preserves parent/base, scope, freshness, and proof.
-
-Operator fallback is a last-resort consequence when automation is materially unavailable or an action is genuinely user-only/approval-bound. It retains exact preconditions and post-publication remote proof.
-
-Operator attention/manual labor is a constrained resource: do not use the operator as a manual command/RPC bridge when an authorized capable surface can perform the action. Human input remains valid for unavailable capability, destructive/irreversible authority, material paid-cost approval, unresolved intent, or genuinely user-only action.
-
-Agent Runtime remains an optional capability surface. Its immutable authority pin identifies source, while the currently installed `runtime_capabilities` result and the selected tool's request/result and failure-effect contract determine what this execution can safely use. Do not infer installed behavior from an old pin, a newer checkout, or a tool name alone. Mobile/ChatGPT+GitHub-only operation is first-class whenever the exact task does not materially require unavailable native capability. Tool availability is not permission to consume quota, and GitHub Actions must not become an iterative debugger.
-
-### Sync specialization
-
-Sync is a named Executor specialization for bounded deterministic synchronization work. A Sync Executor may resolve and compare immutable source identities and perform synchronization only inside an explicit current repository/task binding. Sync cannot self-admit upstream content, change architecture, create or accept tasks, mutate sibling repositories, or convert synchronized bytes into authority.
-
-This task does not create a package manager, plugin manager, registry service, daemon, scheduler, queue, database, provider pool, or workflow engine. Later external ecosystem reuse must fit these same boundaries.
-
-The Foundation-owned external capability plane lives at `skills/.agent/external-capabilities/`. Its registry selects immutable upstream snapshot identities; source snapshots and the aggregate catalog are inert metadata. Bootstrap exposes only the aggregate catalog locator at the active Foundation `authority_set_identity` revision. The catalog is not a capability route, trust decision, adoption record, or authority source. Awesome entries remain discovery-only pointers and require separate downstream source resolution before capability admission.
-
-### Independent read-only research fan-out
-
-Independent research fan-out is advisory Executor-specialized work:
-
-1. each researcher receives one exact target, base, and question;
-2. only minimum relevant context is supplied;
-3. researchers are read-only for the target and have no canonical mutation authority;
-4. peer results are not visible before individual evidence returns;
-5. each return is compact evidence with source identity, observations, uncertainty, and materially relevant implications;
-6. Architect synthesizes evidence by quality and applicability, not by majority voting.
-
-A Researcher cannot create canonical task/review authority, rebind the target, or make the final decision.
-
-For materially uncertain direction-setting, Architect may issue exactly three independent fresh-context Research Requests using `skills/templates/research-request.yaml` and render standalone packets with `skills/scripts/research_fanout.py`. Narrower questions may use one Research Request. Every Research Request and Research Result has authority `NONE`; peer results remain absent until each return is final. Architect alone owns evidence synthesis and direction judgment, and neither majority vote, confidence averaging, model score, nor council consensus creates authority.
-
-### Cross-repository finding continuity
-
-A finding discovered while bound to repository A may be durably referenced as non-authoritative evidence for a future owner of repository B. The reference has authority NONE until repository B is explicitly bound and the finding is freshly revalidated against B's current canonical truth.
-
-A cross-repository finding cannot mutate the owner repository, create a task automatically, create acceptance authority, rebind the active target, or bypass fresh revalidation. Durable continuity is a pointer/evidence obligation, not a shared mutable cross-repository authority object or task queue.
-
-Canonical Continuity Findings use `skills/templates/continuity-finding.yaml` with authority `NONE` and status `UNVALIDATED_FOR_OWNER`. Foundation stores only bounded pointer/metadata records under the owner-keyed `profile/.agent/continuity/` root. When Architect explicitly binds owner repository B, only B's continuity file is loaded; B's canonical truth is freshly resolved and each material finding is revalidated before Architect may discard it, retain it, or separately task it through normal L0 authority.
-
-### Execution-attempt continuity
-
-Local Executor liveness hints follow [Execution Attempt Continuity](EXECUTION_CONTINUITY.md). Producer state is only `RUNNING` or explicit `TERMINAL`; observers classify only `TERMINAL_CONFIRMED`, `ACTIVE_LEASE`, or `INTERRUPTED_UNKNOWN`. A fresh lease means only recent `last_seen_at_utc`; a stale non-terminal lease remains unknown and never manufactures failure, death, terminal state, or an exact death timestamp.
-
-Attempt records have authority `NONE` and live only in repository-local Git metadata resolved through `git rev-parse --git-path`. A `RUNNING` attempt may carry at most one bounded unresolved Execution Slice in that same record; its caller-known intent is persisted before consequence-bearing dispatch. A selected Runtime carrier's keyed recovery and typed effect result are the first source for resolving its own execution outcome; Foundation does not duplicate that recovery with speculative filesystem or process inference. Ambiguous mutating response state remains `OUTCOME_UNKNOWN` until the carrier or an affected external postcondition establishes more. Slice telemetry is not a second store, transcript, project document, remote truth, task state, or fourth layer. Recovery still requires fresh canonical remote, HEAD, index/worktree, checkpoint, task-authority, and affected postcondition inspection for the consequences being resumed. No daemon, background heartbeat, scheduler, automatic recovery, or Agent Runtime service is introduced.
-
-Carrier routing preserves Execution Bundle while prioritizing correctness, then survivability/recoverability, then boundedness, then round-trip minimization. Runtime 0.5.0 can provide caller-keyed, cross-restart recovery through `terminal_start` only with a caller-retained `start_identity`, `mode=pipe`, and `durability=runtime_restart`. Default PTY and process-local modes do not acquire that property. If the selected installed contract does not provide a recoverable carrier or another authorized expected-state path, survival-sensitive async mutation fails closed.
-
-## L2 — Capability and Knowledge
-
-L2 owns reusable HOW and domain knowledge, but Foundation does not default to owning a broad generic engineering corpus. Exact-pinned ECC is the default generic engineering harness after target-repository truth; independently admitted external capability may cover a real ECC gap. Foundation-maintained L2 survives where the responsibility is Foundation-specific, is a compatibility/governance delta, or remains genuinely uncovered.
-
-L2 includes:
-
-- the existing internal taxonomy without implying that every internal generic skill is the permanent preferred source;
-- exact-pinned ECC skills, commands, agents, and deterministic resolution metadata as reusable harness input;
-- other independently admitted external skills and discovery catalogs under their existing state semantics;
-- standards and evidence models;
-- document models and references;
-- repository-local reusable capabilities and domain-specific knowledge.
-
-The active internal skill taxonomy remains derived from `skills/.agent/rationalization.json`; this seam does not rationalize, remove, rename, or broadly rewrite it. External source selection changes only reusable HOW. L2 content can inform work only through L0 authority and L1 routing, and maturity, popularity, loading, synchronization, adoption, harness availability, or CLI installation does not grant permission.
-
-## Orthogonal substrates
-
-agent-runtime, GitHub, MCP, and native execution tools are orthogonal substrates. They provide transport, storage, or execution capability; they are not organizational roles, authority sources, or a fourth Foundation layer.
-
-agent-runtime remains a separate repository/product. Foundation governance must not mutate Runtime, service state, host permissions, credentials, TCC, Keychain, or System Settings without separate explicit authority.
+After interruption, stale observations or unknown-effects operations, rebind exact target, read local/remote postconditions as appropriate, preserve dirty state and stop rather than blindly replay. For historical v3 bindings, consult the unchanged historical semantics in [Task Protocol](../protocols/TASK_PROTOCOL.md) and its compatible validators.
 
 ## Canonical navigation
 
-Bootstrap exposes this contract through foundation_control_plane in profile/.agent/bootstrap/bootstrap.json. Resolution binds the locator to the exact Foundation authority_set_identity commit, so the path is immutable for that bootstrap context and fails closed when the locator is missing or malformed.
-
-The Case Router is static, authority-NONE navigation before role-specific material reasoning. It selects exactly three semantic entry classes: MATERIAL_JUDGMENT, READ_ONLY_RESEARCH, and TASK_EXECUTION. These are not roles, task lanes, lifecycle states, product phases, readiness states, or orchestration states. The router may inspect explicit current request intent, target identity, a supplied task locator, and the exact route metadata; it never reads deep product/progression truth, chooses blockers or architecture, authors acceptance, synthesizes research, judges reviews, or mutates a repository. Missing or unrecognized intent defaults to MATERIAL_JUDGMENT; malformed or contradictory selectors fail closed.
-
-Before route selection, bootstrap binds explicit repository/branch identity, requires fresh canonical GitHub resolution, validates the exact Foundation router, and normalizes the execution surface when applicable. This step loads only the navigation metadata needed for those checks. It does not load Architect, Executor, Task Protocol, Documents, Standards, product/progression bodies, or external HOW.
-
-MATERIAL_JUDGMENT selects Architect as the initial organizational role path. Architect may then load Task Protocol, target truth, Documents, Standards, or external HOW only when the actual material judgment requires them. READ_ONLY_RESEARCH selects the existing Executor Researcher specialization with generic target/request binding; it does not require task_path, task_revision, base_head, or phase and carries no task, mutation, report, review, or lifecycle authority. It may load the minimum Executor/Researcher procedure and research request/result contracts; Task Protocol, Documents, Standards, and external HOW remain unloaded unless the specific research need selects them. TASK_EXECUTION selects Executor without Architect and requires exact task/revision/base/phase binding before mutation. The legacy EXECUTE selector normalizes to TASK_EXECUTION and is not another route class.
-
-After route selection, bootstrap exposes only that route's initial role capability and any route-specific navigation artifacts. Capability locators and loaded content grant no authority. External HOW is strictly post-route and demand-loaded after target truth and a material semantic need are established; catalog membership alone never loads it. The [Task Protocol](../protocols/TASK_PROTOCOL.md) remains the L0 semantic owner for cross-role authority and lifecycle. Architect/Executor skills retain role-local procedure. L2 owners retain capability-specific HOW.
-
-The four physical Foundation domains remain semantically distinct: profile/ owns operator configuration, skills/ reusable behavior/control contracts, documents/ documentation semantics, and standards/ engineering assurance semantics.
+- Active intent metadata: [case-router.yaml](../.agent/case-router.yaml).
+- Bounded local implementation: [executor](../executor/SKILL.md).
+- Optional design specialist: [architect](../architect/SKILL.md).
+- Historical protocol-v3 semantics: [Task Protocol](../protocols/TASK_PROTOCOL.md).
+- Evidence and recovery details, only when needed: [Execution Continuity](EXECUTION_CONTINUITY.md), [Implementation Report](IMPLEMENTATION_REPORT.md), [Architect Review](ARCHITECT_REVIEW.md).
+- Optional assurance/document models: `standards/`, `documents/` — never universal task prerequisites.
